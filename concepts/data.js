@@ -83,16 +83,16 @@ window.CONCEPTS = {
     title: "라그랑주 승수법과 KKT 조건",
     domain: "calc",
     subLabel: "제약 최적화",
-    explanation: String.raw`"이 조건을 지키면서 저걸 최소화하고 싶다" — 이런 부등식 제약이 있는 최적화 문제에서, 최적해가 반드시 만족해야 하는 조건을 정리한 것이 KKT(Karush-Kuhn-Tucker) 조건이에요. SVM의 쌍대문제, PPO/TRPO의 제약 최적화 모두 이 조건 위에 서 있습니다.<br><br><strong>명제.</strong> (제약이 지나치게 뒤틀려 있지 않다는 조건 — constraint qualification이라고 불러요 — 이 성립할 때) $\min f(x)\ \text{s.t.}\ g(x)\le0$의 최적해 $x^*$에서 어떤 $\mu^*\ge0$이 존재해 $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$, $\mu^*g(x^*)=0$이 성립한다.`,
+    explanation: String.raw`조건을 지키면서 가장 작은 값을 찾는 문제가 있어요. 이런 부등식 제약이 있는 최적화에서 최적해가 반드시 만족해야 하는 조건을 정리한 것이 KKT 조건이에요. SVM의 쌍대문제도 PPO와 TRPO의 제약 최적화도 모두 이 조건 위에 서 있어요.<br><br><strong>명제.</strong> 제약이 지나치게 특이하지 않다는 조건(constraint qualification)이 성립할 때 $\min f(x)\ \text{s.t.}\ g(x)\le0$ 의 최적해 $x^*$에서는 어떤 $\mu^*\ge0$이 존재해 $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$과 $\mu^*g(x^*)=0$이 성립한다.`,
     sections: [
-      { id: "s1", text: String.raw`먼저 라그랑주 승수법대로, 제약을 어긴 정도에 벌점 $\mu\ge0$을 곱해 목적함수에 더한 라그랑지안을 만든다: $\mathcal{L}(x,\mu)=f(x)+\mu g(x)$.`, blanks: [] },
-      { id: "s2", text: String.raw`(제약이 너무 뒤틀려 있지 않다는 조건, 즉 constraint qualification이 성립한다고 가정하면) 최적해 $x^*$에서는 다른 최적화 문제와 마찬가지로 "$x$ 방향으로 더 나아져도 소용없다"는 1차 조건이 성립한다: $\nabla_x\mathcal{L}(x^*,\mu^*) = $[[blank:가]] 이다.`,
-        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`라그랑지안이 $x^*$에서 극값(최소)을 가지려면, 미분(그래디언트)이 0이어야 한다는 건 경사하강법에서도 쓰던 바로 그 정류점 조건이에요. 다만 이게 성립하려면 제약이 너무 뒤틀려 있지 않아야 하는데(constraint qualification), 이 증명에서는 그 조건이 만족된다고 가정해요 — 항상 자동으로 성립하는 건 아니에요.` }] },
-      { id: "s3", text: String.raw`이 조건을 라그랑지안 정의대로 풀어 쓰면 $\nabla f(x^*) + $[[blank:나]]$ = 0$ 이다.`,
-        blanks: [{ id: "나", latex: String.raw`\mu^*\nabla g(x^*)`, why: String.raw`$\mathcal{L}(x,\mu)=f(x)+\mu g(x)$를 그대로 $x$에 대해 미분한 결과예요.` }] },
-      { id: "s4", text: String.raw`이제 제약이 느슨한 경우, 즉 $g(x^*)<0$(제약을 여유 있게 만족하는 경우)를 생각해 보자. 이럴 때 최적성이 깨지지 않으려면 $\mu^* = $[[blank:다]] 이어야 한다.`,
-        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`제약을 여유 있게 지키고 있다면, 그 제약은 사실 답에 아무 영향도 주지 않는 셈이에요. 영향이 없는 제약에 벌점(승수)이 붙어 있으면 이상하니까, 그 승수는 0이어야 앞뒤가 맞아요. 이게 상보슬랙성이라는 조건의 직관이에요.` }] },
-      { id: "s5", text: String.raw`정리하면 $\mu^*g(x^*)=0$(상보슬랙성)과 $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$, $\mu^*\ge0$이 모두 성립하며, 이 세 조건을 합쳐서 KKT 조건이라고 부른다. 따라서 명제가 성립한다.`, blanks: [] }
+      { id: "s1", text: String.raw`먼저 풀려는 문제를 다시 봅니다. 목적함수는 $f(x)$를 최소화하는 것이고 제약은 $g(x)\le0$입니다. 제약이 있는 최적화는 목적함수만 보면 다루기 어렵습니다. 그래서 제약까지 하나의 식 안에 같이 담아서 생각합니다. 제약을 어긴 정도인 $g(x)$에 벌점 역할을 하는 계수 $\mu\ge0$을 곱해서 목적함수에 더합니다. 이렇게 만든 식을 라그랑지안이라 부르고 $\mathcal{L}(x,\mu)=f(x)+\mu g(x)$ 로 씁니다.`, blanks: [] },
+      { id: "s2", text: String.raw`이제 최적해 $x^*$에서 무슨 일이 일어나는지 봅니다. 최적해에서는 $x$를 아주 조금 움직여도 목적함수가 더 줄어들지 않아야 합니다. 미분 가능한 함수에서는 이 성질이 기울기가 0이라는 조건으로 나타납니다. 여기서는 $f$ 대신 라그랑지안 $\mathcal{L}$을 최적화하고 있으니 $x$에 대한 기울기도 0이어야 합니다. 다만 이 조건이 성립하려면 제약이 지나치게 특이하지 않아야 합니다. 이걸 constraint qualification이라 부르고 여기서는 이 조건이 성립한다고 가정합니다. 정리하면 $\nabla_x\mathcal{L}(x^*,\mu^*) = $[[blank:가]] 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`함수가 극값을 가지는 지점에서는 기울기가 0이 됩니다. 경사하강법에서 쓰던 조건과 같은 논리입니다. 여기서는 그 대상이 $f$가 아니라 라그랑지안 $\mathcal{L}$일 뿐입니다.` }] },
+      { id: "s3", text: String.raw`이제 방금 얻은 식을 라그랑지안의 정의 그대로 풀어써 봅니다. $\mathcal{L}(x,\mu)=f(x)+\mu g(x)$ 를 $x$에 대해 미분합니다. $f(x)$를 미분하면 $\nabla f(x)$가 됩니다. $\mu g(x)$를 미분할 때는 $\mu$를 상수처럼 취급하니 $\mu\nabla g(x)$가 됩니다. 두 조각을 더하면 $\nabla f(x^*) + $[[blank:나]]$ = 0$ 입니다.`,
+        blanks: [{ id: "나", latex: String.raw`\mu^*\nabla g(x^*)`, why: String.raw`라그랑지안 정의를 그대로 $x$에 대해 미분한 결과입니다. $f(x)$는 $\nabla f(x)$가 되고 $\mu g(x)$는 $\mu\nabla g(x)$가 됩니다.` }] },
+      { id: "s4", text: String.raw`이번엔 제약이 느슨한 경우를 생각해 봅니다. $g(x^*)<0$이라면 제약을 여유 있게 만족하고 있는 상태입니다. 최적해가 제약의 경계가 아니라 그보다 안쪽에 있다는 뜻입니다. 이런 상황에서 $\mu^*$가 0이 아니라면 어떻게 될까요. 실제로는 답에 영향을 주지 않는 제약이 계속 벌점을 매기게 됩니다. 앞뒤가 맞지 않습니다. 그러니 이럴 때는 벌점 계수가 사라져야 합니다. $\mu^* = $[[blank:다]] 입니다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`제약을 여유 있게 만족하고 있다면 그 제약은 최적해를 붙잡고 있지 않습니다. 영향이 없는 제약에 벌점이 계속 붙어 있으면 이상합니다. 그래서 그 승수는 0이어야 합니다. 이 성질을 상보슬랙성이라 부릅니다.` }] },
+      { id: "s5", text: String.raw`정리하면 가능한 경우는 두 가지뿐입니다. 제약이 경계에서 딱 맞아떨어지거나 제약이 느슨해서 $\mu^*$가 0이거나입니다. 이 두 경우를 하나의 식으로 합치면 $\mu^*g(x^*)=0$ 이 됩니다. 이걸 상보슬랙성이라 부릅니다. 여기에 $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$ 과 $\mu^*\ge0$ 까지 더하면, 이 세 조건을 합쳐서 KKT 조건이라고 부릅니다. 따라서 명제가 성립합니다.`, blanks: [] }
     ]
   },
 
