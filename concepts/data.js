@@ -1668,5 +1668,164 @@ window.CONCEPTS = {
         blanks: [{ id: "다", latex: String.raw`K_i^{(t)}=K_i^{(t+1)},\ V_i^{(t)}=V_i^{(t+1)}`, why: String.raw`$K_i,V_i$가 $x_1,\dots,x_i$에만 의존하고 $i\le t$인 이상 $x_{t+1}$을 추가하는 것은 이 값에 전혀 영향을 주지 않는다. 그래서 시퀀스를 t로 끊어서 계산한 값과 t+1로 늘려서 계산한 값이 정확히 같다.` }] },
       { id: "s7", text: String.raw`이것이 바로 KV 캐시가 수학적으로 정당화되는 이유다. 위치 $1,\dots,t$의 키·값벡터를 매 스텝 처음부터 다시 계산하는 대신 한 번 계산해서 저장해 두고, 새로 추가되는 위치 $t+1$의 키·값벡터만 새로 계산해서 이어붙이면 된다.<br><br>이는 앞서 확인한 확률 연쇄법칙 $p(x_1,\dots,x_T)=\prod_t p(x_t|x_{<t})$을 계산할 때, 매 항을 처음부터 다시 계산하지 않고 이전까지 쌓인 상태만 이어받아 다음 항을 계산하는 재귀식으로 실제 구현할 수 있다는 뜻이기도 하다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
+  },
+
+"linear-regression-normal-equation": {
+    title: "선형회귀 정규방정식의 유도",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`데이터에 가장 잘 맞는 직선 하나를 긋고 싶습니다. 여러 특징이 있는 경우라면 초평면이 됩니다. 잘 맞는다는 말은 예측값과 실제값의 차이를 최대한 작게 만든다는 뜻입니다. 그 차이를 제곱해서 전부 더한 값을 최소로 만드는 계수를 한 번에 계산하는 공식이 정규방정식입니다. 별도의 반복 학습 없이도 답이 정확히 나온다는 점이 이 공식의 매력입니다.<br><br><strong>명제.</strong> 설계행렬 $X\in\mathbb{R}^{n\times d}$와 목표값 $y\in\mathbb{R}^n$에 대해 $J(\beta)=\|X\beta-y\|^2$를 최소화하는 $\beta$는 $\beta=(X^TX)^{-1}X^Ty$이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 예측이 얼마나 틀렸는지를 하나의 숫자로 요약하는 것이다. 예측값 $X\beta$와 실제값 $y$의 차이를 성분마다 재는 대신 전체를 하나의 지표로 합치고 싶다. 그래서 차이 벡터의 노름을 제곱한 값을 오차로 정의한다. 제곱을 쓰는 이유는 미분이 매끄럽고 이 함수가 아래로 볼록해서 최솟값을 찾기 쉬워지기 때문이다. 오차함수는 $J(\beta) = \|X\beta-y\|^2$ 로 정의된다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 노름의 제곱을 그대로는 미분하기 어렵다. 미분하려면 내적으로 풀어써야 한다. 노름의 제곱은 자기 자신과의 내적과 같다는 성질을 쓰면 $J(\beta) = (X\beta-y)^T(X\beta-y)$ 이다. 이걸 전개하면 $J(\beta) = \beta^TX^TX\beta - 2y^TX\beta + $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`y^Ty`, why: String.raw`전개된 세 항 중 $\beta$가 전혀 들어 있지 않은 항이 남는다. $(X\beta)^TX\beta$와 $-2y^TX\beta$를 뺀 나머지가 $y^Ty$다. 이 항은 $\beta$를 어떻게 고르든 값이 바뀌지 않는 상수항이다.` }] },
+      { id: "s3", text: String.raw`이제 $J(\beta)$를 최소로 만드는 $\beta$를 찾을 차례다. $J$는 $\beta$에 대해 아래로 볼록한 이차식이므로 기울기가 0이 되는 지점이 곧 최솟값이다. 이차형식 $\beta^TX^TX\beta$를 $\beta$로 미분하면 $2X^TX\beta$가 되고 선형항 $-2y^TX\beta$를 미분하면 $-2X^Ty$가 된다. 그러니 $\nabla_\beta J(\beta) = $[[blank:나]]$ - 2X^Ty$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`2X^TX\beta`, why: String.raw`이차형식 $\beta^TA\beta$ ($A$가 대칭행렬일 때)를 $\beta$로 미분하면 $2A\beta$가 된다는 표준 공식을 $A=X^TX$에 그대로 적용한 결과다. $X^TX$는 항상 대칭행렬이므로 이 공식을 바로 쓸 수 있다.` }] },
+      { id: "s4", text: String.raw`기울기를 0으로 놓으면 $2X^TX\beta - 2X^Ty = 0$ 이다. 양변을 2로 나누고 정리하면 $X^TX\beta = $[[blank:다]] 이다. 이 식을 정규방정식이라 부른다.`,
+        blanks: [{ id: "다", latex: String.raw`X^Ty`, why: String.raw`$2X^TX\beta=2X^Ty$의 양변을 2로 나누면 그대로 나오는 식이다. 별도의 계산 없이 상수만 정리한 것이다.` }] },
+      { id: "s5", text: String.raw`마지막으로 $\beta$ 하나만 남기고 싶다. $X$의 열들이 서로 선형독립이어서 $X^TX$가 가역이라면 양변에 왼쪽에서 $(X^TX)^{-1}$을 곱할 수 있다. 그러면 $\beta = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`(X^TX)^{-1}X^Ty`, why: String.raw`$X^TX\beta=X^Ty$의 양변 왼쪽에 $(X^TX)^{-1}$을 곱하면 좌변은 $\beta$만 남고 우변은 $(X^TX)^{-1}X^Ty$가 된다. $X^TX$가 가역이어야만 이 계산이 가능한데 이는 $X$의 열, 즉 특징들이 서로 중복 없이 독립일 때 성립한다.` }] },
+      { id: "s6", text: String.raw`정리하면 오차제곱합을 최소화하는 계수는 $\beta=(X^TX)^{-1}X^Ty$ 로 정확히 계산된다. $J$가 볼록함수이므로 기울기가 0인 이 지점은 지역최솟값이 아니라 전역최솟값이다. 반복적인 학습 없이 행렬 연산 몇 번으로 최적의 계수를 한 번에 구할 수 있다는 뜻이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "cosine-similarity": {
+    title: "코사인 유사도의 유계성과 각도 해석",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`두 특징벡터가 얼마나 비슷한 방향을 가리키는지 재고 싶습니다. 벡터의 길이 차이에 흔들리지 않고 순수하게 방향만 비교하려면 내적을 두 벡터의 길이로 나누면 됩니다. 이렇게 정의한 코사인 유사도가 항상 -1과 1 사이에 갇힌다는 사실, 그리고 그 값이 실제로 두 벡터 사이 각도의 코사인과 같다는 사실을 확인해 봅니다.<br><br><strong>명제.</strong> 영벡터가 아닌 $u,v\in\mathbb{R}^d$에 대해 코사인 유사도 $\cos(u,v)=\dfrac{u\cdot v}{\|u\|\|v\|}$는 $-1\le\cos(u,v)\le1$을 만족한다.`,
+    sections: [
+      { id: "s1", text: String.raw`영벡터가 아닌 두 벡터 $u,v\in\mathbb{R}^d$에 대해 코사인 유사도를 $\cos(u,v)=\dfrac{u\cdot v}{\|u\|\|v\|}$ 로 정의한다. 지금 목표는 이 값이 항상 $-1$과 $1$ 사이에 있음을 확인하는 것이다. 그러려면 먼저 내적 $u\cdot v$의 크기가 두 벡터의 길이로 얼마나 눌려 있는지부터 알아야 한다.`, blanks: [] },
+      { id: "s2", text: String.raw`내적의 크기를 누르는 부등식을 직접 만들어본다. 임의의 실수 $t$에 대해 $\|u-tv\|^2$는 노름의 제곱이므로 절대 음수가 될 수 없다. 이 사실을 그대로 전개해서 이용한다. 전개하면 $\|u-tv\|^2 = \|u\|^2 - 2t(u\cdot v) + $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`t^2\|v\|^2`, why: String.raw`$(u-tv)\cdot(u-tv)$를 그대로 전개하면 $u\cdot u - 2t(u\cdot v) + t^2(v\cdot v)$가 된다. 마지막 항이 $t^2\|v\|^2$다. $t$가 곱해진 항이 두 개 있는데 서로 같아서 하나로 합쳐진다.` }] },
+      { id: "s3", text: String.raw`이 식은 $t$에 대한 이차식이고 $\|v\|^2>0$이니 위로 열린 포물선이다. 그런데 이 포물선이 모든 $t$에서 0 이상이라는 걸 이미 알고 있다. 위로 열린 이차식이 항상 0 이상이려면 실근을 갖지 않거나 중근만 가져야 한다. 이는 판별식이 0 이하라는 조건과 같다. $t$의 계수를 판별식 공식에 넣어 정리하면 $(u\cdot v)^2 \le $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\|u\|^2\|v\|^2`, why: String.raw`이차식 $at^2+bt+c\ge0$이 항상 성립하려면 판별식 $b^2-4ac\le0$이어야 한다. 여기서 $a=\|v\|^2$, $b=-2(u\cdot v)$, $c=\|u\|^2$를 넣으면 $4(u\cdot v)^2-4\|u\|^2\|v\|^2\le0$이 되고 정리하면 이 부등식이 나온다. 이것이 코시-슈바르츠 부등식이다.` }] },
+      { id: "s4", text: String.raw`이제 이 부등식을 코사인 유사도의 정의와 이어붙일 차례다. 양변을 $\|u\|^2\|v\|^2$로 나누면 좌변이 정확히 코사인 유사도의 제곱이 된다. $\left(\dfrac{u\cdot v}{\|u\|\|v\|}\right)^2 \le $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`1`, why: String.raw`$(u\cdot v)^2\le\|u\|^2\|v\|^2$의 양변을 $\|u\|^2\|v\|^2$로 나누면 우변은 그대로 1이 된다. 좌변은 정확히 $\cos(u,v)^2$의 형태다.` }] },
+      { id: "s5", text: String.raw`제곱이 1 이하라는 것은 원래 값이 $-1$과 $1$ 사이에 있다는 뜻이다. 그러니 $-1\le\cos(u,v)\le1$이 성립한다. 실제로 두 벡터가 이루는 각도를 $\theta$라 하면 내적의 기하학적 정의로부터 $u\cdot v=\|u\|\|v\|\cos\theta$가 성립한다는 사실이 알려져 있다. 이를 코사인 유사도의 정의에 대입하면 $\cos(u,v)=\cos\theta$가 되어, 이 지표가 이름 그대로 두 벡터 사이 각도의 코사인값 그 자체임을 알 수 있다.`, blanks: [] },
+      { id: "s6", text: String.raw`정리하면 코사인 유사도는 항상 $-1$과 $1$ 사이에 갇혀 있고 그 값은 실제 각도의 코사인과 정확히 일치한다. 두 특징벡터가 완전히 같은 방향이면 1, 정반대 방향이면 $-1$, 서로 수직이면 0이 나오는 이유가 여기에 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "linear-independence-basis": {
+    title: "기저가 주는 좌표 표현의 유일성",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`특징벡터들을 모아 하나의 좌표계처럼 쓰고 싶습니다. 그러려면 그 벡터들이 공간 전체를 뒤덮으면서도 서로 겹치는 정보가 없어야 합니다. 공간을 전부 뒤덮는 성질을 스팬한다고 부르고 겹치는 정보가 없는 성질을 선형독립이라 부릅니다. 이 두 조건을 모두 만족하는 벡터 묶음을 기저라 부릅니다. 기저를 쓰면 공간 안의 모든 벡터가 단 하나의 좌표로만 표현된다는 사실을 확인해 봅니다.<br><br><strong>명제.</strong> $\{v_1,\dots,v_n\}$이 벡터공간 $V$의 기저이면 임의의 $x\in V$는 $x=\sum_i c_iv_i$ 형태로 유일하게 표현된다.`,
+    sections: [
+      { id: "s1", text: String.raw`$\{v_1,\dots,v_n\}$이 $V$의 기저라 하자. 기저라는 말은 두 가지를 동시에 뜻한다. 이 벡터들의 선형결합으로 $V$의 모든 벡터를 만들 수 있다는 스팬 조건과, 그중 어느 것도 나머지의 선형결합으로 표현되지 않는다는 선형독립 조건이다. 지금 목표는 $V$ 안의 임의의 벡터 $x$가 이 기저에 대해 정확히 하나의 좌표로만 표현됨을 보이는 것이다. 좌표가 유일하지 않다면 같은 데이터를 서로 다른 숫자로 표현할 수 있게 되어 특징벡터로서 쓸모가 없어진다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 유일성 논증에서 나중에 쓸 도구를 먼저 정확히 정의해 둔다. 선형독립이라는 성질은 벡터들을 섞어서 0을 만드는 방법이 계수를 전부 0으로 두는 것 말고는 없다는 뜻이다. 정의대로 적으면, $\sum_ia_iv_i=0$을 만족시키는 계수 조합은 모든 $i$에서 $a_i = $[[blank:가]] 인 경우 하나뿐이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`선형독립의 정의 그 자체다. 벡터들의 선형결합이 0이 되는 방법이 자명한 경우, 즉 모든 계수가 0인 경우 말고는 없다는 뜻이다. 만약 계수가 전부 0이 아니어도 0을 만들 수 있다면 그중 하나는 나머지의 조합으로 표현 가능하다는 뜻이 되어 독립이 깨진다.` }] },
+      { id: "s3", text: String.raw`먼저 표현이 존재한다는 것부터 확인한다. 이 부분은 스팬의 정의에서 곧바로 나온다. $\{v_1,\dots,v_n\}$이 $V$를 스팬한다는 말 자체가 $V$의 모든 벡터가 이 벡터들의 선형결합으로 적어도 하나는 표현된다는 뜻이기 때문이다. 그러니 $x=\sum_ic_iv_i$를 만족하는 계수 $c_1,\dots,c_n$이 적어도 하나는 존재한다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 유일성을 확인할 차례다. 유일하지 않다고 가정했을 때 모순이 생기는지를 보는 것이 표준적인 접근이다. $x$가 두 가지 방식으로 표현된다고 가정한다. $x=\sum_ic_iv_i$이면서 동시에 $x=\sum_id_iv_i$라 하자. 두 식이 같은 $x$를 나타내므로 서로 빼면 0이 남아야 한다. 변끼리 빼면 $0 = \sum_ic_iv_i - \sum_id_iv_i = \sum_i($[[blank:나]]$)v_i$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`c_i-d_i`, why: String.raw`같은 첨자 $i$끼리 항을 묶어 $c_iv_i-d_iv_i=(c_i-d_i)v_i$로 정리한 것이다. 두 선형결합의 차를 항별로 정리하면 이 형태가 자연스럽게 나온다.` }] },
+      { id: "s5", text: String.raw`방금 얻은 식 $\sum_i(c_i-d_i)v_i=0$은 s2에서 정의한 선형독립의 조건과 정확히 같은 형태다. 계수들을 $a_i=c_i-d_i$로 놓으면 그대로 들어맞는다. 그러니 선형독립성에 의해 모든 $i$에 대해 $c_i-d_i = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`s2에서 정의한 선형독립의 조건을 그대로 적용한 결과다. $\sum_i(c_i-d_i)v_i=0$이라는 선형결합이 0이 되었으니, 계수 $c_i-d_i$ 하나하나가 전부 0이어야 한다.` }] },
+      { id: "s6", text: String.raw`$c_i-d_i=0$이라는 것은 곧 $c_i=d_i$라는 뜻이다. 이것이 모든 $i$에서 성립하므로 처음에 서로 다르다고 가정했던 두 표현이 사실은 완전히 같은 계수였다는 결론에 이른다. 그러니 $x$의 표현은 유일하다. 기저를 고르면 공간 안의 모든 벡터가 하나의 좌표로만 대응된다는 뜻이다. 특징벡터를 설계할 때 기저를 이루도록 신경 쓰는 이유가 여기에 있다. 좌표가 유일해야만 같은 데이터가 서로 다른 숫자로 표현되는 혼란이 생기지 않는다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "matrix-rank": {
+    title: "설계행렬의 계수와 XᵀX의 가역성",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`정규방정식 $\beta=(X^TX)^{-1}X^Ty$를 쓰려면 $X^TX$가 반드시 가역이어야 합니다. 그런데 언제 가역이고 언제 아닌지는 어떻게 알 수 있을까요. 그 답은 설계행렬 $X$의 계수, 즉 랭크에 달려 있습니다. 랭크는 행렬의 열들 중 실제로 서로 독립인 방향이 몇 개인지를 세는 지표입니다. 특징이 아무리 많아도 그중 일부가 나머지의 조합으로 표현된다면 랭크는 그만큼 낮아집니다.<br><br><strong>명제.</strong> $X\in\mathbb{R}^{n\times d}$에 대해 $\mathrm{rank}(X^TX)=\mathrm{rank}(X)$이다. 따라서 $X^TX$가 가역인 것은 $X$의 열들이 서로 선형독립일 때, 즉 $\mathrm{rank}(X)=d$일 때뿐이다.`,
+    sections: [
+      { id: "s1", text: String.raw`$X$가 $n\times d$ 설계행렬이라 하자. 행은 샘플, 열은 특징에 대응한다. 지금 목표는 $X^TX$의 랭크가 $X$ 자체의 랭크와 정확히 같음을 보이는 것이다. 이걸 보이고 나면 $X^TX$가 언제 가역인지, 즉 정규방정식이 언제 유일한 해를 갖는지를 $X$의 랭크만 보고도 바로 판단할 수 있게 된다.`, blanks: [] },
+      { id: "s2", text: String.raw`랭크를 직접 비교하는 대신 영공간을 비교하는 우회로를 택한다. 벡터공간의 차원정리에 따르면 열이 $d$개인 행렬의 랭크와 영공간의 차원을 더하면 항상 $d$가 되기 때문에, 두 행렬의 영공간이 똑같다는 것만 보이면 랭크도 자동으로 같아진다. 먼저 $Xv=0$이면 $X^TXv=0$이라는 방향은 쉽게 확인된다. 양변에 왼쪽에서 $X^T$를 곱하면 $X^TXv=X^T\cdot 0=0$이기 때문이다. 문제는 반대 방향이다. $X^TXv=0$이라고 가정했을 때 정말로 $Xv=0$까지 이끌어낼 수 있는지를 확인해야 한다.`, blanks: [] },
+      { id: "s3", text: String.raw`$X^TXv=0$이라는 가정에서 시작한다. 목표는 이 벡터 등식을 다루기 쉬운 스칼라 등식으로 바꾸는 것이다. 양변에 왼쪽에서 $v^T$를 곱하면 $v^TX^TXv=0$이다. 이제 좌변을 다시 본다. $v^TX^TXv$는 $(Xv)^T(Xv)$와 같은 식이며 이는 정확히 $\|Xv\|^2$의 정의다. 그러니 $\|Xv\|^2 = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`$v^TX^TXv$를 $(Xv)^T(Xv)$로 묶어 보면 이는 벡터 $Xv$ 자신과의 내적, 즉 $\|Xv\|^2$의 정의와 정확히 같다. 처음 가정이 $v^TX^TXv=0$이었으므로 이 노름의 제곱도 0이다.` }] },
+      { id: "s4", text: String.raw`노름의 제곱이 0이라는 것은 그 벡터 자체가 영벡터라는 뜻이다. 노름이 0이 아닌 벡터는 제곱해도 반드시 양수이기 때문이다. 그러니 $Xv = $[[blank:나]] 이다. 이로써 반대 방향도 확인되었다. $X^TXv=0$이면 $Xv=0$이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`노름의 제곱이 0인 벡터는 영벡터뿐이다. 0이 아닌 벡터는 제곱해도 항상 양수의 노름을 가지므로, $\|Xv\|^2=0$을 만족하는 벡터는 $Xv=0$ 하나뿐이다.` }] },
+      { id: "s5", text: String.raw`양쪽 방향이 모두 확인되었으니 $X$의 영공간과 $X^TX$의 영공간은 정확히 같다. 두 행렬 모두 열이 $d$개이므로 차원정리에 의해 랭크는 $d$에서 영공간의 차원을 뺀 값이다. 영공간의 차원이 같으므로 랭크도 같아야 한다. $\mathrm{rank}(X^TX) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\mathrm{rank}(X)`, why: String.raw`차원정리 $\mathrm{rank}+\dim(\ker)=d$를 $X$와 $X^TX$ 양쪽에 적용하면, 열의 개수 $d$는 같고 영공간의 차원도 방금 같다는 걸 보였으니 남은 랭크도 같을 수밖에 없다.` }] },
+      { id: "s6", text: String.raw`정리하면 $\mathrm{rank}(X^TX)=\mathrm{rank}(X)$다. $X^TX$는 $d\times d$ 정사각행렬이므로 랭크가 $d$일 때만 가역이다. 그러니 $X^TX$가 가역인 것은 $\mathrm{rank}(X)=d$일 때, 즉 $X$의 열인 특징들이 서로 중복 없이 독립일 때뿐이다. 특징 하나가 다른 특징들의 조합으로 표현된다면 랭크가 $d$보다 작아지고 정규방정식의 해는 유일하지 않게 된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "forward-pass": {
+    title: "비선형성 없는 순전파의 붕괴",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`신경망의 각 층은 순전파에서 $h=Wx+b$라는 선형변환 하나를 계산합니다. 그런데 층을 아무리 깊게 쌓아도 그 사이에 비선형 활성화함수가 하나도 없다면 어떻게 될까요. 놀랍게도 그 결과는 처음부터 층이 단 하나였던 것과 수학적으로 완전히 같아집니다. 이 사실을 확인하고 나면 왜 ReLU나 시그모이드 같은 활성화함수가 딥러닝에서 반드시 필요한지가 분명해집니다.<br><br><strong>명제.</strong> $L$개의 선형층을 $h_l=W_lh_{l-1}+b_l$ ($l=1,\dots,L$, $h_0=x$)로 활성화함수 없이 쌓으면, $h_L=Ax+b$ 형태의 단일 아핀변환으로 표현된다.`,
+    sections: [
+      { id: "s1", text: String.raw`신경망의 각 층은 입력에 가중치행렬을 곱하고 편향을 더하는 계산을 한다. $h_l=W_lh_{l-1}+b_l$이라는 식이 바로 그 순전파다. 지금 목표는 이런 층을 활성화함수 없이 $L$개 쌓았을 때 전체 계산이 결국 어떤 형태로 귀결되는지 확인하는 것이다. 층이 깊어질수록 표현력도 그만큼 늘어날 것 같지만 정말 그런지 직접 계산으로 확인해본다.`, blanks: [] },
+      { id: "s2", text: String.raw`가장 단순한 경우부터 본다. 층이 두 개뿐이라고 하자. $h_1=W_1x+b_1$이고 $h_2=W_2h_1+b_2$다. 목표는 $h_2$를 $x$만의 식으로 다시 쓰는 것이다. $h_1$을 그대로 대입하면 $h_2=W_2(W_1x+b_1)+b_2$이고 이를 풀어 정리하면 $h_2 = (W_2W_1)x + ($[[blank:가]]$)$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`W_2b_1+b_2`, why: String.raw`$W_2(W_1x+b_1)+b_2$를 분배법칙으로 풀면 $W_2W_1x+W_2b_1+b_2$가 된다. $x$가 곱해진 항을 앞으로 묶고 나면 남는 상수항이 $W_2b_1+b_2$다.` }] },
+      { id: "s3", text: String.raw`이 결과를 잘 보면 $h_2=W'x+b'$ 꼴이다. 여기서 $W'=W_2W_1$이고 $b'=W_2b_1+b_2$다. 이건 층이 하나일 때의 식 $h=Wx+b$와 완전히 같은 모양이다. 층 두 개를 쌓아서 파라미터 수는 늘었지만 실제로 계산할 수 있는 함수의 종류는 늘지 않았다는 뜻이다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 이 관찰을 $L$개 층 전체로 일반화한다. $l$번째 층까지 진행한 결과가 이미 $h_l=A_lx+c_l$ 형태로 정리되어 있다고 가정하자. 다음 층을 적용하면 $h_{l+1}=W_{l+1}h_l+b_{l+1}=W_{l+1}(A_lx+c_l)+b_{l+1}$이다. 이걸 $x$가 곱해진 부분과 나머지로 나누어 정리하면 $h_{l+1} = ($[[blank:나]]$)x + W_{l+1}c_l+b_{l+1}$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`W_{l+1}A_l`, why: String.raw`$W_{l+1}(A_lx+c_l)+b_{l+1}$을 분배법칙으로 풀면 $W_{l+1}A_lx+W_{l+1}c_l+b_{l+1}$이 된다. $x$가 곱해진 계수만 따로 떼어내면 $W_{l+1}A_l$이다.` }] },
+      { id: "s5", text: String.raw`이 식을 보면 $h_{l+1}=A_{l+1}x+c_{l+1}$ 형태를 그대로 유지한다. 여기서 $A_{l+1}=W_{l+1}A_l$이고 $c_{l+1}=W_{l+1}c_l+b_{l+1}$이다. $l=1$일 때 $A_1=W_1$, $c_1=b_1$로 이미 이 형태이므로, 이 관계는 $l=1$부터 $l=L-1$까지 순서대로 적용하면 $L$번째 층까지 그대로 이어진다. 그러니 $h_L = $[[blank:다]]$x+c_L$ 이다.`,
+        blanks: [{ id: "다", latex: String.raw`A_L`, why: String.raw`s4에서 확인한 관계 $A_{l+1}=W_{l+1}A_l$을 $l=1$부터 $L-1$까지 반복 적용하면 $A_L=W_LW_{L-1}\cdots W_1$이 된다. 층을 몇 개를 쌓든 결국 하나의 행렬 $A_L$로 뭉쳐진다는 뜻이다.` }] },
+      { id: "s6", text: String.raw`정리하면 $h_L=A_Lx+c_L$이다. 이는 층이 하나였을 때와 똑같은 아핀변환의 모양이다. 활성화함수 없이는 층을 아무리 깊게 쌓아도 표현할 수 있는 함수의 종류가 단일 선형층과 다르지 않다는 뜻이다. 층과 층 사이에 ReLU나 시그모이드 같은 비선형함수를 끼워 넣어야만 각 층이 실제로 새로운 표현력을 더하게 된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "batch-tensor-broadcasting": {
+    title: "배치 브로드캐스팅과 행별 연산의 동치성",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`신경망은 샘플 하나가 아니라 여러 샘플을 한꺼번에 묶은 배치 단위로 계산합니다. 배치를 $n\times d$ 행렬 $X$로 쌓아두고 편향 $b\in\mathbb{R}^d$를 더할 때, 굳이 반복문을 돌려 한 행씩 더하지 않고 $X+b$라고 한 줄만 쓰면 프레임워크가 알아서 모든 행에 같은 $b$를 더해줍니다. 이 브로드캐스팅이라는 편의기능이 사실은 특정한 하나의 행렬을 더하는 것과 정확히 같은 연산이라는 사실을 확인해 봅니다.<br><br><strong>명제.</strong> $X\in\mathbb{R}^{n\times d}$, $b\in\mathbb{R}^d$, $\mathbf{1}_n\in\mathbb{R}^n$을 모든 성분이 1인 벡터라 하면, 브로드캐스팅 덧셈 $Y=X+b$는 $Y=X+\mathbf{1}_nb^T$와 같고 이는 모든 $i$에서 $\mathrm{row}_i(Y)=\mathrm{row}_i(X)+b$를 만족한다.`,
+    sections: [
+      { id: "s1", text: String.raw`배치 행렬 $X\in\mathbb{R}^{n\times d}$의 각 행이 샘플 하나에 대응한다고 하자. 여기에 편향 $b\in\mathbb{R}^d$를 더하고 싶다. 지금 목표는 프레임워크가 $X+b$라는 한 줄로 처리하는 이 브로드캐스팅 덧셈이 실제로 어떤 행렬을 더하는 것과 같은지, 그리고 그 결과가 정말로 모든 행에 각각 $b$를 더한 것과 같은지를 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 $b$를 $n$개의 행으로 복제한 행렬을 직접 만들어본다. 모든 성분이 1인 벡터 $\mathbf{1}_n\in\mathbb{R}^n$과 $b$의 외적을 취하면 된다. 외적의 성분은 정의상 두 벡터의 대응 성분을 곱한 것이므로 $(\mathbf{1}_nb^T)_{ij} = (\mathbf{1}_n)_ib_j = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`b_j`, why: String.raw`$\mathbf{1}_n$의 모든 성분은 1이므로 $(\mathbf{1}_n)_i=1$이다. $1\times b_j$는 그대로 $b_j$가 된다. 결과적으로 이 성분값은 행 번호 $i$가 무엇이든 상관없이 항상 $b_j$로 똑같다는 뜻이다.` }] },
+      { id: "s3", text: String.raw`$(\mathbf{1}_nb^T)$의 모든 행이 똑같이 $b^T$라는 것을 s2에서 확인했다. 이제 이 행렬을 브로드캐스팅 덧셈의 정의와 비교한다. 넘파이류의 브로드캐스팅 규칙은 성분 기준으로 $Y_{ij}=X_{ij}+b_j$로 정의된다. 이 값은 방금 구한 $(\mathbf{1}_nb^T)_{ij}=b_j$를 그대로 이용하면 $Y_{ij}=X_{ij}+(\mathbf{1}_nb^T)_{ij}$로 쓸 수 있다. 행렬 전체로 옮기면 $Y = X + $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\mathbf{1}_nb^T`, why: String.raw`성분마다 $Y_{ij}=X_{ij}+(\mathbf{1}_nb^T)_{ij}$가 성립한다는 것은 두 행렬 $Y$와 $X+\mathbf{1}_nb^T$의 모든 성분이 같다는 뜻이다. 그러니 행렬 자체가 같다.` }] },
+      { id: "s4", text: String.raw`이제 이 등식이 실제로 각 행에 무슨 일이 벌어지는 것인지 확인한다. $Y=X+\mathbf{1}_nb^T$의 $i$번째 행만 떼어보면, $\mathbf{1}_nb^T$의 $i$번째 행은 s2에서 봤듯 행 번호와 상관없이 항상 $b^T$다. 그러니 $\mathrm{row}_i(Y) = \mathrm{row}_i(X) + $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`b`, why: String.raw`$\mathbf{1}_nb^T$의 모든 행이 $b^T$로 똑같으므로, 행렬 덧셈을 행 단위로 쪼개보면 $i$번째 행끼리 더한 결과는 $X$의 $i$번째 행에 $b$를 더한 것과 같다. 이는 $i$가 몇이든 항상 성립한다.` }] },
+      { id: "s5", text: String.raw`정리하면 브로드캐스팅 덧셈 $X+b$는 $\mathbf{1}_nb^T$라는 랭크 1짜리 행렬을 더하는 것과 정확히 같고 그 결과는 배치의 모든 샘플에 동일한 $b$를 독립적으로 더한 것과 완전히 일치한다. 반복문 없이 한 줄로 배치 전체를 처리해도 결과가 샘플별로 처리한 것과 다르지 않다는 것이 수학적으로 보장된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "positional-embedding": {
+    title: "사인·코사인 위치 임베딩의 상대위치 선형성",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`트랜스포머는 순서 정보가 없는 구조라서 각 위치에 고유한 벡터인 위치 임베딩을 따로 더해줍니다. 그런데 왜 학습되는 임베딩 표 대신 굳이 사인과 코사인이라는 주기함수를 쓸까요. 그 답은 이 함수들로 만든 임베딩이 상대적인 위치 차이를 순수하게 선형변환만으로 표현할 수 있다는 성질에 있습니다. 이 성질을 직접 확인해 봅니다.<br><br><strong>명제.</strong> 주파수 $\omega$에 대해 $s(pos)=\sin(\omega\,pos)$, $c(pos)=\cos(\omega\,pos)$라 하면 임의의 오프셋 $k$에 대해 $(s(pos+k),c(pos+k))$는 $pos$에 무관한 행렬 $M(k)$를 통해 $(s(pos),c(pos))$의 선형변환으로 표현된다.`,
+    sections: [
+      { id: "s1", text: String.raw`위치 임베딩의 한 주파수 성분을 $s(pos)=\sin(\omega\,pos)$, $c(pos)=\cos(\omega\,pos)$라 하자. 지금 목표는 위치를 $k$만큼 옮긴 $pos+k$에서의 값 $s(pos+k), c(pos+k)$가 원래 위치 $pos$에서의 값들로부터 어떻게 얻어지는지를 확인하는 것이다. 특히 그 관계가 $pos$가 얼마인지와 상관없이 오직 오프셋 $k$에만 의존하는 고정된 선형변환인지가 핵심이다. 그래야 모델이 절대위치가 아니라 상대위치만으로 두 토큰의 관계를 학습할 수 있기 때문이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$s(pos+k)=\sin(\omega(pos+k))$부터 전개한다. 괄호 안이 합으로 되어 있으니 삼각함수의 덧셈정리를 쓰는 것이 자연스럽다. 덧셈정리를 적용하면 $\sin(\omega(pos+k)) = \sin(\omega\,pos)\cos(\omega k) + $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\cos(\omega\,pos)\sin(\omega k)`, why: String.raw`$\sin(A+B)=\sin A\cos B+\cos A\sin B$라는 표준 덧셈정리를 $A=\omega\,pos$, $B=\omega k$로 놓고 그대로 적용한 결과다.` }] },
+      { id: "s3", text: String.raw`같은 방식으로 $c(pos+k)=\cos(\omega(pos+k))$도 전개한다. 이번엔 코사인의 덧셈정리를 쓴다. 그러면 $\cos(\omega(pos+k)) = \cos(\omega\,pos)\cos(\omega k) - $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sin(\omega\,pos)\sin(\omega k)`, why: String.raw`$\cos(A+B)=\cos A\cos B-\sin A\sin B$라는 코사인의 덧셈정리를 $A=\omega\,pos$, $B=\omega k$로 놓고 그대로 적용한 결과다.` }] },
+      { id: "s4", text: String.raw`이제 s2와 s3에서 얻은 두 식을 한꺼번에 행렬로 묶어본다. 두 식 모두 $\sin(\omega\,pos)$와 $\cos(\omega\,pos)$의 선형결합이라는 공통점이 있다. 이걸 행렬-벡터 곱 형태로 정리하면 $\begin{pmatrix}s(pos+k)\\c(pos+k)\end{pmatrix} = $[[blank:다]]$\begin{pmatrix}s(pos)\\c(pos)\end{pmatrix}$ 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\begin{pmatrix}\cos(\omega k) & \sin(\omega k)\\ -\sin(\omega k) & \cos(\omega k)\end{pmatrix}`, why: String.raw`s2와 s3에서 얻은 두 식의 계수를 그대로 행렬에 옮겨 적은 것이다. 첫째 행은 $s(pos+k)=\cos(\omega k)\cdot s(pos)+\sin(\omega k)\cdot c(pos)$의 계수이고 둘째 행은 $c(pos+k)=-\sin(\omega k)\cdot s(pos)+\cos(\omega k)\cdot c(pos)$의 계수다.` }] },
+      { id: "s5", text: String.raw`이렇게 얻은 행렬 $M(k)$는 $\omega k$만큼 회전시키는 회전행렬이다. 중요한 점은 이 행렬이 $pos$를 전혀 포함하지 않고 오직 오프셋 $k$에만 의존한다는 것이다. 그러니 같은 문장 안 어느 위치에서 출발하든 $k$만큼 떨어진 곳의 임베딩은 항상 같은 선형변환 하나로 얻어진다. 어텐션 층은 선형연산을 기반으로 하므로 이 성질 덕분에 절대위치가 아니라 두 토큰 사이의 상대적인 거리를 학습할 실마리를 얻을 수 있다. 학습되는 임베딩 표 대신 사인과 코사인을 쓰는 이유가 바로 여기에 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "vae-encoder": {
+    title: "VAE 인코더가 logσ²를 출력하는 이유",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`VAE의 인코더는 입력 $x$를 받아 잠재변수의 근사사후분포 $q(z|x)=\mathcal{N}(\mu,\sigma^2)$를 결정하는 두 값을 내놓습니다. 하나는 평균 $\mu$이고 다른 하나는 분산과 관련된 값입니다. 그런데 신경망의 마지막 선형층은 아무 제약 없이 임의의 실수를 출력합니다. 분산 $\sigma^2$는 반드시 양수여야 하는데 어떻게 제약 없는 출력으로 항상 양수인 분산을 보장할 수 있을까요. 그 답이 $\sigma^2$ 대신 $\log\sigma^2$를 출력하는 설계에 있습니다.<br><br><strong>명제.</strong> 인코더의 마지막 선형층이 제약 없는 실수 $a\in\mathbb{R}$를 $\log\sigma^2$로 출력하도록 정의하면, $\sigma^2=\exp(a)$는 항상 양수이고 $a$가 $\mathbb{R}$ 전체를 움직이면 $\sigma^2$는 양의 실수 전체를 빠짐없이 표현한다.`,
+    sections: [
+      { id: "s1", text: String.raw`인코더의 마지막 선형층은 입력을 받아 $\mu$와 함께 또 하나의 실수 $a$를 출력한다고 하자. 이 $a$를 이용해 분산 $\sigma^2$를 결정하고 싶다. 문제는 선형층 자체에는 출력값을 양수로 묶어두는 어떤 장치도 없다는 것이다. $a$는 양수도 음수도 0도 될 수 있다. 그런데 정규분포의 분산 $\sigma^2$는 반드시 양수여야 한다. 지금 목표는 제약이 전혀 없는 $a$를 어떤 함수에 통과시켜야 항상 유효한 양의 분산을 얻을 수 있는지 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`왜 하필 지수함수를 쓰는지부터 확인한다. 지수함수가 입력이 무엇이든 항상 양수만 내놓는다는 성질을 직접 확인해본다. 임의의 실수 $a$에 대해 $\exp(a) = \left(\exp\left(\dfrac{a}{2}\right)\right)^2$ 로 쓸 수 있다. 이는 어떤 실수의 제곱이므로 절대 음수가 될 수 없다. 게다가 $\exp(a/2)$ 자체가 0이 되는 실수 $a$는 존재하지 않으므로 이 제곱값은 0도 아니다. 그러니 임의의 실수 $a$에 대해 $\exp(a) > $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`지수함수는 어떤 실수를 제곱한 값 $\left(\exp(a/2)\right)^2$으로 항상 다시 쓸 수 있다. 제곱값은 절대 음수가 되지 않고, $\exp(a/2)$는 0이 될 수 없는 함수이므로 이 제곱값도 0이 아니다. 그러니 결과는 언제나 0보다 크다.` }] },
+      { id: "s3", text: String.raw`이제 인코더가 실제로 무엇을 계산해야 하는지 확인한다. 출력 $a$를 $\log\sigma^2$라고 정의했으므로 $\sigma^2=\exp(a)$다. 표준편차 자체가 필요할 때는 여기에 제곱근을 씌우면 된다. $\sigma = \sqrt{\exp(a)} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\exp\left(\frac{a}{2}\right)`, why: String.raw`$\sqrt{\exp(a)}=\exp(a)^{1/2}$이고 지수법칙에 의해 이는 $\exp(a/2)$와 같다. 실제 구현에서 표준편차를 코드로 계산할 때 정확히 이 식을 쓴다.` }] },
+      { id: "s4", text: String.raw`이번엔 반대 방향을 확인한다. $\exp$가 음수를 만들지 않는다는 것만으로는 부족하다. 가능한 모든 양의 분산값을 하나도 빠짐없이 표현할 수 있어야 인코더가 표현력을 잃지 않는다. 임의의 양수 $\sigma^2>0$이 주어졌을 때 $a = $[[blank:다]] 로 두면 $\exp(a)=\sigma^2$가 그대로 성립한다.`,
+        blanks: [{ id: "다", latex: String.raw`\log(\sigma^2)`, why: String.raw`로그는 지수함수의 역함수이므로 $\exp(\log(\sigma^2))=\sigma^2$가 항상 성립한다. 즉 어떤 양수 $\sigma^2$가 주어지든 $a=\log(\sigma^2)$로 두면 정확히 그 값을 만들어내는 $a$를 찾을 수 있다.` }] },
+      { id: "s5", text: String.raw`정리하면 $\exp$는 실수 전체 $\mathbb{R}$과 양의 실수 전체 $\mathbb{R}_{>0}$ 사이를 빠짐없이 정확히 대응시키는 함수다. 그러니 제약 없는 선형층 출력 $a$를 $\log\sigma^2$로 해석하고 여기에 지수함수를 씌우면, 결과는 항상 유효한 양의 분산이면서 동시에 가능한 모든 분산값을 표현할 수 있다. 만약 $\sigma^2$ 자체를 직접 출력하게 했다면 학습 도중 값이 음수로 넘어가지 않도록 클리핑이나 별도의 제약이 필요했을 것이다. $\log\sigma^2$ 파라미터화는 이런 제약을 아예 없애준다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "state-feature-representation": {
+    title: "상태 특징벡터와 선형 가치함수 근사의 최소제곱 구조",
+    domain: "linalg",
+    subLabel: "벡터 · 행렬 연산",
+    explanation: String.raw`강화학습에서 상태를 하나하나 표로 저장하면 상태 수가 조금만 많아져도 감당할 수 없습니다. 그래서 상태 $s$를 특징벡터 $\phi(s)\in\mathbb{R}^d$로 요약하고 가치함수를 이 특징벡터에 대한 선형함수 $V(s)=\phi(s)^T\theta$로 근사합니다. 상태를 특징벡터로 표현하는 순간 가치함수를 학습하는 문제가 무엇으로 바뀌는지 직접 확인해 봅니다.<br><br><strong>명제.</strong> 상태-목표값 쌍 $(s_i,y_i)$, $i=1,\dots,n$이 주어졌을 때 $V(s)=\phi(s)^T\theta$로 오차제곱합 $J(\theta)=\sum_i(\phi(s_i)^T\theta-y_i)^2$을 최소화하는 $\theta$는 $\theta=(\Phi^T\Phi)^{-1}\Phi^Ty$이다. 단 $\Phi$는 $i$번째 행이 $\phi(s_i)^T$인 행렬이다.`,
+    sections: [
+      { id: "s1", text: String.raw`상태 $s$를 특징벡터 $\phi(s)\in\mathbb{R}^d$로 요약하고 가치함수를 $V(s)=\phi(s)^T\theta$라는 선형함수로 근사한다고 하자. 관측된 상태-목표값 쌍 $(s_i,y_i)$, $i=1,\dots,n$이 있다고 하자. 여기서 $y_i$는 실제로 관측된 리턴이나 목표값이다. 지금 목표는 이 데이터에 가장 잘 맞는 $\theta$를 구하는 문제가 정확히 어떤 형태의 문제와 같은지 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`오차를 하나의 수식으로 정의해야 한다. 각 상태에서 근사값 $\phi(s_i)^T\theta$와 실제 목표값 $y_i$의 차이를 제곱해서 전부 더한 값을 오차로 삼는다. $i$번째 행이 $\phi(s_i)^T$인 특징행렬 $\Phi\in\mathbb{R}^{n\times d}$를 도입하면 이 합은 행렬 형태로 깔끔하게 묶인다. $J(\theta) = \sum_{i=1}^n(\phi(s_i)^T\theta-y_i)^2 = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\|\Phi\theta-y\|^2`, why: String.raw`$\Phi\theta$의 $i$번째 성분은 정의상 $\phi(s_i)^T\theta$이므로 $\Phi\theta-y$의 $i$번째 성분은 $\phi(s_i)^T\theta-y_i$다. 이 벡터의 각 성분을 제곱해서 더한 것이 노름의 제곱이므로 두 식은 정확히 같다.` }] },
+      { id: "s3", text: String.raw`이 식은 선형회귀에서 다루는 오차제곱합과 형태가 완전히 같다. 같은 방식으로 미분해서 기울기를 0으로 놓으면 $\theta$의 최적값을 구할 수 있다. $\nabla_\theta J(\theta) = 2\Phi^T\Phi\theta - 2\Phi^Ty$이고 이를 0으로 놓으면 $\Phi^T\Phi\theta = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\Phi^Ty`, why: String.raw`$2\Phi^T\Phi\theta-2\Phi^Ty=0$의 양변을 2로 나누면 그대로 나오는 식이다. 특징행렬 $\Phi$가 선형회귀의 설계행렬 $X$ 역할을 그대로 대신하고 있을 뿐 계산 과정은 동일하다.` }] },
+      { id: "s4", text: String.raw`이 식에서 $\theta$ 하나만 남기려면 $\Phi^T\Phi$가 가역이어야 한다. 그러려면 $\Phi$의 열들, 즉 특징함수 $\phi_1(s),\dots,\phi_d(s)$들이 서로 다른 것들의 조합으로 표현되지 않는 선형독립 관계여야 한다. 이 조건이 만족된다고 하면 양변에 왼쪽에서 $(\Phi^T\Phi)^{-1}$을 곱해 $\theta = $[[blank:다]] 를 얻는다.`,
+        blanks: [{ id: "다", latex: String.raw`(\Phi^T\Phi)^{-1}\Phi^Ty`, why: String.raw`$\Phi^T\Phi\theta=\Phi^Ty$의 양변 왼쪽에 $(\Phi^T\Phi)^{-1}$을 곱하면 좌변은 $\theta$만 남고 우변은 그대로 $(\Phi^T\Phi)^{-1}\Phi^Ty$가 된다.` }] },
+      { id: "s5", text: String.raw`정리하면 상태를 특징벡터로 표현하는 순간 가치함수 근사 문제는 정확히 선형회귀 문제로 바뀐다. 좋은 특징벡터 $\phi(s)$를 고르는 일은 결국 좋은 설계행렬을 고르는 일과 같고, 특징들이 서로 독립이어야 문제가 유일한 해를 갖는다는 점도 선형회귀와 완전히 같다. 상태 표현이 강화학습에서 갖는 진짜 의미가 바로 여기에 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
   }
 };
