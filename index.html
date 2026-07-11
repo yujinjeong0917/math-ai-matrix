@@ -263,6 +263,7 @@
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">순전파</p><p class="formula">Wx + b, 층별 행렬곱</p></div>
             <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">배치 텐서 연산</p><p class="formula">브로드캐스팅 · 리셰이프</p></div>
+            <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">포지션 임베딩</p><p class="formula">sin/cos 주기함수 · 학습형 임베딩</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">VAE 인코더</p><p class="formula">선형변환 → μ, logσ²</p></div>
@@ -280,6 +281,7 @@
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-linalg)" data-tag="attention" tabindex="0"><p class="name">어텐션</p><p class="formula">QKᵀ / √d</p></div>
             <div class="chip" style="--chip-c:var(--c-linalg)" data-tag="backprop" tabindex="0"><p class="name">역전파</p><p class="formula">야코비안 행렬 곱</p></div>
+            <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">State-Space Models</p><p class="formula">hₜ=Ahₜ₋₁+Bxₜ, A 대각화(HiPPO/S4)</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">Diffusion 노이즈 스케줄</p><p class="formula">αₜ, βₜ 계수</p></div>
@@ -318,9 +320,11 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">스코어 함수</p><p class="formula">∇ₓ log p(x)</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">재매개변수화 트릭</p><p class="formula">z = μ + σ⊙ε, ε~N(0,I) — 미분가능한 샘플링</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">GAN 학습 포화</p><p class="formula">log(1−D) 대신 −log D, 그래디언트 소실 회피</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-calc)" data-tag="policygrad" tabindex="0"><p class="name">정책경사(REINFORCE)</p><p class="formula">∇J(θ)=𝔼[∇log πθ(a|s)·R]</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)" data-tag="policygrad" tabindex="0"><p class="name">정책경사 정리(REINFORCE)</p><p class="formula">∇J(θ)=𝔼[∇log πθ(a|s)·R]</p></div>
           </div></td>
         </tr>
 
@@ -334,9 +338,11 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">GAN 적대적 목적함수</p><p class="formula">min_G max_D V(D,G)</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">Wasserstein GAN</p><p class="formula">1-Lipschitz 제약 하 W-거리 최소화</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">PPO / TRPO</p><p class="formula">신뢰영역 제약, KKT조건</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">DPO</p><p class="formula">KL-제약 RL을 닫힌형 분류손실로 재정식화</p></div>
           </div></td>
         </tr>
 
@@ -349,7 +355,8 @@
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">Adam / RMSProp</p><p class="formula">1·2차 모멘트 지수이동평균</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">ELBO 최적화</p><p class="formula">log p(x) ≥ 𝔼[log p(x|z)] − KL</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">ELBO 최적화</p><p class="formula">log p(x) ≥ 𝔼[log p(x|z)] − KL (옌센 부등식)</p></div>
+            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">Classifier Guidance</p><p class="formula">∇log p(x|y) = ∇log p(x) + ∇log p(y|x)</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">Actor-Critic</p><p class="formula">정책·가치 이중 경사 업데이트</p></div>
@@ -373,6 +380,7 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-prob)" data-tag="policygrad" tabindex="0"><p class="name">기대 리턴 추정</p><p class="formula">𝔼[Σγᵗrₜ]</p></div>
+            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">리워드 모델링</p><p class="formula">Bradley-Terry 선호모델, MLE로 보상함수 학습</p></div>
           </div></td>
         </tr>
 
@@ -386,10 +394,12 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">확산 정방향과정</p><p class="formula">마르코프체인 q(xₜ|xₜ₋₁)</p></div>
+            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">DDIM</p><p class="formula">비마르코프 결정론적 역과정, 빠른 샘플링</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">MDP</p><p class="formula">(S, A, P, R, γ)</p></div>
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">벨만 기대방정식</p><p class="formula">V(s)=𝔼[r+γV(s′)]</p></div>
+            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">언어모델을 정책으로</p><p class="formula">πθ(토큰|문맥), 토큰 생성 = 순차적 행동</p></div>
           </div></td>
         </tr>
 
@@ -422,6 +432,7 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">VAE 재구성 손실</p><p class="formula">−𝔼[log p(x|z)]</p></div>
+            <div class="chip" style="--chip-c:var(--c-info)"><p class="name">Beta-VAE</p><p class="formula">KL항에 β 가중 — 분리된 표현학습</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">최대엔트로피 RL</p><p class="formula">SAC : J + α·H(π)</p></div>
@@ -439,6 +450,7 @@
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">VAE 정규화항</p><p class="formula">KL(q(z|x) ‖ p(z))</p></div>
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">GAN 원 목적함수</p><p class="formula">젠슨-섀넌 발산</p></div>
+            <div class="chip" style="--chip-c:var(--c-info)"><p class="name">f-발산</p><p class="formula">변분발산최소화 : Dꜰ(P‖Q) = ∫ Q·f(P/Q)</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">엔트로피 보너스</p><p class="formula">탐험 정규화항</p></div>
@@ -473,6 +485,7 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-disc)"><p class="name">오토리그레시브 생성</p><p class="formula">순차 조건부확률 체인</p></div>
+            <div class="chip" style="--chip-c:var(--c-disc)"><p class="name">VQ-VAE</p><p class="formula">연속 잠재값 → 이산 코드북 인덱스로 양자화</p></div>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-disc)"><p class="name">상태-행동 전이그래프</p><p class="formula">MDP 그래프 표현</p></div>
@@ -491,7 +504,7 @@
   </div>
 
   <footer>
-    <span>대분류 5 × 중분류 13 × AI 4갈래 — 대표 소분류 기법 위주 레퍼런스</span>
+    <span>대분류 5 × 중분류 13 × AI 4갈래 — 대표 소분류 기법 위주 레퍼런스 · 생성모델·RL 파트는 IIT Madras 「Mathematical Foundations of Generative AI」 커리큘럼을 참고해 보완</span>
     <span>2026.07.11</span>
   </footer>
 </div>
