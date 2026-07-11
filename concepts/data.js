@@ -36,7 +36,8 @@ window.CONCEPTS = {
       { id: "s1", text: String.raw`$A$가 $n\times n$ 실수 대칭행렬이라 하자. 목표는 이런 성질을 가진 $Q,\Lambda$가 실제로 존재함을 보이는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`대칭행렬의 고유벡터들은 서로 직각을 이룬다는 성질부터 확인해요. 서로 다른 고유값 $\lambda_i\neq\lambda_j$에 대응하는 고유벡터 $v_i,v_j$는 [[blank:가]] 이다 (즉 서로 직교한다).`,
         blanks: [{ id: "가", latex: String.raw`v_i^Tv_j = 0`, why: String.raw`$Av_i=\lambda_iv_i$, $Av_j=\lambda_jv_j$라는 정의를 이용해서 $v_j^TAv_i$와 $v_i^TAv_j$를 각각 계산해 비교하면 $(\lambda_i-\lambda_j)v_i^Tv_j=0$이 나와요. $\lambda_i\neq\lambda_j$라고 가정했으니, 남은 $v_i^Tv_j$가 0이어야만 이 등식이 성립해요. 그래서 직교합니다.` }] },
-      { id: "s3", text: String.raw`이렇게 서로 직교하는 고유벡터들을 길이 1로 맞춘 뒤(정규직교화) 열로 나란히 세운 행렬을 $Q=[v_1\ \cdots\ v_n]$이라 하면, $Q$는 [[blank:나]] 를 만족하는 직교행렬이다.`,
+      { id: "s2b", text: String.raw`(참고: 고유값이 중복될 때는 방금 논증이 그대로 통하지 않는다. 하지만 대칭행렬은 중복된 고유값에서도 그 중복도만큼 독립인 고유벡터가 항상 나오고, 그 안에서 서로 직교하도록 고를 수 있다는 사실이 알려져 있다 — 여기서는 이 사실을 받아들이고 넘어간다.)`, blanks: [] },
+      { id: "s3", text: String.raw`이렇게 얻은 $n$개의 고유벡터를 길이 1로 맞춘 뒤(정규직교화) 열로 나란히 세운 행렬을 $Q=[v_1\ \cdots\ v_n]$이라 하면, $Q$는 [[blank:나]] 를 만족하는 직교행렬이다.`,
         blanks: [{ id: "나", latex: String.raw`Q^TQ = I`, why: String.raw`열벡터들이 서로 정규직교(길이 1이고 서로 수직)이므로, $Q^TQ$의 $(i,j)$ 성분은 $v_i\cdot v_j$인데 이 값은 $i=j$일 때만 1이고 나머지는 0이에요. 그러면 결과가 정확히 항등행렬이 됩니다. 이게 바로 "직교행렬"의 정의예요.` }] },
       { id: "s4", text: String.raw`각 열에 대해 $Av_i=\lambda_iv_i$가 성립하므로 이를 행렬 형태로 한 번에 쓰면 $AQ=Q\Lambda$이고, 양변 오른쪽에 $Q^T$를 곱하면 $A = $[[blank:다]] 이다.`,
         blanks: [{ id: "다", latex: String.raw`Q\Lambda Q^T`, why: String.raw`$AQ=Q\Lambda$의 양쪽에 오른쪽에서 $Q^T$를 곱해요. 그런데 직교행렬은 $QQ^T=I$라는 성질이 있어서, 왼쪽은 $AQQ^T=A$로 정리되고 오른쪽은 그대로 $Q\Lambda Q^T$가 남아요.` }] },
@@ -74,7 +75,7 @@ window.CONCEPTS = {
         blanks: [{ id: "나", latex: String.raw`\frac{\partial h}{\partial W}`, why: String.raw`$z=g(h)$이고 $h=Wx$이니, $\frac{\partial z}{\partial W}$도 똑같은 체인룰로 $\frac{\partial z}{\partial h}\cdot\frac{\partial h}{\partial W}$로 나뉘어요.` }] },
       { id: "s4", text: String.raw`$h=Wx$라는 가장 단순한 선형식만 남았으니 직접 미분할 수 있다: $\frac{\partial h}{\partial W} = $[[blank:다]] 이다 (성분 기준으로는 $\partial h_i/\partial W_{ij}=x_j$).`,
         blanks: [{ id: "다", latex: String.raw`x`, why: String.raw`$h=Wx$를 $W$의 각 성분으로 미분하면, 곱해져 있던 $x$의 해당 성분만 남아요. 선형식의 미분이라 아주 단순해요.` }] },
-      { id: "s5", text: String.raw`세 조각을 다시 이어 붙이면 $\frac{\partial L}{\partial W} = \frac{\partial L}{\partial z}\cdot\frac{\partial z}{\partial h}\cdot x$ 를 얻는다. 층을 하나씩 거슬러 올라가며 곱해나가는 이 과정이 바로 역전파의 정체다. 따라서 명제가 성립한다.`, blanks: [] }
+      { id: "s5", text: String.raw`세 조각을 다시 이어 붙이면 $\frac{\partial L}{\partial W} = \frac{\partial L}{\partial z}\cdot\frac{\partial z}{\partial h}\cdot x$ 를 얻는다 (실제로 $W$가 행렬이라 이 곱은 정확히는 벡터끼리의 외적 형태가 되지만, 흐름은 스칼라일 때와 완전히 같다). 층을 하나씩 거슬러 올라가며 곱해나가는 이 과정이 바로 역전파의 정체다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
   },
 
@@ -82,11 +83,11 @@ window.CONCEPTS = {
     title: "라그랑주 승수법과 KKT 조건",
     domain: "calc",
     subLabel: "제약 최적화",
-    explanation: String.raw`"이 조건을 지키면서 저걸 최소화하고 싶다" — 이런 부등식 제약이 있는 최적화 문제에서, 최적해가 반드시 만족해야 하는 조건을 정리한 것이 KKT(Karush-Kuhn-Tucker) 조건이에요. SVM의 쌍대문제, PPO/TRPO의 제약 최적화 모두 이 조건 위에 서 있습니다.<br><br><strong>명제.</strong> $\min f(x)\ \text{s.t.}\ g(x)\le0$의 최적해 $x^*$에서 어떤 $\mu^*\ge0$이 존재해 $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$, $\mu^*g(x^*)=0$이 성립한다.`,
+    explanation: String.raw`"이 조건을 지키면서 저걸 최소화하고 싶다" — 이런 부등식 제약이 있는 최적화 문제에서, 최적해가 반드시 만족해야 하는 조건을 정리한 것이 KKT(Karush-Kuhn-Tucker) 조건이에요. SVM의 쌍대문제, PPO/TRPO의 제약 최적화 모두 이 조건 위에 서 있습니다.<br><br><strong>명제.</strong> (제약이 지나치게 뒤틀려 있지 않다는 조건 — constraint qualification이라고 불러요 — 이 성립할 때) $\min f(x)\ \text{s.t.}\ g(x)\le0$의 최적해 $x^*$에서 어떤 $\mu^*\ge0$이 존재해 $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$, $\mu^*g(x^*)=0$이 성립한다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 라그랑주 승수법대로, 제약을 어긴 정도에 벌점 $\mu\ge0$을 곱해 목적함수에 더한 라그랑지안을 만든다: $\mathcal{L}(x,\mu)=f(x)+\mu g(x)$.`, blanks: [] },
-      { id: "s2", text: String.raw`최적해 $x^*$에서는 다른 최적화 문제와 마찬가지로 "$x$ 방향으로 더 나아져도 소용없다"는 1차 조건이 성립해야 한다: $\nabla_x\mathcal{L}(x^*,\mu^*) = $[[blank:가]] 이다.`,
-        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`라그랑지안이 $x^*$에서 극값(최소)을 가지려면, 미분(그래디언트)이 0이어야 한다는 건 경사하강법에서도 쓰던 바로 그 정류점 조건이에요.` }] },
+      { id: "s2", text: String.raw`(제약이 너무 뒤틀려 있지 않다는 조건, 즉 constraint qualification이 성립한다고 가정하면) 최적해 $x^*$에서는 다른 최적화 문제와 마찬가지로 "$x$ 방향으로 더 나아져도 소용없다"는 1차 조건이 성립한다: $\nabla_x\mathcal{L}(x^*,\mu^*) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`라그랑지안이 $x^*$에서 극값(최소)을 가지려면, 미분(그래디언트)이 0이어야 한다는 건 경사하강법에서도 쓰던 바로 그 정류점 조건이에요. 다만 이게 성립하려면 제약이 너무 뒤틀려 있지 않아야 하는데(constraint qualification), 이 증명에서는 그 조건이 만족된다고 가정해요 — 항상 자동으로 성립하는 건 아니에요.` }] },
       { id: "s3", text: String.raw`이 조건을 라그랑지안 정의대로 풀어 쓰면 $\nabla f(x^*) + $[[blank:나]]$ = 0$ 이다.`,
         blanks: [{ id: "나", latex: String.raw`\mu^*\nabla g(x^*)`, why: String.raw`$\mathcal{L}(x,\mu)=f(x)+\mu g(x)$를 그대로 $x$에 대해 미분한 결과예요.` }] },
       { id: "s4", text: String.raw`이제 제약이 느슨한 경우, 즉 $g(x^*)<0$(제약을 여유 있게 만족하는 경우)를 생각해 보자. 이럴 때 최적성이 깨지지 않으려면 $\mu^* = $[[blank:다]] 이어야 한다.`,
@@ -140,7 +141,7 @@ window.CONCEPTS = {
       { id: "s3", text: String.raw`실제로 분리하면 $\sum_{k=0}^\infty \gamma^k r_{t+k} = r_t + \gamma\sum_{k=0}^\infty $[[blank:나]] 이다.`,
         blanks: [{ id: "나", latex: String.raw`\gamma^k r_{t+1+k}`, why: String.raw`$k=0$항($r_t$)을 떼어내고 나면 $k=1,2,\dots$가 남는데, 이 인덱스를 $k\to k+1$로 다시 맞춰주면 $\gamma$가 하나 밖으로 빠지면서 $\gamma\sum_k\gamma^kr_{t+1+k}$ 모양이 돼요.` }] },
       { id: "s4", text: String.raw`그런데 $\sum_{k=0}^\infty \gamma^k r_{t+1+k}$는 딱 "시점 $t+1$에서 바라본 리턴"의 정의와 같은 모양이다. 그러니 그 기댓값은 [[blank:다]] 와 같다.`,
-        blanks: [{ id: "다", latex: String.raw`V^\pi(s_{t+1})`, why: String.raw`s1에서 썼던 가치함수의 정의를, 이번엔 시점 $t+1$·상태 $s_{t+1}$에 그대로 다시 적용한 것뿐이에요. 새로운 계산이 아니라 정의를 재활용하는 거예요.` }] },
+        blanks: [{ id: "다", latex: String.raw`V^\pi(s_{t+1})`, why: String.raw`s1에서 썼던 가치함수의 정의를, 이번엔 시점 $t+1$·상태 $s_{t+1}$에 그대로 다시 적용한 것뿐이에요. 다만 이게 성립하려면 "미래는 지금 상태만으로 결정되고, 그 이전 경로는 상관없다"는 마르코프 성질이 필요해요 — 그래서 $s_t=s$라는 조건이 $s_{t+1}$로 자연스럽게 이어지는 거예요.` }] },
       { id: "s5", text: String.raw`따라서 $V^\pi(s) = \mathbb{E}_\pi[r_t + \gamma V^\pi(s_{t+1}) | s_t=s]$ 이다. "지금 보상 + 할인된 다음 상태의 가치"라는 이 재귀식이 바로 벨만 기대방정식이다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
   },
@@ -190,7 +191,7 @@ window.CONCEPTS = {
       { id: "s2", text: String.raw`$\log$는 오목함수(그래프가 위로 볼록한 함수)이므로, "평균 낸 뒤 함수에 넣은 값"이 "함수에 먼저 넣고 평균 낸 값"보다 작거나 같다는 옌센 부등식을 쓸 수 있다: $\sum_x p(x)\log\dfrac{q(x)}{p(x)} \le \log($[[blank:가]]$)$.`,
         blanks: [{ id: "가", latex: String.raw`\sum_x p(x)\cdot\frac{q(x)}{p(x)}`, why: String.raw`옌센 부등식 $E[f(X)]\le f(E[X])$에서 $X=q(x)/p(x)$로, 기댓값은 $p$를 기준으로 잡은 거예요. "log를 먼저 씌우고 더한 값"이 "먼저 더하고 log를 씌운 값"보다 작거나 같다는 뜻이에요.` }] },
       { id: "s3", text: String.raw`괄호 안 합을 정리해보면, $p(x)$끼리 약분되면서 $\sum_x p(x)\cdot\dfrac{q(x)}{p(x)} = \sum_x q(x) = $[[blank:나]] 이다.`,
-        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`$q$도 어엿한 확률분포이니, 모든 경우를 다 더한 값(전체 합)은 항상 1이에요. 이건 확률의 가장 기본적인 약속이에요.` }] },
+        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`$q$도 어엿한 확률분포이니, 모든 경우를 다 더한 값(전체 합)은 항상 1이에요. 이건 확률의 가장 기본적인 약속이에요. (엄밀히는 $p(x)>0$인 곳에서 $q(x)$도 0이 아니어야 이 약분이 안전한데, 그렇지 않은 곳에서는 KL발산 자체가 $+\infty$로 정의되어 부등식이 자동으로 성립해요.)` }] },
       { id: "s4", text: String.raw`따라서 $\sum_x p(x)\log\dfrac{q(x)}{p(x)} \le \log 1 = $[[blank:다]] 이다.`,
         blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`$\log 1 = 0$은 로그함수의 기본값이에요($e^0=1$이니까요).` }] },
       { id: "s5", text: String.raw`처음에 뒤집었던 부호를 다시 되돌리면 $D_{KL}(p\|q)\ge0$ 를 얻는다. 그리고 옌센 부등식의 등호조건($q(x)/p(x)$가 모든 $x$에서 똑같은 상수일 때)에 의해, 등호는 정확히 $p=q$일 때만 성립한다. 따라서 명제가 성립한다.`, blanks: [] }
