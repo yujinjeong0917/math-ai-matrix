@@ -226,6 +226,9 @@
   .chip.is-linked { background: var(--highlight-bg); outline: 1px solid var(--highlight); border-radius: 4px; padding-right: 8px; }
   .chip:focus-visible { outline: 2px solid var(--highlight); outline-offset: 2px; }
 
+  a.chip-link { text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-link:hover .name, a.chip-link:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
+
   .crosslink-note {
     margin-top: 32px; padding: 18px 20px; border-radius: 12px;
     background: var(--surface); border: 1px solid var(--line-soft);
@@ -320,12 +323,12 @@
         <tr data-group="linalg">
           <th><p class="row-eyebrow" style="color:var(--c-linalg)">선형대수</p><p class="row-name">고유값 · 분해</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">PCA</p><p class="formula">고유벡터 · SVD : X=UΣVᵀ</p></div>
-            <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">양의정부호행렬</p><p class="formula">공분산행렬 조건, 이차형식 xᵀAx&gt;0</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=pca" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg)"><p class="name">PCA</p><p class="formula">고유벡터 · SVD : X=UΣVᵀ</p></a>
+            <a class="chip chip-link" href="concepts/index.html?c=eigen-diagonalization" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg)"><p class="name">양의정부호행렬</p><p class="formula">공분산행렬 조건, 이차형식 xᵀAx&gt;0</p></a>
             <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">행렬식 · 역행렬</p><p class="formula">가역성, det(A)≠0</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-linalg)" data-tag="attention" tabindex="0"><p class="name">어텐션</p><p class="formula">QKᵀ / √d</p></div>
+            <a class="chip chip-link" style="--chip-c:var(--c-linalg)" data-tag="attention" tabindex="0" href="concepts/index.html?c=attention-scaling" target="_blank" rel="noopener"><p class="name">어텐션</p><p class="formula">QKᵀ / √d</p></a>
             <div class="chip" style="--chip-c:var(--c-linalg)" data-tag="backprop" tabindex="0"><p class="name">역전파</p><p class="formula">야코비안 행렬 곱</p></div>
             <div class="chip" style="--chip-c:var(--c-linalg)"><p class="name">State-Space Models</p><p class="formula">hₜ=Ahₜ₋₁+Bxₜ, A 대각화(HiPPO/S4)</p></div>
           </div></td>
@@ -363,7 +366,7 @@
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">로지스틱회귀</p><p class="formula">σ′ = σ(1−σ)</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-calc)" data-tag="backprop" tabindex="0"><p class="name">역전파</p><p class="formula">체인룰 ∂L/∂w = ∂L/∂y·∂y/∂w</p></div>
+            <a class="chip chip-link" style="--chip-c:var(--c-calc)" data-tag="backprop" tabindex="0" href="concepts/index.html?c=backprop" target="_blank" rel="noopener"><p class="name">역전파</p><p class="formula">체인룰 ∂L/∂w = ∂L/∂y·∂y/∂w</p></a>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">스코어 함수</p><p class="formula">∇ₓ log p(x)</p></div>
@@ -378,7 +381,7 @@
         <tr data-group="calc">
           <th><p class="row-eyebrow" style="color:var(--c-calc)">미적분 · 최적화</p><p class="row-name">제약 최적화</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">SVM 쌍대문제</p><p class="formula">라그랑주 승수법</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=lagrange-kkt" target="_blank" rel="noopener" style="--chip-c:var(--c-calc)"><p class="name">SVM 쌍대문제</p><p class="formula">라그랑주 승수법</p></a>
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">쌍대성(Duality)</p><p class="formula">강쌍대성(strong duality) 성립 조건</p></div>
           </div></td>
           <td><div class="cell">
@@ -397,7 +400,7 @@
         <tr data-group="calc">
           <th><p class="row-eyebrow" style="color:var(--c-calc)">미적분 · 최적화</p><p class="row-name">경사기반 옵티마이저</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">경사하강법</p><p class="formula">θ ← θ − η∇L(θ)</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=gradient-descent" target="_blank" rel="noopener" style="--chip-c:var(--c-calc)"><p class="name">경사하강법</p><p class="formula">θ ← θ − η∇L(θ)</p></a>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">Adam / RMSProp</p><p class="formula">1·2차 모멘트 지수이동평균</p></div>
@@ -415,7 +418,7 @@
         <tr data-group="calc">
           <th><p class="row-eyebrow" style="color:var(--c-calc)">미적분 · 최적화</p><p class="row-name">함수의 성질</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">볼록함수 · 오목함수</p><p class="formula">로지스틱 손실의 볼록성 ⇒ 전역최솟값 보장</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=convex-jensen" target="_blank" rel="noopener" style="--chip-c:var(--c-calc)"><p class="name">볼록함수 · 오목함수</p><p class="formula">로지스틱 손실의 볼록성 ⇒ 전역최솟값 보장</p></a>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-calc)"><p class="name">립시츠 연속성</p><p class="formula">그래디언트 안정성, 립시츠 상수와 학습률 상한</p></div>
@@ -448,8 +451,8 @@
         <tr class="group-start" data-group="prob">
           <th><p class="row-eyebrow" style="color:var(--c-prob)">확률 · 통계</p><p class="row-name">분포 · 추정</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">나이브베이즈</p><p class="formula">P(y|x) ∝ P(x|y)P(y)</p></div>
-            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">최대우도추정</p><p class="formula">θ̂ = argmax Π P(xᵢ|θ)</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=bayes-theorem" target="_blank" rel="noopener" style="--chip-c:var(--c-prob)"><p class="name">나이브베이즈</p><p class="formula">P(y|x) ∝ P(x|y)P(y)</p></a>
+            <a class="chip chip-link" href="concepts/index.html?c=mle" target="_blank" rel="noopener" style="--chip-c:var(--c-prob)"><p class="name">최대우도추정</p><p class="formula">θ̂ = argmax Π P(xᵢ|θ)</p></a>
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">GMM</p><p class="formula">EM 알고리즘</p></div>
           </div></td>
           <td><div class="cell">
@@ -479,7 +482,7 @@
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">MDP</p><p class="formula">(S, A, P, R, γ)</p></div>
-            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">벨만 기대방정식</p><p class="formula">V(s)=𝔼[r+γV(s′)]</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=markov-mdp" target="_blank" rel="noopener" style="--chip-c:var(--c-prob)"><p class="name">벨만 기대방정식</p><p class="formula">V(s)=𝔼[r+γV(s′)]</p></a>
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">언어모델을 정책으로</p><p class="formula">πθ(토큰|문맥), 토큰 생성 = 순차적 행동</p></div>
           </div></td>
         </tr>
@@ -508,7 +511,7 @@
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">조건부독립</p><p class="formula">나이브베이즈 : P(x|y)=Π P(xᵢ|y)</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">경험적 분포</p><p class="formula">미니배치 = 데이터 분포의 표본(대수의 법칙)</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=clt" target="_blank" rel="noopener" style="--chip-c:var(--c-prob)"><p class="name">경험적 분포</p><p class="formula">미니배치 = 데이터 분포의 표본(대수의 법칙)</p></a>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-prob)"><p class="name">주요 확률분포</p><p class="formula">사전분포로 표준정규분포 N(0,I) 채택</p></div>
@@ -543,7 +546,7 @@
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">코딩이론 관점</p><p class="formula">엔트로피 = 최소 평균 부호길이(섀넌)</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-info)"><p class="name">교차엔트로피 손실</p><p class="formula">−Σ y log ŷ</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=entropy-crossentropy" target="_blank" rel="noopener" style="--chip-c:var(--c-info)"><p class="name">교차엔트로피 손실</p><p class="formula">−Σ y log ŷ</p></a>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">VAE 재구성 손실</p><p class="formula">−𝔼[log p(x|z)]</p></div>
@@ -561,7 +564,7 @@
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">정보병목(Information Bottleneck)</p><p class="formula">I(X;Z) 최소화 하 I(Z;Y) 최대화</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-info)"><p class="name">지식증류</p><p class="formula">KL(teacher ‖ student)</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=kl-divergence" target="_blank" rel="noopener" style="--chip-c:var(--c-info)"><p class="name">지식증류</p><p class="formula">KL(teacher ‖ student)</p></a>
             <div class="chip" style="--chip-c:var(--c-info)"><p class="name">데이터처리부등식</p><p class="formula">I(X;Y) ≥ I(X;f(Y)) — 층을 거칠수록 정보량 비증가</p></div>
           </div></td>
           <td><div class="cell">
@@ -623,7 +626,7 @@
             <div class="chip" style="--chip-c:var(--c-disc)"><p class="name">재귀 · 점화식</p><p class="formula">오토리그레시브 생성 : p(xₜ|x&lt;ₜ)</p></div>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-disc)"><p class="name">최단경로</p><p class="formula">가치반복(Value Iteration) = 최단경로의 일반화</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=shortest-path-dp" target="_blank" rel="noopener" style="--chip-c:var(--c-disc)"><p class="name">최단경로</p><p class="formula">가치반복(Value Iteration) = 최단경로의 일반화</p></a>
           </div></td>
         </tr>
 
@@ -631,7 +634,7 @@
         <tr class="group-start" data-group="numeric">
           <th><p class="row-eyebrow" style="color:var(--c-numeric)">수치해석 · 기하</p><p class="row-name">수치적 안정성</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">조건수(Condition Number)</p><p class="formula">XᵀX의 조건수 — 다중공선성 문제</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=condition-number" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">조건수(Condition Number)</p><p class="formula">XᵀX의 조건수 — 다중공선성 문제</p></a>
           </div></td>
           <td><div class="cell">
             <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">그래디언트 소실 · 폭주</p><p class="formula">깊은 네트워크의 수치적 불안정성</p></div>
