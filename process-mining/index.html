@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Process Mining 매트릭스 · 수학 × AI</title>
+<meta name="description" content="Alpha Algorithm, Petri Net, 적합성 검사 등 Process Mining의 핵심 개념을 정리한 매트릭스." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+<style>
+  :root {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-pm-a: #2f6a5a;
+    --c-pm-b: #6a2f5a;
+    --c-pm-c: #6a5a2f;
+    --c-pm-d: #2f4a6a;
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+      --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+      --line: #2c3240; --line-soft: #232834;
+      --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-pm-a: #7ed4c0;
+      --c-pm-b: #d47eb8;
+      --c-pm-c: #d4c07e;
+      --c-pm-d: #7ea3d4;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+    --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+    --line: #2c3240; --line-soft: #232834;
+    --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-pm-a: #7ed4c0;
+      --c-pm-b: #d47eb8;
+      --c-pm-c: #d4c07e;
+      --c-pm-d: #7ea3d4;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-pm-a: #2f6a5a;
+    --c-pm-b: #6a2f5a;
+    --c-pm-c: #6a5a2f;
+    --c-pm-d: #2f4a6a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-kr); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 56px 28px 80px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0;
+  }
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle .dot-bw {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #fff 50%, #14151a 50%); border: 1px solid var(--line);
+  }
+  .matrix-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+  .matrix-nav a {
+    padding: 7px 15px; border-radius: 999px; text-decoration: none;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+    background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .matrix-nav a:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .matrix-nav a.active { background: var(--ink); border-color: var(--ink); color: var(--surface-2); font-weight: 700; }
+  h1 {
+    font-size: clamp(28px, 4.4vw, 42px); font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.18; margin: 0 0 16px; text-wrap: balance;
+  }
+  h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--highlight-bg) 62%); }
+  .lede { max-width: 660px; color: var(--ink-dim); font-size: 16px; margin: 0 0 24px; }
+  .source-note {
+    max-width: 720px; font-size: 13px; color: var(--ink-faint);
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px;
+    padding: 14px 18px; margin: 0 0 28px; line-height: 1.7;
+  }
+  .source-note strong { color: var(--ink-dim); }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 8px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .hint {
+    font-size: 12.5px; color: var(--ink-faint); margin: 0 0 26px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hint svg { flex: none; opacity: 0.75; }
+  .matrix-scroll {
+    overflow-x: auto; overflow-y: auto; max-height: 78vh;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface); box-shadow: 0 1px 0 var(--line-soft);
+  }
+  table.matrix { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; }
+  .matrix thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    text-align: left; padding: 16px 18px; vertical-align: top;
+  }
+  .matrix thead th.corner { left: 0; z-index: 4; width: 200px; }
+  .col-title { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .col-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); line-height: 1.55; }
+  .matrix tbody th {
+    position: sticky; left: 0; z-index: 2;
+    text-align: left; vertical-align: top; padding: 14px 16px;
+    width: 200px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line);
+  }
+  .row-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px; opacity: 0.9;
+  }
+  .row-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+  tr.group-start > th, tr.group-start > td { border-top: 2px solid var(--line); }
+
+  .matrix td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); min-width: 230px; }
+  .matrix td:last-child, .matrix th:last-child { border-right: none; }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .chip { border-left: 2.5px solid var(--chip-c, var(--line)); padding: 2px 0 2px 10px; border-radius: 2px; }
+  .chip .name { font-size: 12.5px; font-weight: 700; }
+  .chip .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 1px; }
+
+  .group-block { margin: 0 0 36px; }
+  .group-title {
+    display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 800;
+    margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .group-title .dot { width: 10px; height: 10px; }
+  .group-desc { color: var(--ink-dim); font-size: 13.5px; margin: 0 0 16px; max-width: 640px; }
+  .sub-block { margin: 0 0 18px; }
+  .sub-title {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-faint); margin: 0 0 10px;
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip-card {
+    flex: 1 1 220px; max-width: 320px;
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 12px 14px; border-left: 3px solid var(--chip-c, var(--line));
+  }
+  .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
+  .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+
+  footer {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
+    font-size: 12px; color: var(--ink-faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  @media (max-width: 680px) { .wrap { padding: 36px 16px 60px; } footer { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <p class="eyebrow">Reference Matrix · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
+
+  <nav class="matrix-nav">
+    <a href="../index.html">기초 매트릭스</a>
+    <a href="../advanced/index.html">심화 매트릭스</a>
+    <a href="../xai/index.html">XAI · 해석가능성</a>
+    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../product/index.html">서비스 · 프로덕트 분석</a>
+    <a href="../mlops/index.html">MLOps · 인프라</a>
+    <a href="../recsys/index.html">추천시스템 · 랭킹</a>
+    <a href="../architectures/index.html">모델 아키텍처 심화</a>
+    <a href="../process-mining/index.html" class="active">Process Mining</a>
+  </nav>
+
+  <h1>이벤트 로그부터 Petri Net까지<br /><em>Process Mining</em> 매트릭스</h1>
+  <p class="lede">이벤트 로그에서 실제 프로세스를 발견하고, 설계와 얼마나 맞는지 검사하고, 병목을 찾아 개선하는 흐름을 Petri Net 같은 형식모델과 함께 정리했습니다.</p>
+  <div class="source-note"><strong>참고.</strong> van der Aalst의 Process Mining: Data Science in Action을 뼈대로 구성했습니다. 알고리즘별 수식 증명 페이지는 다음 단계에서 이어갑니다.</div>
+  <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:var(--c-pm-a)"></span>프로세스 발견</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pm-b)"></span>적합성 검사</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pm-c)"></span>프로세스 향상</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pm-d)"></span>형식모델</span>
+  </div>
+  <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pm-a)"></span>프로세스 발견 (Process Discovery)</p>
+    <p class="group-desc">이벤트 로그만 보고 실제 프로세스 흐름을 역으로 찾아내는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">발견 알고리즘</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pm-a)"><p class="name">Alpha Algorithm</p><p class="formula">이벤트 로그의 선후관계로 Petri Net 복원</p></div><div class="chip-card" style="--chip-c:var(c-pm-a)"><p class="name">Heuristic Miner</p><p class="formula">빈도 기반으로 노이즈에 강한 모델 발견</p></div><div class="chip-card" style="--chip-c:var(c-pm-a)"><p class="name">Inductive Miner</p><p class="formula">재귀적 분할로 항상 유효한 프로세스 트리 보장</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pm-b)"></span>적합성 검사 (Conformance Checking)</p>
+    <p class="group-desc">실제 실행 기록이 설계된 프로세스와 얼마나 맞는지 재는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">검사 기법</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pm-b)"><p class="name">Token Replay</p><p class="formula">로그를 모델 위에서 재생시켜 이탈 지점 탐지</p></div><div class="chip-card" style="--chip-c:var(c-pm-b)"><p class="name">Alignment 기반 적합성</p><p class="formula">로그와 모델 실행경로의 최소편집거리</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pm-c)"></span>프로세스 향상 (Process Enhancement)</p>
+    <p class="group-desc">발견한 모델을 실제 개선과 예측에 쓰는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">분석 · 예측</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pm-c)"><p class="name">병목구간 분석</p><p class="formula">대기시간이 긴 구간 식별</p></div><div class="chip-card" style="--chip-c:var(c-pm-c)"><p class="name">예측 모니터링</p><p class="formula">진행중인 케이스의 남은 시간 · 결과 예측</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pm-d)"></span>형식모델 (Formal Models)</p>
+    <p class="group-desc">프로세스를 수학적으로 정확하게 표현하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">표현 형식</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pm-d)"><p class="name">Petri Net</p><p class="formula">플레이스 · 트랜지션 · 토큰으로 동시성 표현</p></div><div class="chip-card" style="--chip-c:var(c-pm-d)"><p class="name">BPMN</p><p class="formula">실무에서 널리 쓰는 비즈니스 프로세스 표기법</p></div><div class="chip-card" style="--chip-c:var(c-pm-d)"><p class="name">프로세스 트리</p><p class="formula">재귀적 연산자로 표현한 블록구조 모델</p></div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    <span>대분류 4 × 중분류 형태 — 발견부터 형식모델까지, 증명 페이지는 다음 단계</span>
+    <span>2026.07.12</span>
+  </footer>
+</div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() { label.textContent = current() === "dark" ? "다크" : "라이트"; }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

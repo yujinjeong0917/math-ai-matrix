@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LLM 실전 매트릭스 · 수학 × AI</title>
+<meta name="description" content="프롬프팅, RAG, 파인튜닝, KV 캐시와 스케일링, 에이전트까지 LLM 실전 지식을 정리한 매트릭스." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧩</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+<style>
+  :root {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-llm-a: #2f7d6b;
+    --c-llm-b: #3a5a94;
+    --c-llm-c: #8a3f6e;
+    --c-llm-d: #b8631f;
+    --c-llm-e: #7a7d2f;
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+      --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+      --line: #2c3240; --line-soft: #232834;
+      --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-llm-a: #6fc2ac;
+      --c-llm-b: #8aa8d8;
+      --c-llm-c: #cf8fb5;
+      --c-llm-d: #e5a366;
+      --c-llm-e: #c3c86e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+    --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+    --line: #2c3240; --line-soft: #232834;
+    --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-llm-a: #6fc2ac;
+      --c-llm-b: #8aa8d8;
+      --c-llm-c: #cf8fb5;
+      --c-llm-d: #e5a366;
+      --c-llm-e: #c3c86e;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-llm-a: #2f7d6b;
+    --c-llm-b: #3a5a94;
+    --c-llm-c: #8a3f6e;
+    --c-llm-d: #b8631f;
+    --c-llm-e: #7a7d2f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-kr); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 56px 28px 80px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0;
+  }
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle .dot-bw {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #fff 50%, #14151a 50%); border: 1px solid var(--line);
+  }
+  .matrix-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+  .matrix-nav a {
+    padding: 7px 15px; border-radius: 999px; text-decoration: none;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+    background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .matrix-nav a:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .matrix-nav a.active { background: var(--ink); border-color: var(--ink); color: var(--surface-2); font-weight: 700; }
+  h1 {
+    font-size: clamp(28px, 4.4vw, 42px); font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.18; margin: 0 0 16px; text-wrap: balance;
+  }
+  h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--highlight-bg) 62%); }
+  .lede { max-width: 660px; color: var(--ink-dim); font-size: 16px; margin: 0 0 24px; }
+  .source-note {
+    max-width: 720px; font-size: 13px; color: var(--ink-faint);
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px;
+    padding: 14px 18px; margin: 0 0 28px; line-height: 1.7;
+  }
+  .source-note strong { color: var(--ink-dim); }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 8px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .hint {
+    font-size: 12.5px; color: var(--ink-faint); margin: 0 0 26px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hint svg { flex: none; opacity: 0.75; }
+  .matrix-scroll {
+    overflow-x: auto; overflow-y: auto; max-height: 78vh;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface); box-shadow: 0 1px 0 var(--line-soft);
+  }
+  table.matrix { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; }
+  .matrix thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    text-align: left; padding: 16px 18px; vertical-align: top;
+  }
+  .matrix thead th.corner { left: 0; z-index: 4; width: 200px; }
+  .col-title { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .col-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); line-height: 1.55; }
+  .matrix tbody th {
+    position: sticky; left: 0; z-index: 2;
+    text-align: left; vertical-align: top; padding: 14px 16px;
+    width: 200px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line);
+  }
+  .row-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px; opacity: 0.9;
+  }
+  .row-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+  tr.group-start > th, tr.group-start > td { border-top: 2px solid var(--line); }
+
+  .matrix td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); min-width: 230px; }
+  .matrix td:last-child, .matrix th:last-child { border-right: none; }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .chip { border-left: 2.5px solid var(--chip-c, var(--line)); padding: 2px 0 2px 10px; border-radius: 2px; }
+  .chip .name { font-size: 12.5px; font-weight: 700; }
+  .chip .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 1px; }
+
+  .group-block { margin: 0 0 36px; }
+  .group-title {
+    display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 800;
+    margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .group-title .dot { width: 10px; height: 10px; }
+  .group-desc { color: var(--ink-dim); font-size: 13.5px; margin: 0 0 16px; max-width: 640px; }
+  .sub-block { margin: 0 0 18px; }
+  .sub-title {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-faint); margin: 0 0 10px;
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip-card {
+    flex: 1 1 220px; max-width: 320px;
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 12px 14px; border-left: 3px solid var(--chip-c, var(--line));
+  }
+  .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
+  .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+
+  footer {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
+    font-size: 12px; color: var(--ink-faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  @media (max-width: 680px) { .wrap { padding: 36px 16px 60px; } footer { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <p class="eyebrow">Reference Matrix · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
+
+  <nav class="matrix-nav">
+    <a href="../index.html">기초 매트릭스</a>
+    <a href="../advanced/index.html">심화 매트릭스</a>
+    <a href="../xai/index.html">XAI · 해석가능성</a>
+    <a href="../llm/index.html" class="active">LLM 실전</a>
+    <a href="../product/index.html">서비스 · 프로덕트 분석</a>
+    <a href="../mlops/index.html">MLOps · 인프라</a>
+    <a href="../recsys/index.html">추천시스템 · 랭킹</a>
+    <a href="../architectures/index.html">모델 아키텍처 심화</a>
+    <a href="../process-mining/index.html">Process Mining</a>
+  </nav>
+
+  <h1>프롬프팅부터 KV 캐시까지<br /><em>LLM 실전</em> 매트릭스</h1>
+  <p class="lede">프롬프팅, RAG, 파인튜닝/정렬, 추론최적화(스케일링·KV 캐시), 에이전트/평가까지 LLM을 실제로 다룰 때 거치는 다섯 층을 정리했습니다.</p>
+  <div class="source-note"><strong>참고.</strong> Chinchilla 스케일링 법칙 논문, vLLM의 PagedAttention 논문, LoRA/QLoRA 논문, DPO 논문, ReAct/Reflexion 논문을 뼈대로 구성했습니다.</div>
+  <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-a)"></span>프롬프팅 · 컨텍스트</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-b)"></span>RAG · 지식증강</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-c)"></span>파인튜닝 · 정렬</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-d)"></span>추론최적화 · 서빙</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-e)"></span>에이전트 · 평가</span>
+  </div>
+  <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-llm-a)"></span>프롬프팅 · 컨텍스트</p>
+    <p class="group-desc">모델을 재학습하지 않고 입력 설계만으로 성능을 끌어올리는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">프롬프팅 기법</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-a)"><p class="name">Chain-of-Thought</p><p class="formula">중간 추론과정을 생성하도록 유도</p></div><div class="chip-card" style="--chip-c:var(c-llm-a)"><p class="name">Few-shot Prompting</p><p class="formula">예시로 태스크 형식을 암시</p></div><div class="chip-card" style="--chip-c:var(c-llm-a)"><p class="name">ReAct</p><p class="formula">추론(Reason)과 행동(Act)을 교대</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">컨텍스트 관리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-a)"><p class="name">컨텍스트 윈도우</p><p class="formula">입력 토큰 길이 제한과 트레이드오프</p></div><div class="chip-card" style="--chip-c:var(c-llm-a)"><p class="name">프롬프트 압축</p><p class="formula">토큰 수 줄이며 정보 보존</p></div><div class="chip-card" style="--chip-c:var(c-llm-a)"><p class="name">대화 요약</p><p class="formula">긴 대화를 압축해 재주입</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-llm-b)"></span>RAG · 지식증강</p>
+    <p class="group-desc">모델 파라미터 밖의 지식을 검색해 답변에 결합하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">검색 · 인덱싱</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-b)"><p class="name">벡터DB(HNSW)</p><p class="formula">근사최근접 탐색 인덱스</p></div><div class="chip-card" style="--chip-c:var(c-llm-b)"><p class="name">하이브리드 검색</p><p class="formula">BM25 키워드 + 임베딩 검색 결합</p></div><div class="chip-card" style="--chip-c:var(c-llm-b)"><p class="name">청킹 전략</p><p class="formula">문서 분할 크기와 겹침 설계</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">증강 · 재순위화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-b)"><p class="name">Reranking</p><p class="formula">검색결과를 정밀 모델로 재정렬</p></div><div class="chip-card" style="--chip-c:var(c-llm-b)"><p class="name">RAG-Fusion</p><p class="formula">여러 쿼리 재구성 후 결과 융합</p></div><div class="chip-card" style="--chip-c:var(c-llm-b)"><p class="name">Self-RAG</p><p class="formula">검색 필요 여부를 모델이 스스로 판단</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-llm-c)"></span>파인튜닝 · 정렬</p>
+    <p class="group-desc">모델 가중치 자체를 태스크나 선호에 맞게 조정하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">파라미터효율 튜닝(PEFT)</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-c)"><p class="name">LoRA</p><p class="formula">저랭크 행렬만 학습, 원가중치 고정</p></div><div class="chip-card" style="--chip-c:var(c-llm-c)"><p class="name">QLoRA</p><p class="formula">4비트 양자화 + LoRA 결합</p></div><div class="chip-card" style="--chip-c:var(c-llm-c)"><p class="name">Adapter</p><p class="formula">층 사이 소형 모듈 삽입 학습</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">정렬(Alignment)</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-c)"><p class="name">RLHF</p><p class="formula">인간 선호 보상모델 + PPO</p></div><div class="chip-card" style="--chip-c:var(c-llm-c)"><p class="name">DPO</p><p class="formula">보상모델 없이 선호쌍을 직접 최적화</p></div><div class="chip-card" style="--chip-c:var(c-llm-c)"><p class="name">Constitutional AI</p><p class="formula">원칙 기반 자기비평 후 재학습</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-llm-d)"></span>추론최적화 · 서빙</p>
+    <p class="group-desc">같은 모델을 더 빠르고 저렴하게 서빙하는 층입니다. 스케일링과 KV 캐시가 여기 속합니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">KV 캐시 · 메모리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-d)"><p class="name">KV Cache</p><p class="formula">이전 토큰의 Key/Value 재사용으로 재계산 생략</p></div><div class="chip-card" style="--chip-c:var(c-llm-d)"><p class="name">PagedAttention</p><p class="formula">KV 캐시를 페이지 단위로 관리해 메모리 단편화 감소</p></div><div class="chip-card" style="--chip-c:var(c-llm-d)"><p class="name">Multi/Grouped-Query Attention</p><p class="formula">Key/Value 헤드 수를 줄여 캐시 용량 절감</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">스케일링 · 양자화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-d)"><p class="name">스케일링 법칙(Chinchilla)</p><p class="formula">모델 크기 · 데이터량 · 연산량의 최적 비율</p></div><div class="chip-card" style="--chip-c:var(c-llm-d)"><p class="name">양자화(INT8/GPTQ/AWQ)</p><p class="formula">가중치를 저비트로 근사해 메모리 절감</p></div><div class="chip-card" style="--chip-c:var(c-llm-d)"><p class="name">스펙큘레이티브 디코딩</p><p class="formula">작은 모델의 초안을 큰 모델이 검증</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-llm-e)"></span>에이전트 · 평가</p>
+    <p class="group-desc">LLM을 도구를 쓰는 주체로 확장하고, 결과를 재는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">에이전틱 패턴</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-e)"><p class="name">Tool Use</p><p class="formula">함수 호출로 외부 API/코드 실행</p></div><div class="chip-card" style="--chip-c:var(c-llm-e)"><p class="name">Multi-agent 협업</p><p class="formula">역할이 다른 에이전트들의 상호작용</p></div><div class="chip-card" style="--chip-c:var(c-llm-e)"><p class="name">Planning(Reflexion)</p><p class="formula">실패를 되짚어 다음 시도를 개선</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">평가 · 벤치마크</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-llm-e)"><p class="name">MMLU류 벤치마크</p><p class="formula">다분야 객관식 지식 평가</p></div><div class="chip-card" style="--chip-c:var(c-llm-e)"><p class="name">LLM-as-judge</p><p class="formula">다른 LLM이 답변 품질을 채점</p></div><div class="chip-card" style="--chip-c:var(c-llm-e)"><p class="name">환각(Hallucination) 측정</p><p class="formula">사실성 검증 지표</p></div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    <span>대분류 5 × 중분류 10 — 프롬프팅부터 에이전트/평가까지 실전 LLM 파이프라인</span>
+    <span>2026.07.12</span>
+  </footer>
+</div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() { label.textContent = current() === "dark" ? "다크" : "라이트"; }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

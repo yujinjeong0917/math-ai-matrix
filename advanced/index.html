@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>심화 매트릭스 · 수학 × AI</title>
+<meta name="description" content="추론통계·인과추론·이산수학 심화·수치해석 심화가 ML/DL/생성모델/RL의 어떤 기법으로 이어지는지 정리한 심화 레퍼런스 매트릭스." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>" />
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+
+<style>
+  :root {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-stat: #3d5a80; --c-causal: #bf5b4d; --c-disc2: #5f7a3d; --c-num2: #2d7d8a;
+    --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
+
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+      --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+      --line: #2c3240; --line-soft: #232834;
+      --highlight: #eab35a; --highlight-bg: #3a2c14;
+      --c-stat: #8ba3c9; --c-causal: #e0917f; --c-disc2: #98b56e; --c-num2: #6fc1cc;
+      --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+    --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+    --line: #2c3240; --line-soft: #232834;
+    --highlight: #eab35a; --highlight-bg: #3a2c14;
+    --c-stat: #8ba3c9; --c-causal: #e0917f; --c-disc2: #98b56e; --c-num2: #6fc1cc;
+    --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+    --c-stat: #3d5a80; --c-causal: #bf5b4d; --c-disc2: #5f7a3d; --c-num2: #2d7d8a;
+    --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-kr); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 56px 28px 80px; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0;
+  }
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle .dot-bw {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #fff 50%, #14151a 50%); border: 1px solid var(--line);
+  }
+
+  .matrix-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+  .matrix-nav a {
+    padding: 7px 15px; border-radius: 999px; text-decoration: none;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+    background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .matrix-nav a:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .matrix-nav a.active { background: var(--ink); border-color: var(--ink); color: var(--surface-2); font-weight: 700; }
+  .matrix-nav a.add-more { border-style: dashed; opacity: 0.7; }
+
+  h1 {
+    font-size: clamp(28px, 4.4vw, 42px); font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.18; margin: 0 0 16px; text-wrap: balance;
+  }
+  h1 em {
+    font-style: normal; background: linear-gradient(transparent 62%, var(--highlight-bg) 62%);
+  }
+  .lede { max-width: 660px; color: var(--ink-dim); font-size: 16px; margin: 0 0 24px; }
+
+  .source-note {
+    max-width: 720px; font-size: 13px; color: var(--ink-faint);
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px;
+    padding: 14px 18px; margin: 0 0 28px; line-height: 1.7;
+  }
+  .source-note strong { color: var(--ink-dim); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 8px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+  .hint {
+    font-size: 12.5px; color: var(--ink-faint); margin: 0 0 26px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hint svg { flex: none; opacity: 0.75; }
+
+  .matrix-scroll {
+    overflow-x: auto; overflow-y: auto; max-height: 78vh;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface); box-shadow: 0 1px 0 var(--line-soft);
+  }
+  table.matrix { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; }
+
+  .matrix thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    text-align: left; padding: 16px 18px; vertical-align: top;
+  }
+  .matrix thead th.corner { left: 0; z-index: 4; width: 200px; }
+  .col-title { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .col-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); line-height: 1.55; }
+
+  .matrix tbody th {
+    position: sticky; left: 0; z-index: 2;
+    text-align: left; vertical-align: top; padding: 14px 16px;
+    width: 200px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line);
+  }
+  .row-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px; opacity: 0.9;
+  }
+  .row-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+
+  tr.group-start > th, tr.group-start > td { border-top: 2px solid var(--line); }
+  tr[data-group="stat"]   > th, tr[data-group="stat"]   > td { background: var(--c-stat-bg); }
+  tr[data-group="causal"] > th, tr[data-group="causal"] > td { background: var(--c-causal-bg); }
+  tr[data-group="disc2"]  > th, tr[data-group="disc2"]  > td { background: var(--c-disc2-bg); }
+  tr[data-group="num2"]   > th, tr[data-group="num2"]   > td { background: var(--c-num2-bg); }
+
+  .matrix td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); min-width: 230px; }
+  .matrix td:last-child, .matrix th:last-child { border-right: none; }
+
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .chip { border-left: 2.5px solid var(--chip-c, var(--line)); padding: 2px 0 2px 10px; border-radius: 2px; }
+  .chip .name { font-size: 12.5px; font-weight: 700; }
+  .chip .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 1px; }
+
+  footer {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
+    font-size: 12px; color: var(--ink-faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+
+  @media (max-width: 680px) {
+    .wrap { padding: 36px 16px 60px; }
+    footer { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <p class="eyebrow">Advanced Reference Matrix · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
+
+  <nav class="matrix-nav">
+    <a href="../index.html">기초 매트릭스</a>
+    <a href="./index.html" class="active">심화 매트릭스</a>
+    <a href="../xai/index.html">XAI · 해석가능성</a>
+    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../product/index.html">서비스 · 프로덕트 분석</a>
+    <a href="../mlops/index.html">MLOps · 인프라</a>
+    <a href="../recsys/index.html">추천시스템 · 랭킹</a>
+    <a href="../architectures/index.html">모델 아키텍처 심화</a>
+    <a href="../process-mining/index.html">Process Mining</a>
+  </nav>
+
+  <h1>추론통계 · 인과추론 · 이산수학 · 수치해석<br /><em>심화</em> 매트릭스</h1>
+  <p class="lede">
+    기초 매트릭스가 다루지 못한 대학원 수준 수학을 같은 틀로 이어갑니다.
+    추정이론부터 인과추론의 식별 전략, 그래프 이론의 극단적 결과, 수치선형대수의
+    반복법까지, 각각이 Classical ML · Deep Learning · 생성모델 · RL의 어떤
+    기법으로 연결되는지 정리했습니다.
+  </p>
+
+  <div class="source-note">
+    <strong>참고 커리큘럼.</strong> MIT 18.655(Mathematical Statistics), Stanford STATS200/300B,
+    Trefethen &amp; Bau의 Numerical Linear Algebra, MIT 18.225(Graph Theory and Additive Combinatorics),
+    그리고 Rubin의 잠재결과 프레임워크와 Pearl의 do-계산 체계를 뼈대로 구성했습니다.
+    지금은 개념 매트릭스 단계이고, 기초 매트릭스처럼 빈칸 증명 페이지로 이어가는 작업은 다음 단계입니다.
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:var(--c-stat)"></span>추론통계</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-causal)"></span>인과추론</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-disc2)"></span>이산수학 심화</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-num2)"></span>수치해석 심화</span>
+  </div>
+  <p class="hint">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l3 2"></path></svg>
+    행은 대분류(색) → 중분류(행 이름) 두 단계, 칸 안의 각 항목은 소분류(구체 기법 · 공식)예요.
+  </p>
+
+  <div class="matrix-scroll">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th class="corner"></th>
+          <th><p class="col-title">Classical ML</p><p class="col-sub">회귀 · 분류 · 앙상블 · 군집 · 차원축소</p></th>
+          <th><p class="col-title">Deep Learning</p><p class="col-sub">CNN · RNN/LSTM · Transformer · GNN</p></th>
+          <th><p class="col-title">생성모델</p><p class="col-sub">VAE · GAN · Diffusion · Autoregressive(LLM)</p></th>
+          <th><p class="col-title">Reinforcement Learning</p><p class="col-sub">가치기반 · 정책기반 · Actor-Critic · 모델기반</p></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- ================= 추론통계 ================= -->
+        <tr class="group-start" data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">추정이론</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">불편추정량</p><p class="formula">E[θ̂] = θ</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">MLE의 점근적 정규성</p><p class="formula">√n(θ̂−θ) → N(0, I(θ)⁻¹)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">충분통계량</p><p class="formula">지수족의 T(x)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">Cramér-Rao 하한</p><p class="formula">Var(θ̂) ≥ 1/I(θ)</p></div></div></td>
+        </tr>
+        <tr data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">점근이론</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">일치추정량</p><p class="formula">θ̂ →ᵖ θ</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">델타법</p><p class="formula">√n(g(θ̂)−g(θ)) → N(0, g′²σ²)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">점근적 상대효율</p><p class="formula">ARE = 분산비 극한</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">Slutsky 정리</p><p class="formula">수렴하는 항들의 조합 규칙</p></div></div></td>
+        </tr>
+        <tr data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">가설검정 이론</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">Neyman-Pearson 보조정리</p><p class="formula">최강력검정 = 우도비 임계값</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">우도비검정(LRT)</p><p class="formula">−2log Λ → χ²</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">적합도 검정</p><p class="formula">KL발산 기반 검정통계량</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">검정력함수</p><p class="formula">β(θ) = P(기각 | θ)</p></div></div></td>
+        </tr>
+        <tr data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">신뢰구간 · 순차분석</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">Wald 신뢰구간</p><p class="formula">θ̂ ± z · SE(θ̂)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">부트스트랩 신뢰구간</p><p class="formula">재표집 분포의 분위수</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">프로파일우도 신뢰구간</p><p class="formula">우도비 반전(inversion)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-stat)"><p class="name">Wald 순차검정</p><p class="formula">SPRT 상 · 하한 경계</p></div></div></td>
+        </tr>
+
+        <!-- ================= 인과추론 ================= -->
+        <tr class="group-start" data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">잠재결과 프레임워크</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">Rubin 인과모형</p><p class="formula">Y = T·Y(1) + (1−T)·Y(0)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">SUTVA 가정</p><p class="formula">간섭 없음 · 처치의 단일버전</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">반사실 생성</p><p class="formula">Y(0)을 생성모델로 추정</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">평균처치효과(ATE)</p><p class="formula">E[Y(1) − Y(0)]</p></div></div></td>
+        </tr>
+        <tr data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">그래프 인과모형</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">DAG와 d-분리</p><p class="formula">조건부독립 관계 판별</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">인과 표현학습</p><p class="formula">환경 불변 예측기(IRM)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">do-연산자</p><p class="formula">P(Y | do(X=x))</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">반사실 정책평가</p><p class="formula">off-policy 반사실 추정</p></div></div></td>
+        </tr>
+        <tr data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">식별과 추정</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">성향점수(Propensity Score)</p><p class="formula">e(x) = P(T=1 | X=x)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">이중강건추정(Doubly Robust)</p><p class="formula">AIPW 추정량</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">매칭(Matching)</p><p class="formula">최근접이웃 매칭</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">역확률가중(IPW)</p><p class="formula">가중치 1/e(x)</p></div></div></td>
+        </tr>
+        <tr data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">도구변수 · 준실험</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">도구변수(IV)</p><p class="formula">Cov(Z,Y) / Cov(Z,T)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">Deep IV</p><p class="formula">신경망 기반 2단계추정</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">회귀불연속(RDD)</p><p class="formula">임계점 부근 국소비교</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-causal)"><p class="name">이중차분(DiD)</p><p class="formula">평행추세 가정</p></div></div></td>
+        </tr>
+
+        <!-- ================= 이산수학 심화 ================= -->
+        <tr class="group-start" data-group="disc2">
+          <th><p class="row-eyebrow" style="color:var(--c-disc2)">이산수학 심화</p><p class="row-name">그래프 이론 심화</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">극단그래프이론</p><p class="formula">투란(Turán) 정리</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">정칙성 보조정리</p><p class="formula">Szemerédi Regularity Lemma</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">그래프 생성모델</p><p class="formula">랜덤그래프모형(Erdős–Rényi)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">게임트리 그래프</p><p class="formula">미니맥스 탐색</p></div></div></td>
+        </tr>
+        <tr data-group="disc2">
+          <th><p class="row-eyebrow" style="color:var(--c-disc2)">이산수학 심화</p><p class="row-name">조합론 심화</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">생성함수</p><p class="formula">Σ aₙxⁿ</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">확률적 방법</p><p class="formula">존재성 증명(Probabilistic Method)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">조합적 폭발</p><p class="formula">이산 잠재공간 카운팅</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">램지이론</p><p class="formula">램지수 R(m,n)</p></div></div></td>
+        </tr>
+        <tr data-group="disc2">
+          <th><p class="row-eyebrow" style="color:var(--c-disc2)">이산수학 심화</p><p class="row-name">네트워크 흐름</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">최대유량-최소절단</p><p class="formula">max flow = min cut</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">이분매칭</p><p class="formula">홀의 결혼정리(Hall's theorem)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">흐름 기반 생성모델</p><p class="formula">Normalizing Flow</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">자원할당 문제</p><p class="formula">유량 네트워크 MDP</p></div></div></td>
+        </tr>
+        <tr data-group="disc2">
+          <th><p class="row-eyebrow" style="color:var(--c-disc2)">이산수학 심화</p><p class="row-name">부호이론 · 조합최적화</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">오류정정부호</p><p class="formula">해밍거리</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">정수계획법 완화</p><p class="formula">LP relaxation</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">압축센싱</p><p class="formula">희소복원(sparse recovery)</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-disc2)"><p class="name">조합최적화 RL</p><p class="formula">외판원문제(TSP)의 RL 해법</p></div></div></td>
+        </tr>
+
+        <!-- ================= 수치해석 심화 ================= -->
+        <tr class="group-start" data-group="num2">
+          <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">직접법</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">LU분해</p><p class="formula">A = LU</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">QR분해</p><p class="formula">최소제곱 문제 풀이</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">Cholesky분해</p><p class="formula">공분산행렬 샘플링</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">선형시스템 풀이</p><p class="formula">가치함수 선형방정식</p></div></div></td>
+        </tr>
+        <tr data-group="num2">
+          <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">고유값 알고리즘</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">거듭제곱법(Power Iteration)</p><p class="formula">v ← Av / ‖Av‖</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">QR알고리즘</p><p class="formula">고유값으로의 수렴</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">레일리몫</p><p class="formula">R(v) = vᵀAv / vᵀv</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">정책행렬 고유값</p><p class="formula">수렴속도 분석</p></div></div></td>
+        </tr>
+        <tr data-group="num2">
+          <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">반복법</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">켤레기울기법(CG)</p><p class="formula">Krylov 부분공간</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">GMRES</p><p class="formula">비대칭 시스템 반복법</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">Lanczos 반복법</p><p class="formula">삼중대각화</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">가치반복 Krylov 가속</p><p class="formula">반복법 가속 기법</p></div></div></td>
+        </tr>
+        <tr data-group="num2">
+          <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">안정성과 조건화</p></th>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">후방오차분석</p><p class="formula">역오차(backward error) 해석</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">부동소수점 오차</p><p class="formula">반올림오차 누적</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">전처리(Preconditioning)</p><p class="formula">조건수 개선</p></div></div></td>
+          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-num2)"><p class="name">수치적 가치반복 안정성</p><p class="formula">오차전파 분석</p></div></div></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    <span>대분류 4 × 중분류 16 × AI 4갈래 — 개념 매트릭스 단계, 빈칸 증명 페이지는 다음 단계로 이어집니다</span>
+    <span>2026.07.12</span>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() { label.textContent = current() === "dark" ? "다크" : "라이트"; }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

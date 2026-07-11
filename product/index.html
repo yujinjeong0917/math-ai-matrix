@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>서비스 · 프로덕트 분석 매트릭스 · 수학 × AI</title>
+<meta name="description" content="A/B테스트, 지표설계, 어트리뷰션, LTV/리텐션 등 프로덕트 분석 방법론을 정리한 매트릭스." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+<style>
+  :root {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-pd-a: #2f6a7d;
+    --c-pd-b: #6a5a2f;
+    --c-pd-c: #7d2f4f;
+    --c-pd-d: #3f7d2f;
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+      --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+      --line: #2c3240; --line-soft: #232834;
+      --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-pd-a: #7ec0d4;
+      --c-pd-b: #c9b06e;
+      --c-pd-c: #d47ea1;
+      --c-pd-d: #8fc46e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+    --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+    --line: #2c3240; --line-soft: #232834;
+    --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-pd-a: #7ec0d4;
+      --c-pd-b: #c9b06e;
+      --c-pd-c: #d47ea1;
+      --c-pd-d: #8fc46e;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-pd-a: #2f6a7d;
+    --c-pd-b: #6a5a2f;
+    --c-pd-c: #7d2f4f;
+    --c-pd-d: #3f7d2f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-kr); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 56px 28px 80px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0;
+  }
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle .dot-bw {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #fff 50%, #14151a 50%); border: 1px solid var(--line);
+  }
+  .matrix-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+  .matrix-nav a {
+    padding: 7px 15px; border-radius: 999px; text-decoration: none;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+    background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .matrix-nav a:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .matrix-nav a.active { background: var(--ink); border-color: var(--ink); color: var(--surface-2); font-weight: 700; }
+  h1 {
+    font-size: clamp(28px, 4.4vw, 42px); font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.18; margin: 0 0 16px; text-wrap: balance;
+  }
+  h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--highlight-bg) 62%); }
+  .lede { max-width: 660px; color: var(--ink-dim); font-size: 16px; margin: 0 0 24px; }
+  .source-note {
+    max-width: 720px; font-size: 13px; color: var(--ink-faint);
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px;
+    padding: 14px 18px; margin: 0 0 28px; line-height: 1.7;
+  }
+  .source-note strong { color: var(--ink-dim); }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 8px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .hint {
+    font-size: 12.5px; color: var(--ink-faint); margin: 0 0 26px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hint svg { flex: none; opacity: 0.75; }
+  .matrix-scroll {
+    overflow-x: auto; overflow-y: auto; max-height: 78vh;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface); box-shadow: 0 1px 0 var(--line-soft);
+  }
+  table.matrix { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; }
+  .matrix thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    text-align: left; padding: 16px 18px; vertical-align: top;
+  }
+  .matrix thead th.corner { left: 0; z-index: 4; width: 200px; }
+  .col-title { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .col-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); line-height: 1.55; }
+  .matrix tbody th {
+    position: sticky; left: 0; z-index: 2;
+    text-align: left; vertical-align: top; padding: 14px 16px;
+    width: 200px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line);
+  }
+  .row-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px; opacity: 0.9;
+  }
+  .row-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+  tr.group-start > th, tr.group-start > td { border-top: 2px solid var(--line); }
+
+  .matrix td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); min-width: 230px; }
+  .matrix td:last-child, .matrix th:last-child { border-right: none; }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .chip { border-left: 2.5px solid var(--chip-c, var(--line)); padding: 2px 0 2px 10px; border-radius: 2px; }
+  .chip .name { font-size: 12.5px; font-weight: 700; }
+  .chip .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 1px; }
+
+  .group-block { margin: 0 0 36px; }
+  .group-title {
+    display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 800;
+    margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .group-title .dot { width: 10px; height: 10px; }
+  .group-desc { color: var(--ink-dim); font-size: 13.5px; margin: 0 0 16px; max-width: 640px; }
+  .sub-block { margin: 0 0 18px; }
+  .sub-title {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-faint); margin: 0 0 10px;
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip-card {
+    flex: 1 1 220px; max-width: 320px;
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 12px 14px; border-left: 3px solid var(--chip-c, var(--line));
+  }
+  .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
+  .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+
+  footer {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
+    font-size: 12px; color: var(--ink-faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  @media (max-width: 680px) { .wrap { padding: 36px 16px 60px; } footer { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <p class="eyebrow">Reference Matrix · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
+
+  <nav class="matrix-nav">
+    <a href="../index.html">기초 매트릭스</a>
+    <a href="../advanced/index.html">심화 매트릭스</a>
+    <a href="../xai/index.html">XAI · 해석가능성</a>
+    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../product/index.html" class="active">서비스 · 프로덕트 분석</a>
+    <a href="../mlops/index.html">MLOps · 인프라</a>
+    <a href="../recsys/index.html">추천시스템 · 랭킹</a>
+    <a href="../architectures/index.html">모델 아키텍처 심화</a>
+    <a href="../process-mining/index.html">Process Mining</a>
+  </nav>
+
+  <h1>A/B테스트부터 LTV까지<br /><em>서비스 · 프로덕트 분석</em> 매트릭스</h1>
+  <p class="lede">실험설계, 지표설계, 어트리뷰션, 성장/리텐션까지 프로덕트 의사결정에 쓰이는 응용통계를 정리했습니다. 심화 매트릭스의 인과추론과 바로 이어집니다.</p>
+  <div class="source-note"><strong>참고.</strong> Kohavi et al.의 Trustworthy Online Controlled Experiments, Facebook의 Geo-experiment 방법론, Shapley value 기반 어트리뷰션 연구를 뼈대로 구성했습니다.</div>
+  <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-a)"></span>실험설계</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-b)"></span>지표설계</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-c)"></span>어트리뷰션 · 귀속</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-d)"></span>성장 · 리텐션</span>
+  </div>
+  <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pd-a)"></span>실험설계</p>
+    <p class="group-desc">새 기능이 실제로 효과가 있는지 검증하는 층입니다. 심화 매트릭스의 인과추론과 바로 이어집니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">A/B 테스트</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">표본크기 산정</p><p class="formula">검정력 기반 최소 표본 계산</p></div><div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">순차검정</p><p class="formula">중간에 계속 봐도 안전한 검정 설계</p></div><div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">Multi-armed Bandit</p><p class="formula">탐색과 수익을 동시에 최적화</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">실험 함정</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">Novelty Effect</p><p class="formula">새로움 자체로 인한 일시적 효과</p></div><div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">SRM</p><p class="formula">표본비율불일치, 실험 파이프라인 결함 신호</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pd-b)"></span>지표설계</p>
+    <p class="group-desc">무엇을 보고 성공을 판단할지 정하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">북극성지표 · OMTM</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">North Star Metric</p><p class="formula">조직 전체가 보는 단일 핵심지표</p></div><div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">가드레일 지표</p><p class="formula">북극성지표를 해치지 않는지 감시</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">퍼널 · 코호트</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">퍼널분석</p><p class="formula">단계별 이탈률 추적</p></div><div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">코호트 리텐션 곡선</p><p class="formula">가입시점별 잔존율 비교</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pd-c)"></span>어트리뷰션 · 귀속</p>
+    <p class="group-desc">결과를 어떤 채널 · 어떤 행동의 공로로 돌릴지 정하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">마케팅 어트리뷰션</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">라스트클릭 어트리뷰션</p><p class="formula">마지막 접점에 전액 귀속</p></div><div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">샤플리 기반 어트리뷰션</p><p class="formula">채널별 한계기여도 배분</p></div><div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">MMM</p><p class="formula">Marketing Mix Model, 채널간 상호작용 회귀</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">인과적 임팩트 측정</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">Uplift Modeling</p><p class="formula">처치 효과가 큰 사용자군 식별</p></div><div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">Synthetic Control</p><p class="formula">가상의 대조군을 합성해 비교</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-pd-d)"></span>성장 · 리텐션</p>
+    <p class="group-desc">장기적인 사용자 가치를 예측하고 키우는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">LTV · 이탈예측</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">LTV 모델링</p><p class="formula">고객 생애가치 추정</p></div><div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">Churn 예측</p><p class="formula">이탈 확률 조기 감지</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">추천 · 개인화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">개인화 랭킹</p><p class="formula">사용자별 노출 순서 최적화</p></div><div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">밴딧 기반 추천</p><p class="formula">실시간 탐색-활용 균형</p></div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    <span>대분류 4 × 중분류 8 — 실험설계부터 리텐션까지 프로덕트 애널리틱스</span>
+    <span>2026.07.12</span>
+  </footer>
+</div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() { label.textContent = current() === "dark" ? "다크" : "라이트"; }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>추천시스템 · 랭킹 매트릭스 · 수학 × AI</title>
+<meta name="description" content="협업필터링, 랭킹모델, NDCG 등 평가지표, 밴딧/강화학습 기반 추천을 정리한 매트릭스." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+<style>
+  :root {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-rs-a: #2f5a7d;
+    --c-rs-b: #5a2f7d;
+    --c-rs-c: #7d5a2f;
+    --c-rs-d: #2f7d5a;
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+      --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+      --line: #2c3240; --line-soft: #232834;
+      --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-rs-a: #7eaad4;
+      --c-rs-b: #aa7ed4;
+      --c-rs-c: #d4aa7e;
+      --c-rs-d: #7ed4aa;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+    --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+    --line: #2c3240; --line-soft: #232834;
+    --highlight: #eab35a; --highlight-bg: #3a2c14;
+
+      --c-rs-a: #7eaad4;
+      --c-rs-b: #aa7ed4;
+      --c-rs-c: #d4aa7e;
+      --c-rs-d: #7ed4aa;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-rs-a: #2f5a7d;
+    --c-rs-b: #5a2f7d;
+    --c-rs-c: #7d5a2f;
+    --c-rs-d: #2f7d5a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-kr); line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 56px 28px 80px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 0;
+  }
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle .dot-bw {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #fff 50%, #14151a 50%); border: 1px solid var(--line);
+  }
+  .matrix-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+  .matrix-nav a {
+    padding: 7px 15px; border-radius: 999px; text-decoration: none;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+    background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .matrix-nav a:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .matrix-nav a.active { background: var(--ink); border-color: var(--ink); color: var(--surface-2); font-weight: 700; }
+  h1 {
+    font-size: clamp(28px, 4.4vw, 42px); font-weight: 800; letter-spacing: -0.02em;
+    line-height: 1.18; margin: 0 0 16px; text-wrap: balance;
+  }
+  h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--highlight-bg) 62%); }
+  .lede { max-width: 660px; color: var(--ink-dim); font-size: 16px; margin: 0 0 24px; }
+  .source-note {
+    max-width: 720px; font-size: 13px; color: var(--ink-faint);
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 12px;
+    padding: 14px 18px; margin: 0 0 28px; line-height: 1.7;
+  }
+  .source-note strong { color: var(--ink-dim); }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 8px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-size: 12.5px; color: var(--ink-dim);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .hint {
+    font-size: 12.5px; color: var(--ink-faint); margin: 0 0 26px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hint svg { flex: none; opacity: 0.75; }
+  .matrix-scroll {
+    overflow-x: auto; overflow-y: auto; max-height: 78vh;
+    border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface); box-shadow: 0 1px 0 var(--line-soft);
+  }
+  table.matrix { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1040px; }
+  .matrix thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    text-align: left; padding: 16px 18px; vertical-align: top;
+  }
+  .matrix thead th.corner { left: 0; z-index: 4; width: 200px; }
+  .col-title { font-size: 14.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .col-sub { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); line-height: 1.55; }
+  .matrix tbody th {
+    position: sticky; left: 0; z-index: 2;
+    text-align: left; vertical-align: top; padding: 14px 16px;
+    width: 200px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line);
+  }
+  .row-eyebrow {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 4px; opacity: 0.9;
+  }
+  .row-name { font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+  tr.group-start > th, tr.group-start > td { border-top: 2px solid var(--line); }
+
+  .matrix td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); min-width: 230px; }
+  .matrix td:last-child, .matrix th:last-child { border-right: none; }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .chip { border-left: 2.5px solid var(--chip-c, var(--line)); padding: 2px 0 2px 10px; border-radius: 2px; }
+  .chip .name { font-size: 12.5px; font-weight: 700; }
+  .chip .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 1px; }
+
+  .group-block { margin: 0 0 36px; }
+  .group-title {
+    display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 800;
+    margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .group-title .dot { width: 10px; height: 10px; }
+  .group-desc { color: var(--ink-dim); font-size: 13.5px; margin: 0 0 16px; max-width: 640px; }
+  .sub-block { margin: 0 0 18px; }
+  .sub-title {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-faint); margin: 0 0 10px;
+  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip-card {
+    flex: 1 1 220px; max-width: 320px;
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 12px 14px; border-left: 3px solid var(--chip-c, var(--line));
+  }
+  .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
+  .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+
+  footer {
+    margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
+    font-size: 12px; color: var(--ink-faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  @media (max-width: 680px) { .wrap { padding: 36px 16px 60px; } footer { flex-direction: column; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <p class="eyebrow">Reference Matrix · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
+
+  <nav class="matrix-nav">
+    <a href="../index.html">기초 매트릭스</a>
+    <a href="../advanced/index.html">심화 매트릭스</a>
+    <a href="../xai/index.html">XAI · 해석가능성</a>
+    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../product/index.html">서비스 · 프로덕트 분석</a>
+    <a href="../mlops/index.html">MLOps · 인프라</a>
+    <a href="../recsys/index.html" class="active">추천시스템 · 랭킹</a>
+    <a href="../architectures/index.html">모델 아키텍처 심화</a>
+    <a href="../process-mining/index.html">Process Mining</a>
+  </nav>
+
+  <h1>협업필터링부터 슬레이트 최적화까지<br /><em>추천시스템 · 랭킹</em> 매트릭스</h1>
+  <p class="lede">후보생성, 랭킹, 평가지표, 개인화/강화학습까지 추천 파이프라인의 네 층을 정리했습니다.</p>
+  <div class="source-note"><strong>참고.</strong> Koren et al.의 Matrix Factorization 논문, Covington et al.의 YouTube Two-Tower 추천 논문, Zhou et al.의 DIN 논문을 뼈대로 구성했습니다.</div>
+  <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-a)"></span>후보생성</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-b)"></span>랭킹</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-c)"></span>평가지표</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-d)"></span>개인화 · 강화학습</span>
+  </div>
+  <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-rs-a)"></span>후보생성</p>
+    <p class="group-desc">전체 아이템 중 보여줄 만한 후보군을 빠르게 좁히는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">협업필터링</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">Matrix Factorization</p><p class="formula">사용자-아이템 평점행렬을 저랭크로 분해</p></div><div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">ALS</p><p class="formula">Alternating Least Squares로 인수분해 최적화</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">임베딩기반 검색</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">Two-Tower 모델</p><p class="formula">사용자탑 · 아이템탑을 별도 임베딩</p></div><div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">ANN 검색</p><p class="formula">근사최근접 이웃으로 대규모 후보 검색</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-rs-b)"></span>랭킹</p>
+    <p class="group-desc">좁혀진 후보를 정밀하게 순서 매기는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">랭킹 모델</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">GBDT 랭킹</p><p class="formula">그래디언트 부스팅 트리 기반 순위화</p></div><div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">LambdaMART</p><p class="formula">Learning to Rank의 대표 알고리즘</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">딥러닝 랭킹</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">Wide&Deep</p><p class="formula">기억(Wide)과 일반화(Deep)를 함께 학습</p></div><div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">DIN</p><p class="formula">사용자 과거 행동에 어텐션을 적용</p></div><div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">Transformer 기반 랭킹</p><p class="formula">시퀀스 전체 문맥을 어텐션으로 반영</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-rs-c)"></span>평가지표</p>
+    <p class="group-desc">추천이 실제로 좋은지 재는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">오프라인 평가</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">NDCG</p><p class="formula">순위에 할인 가중치를 준 누적 이득</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">MAP</p><p class="formula">평균 정밀도</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">Recall@K</p><p class="formula">상위 K개 안의 재현율</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">온라인 평가</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">CTR</p><p class="formula">클릭률</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">체류시간</p><p class="formula">노출 이후 실제 소비 시간</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">A/B테스트 연계</p><p class="formula">오프라인 지표와 실제 효과의 괴리 검증</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(c-rs-d)"></span>개인화 · 강화학습</p>
+    <p class="group-desc">추천을 단발성이 아니라 장기 상호작용으로 보는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">밴딧 기반 추천</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">Contextual Bandit</p><p class="formula">문맥에 따라 팔을 선택하는 탐색-활용</p></div><div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">Thompson Sampling</p><p class="formula">사후분포 샘플링으로 탐색</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">강화학습 추천</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">슬레이트 최적화</p><p class="formula">한 화면 전체 아이템 조합을 최적화</p></div><div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">장기보상 최적화</p><p class="formula">즉각 클릭이 아닌 장기 리텐션을 보상으로</p></div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    <span>대분류 4 × 중분류 8 — 후보생성부터 강화학습 기반 개인화까지</span>
+    <span>2026.07.12</span>
+  </footer>
+</div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() { label.textContent = current() === "dark" ? "다크" : "라이트"; }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>
