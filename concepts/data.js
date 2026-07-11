@@ -1827,5 +1827,223 @@ window.CONCEPTS = {
         blanks: [{ id: "다", latex: String.raw`(\Phi^T\Phi)^{-1}\Phi^Ty`, why: String.raw`$\Phi^T\Phi\theta=\Phi^Ty$의 양변 왼쪽에 $(\Phi^T\Phi)^{-1}$을 곱하면 좌변은 $\theta$만 남고 우변은 그대로 $(\Phi^T\Phi)^{-1}\Phi^Ty$가 된다.` }] },
       { id: "s5", text: String.raw`정리하면 상태를 특징벡터로 표현하는 순간 가치함수 근사 문제는 정확히 선형회귀 문제로 바뀐다. 좋은 특징벡터 $\phi(s)$를 고르는 일은 결국 좋은 설계행렬을 고르는 일과 같고, 특징들이 서로 독립이어야 문제가 유일한 해를 갖는다는 점도 선형회귀와 완전히 같다. 상태 표현이 강화학습에서 갖는 진짜 의미가 바로 여기에 있다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
+  },
+
+"gmm-em": {
+    title: "GMM의 E-step: 책임값(responsibility)의 유도",
+    domain: "prob",
+    subLabel: "분포 · 추정",
+    explanation: String.raw`군집이 여러 개 섞여 있는 데이터가 있어요. 가우시안 혼합모델(GMM)은 각 데이터가 여러 성분 중 하나에서 나왔다고 가정해요. 그런데 어떤 데이터가 어느 성분에서 나왔는지는 직접 보이지 않아요. 이 숨은 소속을 확률로 추정하는 것이 EM 알고리즘의 E-step이에요. 그 확률을 책임값이라 부르고, 사실 이건 베이즈 정리를 그대로 적용한 결과예요.<br><br><strong>명제.</strong> 잠재변수 $z\in\{1,\dots,K\}$가 $P(z=k)=\pi_k$, $p(x\mid z=k)=\mathcal N(x;\mu_k,\Sigma_k)$를 따를 때, 책임값 $\gamma_k(x)=P(z=k\mid x)$는 $\gamma_k(x)=\dfrac{\pi_k\mathcal N(x;\mu_k,\Sigma_k)}{\sum_{j=1}^K\pi_j\mathcal N(x;\mu_j,\Sigma_j)}$ 이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 데이터 $x$ 하나가 주어졌을 때 이 데이터가 성분 $k$에서 나왔을 확률 $P(z=k\mid x)$를 구하는 것이다. 먼저 GMM이 데이터를 만들어내는 과정을 그대로 적어본다. 성분 하나를 확률 $\pi_k$로 고르고, 그 성분의 가우시안분포에서 $x$를 뽑는다고 가정한다.<br><br>이 생성 과정을 식으로 쓰면 $P(z=k)=\pi_k$ 이고 $p(x\mid z=k)=\mathcal N(x;\mu_k,\Sigma_k)$ 이다.`, blanks: [] },
+      { id: "s2", text: String.raw`손에 쥔 건 $z$가 주어졌을 때 $x$가 나올 확률인 $p(x\mid z=k)$ 쪽이다. 하지만 정말 알고 싶은 건 반대 방향인 $P(z=k\mid x)$다. 이 둘을 잇는 다리가 베이즈 정리다.<br><br>bayes-theorem에서 확인한 그대로 적용하면 $P(z=k\mid x) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{p(x\mid z=k)P(z=k)}{p(x)}`, why: String.raw`베이즈 정리 $P(A|B)=P(B|A)P(A)/P(B)$를 그대로 가져온 것이다. 여기서는 $A$ 자리에 $z=k$가, $B$ 자리에 $x$가 들어간다.` }] },
+      { id: "s3", text: String.raw`분모의 $p(x)$는 아직 구체적인 값이 아니다. $z$가 $K$개의 서로 겹치지 않는 값 중 하나이므로 전확률법칙을 쓸 수 있다.<br><br>$x$가 나오는 모든 경로를 성분별로 나눠 더하면 $p(x) = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sum_{j=1}^K \pi_j\mathcal N(x;\mu_j,\Sigma_j)`, why: String.raw`$x$가 관측될 확률을 $K$개의 성분 각각이 원인이었을 경우로 쪼개서 더한 것이다. $j$번째 성분이 선택될 확률 $\pi_j$와 그 성분에서 $x$가 나올 확률 $\mathcal N(x;\mu_j,\Sigma_j)$을 곱해 모두 더한다.` }] },
+      { id: "s4", text: String.raw`이제 분자의 $p(x\mid z=k)P(z=k)$와 방금 구한 분모를 각각의 정의대로 채워 넣는다. $p(x\mid z=k)=\mathcal N(x;\mu_k,\Sigma_k)$이고 $P(z=k)=\pi_k$이다.<br><br>이 값들을 s2의 식에 그대로 대입하면 책임값은 $\gamma_k(x) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{\pi_k\mathcal N(x;\mu_k,\Sigma_k)}{\sum_{j=1}^K\pi_j\mathcal N(x;\mu_j,\Sigma_j)}`, why: String.raw`s2의 분자에 $p(x\mid z=k)=\mathcal N(x;\mu_k,\Sigma_k)$와 $P(z=k)=\pi_k$를 대입하고, s3에서 구한 전확률법칙 결과를 분모에 그대로 넣은 것이다.` }] },
+      { id: "s5", text: String.raw`정리하면 각 데이터 $x$가 성분 $k$에서 나왔을 책임값은 정확히 이 식으로 계산된다. EM 알고리즘의 E-step은 현재 파라미터 $\pi_k,\mu_k,\Sigma_k$를 고정한 채 모든 데이터에 대해 이 책임값을 계산하는 단계다.<br><br>이어지는 M-step은 이 책임값을 가중치로 삼아 파라미터를 다시 추정한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "softmax-attention": {
+    title: "소프트맥스 어텐션이 만드는 확률분포",
+    domain: "prob",
+    subLabel: "분포 · 추정",
+    explanation: String.raw`어텐션은 쿼리와 여러 키 사이의 유사도 점수를 구한 다음, 그 점수로 값(value) 벡터들을 가중합해요. 그런데 이 가중치가 아무 숫자나 되면 곤란해요. 음수가 섞이거나 합이 제멋대로면 가중합이 원래 값들의 범위를 벗어나 버려요. 그래서 점수에 소프트맥스를 씌워서 가중치를 진짜 확률분포로 만들어요. 이 성질이 왜 성립하는지 직접 확인해 봐요.<br><br><strong>명제.</strong> 점수 $s_1,\dots,s_n\in\mathbb{R}$에 대해 $\alpha_i=\dfrac{\exp(s_i)}{\sum_{j=1}^n\exp(s_j)}$로 정의하면 모든 $i$에서 $\alpha_i>0$이고 $\sum_{i=1}^n\alpha_i=1$이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 어텐션 가중치 $\alpha_i=\dfrac{\exp(s_i)}{\sum_{j=1}^n\exp(s_j)}$가 진짜 확률분포의 조건을 만족하는지 확인하는 것이다. 확률분포이려면 두 가지가 필요하다. 모든 값이 음수가 아니어야 하고, 전부 더하면 정확히 1이 되어야 한다.<br><br>이 두 가지를 하나씩 확인해본다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 부호부터 본다. 지수함수 $\exp$는 어떤 실수를 넣어도 항상 양수를 내놓는다. 그러니 분자 $\exp(s_i)$도 양수이고, 양수들을 더한 분모 $\sum_j\exp(s_j)$도 양수다.<br><br>양수를 양수로 나눈 값도 항상 양수이므로 $\alpha_i $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`> 0`, why: String.raw`분자와 분모가 모두 양수인 분수는 그 자체로도 양수다. $\exp$가 실수 전체에서 절대 0 이하로 내려가지 않는다는 성질에서 바로 나온다.` }] },
+      { id: "s3", text: String.raw`이제 합이 1이 되는지 확인한다. $n$개의 $\alpha_i$를 전부 더하면 분모 $\sum_j\exp(s_j)$가 모든 항에 공통이므로 합을 분자 쪽으로만 몰아줄 수 있다.<br><br>$\sum_{i=1}^n \alpha_i = \dfrac{\sum_{i=1}^n\exp(s_i)}{\sum_{j=1}^n\exp(s_j)} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`분자의 $\sum_i\exp(s_i)$와 분모의 $\sum_j\exp(s_j)$는 인덱스 이름만 다를 뿐 정확히 같은 합이다. 같은 값을 자기 자신으로 나누면 1이 된다.` }] },
+      { id: "s4", text: String.raw`한 가지 더 확인할 수 있는 성질이 있다. 분자 $\exp(s_i)$는 분모를 이루는 여러 양수항 중 하나에 불과하므로 분모 전체보다 클 수 없다.<br><br>그러니 각 가중치는 $0 < \alpha_i \le $[[blank:다]] 라는 범위 안에 항상 갇힌다.`,
+        blanks: [{ id: "다", latex: String.raw`1`, why: String.raw`분자가 분모를 구성하는 항 중 하나이므로 분자는 분모보다 클 수 없다. 그래서 비율은 최대 1을 넘지 않는다.` }] },
+      { id: "s5", text: String.raw`정리하면 $\{\alpha_i\}$는 모두 $0$과 $1$ 사이에 있고 합이 정확히 1인, 완전한 확률분포다.<br><br>그러니 어텐션 출력 $z=\sum_i\alpha_iv_i$는 값 벡터들을 아무렇게나 섞은 게 아니라, 값 벡터들을 진짜 확률로 가중평균한 볼록결합이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "dropout-bernoulli": {
+    title: "인버티드 드롭아웃과 기댓값 보존",
+    domain: "prob",
+    subLabel: "분포 · 추정",
+    explanation: String.raw`드롭아웃은 학습 중에 유닛을 무작위로 꺼버려서 뉴런들이 서로 과도하게 의존하지 못하게 막는 기법이에요. 그런데 유닛을 꺼버리면 그 층의 출력 크기 자체가 줄어들어요. 학습 때와 테스트 때 출력의 평균적인 크기가 달라지면 곤란해요. 그래서 실전에서는 마스킹한 뒤 살아남을 확률로 나눠주는 인버티드 드롭아웃을 씁니다. 이 나눗셈이 왜 필요한지 기댓값을 직접 계산해서 확인해 봐요.<br><br><strong>명제.</strong> 활성값 $x_i$에 대해 $m_i\sim\mathrm{Bernoulli}(p)$이고 $y_i=\dfrac{m_ix_i}{p}$이면 $E[y_i]=x_i$이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 드롭아웃을 적용한 출력의 평균이 원래 활성값과 정확히 같아지는지 확인하는 것이다. 먼저 드롭아웃이 하는 일을 그대로 적어본다. 각 유닛마다 독립인 마스크 $m_i\sim\mathrm{Bernoulli}(p)$를 뽑는다. $p$는 유닛을 살려둘 확률이다.<br><br>마스크를 곱한 뒤 $p$로 나눈 값을 출력으로 쓰면 $y_i=\dfrac{m_ix_i}{p}$ 이다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 마스크 $m_i$ 자체의 기댓값을 구해둔다. 베르누이 확률변수는 확률 $p$로 1이 되고 확률 $1-p$로 0이 되는 변수다.<br><br>정의대로 계산하면 $E[m_i] = 1\cdot p + 0\cdot(1-p) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`p`, why: String.raw`1이 나올 확률 $p$와 값 1을 곱하고, 0이 나올 확률 $1-p$와 값 0을 곱해 더한 것이다. 둘째 항은 0이라 사라지고 $p$만 남는다.` }] },
+      { id: "s3", text: String.raw`이제 $y_i=\dfrac{m_ix_i}{p}$의 기댓값을 구한다. 여기서 $x_i$는 확률변수가 아니라 주어진 활성값이고 $1/p$도 상수다. 상수는 기댓값 밖으로 그대로 뺄 수 있다.<br><br>$E[y_i] = E\left[\dfrac{m_ix_i}{p}\right] = \dfrac{x_i}{p}$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`E[m_i]`, why: String.raw`$x_i/p$는 확률변수가 아니므로 기댓값 기호 밖으로 뺄 수 있다. 남는 것은 확률변수 $m_i$의 기댓값뿐이다.` }] },
+      { id: "s4", text: String.raw`방금 s2에서 구한 $E[m_i]=p$를 그대로 대입한다.<br><br>$\dfrac{x_i}{p}\cdot p = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`x_i`, why: String.raw`분자와 분모의 $p$가 약분되어 사라지고 $x_i$만 남는다. $p$가 어떤 값이든 상관없이 항상 이렇게 정리된다.` }] },
+      { id: "s5", text: String.raw`정리하면 $E[y_i]=x_i$이다. 살려둘 확률 $p$가 무엇이든 상관없이 인버티드 드롭아웃을 거친 출력의 평균은 원래 활성값과 정확히 같다.<br><br>그 덕분에 테스트 시점에는 마스킹도 별도의 스케일 조정도 없이 그대로 순전파를 하면 된다. 학습과 테스트 사이의 출력 크기 불일치를 이 나눗셈 하나로 미리 없애 둔 셈이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "vae-prior-posterior": {
+    title: "VAE의 근사사후분포와 진짜 사후분포 사이의 간극",
+    domain: "prob",
+    subLabel: "분포 · 추정",
+    explanation: String.raw`VAE는 관측 $x$ 뒤에 숨은 잠재변수 $z$를 상정해요. 진짜 사후분포 $p(z\mid x)$를 알면 제일 좋겠지만 이건 대개 계산할 수 없어요. 그래서 계산 가능한 근사분포 $q(z\mid x)$를 따로 두고 이걸로 대신해요. 그런데 이 근사가 정확히 얼마나 근사인지, 즉 $\log p(x)$와 ELBO 사이의 간극이 정확히 무엇인지는 kl-divergence와 convex-jensen에서 다룬 도구로 정확히 계산할 수 있어요.<br><br><strong>명제.</strong> 임의의 분포 $q(z\mid x)$에 대해 $\log p(x) = \mathrm{ELBO}(q) + D_{KL}(q(z\mid x)\,\|\,p(z\mid x))$ 이다. 여기서 $\mathrm{ELBO}(q)=E_q[\log p(x,z)-\log q(z\mid x)]$이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 계산할 수 없는 $\log p(x)$와, 계산 가능한 근사분포 $q(z\mid x)$로 만든 ELBO 사이의 간극이 정확히 무엇인지 밝히는 것이다. elbo-derivation에서는 옌센 부등식으로 ELBO가 $\log p(x)$의 하한이라는 것만 보였다. 여기서는 그 부등식을 등식으로 바꿔서, 둘 사이의 차이가 정확히 무엇인지 확인한다.<br><br>출발점은 결합확률의 연쇄법칙 $p(x,z)=p(x)p(z\mid x)$ 이다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 연쇄법칙 양변에 로그를 씌우면 $\log p(x,z) = \log p(x) + \log p(z\mid x)$ 이다.<br><br>이걸 $\log p(x)$ 하나만 남도록 이항하면 $\log p(x) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\log p(x,z) - \log p(z\mid x)`, why: String.raw`$\log p(x,z)=\log p(x)+\log p(z\mid x)$에서 $\log p(z\mid x)$를 반대편으로 이항하면 나오는 식이다.` }] },
+      { id: "s3", text: String.raw`이 등식은 $z$가 어떤 값이든 항상 성립한다. 그러니 양변에 $z\sim q(z\mid x)$에 대한 기댓값을 씌워도 등식은 그대로 유지된다. 좌변 $\log p(x)$는 $z$와 무관한 상수이므로 기댓값을 씌워도 그대로 남는다.<br><br>$\log p(x) = E_q[\log p(x,z)] - $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`E_q[\log p(z\mid x)]`, why: String.raw`우변의 두 항에 기댓값을 각각 나눠 씌운 것이다. 기댓값의 선형성 덕분에 합에 씌운 기댓값은 각 항에 따로 씌운 것과 같다.` }] },
+      { id: "s4", text: String.raw`이제 우변에 $\log q(z\mid x)$를 한 번 더하고 한 번 빼서 두 조각으로 나눈다. 값은 그대로 유지된 채 모양만 바뀐다.<br><br>$\log p(x) = E_q[\log p(x,z)-\log q(z\mid x)] + $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`E_q[\log q(z\mid x) - \log p(z\mid x)]`, why: String.raw`$-E_q[\log p(z\mid x)]$에 $+\log q(z\mid x)-\log q(z\mid x)$를 끼워 넣어 재배치한 것이다. 하나는 첫째 항에 합쳐지고 나머지 $\log q(z\mid x)-\log p(z\mid x)$가 둘째 항으로 남는다.` }] },
+      { id: "s5", text: String.raw`첫째 조각 $E_q[\log p(x,z)-\log q(z\mid x)]$는 elbo-derivation에서 정의한 ELBO와 정확히 같은 식이다. 둘째 조각은 KL발산의 정의 그 자체다.<br><br>$E_q\left[\log\dfrac{q(z\mid x)}{p(z\mid x)}\right] = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`D_{KL}(q(z\mid x)\|p(z\mid x))`, why: String.raw`KL발산의 정의 $\sum_z q(z\mid x)\log\frac{q(z\mid x)}{p(z\mid x)}$를 기댓값 표기로 옮긴 것이다. 여기서 기준분포는 진짜 사후분포 $p(z\mid x)$다.` }] },
+      { id: "s6", text: String.raw`정리하면 $\log p(x) = \mathrm{ELBO}(q) + D_{KL}(q(z\mid x)\|p(z\mid x))$이다. kl-divergence에서 이미 확인했듯 $D_{KL}\ge0$이므로 ELBO는 언제나 $\log p(x)$ 이하다.<br><br>그리고 그 차이는 정확히 근사사후분포 $q(z\mid x)$와 진짜 사후분포 $p(z\mid x)$ 사이의 KL발산이며, 등호는 $q(z\mid x)=p(z\mid x)$일 때만 성립한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "expected-return": {
+    title: "기대 리턴의 수렴: 감가율이 만드는 유계성",
+    domain: "prob",
+    subLabel: "분포 · 추정",
+    explanation: String.raw`강화학습의 목표는 결국 미래 보상을 전부 더한 리턴 $G_t=\sum_{k=0}^\infty\gamma^kr_{t+k}$의 기댓값을 최대화하는 거예요. 그런데 이 합은 항이 무한히 많아요. 항이 무한히 많은 합이 유한한 값으로 수렴한다는 보장이 없다면, 기대 리턴이라는 개념 자체가 애초에 잘 정의되지 않을 수 있어요. 감가율 $\gamma<1$이 정확히 이 문제를 해결해준다는 걸 등비급수로 확인해 봐요.<br><br><strong>명제.</strong> 모든 $t$에서 $|r_t|\le R_{\max}$이고 $0\le\gamma<1$이면 $G=\sum_{t=0}^\infty\gamma^tr_t$는 $|G|\le\dfrac{R_{\max}}{1-\gamma}$를 만족하며 항상 유한하다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 무한히 많은 항을 더한 리턴 $G=\sum_{t=0}^\infty\gamma^tr_t$가 실제로 유한한 값을 갖는다는 것을 확인하는 것이다. 이게 확인되지 않으면 기댓값 $E[G]$를 논하는 것 자체가 의미가 없다.<br><br>여기서는 보상이 어떤 상수로 유계라는 가정 $|r_t|\le R_{\max}$와 감가율이 $0\le\gamma<1$이라는 가정을 쓴다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 각 항의 절댓값부터 눌러본다. $\gamma\ge0$이므로 $\gamma^t\ge0$이고, 가정한 보상의 상한을 곱하면 절댓값을 눌러 잡을 수 있다.<br><br>$|\gamma^tr_t| = \gamma^t|r_t| \le $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\gamma^t R_{\max}`, why: String.raw`$\gamma^t\ge0$이므로 절댓값 밖으로 그대로 뺄 수 있고, $|r_t|\le R_{\max}$를 곱하면 나오는 상한이다.` }] },
+      { id: "s3", text: String.raw`이제 전체 합에 삼각부등식을 적용한다. 여러 항을 더한 것의 절댓값은 각 항의 절댓값을 더한 것보다 클 수 없다.<br><br>$|G| = \left|\sum_{t=0}^\infty\gamma^tr_t\right| \le \sum_{t=0}^\infty|\gamma^tr_t| \le \sum_{t=0}^\infty\gamma^tR_{\max} = R_{\max}\cdot$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sum_{t=0}^\infty\gamma^t`, why: String.raw`각 항의 공통 상수 $R_{\max}$를 합 기호 밖으로 뺀 것이다. 남은 것은 순수한 등비급수 $\sum_t\gamma^t$뿐이다.` }] },
+      { id: "s4", text: String.raw`남은 건 등비급수 $\sum_{t=0}^\infty\gamma^t$의 값이다. 공비가 $0\le\gamma<1$이라 이 급수는 실제로 유한한 값에 수렴한다.<br><br>등비급수의 표준 공식으로 그 값은 $\sum_{t=0}^\infty\gamma^t = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{1}{1-\gamma}`, why: String.raw`첫항이 1이고 공비가 $\gamma$인 등비급수의 합 공식 $1/(1-\gamma)$를 그대로 적용한 것이다. $\gamma<1$이라는 조건이 있어야 이 공식이 유효하다.` }] },
+      { id: "s5", text: String.raw`지금까지의 부등식을 모두 이으면 $|G|\le R_{\max}/(1-\gamma)$를 얻는다. 이 값은 $t$가 아무리 커져도 변하지 않는 유한한 상수다.<br><br>그러니 $G$는 항상 유계이고 기댓값 $E[G]$도 잘 정의된다. 감가율을 $1$보다 엄격히 작게 두는 이유가 바로 여기에 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "reward-modeling-bradley-terry": {
+    title: "Bradley-Terry 선호모델과 보상 차이의 로지스틱 회귀",
+    domain: "prob",
+    subLabel: "분포 · 추정",
+    explanation: String.raw`사람에게 두 응답 $a,b$ 중 어느 쪽이 더 나은지 물어서 그 선호를 학습하는 게 리워드 모델링이에요. Bradley-Terry 모델은 각 응답에 보이지 않는 점수 $r_a,r_b$가 있다고 보고, 점수가 큰 쪽이 선택될 확률을 정합니다. 이 확률식을 정리하면 익숙한 시그모이드 함수가 그대로 튀어나와요. 결국 보상모델을 학습하는 일은 보상 차이 위에서 로지스틱 회귀를 하는 것과 똑같아요.<br><br><strong>명제.</strong> $P(a\succ b) = \dfrac{\exp(r_a)}{\exp(r_a)+\exp(r_b)}$ 로 정의하면 $P(a\succ b)=\sigma(r_a-r_b)$ 이다. 여기서 $\sigma(x)=\dfrac{1}{1+\exp(-x)}$는 시그모이드 함수이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 Bradley-Terry 모델의 선호확률 $P(a\succ b)=\dfrac{\exp(r_a)}{\exp(r_a)+\exp(r_b)}$을 시그모이드 함수 $\sigma(x)=\dfrac{1}{1+\exp(-x)}$로 정리된 형태로 다시 쓰는 것이다. 사람에게 받은 것은 $a,b$ 중 어느 쪽을 더 선호했는지에 대한 이진 라벨뿐이다.<br><br>이 라벨을 보상 점수 $r_a,r_b$로 설명하려면 점수 차이가 클수록 선호확률도 커지는 식이 필요하다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 식을 정리하는 첫걸음은 분자와 분모를 모두 $\exp(r_a)$로 나누는 것이다. 분자는 $\exp(r_a)/\exp(r_a)=1$이 되어 사라지고, 분모는 각 항이 나뉘어 남는다.<br><br>정리하면 $P(a\succ b) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{1}{1+\exp(r_b)/\exp(r_a)}`, why: String.raw`분모의 두 항 $\exp(r_a)$와 $\exp(r_b)$를 각각 $\exp(r_a)$로 나눈 것이다. 앞항은 1이 되고 뒷항은 $\exp(r_b)/\exp(r_a)$가 되어 분모 전체가 $1+\exp(r_b)/\exp(r_a)$로 바뀐다.` }] },
+      { id: "s3", text: String.raw`분모에 남은 $\exp(r_b)/\exp(r_a)$를 더 정리할 수 있다. 지수함수끼리의 나눗셈은 지수의 뺄셈이 된다는 성질을 쓴다.<br><br>$\dfrac{\exp(r_b)}{\exp(r_a)} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\exp(r_b-r_a)`, why: String.raw`$e^a/e^b=e^{a-b}$라는 지수법칙을 그대로 적용한 것이다.` }] },
+      { id: "s4", text: String.raw`이제 $r_b-r_a=-(r_a-r_b)$라는 부호 정리를 적용하고 시그모이드의 정의 $\sigma(x)=1/(1+\exp(-x))$를 떠올린다.<br><br>$P(a\succ b) = \dfrac{1}{1+\exp(-(r_a-r_b))} = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\sigma(r_a-r_b)`, why: String.raw`시그모이드 함수의 정의 $\sigma(x)=1/(1+\exp(-x))$에서 $x=r_a-r_b$를 그대로 대입한 모양과 완전히 일치한다.` }] },
+      { id: "s5", text: String.raw`이제 이 결과를 학습에 어떻게 쓰는지 본다. 사람이 실제로 $a$를 더 선호했다고 응답했다면 이 사건이 관측된 것이다. mle에서 본 논리를 그대로 적용하면 관측된 사건의 로그가능도를 최대화해야 하고, 이는 음의 로그가능도 $-\log P(a\succ b)$를 최소화하는 것과 같다.<br><br>방금 구한 관계를 대입하면 이 손실은 $-\log$[[blank:라]] 로 정리되고, 이것이 실제 RLHF 보상모델 학습에서 쓰이는 손실함수다.`,
+        blanks: [{ id: "라", latex: String.raw`\sigma(r_a-r_b)`, why: String.raw`s4에서 구한 $P(a\succ b)=\sigma(r_a-r_b)$를 음의 로그가능도 식 $-\log P(a\succ b)$에 그대로 대입한 것이다.` }] },
+      { id: "s6", text: String.raw`정리하면 Bradley-Terry의 선호확률은 정확히 보상 차이 $r_a-r_b$ 위에서의 시그모이드, 즉 로지스틱 함수다.<br><br>그러니 사람의 선호 데이터로 보상함수 $r_\theta$를 학습하는 일은 입력이 $r_a-r_b$ 하나뿐인 로지스틱 회귀를 푸는 것과 수학적으로 동일하다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "hmm-forward": {
+    title: "은닉마르코프모델 전방 알고리즘의 재귀식",
+    domain: "prob",
+    subLabel: "마르코프 · 확률과정",
+    explanation: String.raw`HMM은 눈에 보이지 않는 상태 $s_t$가 순서대로 바뀌면서 매 시점 관측 $o_t$를 하나씩 내놓는다고 가정해요. 문제는 지금까지의 관측 $o_1,\dots,o_t$만 보고 현재 숨은 상태가 무엇일지 확률을 계산하려면, 있을 수 있는 모든 상태 경로를 다 따져야 할 것처럼 보인다는 거예요. 경로 수는 시점이 늘어날수록 지수적으로 불어나요. 전방 알고리즘은 이 계산을 재귀식 하나로 압축해서 그 폭발을 막아요.<br><br><strong>명제.</strong> $\alpha_t(j)=P(o_1,\dots,o_t,s_t=j)$로 정의하면 $\alpha_t(j) = \left[\sum_i\alpha_{t-1}(i)P(s_t=j\mid s_{t-1}=i)\right]P(o_t\mid s_t=j)$ 이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 $t$ 시점의 전방변수 $\alpha_t(j)=P(o_1,\dots,o_t,s_t=j)$를 $t-1$ 시점의 $\alpha_{t-1}$들로 표현하는 재귀식을 얻는 것이다. 첫 걸음은 전확률법칙으로 $t-1$ 시점의 숨은 상태 $s_{t-1}$에 대해 나눠 더하는 것이다.<br><br>$\alpha_t(j) = \sum_i $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`P(o_1,\dots,o_t,s_{t-1}=i,s_t=j)`, why: String.raw`$s_{t-1}$이 가질 수 있는 모든 값 $i$로 나눠서 더해도 전체 확률은 그대로다. 전확률법칙을 결합확률에 그대로 적용한 것이다.` }] },
+      { id: "s2", text: String.raw`이 결합확률을 연쇄법칙으로 세 조각으로 쪼갠다. 과거 관측과 이전 상태, 그다음 현재 상태로의 전이, 마지막으로 현재 관측이 나올 확률 순서다.<br><br>$P(o_{1:t-1},s_{t-1}=i,s_t=j) = P(o_{1:t-1},s_{t-1}=i)\cdot P(s_t=j\mid s_{t-1}=i,o_{1:t-1})\cdot $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`P(o_t\mid s_t=j,s_{t-1}=i,o_{1:t-1})`, why: String.raw`결합확률을 연쇄법칙으로 순서대로 조건부확률의 곱으로 풀어쓴 것이다. 마지막 조각은 앞의 모든 것이 주어졌을 때 현재 관측이 나올 확률이다.` }] },
+      { id: "s3", text: String.raw`여기서 HMM을 HMM답게 만드는 두 가지 독립성 가정을 쓴다. 상태전이는 바로 이전 상태에만 의존한다는 마르코프 성질 덕분에 $P(s_t=j\mid s_{t-1}=i,o_{1:t-1}) = P(s_t=j\mid s_{t-1}=i)$ 로 줄어든다.<br><br>관측은 오직 그 시점의 상태에만 의존한다는 방출 독립성 덕분에 $P(o_t\mid s_t=j,s_{t-1}=i,o_{1:t-1}) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`P(o_t\mid s_t=j)`, why: String.raw`방출확률(관측이 나올 확률)은 그 시점의 숨은 상태에만 의존하고 이전 상태나 과거 관측과는 무관하다는 HMM의 기본 가정이다.` }] },
+      { id: "s4", text: String.raw`첫째 조각 $P(o_{1:t-1},s_{t-1}=i)$는 s1의 정의를 $t-1$ 시점에 그대로 적용한 것과 정확히 같다.<br><br>$P(o_{1:t-1},s_{t-1}=i) = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`\alpha_{t-1}(i)`, why: String.raw`전방변수의 정의 $\alpha_{t-1}(i)=P(o_1,\dots,o_{t-1},s_{t-1}=i)$를 그대로 가져온 것이다.` }] },
+      { id: "s5", text: String.raw`지금까지 정리한 세 조각을 다시 합치면 $\alpha_t(j) = \sum_i \alpha_{t-1}(i)P(s_t=j\mid s_{t-1}=i)P(o_t\mid s_t=j)$ 를 얻는다. $P(o_t\mid s_t=j)$는 $i$와 무관하므로 합 밖으로 뺄 수 있다.<br><br>$\alpha_t(j) = \left[\sum_i\alpha_{t-1}(i)P(s_t=j\mid s_{t-1}=i)\right]P(o_t\mid s_t=j)$ 로 정리된다. 상태 경로를 하나하나 나열하지 않고도 이 재귀식 하나로 $\alpha_t$ 전체를 계산할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "rnn-hidden-state": {
+    title: "RNN 은닉상태는 전체 과거를 압축한다 (귀납법)",
+    domain: "prob",
+    subLabel: "마르코프 · 확률과정",
+    explanation: String.raw`RNN의 은닉상태는 $h_t=f(h_{t-1},x_t)$처럼 딱 바로 이전 은닉상태와 지금 입력만 보고 갱신돼요. 언뜻 보면 한 스텝 전 기억밖에 없는 것 같아요. 그런데 실제로는 $h_t$ 안에 $x_1$부터 $x_t$까지 전체 입력 이력이 압축되어 들어가 있어요. 이걸 수학적으로 확인하는 방법이 귀납법이에요.<br><br><strong>명제.</strong> $h_0$가 고정된 상수이고 $h_t=f(h_{t-1},x_t)$이면, 모든 $t\ge1$에 대해 $h_t=F_t(x_1,\dots,x_t)$를 만족하는 함수 $F_t$가 존재한다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 재귀식이 겉보기엔 $h_{t-1}$ 하나만 참조하지만, 실제로는 $h_t$가 $x_1$부터 $x_t$까지 전체 입력의 함수라는 걸 보이는 것이다. 이런 모든 $t$에 대한 주장은 귀납법으로 다루기에 알맞다.<br><br>$h_0$는 학습이 시작되기 전에 미리 고정해둔 상수이고 어떤 $x$에도 의존하지 않는다고 하자.`, blanks: [] },
+      { id: "s2", text: String.raw`기초단계($t=1$)부터 확인한다. 재귀식에 $t=1$을 넣으면 $h_1=f(h_0,x_1)$이다. $h_0$가 상수이므로 이 식의 우변은 오직 $x_1$ 하나에만 의존한다.<br><br>그러니 $F_1(x_1) := $[[blank:가]] 로 정의하면 $h_1=F_1(x_1)$이 되어, $h_1$은 $x_1$만의 함수로 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`f(h_0,x_1)`, why: String.raw`재귀식 $h_1=f(h_0,x_1)$에서 $h_0$는 이미 정해진 상수이므로 우변 전체를 $x_1$만의 함수로 그대로 이름 붙인 것이다.` }] },
+      { id: "s3", text: String.raw`이제 귀납가정을 세운다. 어떤 $t-1$까지 $h_{t-1}=F_{t-1}(x_1,\dots,x_{t-1})$을 만족하는 함수 $F_{t-1}$이 존재한다고 가정하자.<br><br>이 가정 아래에서 $t$ 시점에도 같은 성질이 성립함을 보이면, 기초단계와 합쳐서 모든 $t$에 대해 성립한다는 걸 알 수 있다.`, blanks: [] },
+      { id: "s4", text: String.raw`귀납단계를 밟는다. 재귀식 $h_t=f(h_{t-1},x_t)$에 귀납가정 $h_{t-1}=F_{t-1}(x_1,\dots,x_{t-1})$을 그대로 대입한다.<br><br>$h_t = f($[[blank:나]]$, x_t)$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`F_{t-1}(x_1,\dots,x_{t-1})`, why: String.raw`귀납가정에서 $h_{t-1}$ 자리에 대입할 수 있는 값은 $F_{t-1}(x_1,\dots,x_{t-1})$뿐이다. 그대로 바꿔 끼운 것이다.` }] },
+      { id: "s5", text: String.raw`이 식의 우변을 다시 보면 $F_{t-1}$은 $x_1,\dots,x_{t-1}$에만 의존하고, 거기에 함수 $f$와 새 입력 $x_t$만 덧붙었을 뿐이다. 그러니 우변 전체는 $x_1,\dots,x_t$ 이외의 어떤 값에도 의존하지 않는다.<br><br>이 합성함수를 $F_t(x_1,\dots,x_t) := f(F_{t-1}(x_1,\dots,x_{t-1}),x_t)$ 로 새로 정의하면 $h_t = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`F_t(x_1,\dots,x_t)`, why: String.raw`방금 만든 합성함수 $F_t$의 정의를 그대로 $h_t$에 붙인 것이다. $F_t$는 $F_{t-1}$과 $f$를 합쳐 만든 것이라 $x_1,\dots,x_t$에만 의존한다.` }] },
+      { id: "s6", text: String.raw`기초단계와 귀납단계가 모두 확인됐으므로 수학적 귀납법에 의해 모든 $t\ge1$에서 $h_t=F_t(x_1,\dots,x_t)$가 성립한다. 재귀식은 겉으로 $h_{t-1}$ 하나만 참조하는 것처럼 보이지만, 그 안에는 이전 스텝들이 겹겹이 합성되며 전체 입력 이력이 이미 압축되어 있다.<br><br>이것이 RNN의 은닉상태가 별도의 외부 메모리 없이도 과거 전체를 대신할 수 있는 이유다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "diffusion-forward-process": {
+    title: "확산모델 정방향과정의 닫힌형 주변분포",
+    domain: "prob",
+    subLabel: "마르코프 · 확률과정",
+    explanation: String.raw`확산모델의 정방향과정은 $x_0$에 조금씩 잡음을 더해가는 마르코프체인이에요. 한 스텝씩 $q(x_t\mid x_{t-1})$을 따라가려면 $t$번의 샘플링이 필요해요. 그런데 실제로 학습할 땐 임의의 $t$에서 $x_0$로부터 곧바로 $x_t$를 한 번에 샘플링해야 해요. 이게 가능한 이유는 $t$번의 잡음 주입을 통째로 합쳐도 결국 하나의 정규분포로 정리되기 때문이에요. 귀납법과 재매개변수화 트릭으로 그 닫힌 형태를 유도해봐요.<br><br><strong>명제.</strong> $x_t=\sqrt{\alpha_t}x_{t-1}+\sqrt{1-\alpha_t}\epsilon_t$ ($\epsilon_t\sim\mathcal N(0,I)$, 서로 독립)이고 $\bar\alpha_t:=\prod_{s=1}^t\alpha_s$이면, 어떤 $\epsilon\sim\mathcal N(0,I)$가 존재해 $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$ 이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 $t$번의 잡음 주입을 반복한 결과 $x_t$가, 사실은 $x_0$에서 단 한 번의 잡음 주입만으로도 똑같이 얻어진다는 걸 보이는 것이다. 먼저 정방향과정의 한 스텝을 재매개변수화 트릭으로 적어둔다. $x_t=\sqrt{\alpha_t}x_{t-1}+\sqrt{1-\alpha_t}\epsilon_t$ 이고 $\epsilon_t\sim\mathcal N(0,I)$는 스텝마다 독립으로 뽑는다.<br><br>$\bar\alpha_t:=\prod_{s=1}^t\alpha_s$ 로 정의하고, $t$에 대한 귀납법으로 닫힌 형태를 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 $t=1$인 기초단계를 확인한다. $\bar\alpha_t$의 정의 $\prod_{s=1}^t\alpha_s$에서 $t=1$일 때는 곱해지는 항이 $\alpha_1$ 하나뿐이다.<br><br>$\bar\alpha_1 = $[[blank:가]] 이다. 그러면 $x_1=\sqrt{\alpha_1}x_0+\sqrt{1-\alpha_1}\epsilon_1 = \sqrt{\bar\alpha_1}x_0+\sqrt{1-\bar\alpha_1}\epsilon_1$이 되어 원하는 형태가 $t=1$에서 성립한다.`,
+        blanks: [{ id: "가", latex: String.raw`\alpha_1`, why: String.raw`$\bar\alpha_t$의 정의 $\prod_{s=1}^t\alpha_s$에 $t=1$을 넣으면 곱해지는 항이 $\alpha_1$ 하나뿐이라 그대로 $\alpha_1$이 된다.` }] },
+      { id: "s3", text: String.raw`이제 귀납가정을 세운다. 어떤 $\epsilon'\sim\mathcal N(0,I)$가 존재해 $t-1$ 시점에서 $x_{t-1}=\sqrt{\bar\alpha_{t-1}}x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon'$ 이 성립한다고 가정하자.<br><br>이 가정 아래 $t$ 시점에도 같은 형태가 나오는지 확인한다.`, blanks: [] },
+      { id: "s4", text: String.raw`귀납가정을 재귀식 $x_t=\sqrt{\alpha_t}x_{t-1}+\sqrt{1-\alpha_t}\epsilon_t$에 대입한다. 괄호 안의 $x_{t-1}$ 자리에 귀납가정을 그대로 채워 넣고 $\sqrt{\alpha_t}$를 분배한다.<br><br>$x_t = \sqrt{\alpha_t}\left(\sqrt{\bar\alpha_{t-1}}x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon'\right)+\sqrt{1-\alpha_t}\epsilon_t = $[[blank:나]]$+\sqrt{\alpha_t(1-\bar\alpha_{t-1})}\,\epsilon'+\sqrt{1-\alpha_t}\,\epsilon_t$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sqrt{\alpha_t\bar\alpha_{t-1}}\,x_0`, why: String.raw`괄호를 풀어 $\sqrt{\alpha_t}$를 안쪽 두 항에 각각 곱한 것이다. $x_0$가 곱해진 항은 $\sqrt{\alpha_t}\cdot\sqrt{\bar\alpha_{t-1}}=\sqrt{\alpha_t\bar\alpha_{t-1}}$이 된다.` }] },
+      { id: "s5", text: String.raw`여기서 $\alpha_t\bar\alpha_{t-1}$이라는 계수가 낯익다. $\bar\alpha_t$의 정의 $\prod_{s=1}^t\alpha_s$ 그 자체와 정확히 같은 모양이다.<br><br>$\alpha_t\bar\alpha_{t-1} = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\bar\alpha_t`, why: String.raw`$\bar\alpha_{t-1}=\prod_{s=1}^{t-1}\alpha_s$에 $\alpha_t$를 하나 더 곱하면 $\prod_{s=1}^t\alpha_s=\bar\alpha_t$와 정확히 같아진다.` }] },
+      { id: "s6", text: String.raw`남은 두 잡음항 $\sqrt{\alpha_t(1-\bar\alpha_{t-1})}\,\epsilon'$과 $\sqrt{1-\alpha_t}\,\epsilon_t$은 서로 독립인 정규분포를 따른다. 독립인 두 정규확률변수를 더하면 그 합도 정규분포를 따르고, 분산은 각 분산을 더한 값과 같다.<br><br>두 분산을 더하면 $\alpha_t(1-\bar\alpha_{t-1}) + (1-\alpha_t) = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`1-\bar\alpha_t`, why: String.raw`괄호를 풀면 $\alpha_t-\alpha_t\bar\alpha_{t-1}+1-\alpha_t = 1-\alpha_t\bar\alpha_{t-1}$이 된다. 앞서 $\alpha_t\bar\alpha_{t-1}=\bar\alpha_t$임을 확인했으니 이는 $1-\bar\alpha_t$와 같다.` }] },
+      { id: "s7", text: String.raw`그러니 두 잡음항을 합친 것은 평균 0, 분산 $(1-\bar\alpha_t)I$인 정규분포를 따르고, 이를 다시 $\sqrt{1-\bar\alpha_t}\,\epsilon$ ($\epsilon\sim\mathcal N(0,I)$) 형태로 쓸 수 있다.<br><br>s4의 $x_0$ 항과 합치면 $x_t = \sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$을 얻어 귀납단계가 완성되고, 이 닫힌 형태 덕분에 임의의 $t$에서 $x_0$로부터 곧바로 $x_t$를 한 번에 샘플링할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "ddim-deterministic": {
+    title: "DDIM: 비마르코프 결정론적 역과정의 일관성",
+    domain: "prob",
+    subLabel: "마르코프 · 확률과정",
+    explanation: String.raw`DDPM의 샘플링은 매 스텝 새로운 무작위성을 더해가며 $x_T$에서 $x_0$까지 거슬러 내려와요. 스텝 수가 많을수록 품질은 좋지만 느려요. DDIM은 매 스텝 새로 무작위 잡음을 뽑지 않고, $x_t$로부터 $x_0$을 바로 추정한 뒤 그 추정치로 결정론적으로 다음 단계를 구해요. 마르코프체인처럼 한 스텝씩 밟는 구조를 벗어난다고 해서 비마르코프라 불러요. 그런데도 이 결정론적 역과정이 diffusion-forward-process에서 구한 것과 똑같은 주변분포를 그대로 만족한다는 걸 확인해봐요.<br><br><strong>명제.</strong> $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$이고 노이즈 예측이 정확해 $\epsilon_\theta(x_t,t)=\epsilon$이면, DDIM 갱신식 $x_{t-1}=\sqrt{\bar\alpha_{t-1}}\hat x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon_\theta(x_t,t)$은 $x_{t-1}=\sqrt{\bar\alpha_{t-1}}x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon$과 정확히 같다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 DDIM의 결정론적 갱신식이, 확률적 과정 없이도 diffusion-forward-process에서 구한 것과 정확히 같은 주변분포를 만들어낸다는 걸 확인하는 것이다. DDIM의 핵심 아이디어는 $x_t$로부터 곧바로 $x_0$의 추정치 $\hat x_0$를 계산한 다음, 이 추정치를 이용해 $x_{t-1}$을 결정론적으로 구하는 것이다.<br><br>그러려면 먼저 정방향과정의 닫힌 형태 $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$을 $x_0$에 대해 풀어야 한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$ 을 $x_0$에 대해 풀어본다. 양변에서 잡음항을 이항한 뒤 $\sqrt{\bar\alpha_t}$로 나눈다.<br><br>$x_0 = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{x_t-\sqrt{1-\bar\alpha_t}\,\epsilon}{\sqrt{\bar\alpha_t}}`, why: String.raw`$x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$에서 $\sqrt{1-\bar\alpha_t}\epsilon$을 반대편으로 이항하고 양변을 $\sqrt{\bar\alpha_t}$로 나눈 것이다.` }] },
+      { id: "s3", text: String.raw`실제 샘플링 과정에서는 진짜 잡음 $\epsilon$을 알 수 없다. 그래서 DDIM은 이 자리에 모델이 예측한 잡음 $\epsilon_\theta(x_t,t)$를 대신 넣어서 추정치 $\hat x_0 := \left(x_t-\sqrt{1-\bar\alpha_t}\,\epsilon_\theta(x_t,t)\right)/\sqrt{\bar\alpha_t}$ 를 만든다.<br><br>그다음 같은 $\epsilon_\theta$를 다시 써서 $x_{t-1}=\sqrt{\bar\alpha_{t-1}}\hat x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon_\theta(x_t,t)$ 로 이전 단계를 결정론적으로 계산한다. 매 스텝 새로 무작위 표본을 뽑는 DDPM과 다른 점이 바로 여기다.`, blanks: [] },
+      { id: "s4", text: String.raw`이상적인 경우를 생각해본다. 모델이 잡음을 완벽하게 예측해서 $\epsilon_\theta(x_t,t)=\epsilon$이라 하자. 이때 $\hat x_0$의 정의에 이 값을 대입한다.<br><br>$\hat x_0 = \dfrac{x_t-\sqrt{1-\bar\alpha_t}\,\epsilon}{\sqrt{\bar\alpha_t}} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`x_0`, why: String.raw`s2에서 이미 이 식 자체가 $x_0$를 풀어낸 결과였다. $\epsilon_\theta=\epsilon$을 넣으면 s2의 식을 그대로 다시 얻는 것이므로 결과는 $x_0$ 그 자체다.` }] },
+      { id: "s5", text: String.raw`이제 이 값을 DDIM 갱신식 $x_{t-1}=\sqrt{\bar\alpha_{t-1}}\hat x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon_\theta(x_t,t)$ 에 그대로 대입한다. $\hat x_0=x_0$이고 $\epsilon_\theta(x_t,t)=\epsilon$이다.<br><br>$x_{t-1} = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\sqrt{\bar\alpha_{t-1}}x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon`, why: String.raw`갱신식의 $\hat x_0$ 자리에 $x_0$를, $\epsilon_\theta(x_t,t)$ 자리에 $\epsilon$을 그대로 바꿔 끼운 것이다.` }] },
+      { id: "s6", text: String.raw`이 결과를 diffusion-forward-process에서 구한 정방향과정의 $t-1$ 시점 주변분포 $x_{t-1}=\sqrt{\bar\alpha_{t-1}}x_0+\sqrt{1-\bar\alpha_{t-1}}\epsilon$과 비교하면 완전히 똑같다. 다만 매 스텝 새로 뽑는 잡음이 아니라 처음 $x_t$를 만들 때 썼던 바로 그 $\epsilon$을 그대로 재사용한다는 점이 다르다.<br><br>그러니 DDIM의 결정론적이고 비마르코프적인 역과정은 DDPM과 똑같은 주변분포 $q(x_t\mid x_0)$를 그대로 만족하면서도, 잡음을 고정해두는 덕분에 중간 스텝을 건너뛰어도 일관된 샘플을 만들 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "mdp-definition": {
+    title: "마르코프 성질과 벨만방정식의 잘 정의됨",
+    domain: "prob",
+    subLabel: "마르코프 · 확률과정",
+    explanation: String.raw`MDP는 $(S,A,P,R,\gamma)$ 다섯 가지로 정의돼요. 그 중 전이확률 $P$가 오직 현재 상태와 행동에만 의존한다는 마르코프 성질이 사실 이 정의 전체를 지탱하는 기둥이에요. markov-mdp에서는 이 성질을 가정하고 벨만 기대방정식을 유도했어요. 여기서는 한 걸음 더 들어가서, 이 성질이 없다면 상태만의 함수인 가치함수 $V(s)$라는 개념 자체가 왜 무너지는지를 확인해봐요.<br><br><strong>명제.</strong> 정책 $\pi$를 고정하고 $H_{t-1}=(s_0,\dots,s_{t-1})$이라 하자. 1단계 마르코프 성질 $P(s_{t+1}\mid s_t,H_{t-1})=P(s_{t+1}\mid s_t)$가 모든 $t$에서 성립하면, 모든 $k\ge1$에서 $P(s_{t+k}\mid s_t,H_{t-1})=P(s_{t+k}\mid s_t)$ 이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 딱 한 스텝짜리 마르코프 성질만으로도, 몇 스텝 뒤든 미래 상태의 분포가 오직 현재 상태에만 의존한다는 훨씬 강한 사실을 이끌어낼 수 있음을 보이는 것이다. 정책 $\pi$를 고정하고 $t$ 이전의 상태 이력을 $H_{t-1}=(s_0,\dots,s_{t-1})$이라 쓰자.<br><br>가정하는 것은 1단계 마르코프 성질 $P(s_{t+1}\mid s_t,H_{t-1})=P(s_{t+1}\mid s_t)$뿐이며, 이걸로 모든 $k\ge1$에 대해 $P(s_{t+k}\mid s_t,H_{t-1})=P(s_{t+k}\mid s_t)$가 성립함을 $k$에 대한 귀납법으로 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`기초단계는 $k=1$이다. 이때 주장 $P(s_{t+1}\mid s_t,H_{t-1})=P(s_{t+1}\mid s_t)$가 정말 성립하는지 본다.<br><br>이건 처음에 가정한 1단계 마르코프 성질 그 자체이므로 별도의 계산 없이 성립한다.`, blanks: [] },
+      { id: "s3", text: String.raw`귀납단계를 밟는다. $k$까지는 성립한다고 가정하고(귀납가정) $k+1$에서도 성립함을 보인다. 먼저 전확률법칙으로 중간 상태 $s_{t+k}$에 대해 나눠 더한다.<br><br>$P(s_{t+k+1}\mid s_t,H_{t-1}) = \sum_{s_{t+k}} P(s_{t+k+1}\mid s_{t+k},s_t,H_{t-1})\cdot $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`P(s_{t+k}\mid s_t,H_{t-1})`, why: String.raw`전확률법칙으로 $s_{t+k}$가 가질 수 있는 모든 값에 대해 나눠 더한 것이다. 그 값을 조건으로 걸 확률과, 그 값을 지날 확률을 곱해 더한다.` }] },
+      { id: "s4", text: String.raw`둘째 인수는 귀납가정을 그대로 적용할 수 있는 자리다. $k$단계에 대해 성립한다고 가정했다.<br><br>$P(s_{t+k}\mid s_t,H_{t-1}) = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`P(s_{t+k}\mid s_t)`, why: String.raw`귀납가정이 정확히 이 등식이다. $k$단계까지는 성립한다고 가정했으므로 그대로 가져다 쓸 수 있다.` }] },
+      { id: "s5", text: String.raw`첫째 인수도 정리할 수 있다. $s_{t+k}$에서 $s_{t+k+1}$로 가는 전이만 놓고 보면, $s_t$와 $H_{t-1}$은 $s_{t+k}$보다 더 오래된 과거일 뿐이다. 1단계 마르코프 성질을 이 시점에 다시 적용한다.<br><br>$P(s_{t+k+1}\mid s_{t+k},s_t,H_{t-1}) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`P(s_{t+k+1}\mid s_{t+k})`, why: String.raw`1단계 마르코프 성질은 특정 시점에서만 성립하는 게 아니라 모든 시점에서 성립한다고 가정했다. 이 성질을 $s_{t+k}$에서 $s_{t+k+1}$로 가는 전이에 적용하면, $s_{t+k}$보다 오래된 과거는 전이확률에 영향을 주지 않는다.` }] },
+      { id: "s6", text: String.raw`두 결과를 합치면 $P(s_{t+k+1}\mid s_t,H_{t-1}) = \sum_{s_{t+k}} P(s_{t+k+1}\mid s_{t+k})P(s_{t+k}\mid s_t)$ 이다. 이 우변은 $H_{t-1}$이 전혀 없는 상태에서 $s_t$로부터 $k+1$단계를 간 것과 똑같은 모양이다.<br><br>그러니 $P(s_{t+k+1}\mid s_t,H_{t-1}) = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`P(s_{t+k+1}\mid s_t)`, why: String.raw`우변이 $H_{t-1}$을 전혀 포함하지 않는 순수한 $k+1$단계 전이확률의 전확률법칙 전개와 정확히 같은 모양이다. 그러니 좌변도 이와 같아야 한다.` }] },
+      { id: "s7", text: String.raw`귀납법에 의해 모든 $k\ge1$에서 $k$단계 뒤 상태의 분포는 오직 현재 상태 $s_t$에만 의존하고, 그 이전 이력 $H_{t-1}$과는 무관하다. 이는 미래 궤적 전체와, 그 위에서 정의되는 리턴 $G_t=\sum_k\gamma^kr_{t+k}$의 분포도 오직 $s_t$에만 의존한다는 뜻이다.<br><br>바로 이 사실 덕분에 가치함수 $V(s)=E[G_t\mid s_t=s]$가 어떻게 그 상태에 도달했는지와 무관하게 상태 하나만의 함수로 잘 정의되고, 이 잘 정의됨이 있어야만 벨만방정식 $V(s)=E[r_t+\gamma V(s_{t+1})\mid s_t=s]$이 $V$에 대한 자기완결적인 재귀식으로 성립할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "lm-as-policy": {
+    title: "언어모델을 정책으로: 토큰 생성의 연쇄법칙과 MDP",
+    domain: "prob",
+    subLabel: "마르코프 · 확률과정",
+    explanation: String.raw`언어모델은 다음 토큰의 확률 $p_\theta(y_t\mid y_1,\dots,y_{t-1})$을 내놓고, 전체 문장의 확률은 연쇄법칙으로 이 조건부확률들을 전부 곱한 것과 같아요. 그런데 강화학습에서 정책 $\pi_\theta(a_t\mid s_t)$도 상태가 주어졌을 때 행동을 고를 확률이에요. 상태를 지금까지 나온 토큰들의 문맥으로 정의하면, 이 둘은 이름만 다를 뿐 정확히 같은 대상이라는 걸 확인해봐요. RLHF에서 언어모델을 정책처럼 다루는 이유가 바로 여기서 나와요.<br><br><strong>명제.</strong> $s_t:=(y_1,\dots,y_{t-1})$, $a_t:=y_t$, $\pi_\theta(a_t\mid s_t):=p_\theta(y_t\mid y_1,\dots,y_{t-1})$로 정의하면 $p_\theta(y_1,\dots,y_T)=\prod_{t=1}^T\pi_\theta(a_t\mid s_t)$이고, 상태전이는 $P(s_{t+1}\mid s_t,a_t,H)=P(s_{t+1}\mid s_t,a_t)$를 만족하는 마르코프 전이다.`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 언어모델의 토큰 생성 과정이 문자 그대로 MDP 안에서 움직이는 정책이라는 걸 확인하는 것이다. 먼저 언어모델의 표준적인 연쇄법칙 분해부터 적는다. 이건 어떤 가정도 필요 없이 확률의 정의만으로 항상 성립하는 식이다. $p_\theta(y_1,\dots,y_T) = \prod_{t=1}^T p_\theta(y_t\mid y_1,\dots,y_{t-1})$ 이다.<br><br>이제 상태를 $s_t:=(y_1,\dots,y_{t-1})$, 즉 지금까지 나온 문맥으로, 행동을 $a_t:=y_t$, 즉 다음 토큰으로 정의하고 정책을 $\pi_\theta(a_t\mid s_t):=p_\theta(y_t\mid y_1,\dots,y_{t-1})$로 정의한다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 표기를 그대로 정책의 언어로 바꿔 쓴다. 각 인수 $p_\theta(y_t\mid y_1,\dots,y_{t-1})$는 정의에 따라 $\pi_\theta(a_t\mid s_t)$와 정확히 같은 값이다.<br><br>그러니 전체 시퀀스의 확률은 $p_\theta(y_1,\dots,y_T) = \prod_{t=1}^T $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\pi_\theta(a_t\mid s_t)`, why: String.raw`s1에서 정의한 $\pi_\theta(a_t\mid s_t):=p_\theta(y_t\mid y_1,\dots,y_{t-1})$를 그대로 대입한 것이다. 연쇄법칙의 각 항을 정책의 각 항으로 이름만 바꿔 부른 셈이다.` }] },
+      { id: "s3", text: String.raw`이걸로 토큰별 생성 확률의 곱이 정책의 궤적확률과 같은 대상임을 확인했다. 하지만 이게 진짜 MDP가 되려면 상태전이도 마르코프 성질을 만족해야 한다.<br><br>다음 상태가 현재 상태와 행동 이전의 오래된 과거에는 영향받지 않아야 한다는 뜻이며, 이제 상태전이가 실제로 어떻게 정의되는지 본다.`, blanks: [] },
+      { id: "s4", text: String.raw`다음 상태 $s_{t+1}=(y_1,\dots,y_t)$는 이전 상태 $s_t=(y_1,\dots,y_{t-1})$ 뒤에 방금 나온 행동 $a_t=y_t$ 하나를 이어붙인 것과 정확히 같다.<br><br>즉 $s_{t+1} = $[[blank:나]] 이다. 이 이어붙이기는 $s_t$와 $a_t$만 알면 결과가 항상 하나로 정해지는 결정론적 연산이다.`,
+        blanks: [{ id: "나", latex: String.raw`(s_t, a_t)`, why: String.raw`$s_t=(y_1,\dots,y_{t-1})$ 뒤에 $a_t=y_t$를 이어붙이면 $(y_1,\dots,y_t)=s_{t+1}$이 된다. 이 조작은 $s_t,a_t$ 이외에 다른 어떤 값도 필요로 하지 않는다.` }] },
+      { id: "s5", text: String.raw`이 결정론적 연산 덕분에 전이확률은 $s_t,a_t$ 이전의 어떤 과거를 더 알아도 달라지지 않는다.<br><br>$s_t,a_t$ 이전의 역사를 $H$라 하면 $P(s_{t+1}\mid s_t,a_t,H) = $[[blank:다]] 이다. 이는 정확히 마르코프 성질의 정의다.`,
+        blanks: [{ id: "다", latex: String.raw`P(s_{t+1}\mid s_t,a_t)`, why: String.raw`$s_{t+1}$이 $s_t,a_t$의 결정론적 함수이므로, 그 값의 확률은 이미 $s_t,a_t$만으로 완전히 결정된다. 여기에 더 오래된 과거 $H$를 알아도 이 확률은 조금도 달라지지 않는다.` }] },
+      { id: "s6", text: String.raw`정리하면 문맥을 상태로, 다음 토큰을 행동으로 두는 순간 언어모델의 순차적 토큰 생성은 문자 그대로 MDP가 된다. 궤적확률은 연쇄법칙과 정책의 곱이 정확히 같은 식이고, 상태전이는 문맥 이어붙이기라는 결정론적 연산이라 마르코프 성질을 저절로 만족한다.<br><br>바로 이 대응 덕분에 PPO나 DPO처럼 원래 MDP를 위해 만들어진 강화학습 도구를, 가치함수와 벨만방정식과 정책그래디언트까지 포함해서 언어모델 미세조정에 그대로 가져다 쓸 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
   }
 };
