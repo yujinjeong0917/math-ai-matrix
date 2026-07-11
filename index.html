@@ -6,6 +6,16 @@
 <title>수학 × AI 매트릭스</title>
 <meta name="description" content="선형대수·미적분·확률통계·정보이론·이산수학이 ML/DL/생성모델/RL의 어떤 기법으로 갈라지는지 대분류-중분류-소분류로 정리한 레퍼런스 매트릭스." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
 <style>
   :root {
     --paper: #eef0f3;
@@ -99,13 +109,33 @@
 
   .wrap { max-width: 1220px; margin: 0 auto; padding: 56px 28px 80px; }
 
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 0 0 14px;
+  }
+
   .eyebrow {
     font-family: var(--font-mono);
     font-size: 12.5px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-faint);
-    margin: 0 0 14px;
+    margin: 0;
+  }
+
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim);
+    cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle:focus-visible { outline: 2px solid var(--highlight); outline-offset: 2px; }
+  .theme-toggle .dot-bw {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #fff 50%, #14151a 50%);
+    border: 1px solid var(--line);
   }
 
   h1 {
@@ -221,7 +251,13 @@
 </head>
 <body>
 <div class="wrap">
-  <p class="eyebrow">Reference Matrix · Math for AI</p>
+  <div class="topbar">
+    <p class="eyebrow">Reference Matrix · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
   <h1>수학 개념·공식·기법을<br /><em>ML · DL · RL</em> 한 판으로</h1>
   <p class="lede">
     선형대수·미적분·확률통계·정보이론·이산수학, 그 안의 중분류까지 내려가서
@@ -656,6 +692,27 @@
       if (nowActive) deactivate(); else activate();
     });
   });
+
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() {
+      label.textContent = current() === "dark" ? "다크" : "라이트";
+    }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
 </script>
 </body>
 </html>
