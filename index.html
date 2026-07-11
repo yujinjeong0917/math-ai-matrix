@@ -120,24 +120,6 @@
 
   .lede { max-width: 660px; color: var(--ink-dim); font-size: 16px; margin: 0 0 36px; }
 
-  .origin { display: flex; flex-direction: column; gap: 8px; max-width: 480px; margin: 0 0 48px; }
-  .bubble { display: flex; gap: 10px; align-items: flex-end; }
-  .bubble.you { flex-direction: row-reverse; }
-  .avatar {
-    flex: none; width: 26px; height: 26px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; color: var(--surface-2); background: var(--ink-dim);
-  }
-  .bubble.you .avatar { background: var(--c-linalg); }
-  .bubble p {
-    margin: 0; padding: 9px 13px; border-radius: 14px;
-    background: var(--surface-2); border: 1px solid var(--line-soft);
-    font-size: 13.5px; color: var(--ink-dim);
-  }
-  .bubble.you p { background: var(--c-linalg-bg); border-color: transparent; color: var(--ink); }
-  .origin .name { font-size: 11px; color: var(--ink-faint); margin: 2px 36px 0; }
-  .bubble.you + .name { text-align: right; }
-
   .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
   .legend-item {
     display: flex; align-items: center; gap: 7px;
@@ -241,24 +223,6 @@
     Classical ML · Deep Learning · 생성모델 · RL이 실제로 어떤 소분류 기법과 공식을
     쓰는지 하나의 매트릭스에 담았습니다.
   </p>
-
-  <div class="origin">
-    <div class="bubble you">
-      <div class="avatar">유</div>
-      <p>수학 개념들 공식들 기법들(ML DL RL 등등) 이렇게 매트릭스로 한판에 보기 알아야되어요</p>
-    </div>
-    <div class="name">정유진</div>
-    <div class="bubble you">
-      <div class="avatar">유</div>
-      <p>ML도 저렇게 뭉뚱그린 ML이 아니라, 여러 모델들·기법들 세부분기가 있는</p>
-    </div>
-    <div class="name">정유진</div>
-    <div class="bubble">
-      <div class="avatar">현</div>
-      <p>대충 알거가타</p>
-    </div>
-    <div class="name">박현준</div>
-  </div>
 
   <div class="legend">
     <span class="legend-item"><span class="dot" style="background:var(--c-linalg)"></span>선형대수</span>
