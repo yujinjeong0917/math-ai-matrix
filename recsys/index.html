@@ -27,6 +27,9 @@
     --c-rs-b: #5a2f7d;
     --c-rs-c: #7d5a2f;
     --c-rs-d: #2f7d5a;
+    --c-rs-e: #7d3f2f;
+    --c-rs-f: #3f7d7d;
+    --c-rs-g: #5a2f5a;
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -42,6 +45,9 @@
       --c-rs-b: #aa7ed4;
       --c-rs-c: #d4aa7e;
       --c-rs-d: #7ed4aa;
+      --c-rs-e: #d4917e;
+      --c-rs-f: #7ed4d4;
+      --c-rs-g: #aa7eaa;
     }
   }
   :root[data-theme="dark"] {
@@ -54,6 +60,9 @@
       --c-rs-b: #aa7ed4;
       --c-rs-c: #d4aa7e;
       --c-rs-d: #7ed4aa;
+      --c-rs-e: #d4917e;
+      --c-rs-f: #7ed4d4;
+      --c-rs-g: #aa7eaa;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -65,6 +74,9 @@
     --c-rs-b: #5a2f7d;
     --c-rs-c: #7d5a2f;
     --c-rs-d: #2f7d5a;
+    --c-rs-e: #7d3f2f;
+    --c-rs-f: #3f7d7d;
+    --c-rs-g: #5a2f5a;
   }
   * { box-sizing: border-box; }
   body {
@@ -197,7 +209,7 @@
     <a href="../index.html">기초 매트릭스</a>
     <a href="../advanced/index.html">심화 매트릭스</a>
     <a href="../xai/index.html">XAI · 해석가능성</a>
-    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../llm/index.html">LLM/Agent</a>
     <a href="../product/index.html">서비스 · 프로덕트 분석</a>
     <a href="../mlops/index.html">MLOps · 인프라</a>
     <a href="../recsys/index.html" class="active">추천시스템 · 랭킹</a>
@@ -206,13 +218,16 @@
   </nav>
 
   <h1>협업필터링부터 슬레이트 최적화까지<br /><em>추천시스템 · 랭킹</em> 매트릭스</h1>
-  <p class="lede">후보생성, 랭킹, 평가지표, 개인화/강화학습까지 추천 파이프라인의 네 층을 정리했습니다.</p>
+  <p class="lede">후보생성, 랭킹, 평가지표, 개인화/강화학습에 콜드스타트, 다양성·탐색·세션 기반 추천, 지표 괴리와 대규모 서빙까지 더해 추천 파이프라인 전반을 정리했습니다.</p>
   <div class="source-note"><strong>참고.</strong> Koren et al.의 Matrix Factorization 논문, Covington et al.의 YouTube Two-Tower 추천 논문, Zhou et al.의 DIN 논문을 뼈대로 구성했습니다.</div>
   <div class="legend">
     <span class="legend-item"><span class="dot" style="background:var(--c-rs-a)"></span>후보생성</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-rs-b)"></span>랭킹</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-rs-c)"></span>평가지표</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-rs-d)"></span>개인화 · 강화학습</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-e)"></span>콜드스타트 · 콘텐츠 기반 필터링</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-f)"></span>다양성 · 탐색 · 세션 기반 추천</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-rs-g)"></span>지표 괴리 · 대규모 서빙 아키텍처</span>
   </div>
   <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
 
@@ -284,9 +299,60 @@
     </div>
   </div>
 
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-e)"></span>콜드스타트 · 콘텐츠 기반 필터링</p>
+    <p class="group-desc">행동 데이터가 부족한 신규 사용자와 신규 아이템을 다루고, 상호작용 없이도 콘텐츠 특징만으로 추천하는 방법을 다룹니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">콜드스타트 대응</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">신규 사용자 콜드스타트</p><p class="formula">행동 데이터가 없을 때 인구통계·온보딩 응답 정보로 대체</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">신규 아이템 콜드스타트</p><p class="formula">상호작용 데이터가 없을 때 콘텐츠 기반 특징으로 임시 대체</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">하이브리드 방식</p><p class="formula">협업필터링과 콘텐츠 기반을 결합해 데이터 부족을 보완</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">콘텐츠 기반 필터링</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">특징 벡터화</p><p class="formula">TF-IDF나 임베딩으로 아이템의 텍스트·메타데이터를 수치화</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">콘텐츠 유사도 추천</p><p class="formula">사용자가 선호한 아이템과 특징이 비슷한 아이템을 추천</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">협업필터링과의 비교</p><p class="formula">콜드스타트에 강하지만 새로운 취향 발견력은 상대적으로 약함</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-f)"></span>다양성 · 탐색 · 세션 기반 추천</p>
+    <p class="group-desc">추천이 좁은 취향에 갇히지 않도록 다양성과 탐색을 관리하고, 로그인 없이 현재 세션 행동만으로 추천하는 방법을 다룹니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">다양성 · 공정성 · 탐색</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">필터버블</p><p class="formula">추천이 좁은 취향에 갇혀 다양성이 줄어드는 현상</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">노출 공정성</p><p class="formula">인기 아이템 쏠림을 막고 아이템 노출 기회를 고르게 배분</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">Exploration-Exploitation</p><p class="formula">알려진 선호만 활용하면 새 취향을 못 찾아 탐색을 병행하는 이유</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">세션 기반 추천</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">세션 기반 추천</p><p class="formula">로그인 없이 현재 세션 행동만으로 다음 아이템을 추천</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">GRU4Rec</p><p class="formula">RNN으로 세션 내 클릭 순서를 학습하는 순차 추천 모델</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">Next-item Prediction</p><p class="formula">세션에서 다음에 클릭할 아이템을 예측하는 과제</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-g)"></span>지표 괴리 · 대규모 서빙 아키텍처</p>
+    <p class="group-desc">오프라인 지표와 온라인 성과의 괴리를 다루고, 실서비스에서 추천을 빠르게 서빙하는 구조를 다룹니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">오프라인-온라인 지표 괴리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">지표 괴리</p><p class="formula">NDCG 등 오프라인 지표가 좋아도 온라인 성과로 이어지지 않는 경우가 있음</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">Interleaving</p><p class="formula">두 랭킹을 섞어 보여주고 실제 클릭으로 우열을 비교</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">Replay 평가</p><p class="formula">과거 로그를 재생해 오프라인에서 온라인에 가까운 성과를 추정</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">대규모 서빙 아키텍처</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">2단계 구조</p><p class="formula">후보생성으로 대상을 줄인 뒤 랭킹으로 정밀 계산해 연산량을 절감</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">실시간 피처 스토어</p><p class="formula">서빙 시점에 최신 사용자·아이템 피처를 빠르게 조회</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">ANN 인덱스 갱신</p><p class="formula">근사최근접 검색 인덱스를 주기적으로 재구축해 최신성 유지</p></div>
+      </div>
+    </div>
+  </div>
+
 
   <footer>
-    <span>대분류 4 × 중분류 8 — 후보생성부터 강화학습 기반 개인화까지</span>
+    <span>대분류 7 × 중분류 14, 후보생성부터 대규모 서빙 아키텍처까지</span>
     <span>2026.07.12</span>
   </footer>
 </div>

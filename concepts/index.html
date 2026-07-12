@@ -114,6 +114,23 @@
   }
   .explanation strong { color: var(--ink); }
 
+  .example-box {
+    background: var(--surface-2); border: 1.5px dashed var(--line); border-radius: 14px;
+    padding: 20px 22px; margin-bottom: 28px; max-width: 66ch;
+  }
+  .example-label {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+  .example-label::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--highlight); }
+  .example-body { color: var(--ink-dim); font-size: 14.5px; line-height: 1.85; }
+  .example-body p { margin: 0 0 12px; }
+  .example-body p:last-child { margin-bottom: 0; }
+  .example-body .katex-display { margin: 10px 0; overflow-x: auto; overflow-y: hidden; }
+  .example-body strong { color: var(--ink); }
+
   .proof-heading {
     font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
     color: var(--ink-faint); margin: 32px 0 12px;
@@ -293,7 +310,7 @@
     }
     if (window.renderMathInElement) {
       window.renderMathInElement(document.getElementById("content"), {
-        delimiters: [{ left: "$", right: "$", display: false }],
+        delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
         throwOnError: false,
         errorColor: "#c0392b",
       });
@@ -344,6 +361,9 @@
       '</span>' +
       '<h1>' + escapeHtml(concept.title) + '</h1>' +
       '<div class="explanation">' + concept.explanation + '</div>' +
+      (concept.example
+        ? '<div class="example-box"><p class="example-label">숫자로 먼저 보기</p><div class="example-body">' + concept.example + '</div></div>'
+        : '') +
       '<p class="proof-heading">빈칸 증명</p>' +
       partsHtml;
 
@@ -351,7 +371,7 @@
 
     if (window.renderMathInElement) {
       window.renderMathInElement(document.getElementById("content"), {
-        delimiters: [{ left: "$", right: "$", display: false }],
+        delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
         throwOnError: false,
         errorColor: "#c0392b",
       });

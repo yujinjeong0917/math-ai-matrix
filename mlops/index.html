@@ -29,6 +29,12 @@
     --c-ml-d: #7d2f2f;
     --c-ml-e: #2f5a7d;
     --c-ml-e: #2f5a7d;
+    --c-ml-f: #2f7d7d;
+    --c-ml-g: #6a4a8a;
+    --c-ml-h: #8a7d2f;
+    --c-ml-i: #7a2f8a;
+    --c-ml-j: #6a8a2f;
+    --c-ml-k: #8a2f6a;
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -46,6 +52,12 @@
       --c-ml-d: #d47e7e;
     --c-ml-e: #7eaad4;
       --c-ml-e: #7eaad4;
+      --c-ml-f: #7ec4c4;
+      --c-ml-g: #b39dd4;
+      --c-ml-h: #d4c46e;
+      --c-ml-i: #c47ed4;
+      --c-ml-j: #b3d47e;
+      --c-ml-k: #d47eb3;
     }
   }
   :root[data-theme="dark"] {
@@ -58,6 +70,12 @@
       --c-ml-b: #d4a06e;
       --c-ml-c: #7fc4a3;
       --c-ml-d: #d47e7e;
+      --c-ml-f: #7ec4c4;
+      --c-ml-g: #b39dd4;
+      --c-ml-h: #d4c46e;
+      --c-ml-i: #c47ed4;
+      --c-ml-j: #b3d47e;
+      --c-ml-k: #d47eb3;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -69,6 +87,12 @@
     --c-ml-b: #8a5a2f;
     --c-ml-c: #2f7d5a;
     --c-ml-d: #7d2f2f;
+    --c-ml-f: #2f7d7d;
+    --c-ml-g: #6a4a8a;
+    --c-ml-h: #8a7d2f;
+    --c-ml-i: #7a2f8a;
+    --c-ml-j: #6a8a2f;
+    --c-ml-k: #8a2f6a;
   }
   * { box-sizing: border-box; }
   body {
@@ -201,7 +225,7 @@
     <a href="../index.html">기초 매트릭스</a>
     <a href="../advanced/index.html">심화 매트릭스</a>
     <a href="../xai/index.html">XAI · 해석가능성</a>
-    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../llm/index.html">LLM/Agent</a>
     <a href="../product/index.html">서비스 · 프로덕트 분석</a>
     <a href="../mlops/index.html" class="active">MLOps · 인프라</a>
     <a href="../recsys/index.html">추천시스템 · 랭킹</a>
@@ -218,6 +242,12 @@
     <span class="legend-item"><span class="dot" style="background:var(--c-ml-c)"></span>데이터 · 파이프라인</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-ml-d)"></span>관측 · 신뢰성</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-ml-e)"></span>AWS 인프라 기초</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-ml-f)"></span>CI/CD for ML</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-ml-g)"></span>실험 재현성</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-ml-h)"></span>모델 레지스트리 · 거버넌스</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-ml-i)"></span>데이터 계약 · 품질</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-ml-j)"></span>GPU 클러스터 · 스케줄링</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-ml-k)"></span>비용 최적화</span>
   </div>
   <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
 
@@ -313,8 +343,110 @@
     </div>
   </div>
 
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-ml-f)"></span>CI/CD for ML</p>
+    <p class="group-desc">학습부터 배포까지 파이프라인을 자동화하고 안전하게 전환하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">파이프라인 자동화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-f)"><p class="name">모델 CI</p><p class="formula">데이터 · 코드가 바뀌면 학습 파이프라인을 자동으로 재실행해 검증</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">배포 전략</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-f)"><p class="name">블루그린 배포</p><p class="formula">새 버전을 완전히 준비한 뒤 트래픽 전체를 한번에 전환</p></div><div class="chip-card" style="--chip-c:var(--c-ml-f)"><p class="name">자동 롤백 트리거</p><p class="formula">지표가 기준 이하로 떨어지면 자동으로 이전 버전 복귀</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-ml-g)"></span>실험 재현성</p>
+    <p class="group-desc">같은 실행이 같은 결과를 내도록 실험 조건을 고정하고 기록하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">환경 고정</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-g)"><p class="name">시드 고정</p><p class="formula">random seed를 고정해 같은 코드가 같은 결과를 내도록 함</p></div><div class="chip-card" style="--chip-c:var(--c-ml-g)"><p class="name">환경 고정</p><p class="formula">Docker · conda lock file로 라이브러리 버전까지 동결</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">실험 기록</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-g)"><p class="name">실험 메타데이터</p><p class="formula">데이터 버전과 코드 버전 조합을 함께 기록</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-ml-h)"></span>모델 레지스트리 · 거버넌스</p>
+    <p class="group-desc">학습된 모델을 체계적으로 등록하고 검증해서 프로덕션에 올리는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">레지스트리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-h)"><p class="name">모델 버저닝</p><p class="formula">semantic versioning으로 모델 변경 이력을 명확히 구분</p></div><div class="chip-card" style="--chip-c:var(--c-ml-h)"><p class="name">모델 카드</p><p class="formula">성능 · 한계 · 의도된 사용처를 문서화한 모델 설명서</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">거버넌스</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-h)"><p class="name">승인 워크플로우</p><p class="formula">스테이징에서 검증 후 프로덕션으로 승격하는 절차</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-ml-i)"></span>데이터 계약 · 품질</p>
+    <p class="group-desc">업스트림 데이터가 깨지기 전에 미리 잡아내는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">데이터 계약</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-i)"><p class="name">데이터 계약</p><p class="formula">업스트림 스키마 변경을 사전에 감지하는 명시적 약속</p></div><div class="chip-card" style="--chip-c:var(--c-ml-i)"><p class="name">스키마 진화 관리</p><p class="formula">필드 추가 · 삭제가 하위 시스템을 깨지 않도록 관리</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">품질 검증</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-i)"><p class="name">데이터 품질 체크</p><p class="formula">null 비율 · 분포 이상을 자동으로 검증</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-ml-j)"></span>GPU 클러스터 · 스케줄링</p>
+    <p class="group-desc">비싼 GPU 자원을 여러 학습 · 추론 워크로드가 효율적으로 나눠 쓰게 하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">자원 관리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-j)"><p class="name">GPU 활용률 모니터링</p><p class="formula">할당된 GPU가 실제로 얼마나 쓰이는지 추적</p></div><div class="chip-card" style="--chip-c:var(--c-ml-j)"><p class="name">멀티테넌시</p><p class="formula">여러 팀이 클러스터를 공유할 때 자원을 격리</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">스케줄링</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-j)"><p class="name">잡 스케줄링</p><p class="formula">우선순위 큐와 선점형 스케줄링으로 작업 순서 조정</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-ml-k)"></span>비용 최적화</p>
+    <p class="group-desc">성능을 유지하면서 인프라 지출을 줄이는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">컴퓨트 비용</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-k)"><p class="name">스팟 인스턴스 활용</p><p class="formula">중단될 수 있지만 훨씬 저렴한 컴퓨트로 비용 절감</p></div><div class="chip-card" style="--chip-c:var(--c-ml-k)"><p class="name">오토스케일링과 비용의 트레이드오프</p><p class="formula">응답성과 지출 사이에서 스케일링 정책 조정</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">낭비 제거</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-ml-k)"><p class="name">유휴 자원 탐지</p><p class="formula">쓰이지 않는 인스턴스 · 스토리지를 자동으로 찾아냄</p></div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <span>대분류 5 × 중분류 11 — 학습 인프라부터 운영 신뢰성까지</span>
+    <span>대분류 11 × 중분류 23, 학습 인프라부터 비용 최적화까지</span>
     <span>2026.07.12</span>
   </footer>
 </div>

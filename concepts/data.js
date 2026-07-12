@@ -1730,6 +1730,17 @@ window.CONCEPTS = {
     domain: "linalg",
     subLabel: "벡터 · 행렬 연산",
     explanation: String.raw`정규방정식 $\beta=(X^TX)^{-1}X^Ty$를 쓰려면 $X^TX$가 반드시 가역이어야 합니다. 그런데 언제 가역이고 언제 아닌지는 어떻게 알 수 있을까요. 그 답은 설계행렬 $X$의 계수, 즉 랭크에 달려 있습니다. 랭크는 행렬의 열들 중 실제로 서로 독립인 방향이 몇 개인지를 세는 지표입니다. 특징이 아무리 많아도 그중 일부가 나머지의 조합으로 표현된다면 랭크는 그만큼 낮아집니다.<br><br><strong>명제.</strong> $X\in\mathbb{R}^{n\times d}$에 대해 $\mathrm{rank}(X^TX)=\mathrm{rank}(X)$이다. 따라서 $X^TX$가 가역인 것은 $X$의 열들이 서로 선형독립일 때, 즉 $\mathrm{rank}(X)=d$일 때뿐이다.`,
+    example: String.raw`<p>추상적인 증명에 들어가기 전에 숫자를 직접 넣어 계산해보면 명제가 무슨 뜻인지 바로 감이 잡힙니다. 두 열이 독립인 경우와 종속인 경우를 나란히 놓고 비교합니다.</p>
+<p><strong>독립인 경우.</strong> 편향 열과 특징 열이 서로 다른 방향을 가리키는 설계행렬을 씁니다.</p>
+$$X=\begin{pmatrix}1&2\\1&3\\1&5\end{pmatrix}$$
+<p>이 행렬의 $X^TX$를 직접 곱해서 구하면 다음과 같습니다.</p>
+$$X^TX=\begin{pmatrix}3&10\\10&38\end{pmatrix}$$
+<p>행렬식은 $3\times38-10\times10=14$ 로 0이 아닙니다. 두 열이 서로 독립이라 랭크가 2이고 그래서 $X^TX$도 가역입니다.</p>
+<p><strong>종속인 경우.</strong> 이번엔 둘째 열을 첫째 열의 2배로 만들어봅니다.</p>
+$$X'=\begin{pmatrix}1&2\\2&4\\3&6\end{pmatrix}$$
+<p>둘째 열이 첫째 열의 스칼라배이므로 두 열은 하나의 방향만 가리킵니다. 랭크가 1로 떨어집니다. 이제 $X'^TX'$를 계산해봅니다.</p>
+$$X'^TX'=\begin{pmatrix}14&28\\28&56\end{pmatrix}$$
+<p>행렬식은 $14\times56-28\times28=0$ 입니다. $X$의 랭크가 2에서 1로 떨어지자 $X^TX$의 가역성도 그대로 함께 사라졌습니다. 아래 증명은 이 관찰이 우연이 아니라 항상 성립하는 사실임을 보입니다.</p>`,
     sections: [
       { id: "s1", text: String.raw`$X$가 $n\times d$ 설계행렬이라 하자. 행은 샘플, 열은 특징에 대응한다. 지금 목표는 $X^TX$의 랭크가 $X$ 자체의 랭크와 정확히 같음을 보이는 것이다. 이걸 보이고 나면 $X^TX$가 언제 가역인지, 즉 정규방정식이 언제 유일한 해를 갖는지를 $X$의 랭크만 보고도 바로 판단할 수 있게 된다.`, blanks: [] },
       { id: "s2", text: String.raw`랭크를 직접 비교하는 대신 영공간을 비교하는 우회로를 택한다. 벡터공간의 차원정리에 따르면 열이 $d$개인 행렬의 랭크와 영공간의 차원을 더하면 항상 $d$가 되기 때문에, 두 행렬의 영공간이 똑같다는 것만 보이면 랭크도 자동으로 같아진다. 먼저 $Xv=0$이면 $X^TXv=0$이라는 방향은 쉽게 확인된다. 양변에 왼쪽에서 $X^T$를 곱하면 $X^TXv=X^T\cdot 0=0$이기 때문이다. 문제는 반대 방향이다. $X^TXv=0$이라고 가정했을 때 정말로 $Xv=0$까지 이끌어낼 수 있는지를 확인해야 한다.`, blanks: [] },
@@ -2044,6 +2055,131 @@ window.CONCEPTS = {
       { id: "s5", text: String.raw`이 결정론적 연산 덕분에 전이확률은 $s_t,a_t$ 이전의 어떤 과거를 더 알아도 달라지지 않는다.<br><br>$s_t,a_t$ 이전의 역사를 $H$라 하면 $P(s_{t+1}\mid s_t,a_t,H) = $[[blank:다]] 이다. 이는 정확히 마르코프 성질의 정의다.`,
         blanks: [{ id: "다", latex: String.raw`P(s_{t+1}\mid s_t,a_t)`, why: String.raw`$s_{t+1}$이 $s_t,a_t$의 결정론적 함수이므로, 그 값의 확률은 이미 $s_t,a_t$만으로 완전히 결정된다. 여기에 더 오래된 과거 $H$를 알아도 이 확률은 조금도 달라지지 않는다.` }] },
       { id: "s6", text: String.raw`정리하면 문맥을 상태로, 다음 토큰을 행동으로 두는 순간 언어모델의 순차적 토큰 생성은 문자 그대로 MDP가 된다. 궤적확률은 연쇄법칙과 정책의 곱이 정확히 같은 식이고, 상태전이는 문맥 이어붙이기라는 결정론적 연산이라 마르코프 성질을 저절로 만족한다.<br><br>바로 이 대응 덕분에 PPO나 DPO처럼 원래 MDP를 위해 만들어진 강화학습 도구를, 가치함수와 벨만방정식과 정책그래디언트까지 포함해서 언어모델 미세조정에 그대로 가져다 쓸 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "vanishing-exploding-gradients": {
+    title: "그래디언트 소실과 폭주: (1±ε)^L의 지수적 변화",
+    domain: "numeric",
+    subLabel: "수치적 안정성",
+    explanation: String.raw`깊은 네트워크를 역전파로 학습시키면 입력에 가까운 층일수록 그래디언트가 이상하게 작아지거나 커지는 현상이 자주 나타납니다. backprop-jacobian 항목에서 본 것처럼 그래디언트는 층마다 야코비안을 하나씩 곱하며 거슬러 올라갑니다. 여기서는 그 곱이 층 수 $L$에 대해 정확히 얼마나 빠르게 커지거나 작아지는지를 수로 확인합니다.<br><br><strong>명제.</strong> $L$겹 스칼라 선형 네트워크에서 각 층의 미분 계수가 같은 값 $c$라 하자. $c=1-\epsilon$ ($0<\epsilon<1$)이면 $|c^L|\le e^{-\epsilon L}$이고, $c=1+\epsilon$ ($\epsilon>0$)이면 $c^L=e^{L\ln(1+\epsilon)}$로 $L$에 대해 지수적으로 커진다.`,
+    sections: [
+      { id: "s1", text: String.raw`$L$겹으로 층이 쌓인 스칼라 선형 네트워크 $x_l=w_lx_{l-1}$을 생각하자. 손실을 $\ell$이라 쓰고 $g_l=\partial \ell/\partial x_l$이라 하면 backprop-jacobian 항목과 같은 체인룰로 $g_{l-1}=w_lg_l$이 성립한다. 지금 목표는 이 관계를 $L$번 반복했을 때 $g_0$이 $g_L$에 비해 얼마나 커지거나 작아지는지를 정확한 식으로 잡아내는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$g_{l-1}=w_lg_l$을 $l=L,L-1,\dots,1$까지 차례로 적용하면 매번 새 계수가 하나씩 곱해져 쌓인다.<br><br>$g_0 = ($[[blank:가]]$)g_L$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`w_1w_2\cdots w_L`, why: String.raw`s1의 관계를 $L$번 반복 적용하면 매 단계마다 계수가 하나씩 곱해져 쌓인다. 최종적으로 $L$개의 계수가 모두 곱해진 형태로 $g_L$에 작용한 것이 $g_0$이다.` }] },
+      { id: "s3", text: String.raw`이제 모든 층의 계수가 같은 값 $c=1-\epsilon$ ($0<\epsilon<1$)이라 하자. $g_0=c^Lg_L$인데 $c^L$이 $L$에 따라 얼마나 빨리 작아지는지 보려면 $1-\epsilon$을 지수함수로 눌러 잡아야 한다. 지수함수 $e^x$의 그래프는 $x=0$에서의 접선 위에 항상 있으므로 임의의 실수 $\epsilon$에 대해 부등식이 성립한다.<br><br>$1-\epsilon \le$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`e^{-\epsilon}`, why: String.raw`지수함수의 접선 부등식 $e^x\ge1+x$에 $x=-\epsilon$을 대입하면 $e^{-\epsilon}\ge1-\epsilon$을 얻는다. 모든 실수 $\epsilon$에서 성립하는 표준 부등식이다.` }] },
+      { id: "s4", text: String.raw`양변이 모두 양수이므로($0<1-\epsilon<1$, $e^{-\epsilon}>0$) 부등식의 양변을 $L$제곱해도 순서가 바뀌지 않는다. 그러면 $c^L=(1-\epsilon)^L \le$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`e^{-\epsilon L}`, why: String.raw`$(e^{-\epsilon})^L=e^{-\epsilon L}$이다. 밑이 같은 지수함수를 $L$제곱하면 지수끼리 곱해진다.` }] },
+      { id: "s5", text: String.raw`이번엔 반대로 모든 층의 계수가 $c=1+\epsilon$ ($\epsilon>0$)이라 하자. $g_0=c^Lg_L$이고 이번엔 지수를 직접 로그로 풀어 쓸 수 있다. $c^L = e^{L\ln c}$이므로 $c^L=$[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`e^{L\ln(1+\epsilon)}`, why: String.raw`$c=1+\epsilon$을 그대로 대입한 것이다. $\ln(1+\epsilon)>0$이므로 $L$이 커질수록 지수가 한없이 커져 $c^L$이 지수적으로 발산한다.` }] },
+      { id: "s6", text: String.raw`정리하면 $c=1-\epsilon$일 때는 $|g_0|\le e^{-\epsilon L}|g_L|$로 층이 깊어질수록 그래디언트가 지수적으로 사라지고, $c=1+\epsilon$일 때는 $|g_0|=e^{L\ln(1+\epsilon)}|g_L|$로 지수적으로 폭주한다. 두 경우 모두 $\epsilon$이 아주 작아도 층 수 $L$이 커지면 그 효과가 걷잡을 수 없이 누적된다는 뜻이다. 잔차연결이나 정규화 기법은 결국 실질적인 $c$를 1 가까이 묶어두려는 장치다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "diffusion-sampler-convergence": {
+    title: "Diffusion 샘플러의 스텝 수와 근사오차",
+    domain: "numeric",
+    subLabel: "수치적 안정성",
+    explanation: String.raw`Diffusion 모델은 역과정을 한 번에 계산하지 않고 유한한 스텝 $T$개로 쪼개서 근사합니다. 스텝 수를 늘리면 이미지 품질은 좋아지지만 생성 속도는 느려집니다. 여기서는 이 오차와 스텝 수 사이의 관계를 오일러법의 국소절단오차 분석으로 정확히 확인합니다.<br><br><strong>명제.</strong> 매끄러운 역과정 $dx/dt=f(x,t)$를 스텝 크기 $h=1/T$인 오일러법으로 풀면 누적오차는 $O(h)$이다. 즉 스텝 수 $T$를 두 배로 늘리면(스텝 크기를 반으로 줄이면) 근사오차는 대략 절반으로 준다.`,
+    sections: [
+      { id: "s1", text: String.raw`Diffusion 모델의 역과정은 연속시간에서 $dx/dt=f(x,t)$라는 상미분방정식으로 볼 수 있다. 실제 샘플링에서는 이 식을 유한한 스텝 $T$개로 쪼개 오일러법으로 근사한다. 한 스텝의 크기를 $h=1/T$라 하면 지금 목표는 스텝 크기 $h$를 줄일 때 근사오차가 어떻게 줄어드는지 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`참값 $x(t_{n+1})$을 $t_n$ 주변에서 테일러전개하면 $x(t_{n+1}) = x(t_n) + hf(x(t_n),t_n) + \frac{h^2}{2}x''(\xi)$ ($\xi$는 $t_n$과 $t_{n+1}$ 사이의 어떤 점) 이다. 오일러법의 한 스텝 추정값은 앞의 두 항까지만 쓴 $x_n+hf(x_n,t_n)$이다.<br><br>그러니 한 스텝의 국소절단오차는 $($[[blank:가]]$)$ 크기다.`,
+        blanks: [{ id: "가", latex: String.raw`\frac{h^2}{2}x''(\xi)`, why: String.raw`테일러전개에서 오일러법이 놓친 항이 바로 이 이차항이다. 정확한 해와 오일러 근사의 차이가 정확히 이 크기로 남는다.` }] },
+      { id: "s3", text: String.raw`그러니 한 스텝의 오차는 $h^2$에 비례한다. 이제 $t=0$부터 $t=1$까지 가려면 스텝을 $T=1/h$번 밟아야 한다. 매 스텝 오차가 최악의 경우 그대로 쌓인다고 보면 전체 누적오차는 스텝당 오차에 스텝 수를 곱한 크기다.<br><br>누적오차 $\approx T\cdot h^2 = \dfrac{1}{h}\cdot h^2 = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`h`, why: String.raw`$T=1/h$를 대입하고 정리하면 $h$ 하나만 남는다. 그러니 전체 누적오차는 국소오차의 제곱이 아니라 스텝 크기 $h$에 정비례한다.` }] },
+      { id: "s4", text: String.raw`정리하면 누적오차는 $h=1/T$에 정비례한다. 즉 오차는 $T$에 반비례한다. 스텝 수를 두 배로 늘리면 $h$가 절반이 되므로 오차도 다음처럼 바뀐다.<br><br>$T$를 $2T$로 늘리면 새 오차는 원래 오차의 $($[[blank:다]]$)$ 배다.`,
+        blanks: [{ id: "다", latex: String.raw`\frac12`, why: String.raw`오차가 $h=1/T$에 정비례하므로 $T$가 두 배가 되면 $h$는 절반이 되고 오차도 그대로 절반이 된다.` }] },
+      { id: "s5", text: String.raw`정리하면 diffusion 샘플러의 스텝 수 $T$를 늘릴수록(스텝 크기 $h$를 줄일수록) 근사오차는 $O(1/T)$ 비율로 줄어든다. 스텝 수를 두 배로 늘리면 오차가 대략 절반으로 준다는 뜻이다. 실제 DDIM이나 고차 솔버들은 국소절단오차의 차수를 $h^2$보다 더 높여서 같은 스텝 수로도 더 빠르게 오차를 줄인다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "value-iteration-contraction": {
+    title: "가치반복의 수렴성: 벨만 최적연산자의 축약성",
+    domain: "numeric",
+    subLabel: "수치적 안정성",
+    explanation: String.raw`가치반복은 벨만 최적연산자를 계속 적용해서 가치함수를 갱신하는 알고리즘입니다. 그런데 이 반복이 정말 하나의 값으로 수렴한다는 보장은 어디서 나올까요. markov-mdp 항목에서 본 벨만방정식의 연산자 버전이 실은 거리를 매번 줄이는 축약사상이라는 사실에서 나옵니다.<br><br><strong>명제.</strong> 벨만 최적연산자 $(TV)(s)=\max_a\left[r(s,a)+\gamma\sum_{s'}P(s'|s,a)V(s')\right]$는 $\|TV_1-TV_2\|_\infty \le \gamma\|V_1-V_2\|_\infty$를 만족하는 축약사상이고, 따라서 가치반복은 유일한 고정점으로 수렴한다.`,
+    sections: [
+      { id: "s1", text: String.raw`가치반복은 벨만 최적연산자 $T$를 반복해서 적용하는 알고리즘이다. 두 가치함수 사이의 거리는 $\|V_1-V_2\|_\infty = \max_s|V_1(s)-V_2(s)|$라는 sup노름으로 잰다. 지금 목표는 $T$를 한 번 적용했을 때 이 거리가 항상 $\gamma$배 이하로 줄어든다는 사실, 즉 $T$가 축약사상임을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 $s$를 하나 고정한다. $(TV_1)(s)$와 $(TV_2)(s)$는 둘 다 $\max_a[\cdots]$ 형태인데, $|\max_af(a)-\max_ag(a)|\le\max_a|f(a)-g(a)|$라는 표준 부등식을 쓰면 최댓값끼리의 차이를 행동별 차이의 최댓값으로 눌러 잡을 수 있다. 이때 두 식에 똑같이 들어있는 $r(s,a)$ 항은 빼는 과정에서 사라진다.<br><br>$|(TV_1)(s)-(TV_2)(s)| \le \gamma\max_a|\sum_{s'}P(s'|s,a)($[[blank:가]]$)|$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`V_1(s')-V_2(s')`, why: String.raw`$r(s,a)$ 항은 두 식 모두에 똑같이 있어 빼면 사라진다. 남는 것은 $\gamma$가 곱해진 기댓값 안의 $V_1(s')-V_2(s')$뿐이다.` }] },
+      { id: "s3", text: String.raw`이제 안쪽 합의 크기를 눌러 잡을 차례다. 절댓값을 합 안으로 넣으면(삼각부등식) 각 항의 크기가 $\|V_1-V_2\|_\infty$를 넘지 못하고, 확률 $P(s'|s,a)$를 $s'$에 대해 다 더하면 1이 된다.<br><br>$\sum_{s'}P(s'|s,a)|V_1(s')-V_2(s')| \le \|V_1-V_2\|_\infty\sum_{s'}P(s'|s,a) = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\|V_1-V_2\|_\infty`, why: String.raw`$\sum_{s'}P(s'|s,a)=1$이므로 앞의 상수만 그대로 남는다. 확률분포의 정의 그 자체다.` }] },
+      { id: "s4", text: String.raw`방금 얻은 상한 $\gamma\|V_1-V_2\|_\infty$는 행동 $a$에도 상태 $s$에도 의존하지 않는 상수다. 그러니 s2의 부등식에 이 상한을 넣은 결과는 어떤 $s$에서도 그대로 성립한다.`, blanks: [] },
+      { id: "s5", text: String.raw`정리하면 $|(TV_1)(s)-(TV_2)(s)|\le\gamma\|V_1-V_2\|_\infty$가 모든 $s$에서 성립한다. 좌변에 $s$에 대한 최댓값을 취해도 우변은 $s$와 무관한 상수라 그대로 남는다.<br><br>$\|TV_1-TV_2\|_\infty \le $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\gamma\|V_1-V_2\|_\infty`, why: String.raw`모든 $s$에서 성립하는 부등식의 상한을 그대로 sup으로 확장한 것이다. $\gamma<1$이므로 이 부등식은 $T$가 거리를 줄이는 축약사상임을 뜻한다.` }] },
+      { id: "s6", text: String.raw`$\gamma<1$이므로 $T$는 sup노름 거리를 매번 $\gamma$배 이하로 줄이는 축약사상이다. 완비거리공간에서 축약사상은 항상 유일한 고정점을 가지고 어디서 출발하든 그 점으로 수렴한다는 것이 바나흐 고정점 정리다. 가치반복은 임의의 $V_0$에서 시작해 $V_{k+1}=TV_k$를 반복하는 알고리즘이므로, 이 정리에 의해 $V_k$는 $\gamma$의 기하급수적인 속도로 유일한 최적가치함수 $V^*$로 수렴한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "manifold-hypothesis": {
+    title: "매니폴드 가정과 국소 자유도",
+    domain: "numeric",
+    subLabel: "기하 · 측도",
+    explanation: String.raw`이미지 하나는 픽셀 수만큼의 차원을 갖는 벡터입니다. 그런데도 진짜 자연스러운 이미지들은 그 광대한 공간의 극히 일부, 훨씬 낮은 차원의 표면 근처에만 모여 있는 것처럼 보입니다. 이 관찰을 매니폴드 가정이라 부릅니다. 증명된 정리는 아니지만 이 가정이 참이라면 국소적으로 무엇이 따라 나오는지는 미분기하로 정확히 유도할 수 있습니다.<br><br><strong>명제.</strong> $M\subset\mathbb{R}^D$가 매끄러운 $d$차원 다양체($d\ll D$)이고 $x_0\in M$이면, $x_0$ 근방의 $M$위의 점은 $d$개의 좌표 $t_1,\dots,t_d$로 매개화되는 접공간 근사 $x\approx x_0+\sum_it_iv_i$로 표현되고 그 오차는 $O(\|x-x_0\|^2)$이다.`,
+    sections: [
+      { id: "s1", text: String.raw`매니폴드 가정은 고차원 데이터 $x\in\mathbb{R}^D$가 실제로는 훨씬 낮은 차원 $d\ll D$짜리 매끄러운 다양체 $M$ 위에(또는 그 근처에) 분포한다는 가정이다. 이건 증명된 정리가 아니라 데이터에서 관찰되는 경험적 가정이다. 지금 목표는 이 가정이 참이라면 $M$위의 한 점 근방이 실제로 $d$개의 자유도만 갖는다는 결론이 뒤따른다는 것을 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`점 $x_0\in M$에서 $M$에 접하는 모든 방향을 모은 벡터공간을 접공간 $T_{x_0}M$이라 부른다. $M$이 $d$차원 다양체라는 정의 자체가 이 접공간의 차원을 결정한다.<br><br>$\dim T_{x_0}M = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`d`, why: String.raw`$d$차원 다양체라는 것은 정의상 모든 점에서 접공간이 $d$차원 벡터공간이라는 뜻이다. 다양체의 차원과 접공간의 차원은 정의상 같다.` }] },
+      { id: "s3", text: String.raw`접공간 $T_{x_0}M$은 $d$차원 벡터공간이므로 정규직교기저 $v_1,\dots,v_d$를 고를 수 있다. 이 기저를 이용해 $x_0$ 근방의 점들을 $d$개의 실수 좌표 $t_1,\dots,t_d$로 매개화하는 것이 다음 목표다.`, blanks: [] },
+      { id: "s4", text: String.raw`$M$위의 점 $x$가 $x_0$에 충분히 가까우면 매끄러운 매개화 함수를 통해 $x$를 $x_0$와 접공간 방향의 일차결합으로 근사할 수 있다. 다변수함수의 일차 테일러근사와 같은 원리다.<br><br>$x \approx x_0 + \sum_{i=1}^d $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`t_iv_i`, why: String.raw`각 접공간 기저벡터 $v_i$ 방향으로 얼마나 움직였는지를 계수 $t_i$가 나타낸다. 이 계수들을 다 더한 일차결합이 접평면 위에서의 근사 위치다.` }] },
+      { id: "s5", text: String.raw`이 근사는 $M$을 평평한 접평면으로 갈음한 것이라 완전히 정확하지는 않다. $M$이 매끄럽다는 가정 덕분에 이 근사오차는 다변수 테일러정리와 같은 방식으로 이차항부터 시작한다.<br><br>근사오차의 크기는 $O($[[blank:다]]$)$ 수준이다.`,
+        blanks: [{ id: "다", latex: String.raw`\|x-x_0\|^2`, why: String.raw`매끄러운 다양체를 접평면으로 근사하는 것은 함수를 일차항까지만 테일러전개하는 것과 같다. 남은 오차는 항상 이차항, 즉 거리의 제곱 크기로 시작한다.` }] },
+      { id: "s6", text: String.raw`정리하면 $x_0$ 근방의 $M$위의 점들은 $d$개의 독립적인 좌표 $t_1,\dots,t_d$만으로 오차 $O(\|x-x_0\|^2)$ 안에서 결정된다. $D$개의 원래 좌표를 다 쓸 필요 없이 $d\ll D$개의 국소좌표만으로 충분하다는 뜻이다. 오토인코더나 UMAP 같은 차원축소 기법들이 바로 이 국소적 저차원 구조를 찾아내려는 시도다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "natural-gradient-fisher": {
+    title: "자연그래디언트와 피셔정보행렬: KL의 이차근사",
+    domain: "numeric",
+    subLabel: "기하 · 측도",
+    explanation: String.raw`두 확률분포가 얼마나 다른지 재는 표준 척도는 KL발산입니다. 파라미터를 $\theta$에서 $\theta+d\theta$로 아주 살짝 바꿨을 때 이 KL발산이 어떤 모양으로 커지는지 알면, 파라미터공간의 걸음과 분포공간의 실제 변화 사이의 관계를 정확히 잡을 수 있습니다. 그 답이 바로 피셔정보행렬입니다.<br><br><strong>명제.</strong> $D_{KL}(p_\theta\|p_{\theta+d\theta})$를 $d\theta$에 대해 이차까지 테일러전개하면 $D_{KL}(p_\theta\|p_{\theta+d\theta}) \approx \frac12 d\theta^TF(\theta)d\theta$이다. 여기서 $F(\theta)=\mathbb{E}_{p_\theta}[\nabla_\theta\log p_\theta(x)\nabla_\theta\log p_\theta(x)^T]$는 피셔정보행렬이다.`,
+    sections: [
+      { id: "s1", text: String.raw`$\theta$를 아주 살짝 $\theta+d\theta$로 바꿨을 때 $D_{KL}(p_\theta\|p_{\theta+d\theta})$가 얼마나 커지는지 알고 싶다. 지금 목표는 이 값을 $f(d\theta):=D_{KL}(p_\theta\|p_{\theta+d\theta})$라 두고 $d\theta=0$ 근방에서 테일러전개로 다루기 쉬운 이차식으로 근사하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$d\theta=0$이면 $p_{\theta+d\theta}=p_\theta$이므로 두 분포가 완전히 같다. 자기 자신과의 KL발산은 정의상 항상 0이다.<br><br>$f(0) = D_{KL}(p_\theta\|p_\theta) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`두 분포가 같으면 로그 안의 비율이 항상 1이 되어 적분값 전체가 0이 된다. KL발산의 정의에서 바로 나오는 성질이다.` }] },
+      { id: "s3", text: String.raw`게다가 $D_{KL}(p_\theta\|p_{\theta+d\theta})\ge0$이 모든 $d\theta$에서 성립하고 $d\theta=0$에서 이미 그 최솟값 0을 찍고 있다. 매끄러운 함수가 내부에서 최솟값을 가지면 그 지점의 그래디언트는 반드시 0이어야 한다.<br><br>$\nabla_{d\theta}f(0) = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$d\theta=0$은 $f$의 전역 최솟값이다. 극값을 갖는 지점에서 기울기가 0이 된다는 미적분의 기본 성질을 그대로 적용한 것이다.` }] },
+      { id: "s4", text: String.raw`그러니 테일러전개에서 남는 항은 이차항 $\frac12d\theta^THd\theta$뿐이다. 여기서 $H$는 $f(d\theta)$의 헤시안이다. 로그우도의 이차미분을 기댓값 내고 정리하면(표준적인 계산이라 결과만 받아들인다) 이 헤시안이 정확히 피셔정보행렬 $F(\theta)=\mathbb{E}_{p_\theta}[\nabla_\theta\log p_\theta(x)\nabla_\theta\log p_\theta(x)^T]$과 같다는 사실이 알려져 있다.`, blanks: [] },
+      { id: "s5", text: String.raw`$f(0)=0$, $\nabla f(0)=0$, $H=F(\theta)$를 테일러전개식에 그대로 대입한다.<br><br>$D_{KL}(p_\theta\|p_{\theta+d\theta}) \approx $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\frac12d\theta^TF(\theta)d\theta`, why: String.raw`0차항과 1차항이 모두 사라지고 헤시안 자리에 피셔정보행렬을 넣은 이차형식만 남는다. KL발산이 국소적으로는 피셔정보행렬이 정의하는 이차형식으로 보인다는 뜻이다.` }] },
+      { id: "s6", text: String.raw`정리하면 파라미터공간에서 아주 가까운 두 분포 사이의 KL발산은 유클리드 거리가 아니라 피셔정보행렬 $F(\theta)$가 정의하는 이차형식으로 재진다. 이게 바로 trpo-trust-region 항목에서 KL발산으로 신뢰영역을 제한하는 이유다. 이 곡률을 반영해 그래디언트에 $F(\theta)^{-1}$을 곱한 것이 자연그래디언트이고, 파라미터 하나하나가 아니라 실제 확률분포가 움직이는 정도를 기준으로 걸음을 정하게 해준다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "latent-space-geometry": {
+    title: "잠재공간의 기하: 직선보간은 측지선이 아니다",
+    domain: "numeric",
+    subLabel: "기하 · 측도",
+    explanation: String.raw`VAE나 diffusion의 잠재공간에서 두 코드 $z_0,z_1$을 이을 때 흔히 직선으로 보간합니다. 그런데 디코더 $g$는 비선형함수라서 잠재공간의 직선이 출력공간에서도 최단경로로 이어진다는 보장은 없습니다. 잠재공간을 디코더가 당겨온 리만 다양체로 보면 이 사실을 정확히 확인할 수 있습니다.<br><br><strong>명제.</strong> $g:\mathbb{R}^d\to\mathbb{R}^D$가 매끄러운 디코더이고 $z_{lin}(t)=(1-t)z_0+tz_1$이 직선보간일 때, 출력경로의 길이 $L[z_{lin}]=\int_0^1\|\frac{d}{dt}g(z_{lin}(t))\|dt$는 $g$가 이 구간에서 아핀이 아닌 한 $\|g(z_1)-g(z_0)\|$보다 항상 크다. 즉 $z_{lin}$은 측지선이 아니다.`,
+    sections: [
+      { id: "s1", text: String.raw`두 잠재코드 $z_0,z_1$을 직선 $z_{lin}(t)=(1-t)z_0+tz_1$으로 이었다고 하자. 지금 목표는 이 직선이 만드는 출력경로 $g(z_{lin}(t))$가 실제로 $g(z_0)$에서 $g(z_1)$까지 가는 가장 짧은 경로, 즉 측지선인지 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$\mathbb{R}^D$의 임의의 두 점 $p,q$를 잇는 매끄러운 곡선 $\sigma(t)$($\sigma(0)=p,\sigma(1)=q$)의 길이는 항상 두 점 사이의 직선거리 이상이라는 사실은 삼각부등식에서 바로 나온다.<br><br>$\int_0^1\|\sigma'(t)\|dt \ge$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\|q-p\|`, why: String.raw`곡선의 이동 벡터를 잘게 쪼개 다 더한 것이 곡선의 길이인데, 삼각부등식으로 이 합은 시작점과 끝점을 잇는 직선벡터의 길이보다 작을 수 없다. 곡선이 구불거릴수록 실제 이동거리는 직선거리보다 길어진다.` }] },
+      { id: "s3", text: String.raw`이 부등식에서 등호가 성립하는 경우는 딱 하나뿐이다. 곡선 $\sigma(t)$ 자체가 $p$에서 $q$로 가는 직선 구간 위를 그대로 지나갈 때다.<br><br>등호가 성립하려면 $\sigma(t) = $[[blank:나]] 이어야 한다.`,
+        blanks: [{ id: "나", latex: String.raw`(1-t)p+tq`, why: String.raw`곡선의 길이가 시작점과 끝점 사이의 직선거리와 정확히 같아지는 것은, 그 곡선이 실제로 이 직선식을 따라 단조롭게 움직일 때뿐이다.` }] },
+      { id: "s4", text: String.raw`이제 s2의 사실을 $\sigma(t)=g(z_{lin}(t))$, $p=g(z_0)$, $q=g(z_1)$에 적용한다. $g$는 여러 비선형층을 쌓은 신경망이라 일반적으로 아핀함수가 아니다. 그러니 직선 $z_{lin}(t)$의 상 $g(z_{lin}(t))$은 $t$에 대해 대체로 굽은 경로이지 s3의 등호조건인 직선식 $(1-t)g(z_0)+tg(z_1)$과 같지 않다.`, blanks: [] },
+      { id: "s5", text: String.raw`등호조건이 깨졌으므로 s2의 부등식은 엄격한 부등식이 된다.<br><br>$L[z_{lin}] $[[blank:다]]$ \|g(z_1)-g(z_0)\|$ 이고, 등호는 오직 $g$가 이 구간에서 아핀일 때만 성립한다.`,
+        blanks: [{ id: "다", latex: String.raw`>`, why: String.raw`등호 조건인 $g(z_{lin}(t))=(1-t)g(z_0)+tg(z_1)$이 $g$의 비선형성 때문에 일반적으로 깨진다. 등호조건이 깨진 삼각부등식은 항상 엄격한 부등식으로 남는다.` }] },
+      { id: "s6", text: String.raw`정리하면 두 잠재코드를 잇는 직선보간은 디코더가 비선형인 이상 출력공간에서 최단경로가 아니다. 실제 최단경로, 즉 측지선은 오히려 잠재공간에서는 휘어진 곡선으로 나타난다. 이것이 잠재공간에서 구면보간(slerp)이나 학습된 곡선 경로가 단순한 직선보간보다 더 자연스러운 중간 결과를 만들어내는 이유다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "natural-policy-gradient": {
+    title: "자연정책경사: 신뢰영역 아래에서의 라그랑주 방향",
+    domain: "numeric",
+    subLabel: "기하 · 측도",
+    explanation: String.raw`정책을 개선할 때 그냥 그래디언트 $\nabla J(\theta)$ 방향으로 움직이면, natural-gradient-fisher 항목에서 본 것처럼 파라미터공간의 작은 걸음이 분포공간에서는 방향에 따라 다르게 부풀려질 수 있습니다. 분포공간에서의 걸음 크기를 일정하게 제한한 채 $J$를 가장 빠르게 키우는 방향을 lagrange-kkt와 같은 방식으로 직접 구해봅니다.<br><br><strong>명제.</strong> $\max_{d\theta} \nabla J(\theta)^Td\theta\ \text{s.t.}\ \frac12d\theta^TF(\theta)d\theta\le\epsilon$ 의 최적해 방향은 $d\theta^* \propto F(\theta)^{-1}\nabla J(\theta)$이다.`,
+    sections: [
+      { id: "s1", text: String.raw`정책을 개선할 때 목적함수 $J(\theta)$를 키우는 방향으로 파라미터를 움직이고 싶다. 걸음 $d\theta$가 아주 작다고 하면 $J(\theta+d\theta)\approx J(\theta)+\nabla J(\theta)^Td\theta$로 일차근사할 수 있다. 그리고 natural-gradient-fisher 항목에서 본 것처럼 이 걸음이 만드는 KL발산은 $\frac12d\theta^TF(\theta)d\theta$로 근사된다. 지금 목표는 이 KL근사를 $\epsilon$ 이하로 제한한 채 $\nabla J(\theta)^Td\theta$를 최대화하는 $d\theta$의 방향을 구하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`이건 lagrange-kkt 항목에서 다룬 것과 똑같은 형태의 제약 최적화다. 라그랑주 승수 $\lambda\ge0$을 도입해서 제약을 등호로 정리한 식에 곱해 목적함수에 더한다.<br><br>$\mathcal{L}(d\theta,\lambda) = \nabla J(\theta)^Td\theta - \lambda($[[blank:가]]$)$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\frac12d\theta^TF(\theta)d\theta - \epsilon`, why: String.raw`제약 $\frac12d\theta^TF(\theta)d\theta\le\epsilon$을 등호가 지켜지는 형태로 바꾸면 $\frac12d\theta^TF(\theta)d\theta-\epsilon\le0$이다. lagrange-kkt 항목과 같은 방식으로 이 식에 벌점 계수를 곱해 목적함수에 더한 것이다.` }] },
+      { id: "s3", text: String.raw`최적해 $d\theta^*$에서는 $\mathcal{L}$을 $d\theta$로 미분한 값이 0이어야 한다. $\nabla J(\theta)^Td\theta$를 $d\theta$로 미분하면 $\nabla J(\theta)$가 되고, $\frac12d\theta^TF(\theta)d\theta$는 $F(\theta)$가 대칭행렬이므로 미분하면 $F(\theta)d\theta$가 된다.<br><br>$\nabla_{d\theta}\mathcal{L}(d\theta^*,\lambda) = \nabla J(\theta) - \lambda($[[blank:나]]$) = 0$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`F(\theta)d\theta^*`, why: String.raw`이차형식 $\frac12d\theta^TF(\theta)d\theta$을 $d\theta$로 미분하면 $F(\theta)$가 대칭이라는 사실 덕분에 $F(\theta)d\theta$가 된다. pca 항목에서 이차형식을 미분했던 것과 같은 계산이다.` }] },
+      { id: "s4", text: String.raw`이 식을 $d\theta^*$에 대해 정리하면 $\lambda F(\theta)d\theta^* = \nabla J(\theta)$이고, $F(\theta)$가 가역이라 가정하면 양변 왼쪽에 $F(\theta)^{-1}$을 곱해 풀 수 있다.<br><br>$d\theta^* = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\frac{1}{\lambda}F(\theta)^{-1}\nabla J(\theta)`, why: String.raw`$\lambda F(\theta)d\theta^*=\nabla J(\theta)$의 양변 왼쪽에 $F(\theta)^{-1}$을 곱하고 $\lambda$로 나누면 나오는 식이다. $\lambda$는 걸음의 전체 크기를 정할 뿐 방향에는 영향을 주지 않는다.` }] },
+      { id: "s5", text: String.raw`그러니 $d\theta^*$의 방향은 양의 스칼라 $1/\lambda$를 무시하면 $F(\theta)^{-1}\nabla J(\theta)$와 같다. 이 방향이 바로 자연정책경사다. 원래 그래디언트 $\nabla J(\theta)$를 파라미터공간의 곡률이 아니라 피셔정보행렬이 재는 분포공간의 곡률로 보정한 방향이라는 뜻이다. TRPO는 이 방향을 따라가되 신뢰영역 제약을 매 스텝 다시 강제해서 안정성까지 챙긴 알고리즘이다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
   }
 };

@@ -276,7 +276,7 @@
     <a href="./index.html" class="active">기초 매트릭스</a>
     <a href="./advanced/index.html">심화 매트릭스</a>
     <a href="./xai/index.html">XAI · 해석가능성</a>
-    <a href="./llm/index.html">LLM 실전</a>
+    <a href="./llm/index.html">LLM/Agent</a>
     <a href="./product/index.html">서비스 · 프로덕트 분석</a>
     <a href="./mlops/index.html">MLOps · 인프라</a>
     <a href="./recsys/index.html">추천시스템 · 랭킹</a>
@@ -305,7 +305,7 @@
   </p>
   <p class="hint">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v4l3 2"></path></svg>
-    점(•)이 붙은 소분류는 두 수학 영역에 걸쳐 있어요 — 눌러보면 다른 곳도 같이 밝아져요.
+    점(•)이 붙은 소분류는 두 수학 영역에 걸쳐 있어요. 눌러보면 다른 곳도 같이 밝아져요.
   </p>
 
   <div class="matrix-scroll">
@@ -393,7 +393,7 @@
           </div></td>
           <td><div class="cell">
             <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=score-function" target="_blank" rel="noopener"><p class="name">스코어 함수</p><p class="formula">∇ₓ log p(x)</p></a>
-            <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=reparameterization-trick" target="_blank" rel="noopener"><p class="name">재매개변수화 트릭</p><p class="formula">z = μ + σ⊙ε, ε~N(0,I) — 미분가능한 샘플링</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=reparameterization-trick" target="_blank" rel="noopener"><p class="name">재매개변수화 트릭</p><p class="formula">z = μ + σ⊙ε, ε~N(0,I), 미분가능한 샘플링</p></a>
             <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=gan-saturation" target="_blank" rel="noopener"><p class="name">GAN 학습 포화</p><p class="formula">log(1−D) 대신 −log D, 그래디언트 소실 회피</p></a>
           </div></td>
           <td><div class="cell">
@@ -466,7 +466,7 @@
             <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=calculus-of-variations" target="_blank" rel="noopener"><p class="name">변분법</p><p class="formula">ELBO는 범함수(functional) 최적화 문제</p></a>
           </div></td>
           <td><div class="cell">
-            <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=continuous-state-integral" target="_blank" rel="noopener"><p class="name">연속 상태공간 적분</p><p class="formula">∫ π(a|s)Q(s,a) da — 기댓값 적분</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-calc)" href="concepts/index.html?c=continuous-state-integral" target="_blank" rel="noopener"><p class="name">연속 상태공간 적분</p><p class="formula">∫ π(a|s)Q(s,a) da, 기댓값 적분</p></a>
           </div></td>
         </tr>
 
@@ -573,7 +573,7 @@
           </div></td>
           <td><div class="cell">
             <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=vae-reconstruction-loss" target="_blank" rel="noopener"><p class="name">VAE 재구성 손실</p><p class="formula">−𝔼[log p(x|z)]</p></a>
-            <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=beta-vae" target="_blank" rel="noopener"><p class="name">Beta-VAE</p><p class="formula">KL항에 β 가중 — 분리된 표현학습</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=beta-vae" target="_blank" rel="noopener"><p class="name">Beta-VAE</p><p class="formula">KL항에 β 가중, 분리된 표현학습</p></a>
           </div></td>
           <td><div class="cell">
             <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=max-entropy-rl" target="_blank" rel="noopener"><p class="name">최대엔트로피 RL</p><p class="formula">SAC : J + α·H(π)</p></a>
@@ -588,7 +588,7 @@
           </div></td>
           <td><div class="cell">
             <a class="chip chip-link" href="concepts/index.html?c=kl-divergence" target="_blank" rel="noopener" style="--chip-c:var(--c-info)"><p class="name">지식증류</p><p class="formula">KL(teacher ‖ student)</p></a>
-            <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=data-processing-inequality" target="_blank" rel="noopener"><p class="name">데이터처리부등식</p><p class="formula">I(X;Y) ≥ I(X;f(Y)) — 층을 거칠수록 정보량 비증가</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=data-processing-inequality" target="_blank" rel="noopener"><p class="name">데이터처리부등식</p><p class="formula">I(X;Y) ≥ I(X;f(Y)), 층을 거칠수록 정보량 비증가</p></a>
           </div></td>
           <td><div class="cell">
             <a class="chip chip-link" style="--chip-c:var(--c-info)" href="concepts/index.html?c=vae-kl-regularizer" target="_blank" rel="noopener"><p class="name">VAE 정규화항</p><p class="formula">KL(q(z|x) ‖ p(z))</p></a>
@@ -622,7 +622,7 @@
           <th><p class="row-eyebrow" style="color:var(--c-disc)">이산수학 · 그래프</p><p class="row-name">그래프 · 탐색</p></th>
           <td><div class="cell">
             <a class="chip chip-link" style="--chip-c:var(--c-disc)" href="concepts/index.html?c=hierarchical-clustering" target="_blank" rel="noopener"><p class="name">계층적 군집화</p><p class="formula">덴드로그램</p></a>
-            <a class="chip chip-link" style="--chip-c:var(--c-disc)" href="concepts/index.html?c=spectral-clustering" target="_blank" rel="noopener"><p class="name">그래프 스펙트럼</p><p class="formula">라플라시안 고유값 — 스펙트럴 군집화</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-disc)" href="concepts/index.html?c=spectral-clustering" target="_blank" rel="noopener"><p class="name">그래프 스펙트럼</p><p class="formula">라플라시안 고유값, 스펙트럴 군집화</p></a>
           </div></td>
           <td><div class="cell">
             <a class="chip chip-link" style="--chip-c:var(--c-disc)" href="concepts/index.html?c=gnn-message-passing" target="_blank" rel="noopener"><p class="name">그래프신경망(GNN)</p><p class="formula">인접행렬 메시지패싱</p></a>
@@ -657,32 +657,32 @@
         <tr class="group-start" data-group="numeric">
           <th><p class="row-eyebrow" style="color:var(--c-numeric)">수치해석 · 기하</p><p class="row-name">수치적 안정성</p></th>
           <td><div class="cell">
-            <a class="chip chip-link" href="concepts/index.html?c=condition-number" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">조건수(Condition Number)</p><p class="formula">XᵀX의 조건수 — 다중공선성 문제</p></a>
+            <a class="chip chip-link" href="concepts/index.html?c=condition-number" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">조건수(Condition Number)</p><p class="formula">XᵀX의 조건수, 다중공선성 문제</p></a>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">그래디언트 소실 · 폭주</p><p class="formula">깊은 네트워크의 수치적 불안정성</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=vanishing-exploding-gradients" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">그래디언트 소실 · 폭주</p><p class="formula">깊은 네트워크의 수치적 불안정성</p></a>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">샘플러 수렴성</p><p class="formula">Diffusion 역과정 스텝 수 ↔ 근사오차</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=diffusion-sampler-convergence" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">샘플러 수렴성</p><p class="formula">Diffusion 역과정 스텝 수 ↔ 근사오차</p></a>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">가치반복 수렴성</p><p class="formula">축약사상(contraction mapping) 조건</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=value-iteration-contraction" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">가치반복 수렴성</p><p class="formula">축약사상(contraction mapping) 조건</p></a>
           </div></td>
         </tr>
 
         <tr data-group="numeric">
           <th><p class="row-eyebrow" style="color:var(--c-numeric)">수치해석 · 기하</p><p class="row-name">기하 · 측도</p></th>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">매니폴드 가정</p><p class="formula">고차원 데이터가 저차원 다양체 위에 분포</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=manifold-hypothesis" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">매니폴드 가정</p><p class="formula">고차원 데이터가 저차원 다양체 위에 분포</p></a>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">자연그래디언트 · 피셔정보행렬</p><p class="formula">TRPO 신뢰영역 = 피셔정보 기반 KL 제약</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=natural-gradient-fisher" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">자연그래디언트 · 피셔정보행렬</p><p class="formula">TRPO 신뢰영역 = 피셔정보 기반 KL 제약</p></a>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">잠재공간의 기하</p><p class="formula">VAE/Diffusion 잠재공간을 리만 다양체로 해석</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=latent-space-geometry" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">잠재공간의 기하</p><p class="formula">VAE/Diffusion 잠재공간을 리만 다양체로 해석</p></a>
           </div></td>
           <td><div class="cell">
-            <div class="chip" style="--chip-c:var(--c-numeric)"><p class="name">자연정책경사</p><p class="formula">피셔정보행렬로 정책공간의 곡률 보정</p></div>
+            <a class="chip chip-link" href="concepts/index.html?c=natural-policy-gradient" target="_blank" rel="noopener" style="--chip-c:var(--c-numeric)"><p class="name">자연정책경사</p><p class="formula">피셔정보행렬로 정책공간의 곡률 보정</p></a>
           </div></td>
         </tr>
 
@@ -698,7 +698,7 @@
   </div>
 
   <footer>
-    <span>대분류 6 × 중분류 20 × AI 4갈래, 핵심 개념 100여 개 — 생성모델·RL 파트는 IIT Madras 「Mathematical Foundations of Generative AI」 커리큘럼을 참고해 보완</span>
+    <span>대분류 6 × 중분류 20 × AI 4갈래, 핵심 개념 100여 개, 생성모델·RL 파트는 IIT Madras 「Mathematical Foundations of Generative AI」 커리큘럼을 참고해 보완</span>
     <span>2026.07.11</span>
   </footer>
 </div>

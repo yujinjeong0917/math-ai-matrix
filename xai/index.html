@@ -25,6 +25,7 @@
 
     --c-xa: #6b4c8a; --c-xb: #8a6d1f; --c-xc: #3f7268;
     --c-xa-bg: #efe9f4; --c-xb-bg: #f4eedb; --c-xc-bg: #e3eeeb;
+    --c-xd: #7d3f5a; --c-xe: #3f5a7d; --c-xf: #8a3a3a; --c-xg: #a16a2f; --c-xh: #3f7d4a;
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -38,6 +39,7 @@
 
       --c-xa: #b79bd6; --c-xb: #d3b25c; --c-xc: #7fc2b3;
       --c-xa-bg: #251d30; --c-xb-bg: #2c2517; --c-xc-bg: #17251f;
+      --c-xd: #d69bb4; --c-xe: #8fb0d6; --c-xf: #d68f8f; --c-xg: #e0b37a; --c-xh: #7fd696;
     }
   }
   :root[data-theme="dark"] {
@@ -48,6 +50,7 @@
 
       --c-xa: #b79bd6; --c-xb: #d3b25c; --c-xc: #7fc2b3;
       --c-xa-bg: #251d30; --c-xb-bg: #2c2517; --c-xc-bg: #17251f;
+      --c-xd: #d69bb4; --c-xe: #8fb0d6; --c-xf: #d68f8f; --c-xg: #e0b37a; --c-xh: #7fd696;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -57,6 +60,7 @@
 
     --c-xa: #6b4c8a; --c-xb: #8a6d1f; --c-xc: #3f7268;
     --c-xa-bg: #efe9f4; --c-xb-bg: #f4eedb; --c-xc-bg: #e3eeeb;
+    --c-xd: #7d3f5a; --c-xe: #3f5a7d; --c-xf: #8a3a3a; --c-xg: #a16a2f; --c-xh: #3f7d4a;
   }
   * { box-sizing: border-box; }
   body {
@@ -191,7 +195,7 @@
     <a href="../index.html">기초 매트릭스</a>
     <a href="../advanced/index.html">심화 매트릭스</a>
     <a href="../xai/index.html" class="active">XAI · 해석가능성</a>
-    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../llm/index.html">LLM/Agent</a>
     <a href="../product/index.html">서비스 · 프로덕트 분석</a>
     <a href="../mlops/index.html">MLOps · 인프라</a>
     <a href="../recsys/index.html">추천시스템 · 랭킹</a>
@@ -214,6 +218,11 @@
     <span class="legend-item"><span class="dot" style="background:var(--c-xa)"></span>모델-불가지론적 설명</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-xb)"></span>모델-특화 설명</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-xc)"></span>설명의 신뢰성 · 평가</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-xd)"></span>텍스트 · NLP 설명기법</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-xe)"></span>정형데이터 특화 설명</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-xf)"></span>공정성 · 편향 설명</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-xg)"></span>실무 도구 · 라이브러리</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-xh)"></span>글로벌 vs 로컬 설명</span>
   </div>
   <p class="hint">행은 대분류(색) → 중분류(행 이름), 칸 안의 각 항목은 구체 기법입니다.</p>
   <div class="matrix-scroll">
@@ -295,9 +304,99 @@
     </table>
   </div>
 
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-xd)"></span>텍스트 · NLP 설명기법</p>
+    <p class="group-desc">텍스트는 입력이 이산 토큰이고 임베딩 공간을 거치기 때문에 이미지·표 데이터와는 다른 방식의 교란과 귀속이 필요합니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">교란 기반 설명</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">LIME for Text</p><p class="formula">단어 단위 교란으로 국소 선형 대리모델 학습</p></div><div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Partition SHAP</p><p class="formula">문장을 계층적으로 분할해 단어군 단위로 Shapley값 근사</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">어텐션 · 그래디언트 기반</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Attention 설명의 한계</p><p class="formula">어텐션 가중치가 곧 설명이라는 가정에 대한 반박 논쟁(Attention is not Explanation)</p></div><div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Integrated Gradients(텍스트)</p><p class="formula">기준 임베딩부터 실제 임베딩까지 경로적분한 토큰별 기여도</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">반사실 · 생성 기반</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">반사실 텍스트 생성</p><p class="formula">최소한의 단어 치환으로 예측 라벨을 뒤집는 문장 생성</p></div><div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Rationale Extraction</p><p class="formula">예측을 정당화하는 최소 부분 문장(rationale) 추출</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-xe)"></span>정형데이터 특화 설명</p>
+    <p class="group-desc">표 형태 데이터는 특징 간 상관관계가 강해서 순진한 특징 중요도 계산이 쉽게 왜곡됩니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">의존도 시각화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">PDP(부분의존도 플롯)</p><p class="formula">특징 하나를 바꿔가며 평균 예측 변화를 그린 전역 곡선</p></div><div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">ICE plot</p><p class="formula">PDP를 개별 샘플 단위로 쪼갠 곡선, 샘플 간 이질적 효과 포착</p></div><div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">ALE</p><p class="formula">상관관계 있는 특징에서 PDP보다 안전, 국소 구간 차분을 누적</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">규칙 · 트리 특화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">Anchors</p><p class="formula">if-then 규칙, 조건 충족 시 예측이 거의 바뀌지 않음을 보장하는 고신뢰 설명</p></div><div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">TreeSHAP</p><p class="formula">트리 구조를 활용해 다항시간에 정확한 SHAP값을 계산하는 고속 변형</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-xf)"></span>공정성 · 편향 설명</p>
+    <p class="group-desc">설명가능성은 모델이 어떤 특징에 의존하는지 보여주는 것을 넘어, 그 의존이 특정 집단에 불공정한 영향을 주는지 드러내는 데도 쓰입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">격차 진단</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">그룹별 성능 격차(Disparate Impact)</p><p class="formula">보호집단 간 예측률 비율 비교</p></div><div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">Equalized Odds 점검</p><p class="formula">집단별 참양성률 · 위양성률 차이 측정</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">반사실 · 소스 추적</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">반사실 공정성</p><p class="formula">보호속성만 바꾼 반사실 개체의 예측이 동일한지 검증</p></div><div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">SHAP 기반 편향 소스 추적</p><p class="formula">민감속성과 상관된 대리 특징의 기여도를 분리해 편향 경로 파악</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-xg)"></span>실무 도구 · 라이브러리</p>
+    <p class="group-desc">논문 속 기법을 실제 코드로 옮길 때 쓰는 오픈소스 라이브러리들입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">범용 설명 라이브러리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">shap</p><p class="formula">SHAP값 계산의 사실상 표준 파이썬 라이브러리, TreeExplainer · KernelExplainer 제공</p></div><div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">InterpretML</p><p class="formula">Microsoft의 글래스박스(EBM)와 블랙박스 설명을 함께 제공하는 툴킷</p></div><div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">Alibi Explain</p><p class="formula">Anchors · Counterfactual 등 다양한 기법을 한 인터페이스로 제공</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">딥러닝 특화 도구</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">Captum</p><p class="formula">PyTorch 공식 그래디언트 · 어트리뷰션 기반 설명 라이브러리</p></div><div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">tf-explain</p><p class="formula">TensorFlow/Keras 모델용 Grad-CAM 등 시각화 도구</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-xh)"></span>글로벌 vs 로컬 설명</p>
+    <p class="group-desc">설명은 개별 예측 하나를 다루는지 모델 전체의 행동을 다루는지에 따라 완전히 다른 질문에 답합니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">범위 구분</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">전역 설명(Global)</p><p class="formula">모델 전체의 평균적 행동과 특징 영향력을 요약</p></div><div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">국소 설명(Local)</p><p class="formula">개별 예측 하나에 대한 근거만 설명</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">전역 근사</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">Surrogate Model</p><p class="formula">해석 가능한 단순 모델(선형 · 트리)로 블랙박스 전체를 근사</p></div><div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">Global SHAP 요약</p><p class="formula">로컬 SHAP값들의 평균 절대값을 모아 전역 특징 중요도 산출</p></div>
+      </div>
+    </div>
+  </div>
 
   <footer>
-    <span>대분류 3 × 중분류 9 × 모델 유형 4갈래 — SHAP/LIME부터 신뢰성 검증까지</span>
+    <span>대분류 8 × 중분류 20, SHAP/LIME/Grad-CAM부터 텍스트 · 정형데이터 특화, 공정성, 실무 도구까지</span>
     <span>2026.07.12</span>
   </footer>
 </div>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>LLM 실전 매트릭스 · 수학 × AI</title>
-<meta name="description" content="프롬프팅, RAG, 파인튜닝, KV 캐시와 스케일링, 에이전트까지 LLM 실전 지식을 정리한 매트릭스." />
+<title>LLM/Agent 매트릭스 · 수학 × AI</title>
+<meta name="description" content="프롬프팅, RAG, 파인튜닝, 프롬프트 캐싱을 포함한 추론최적화, 에이전트 설계 패턴과 프레임워크까지 LLM/Agent 실전 지식을 정리한 매트릭스." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧩</text></svg>" />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
@@ -28,6 +28,9 @@
     --c-llm-c: #8a3f6e;
     --c-llm-d: #b8631f;
     --c-llm-e: #7a7d2f;
+    --c-llm-f: #6a2f5a;
+    --c-llm-g: #2f6a4a;
+    --c-llm-h: #4a3f8a;
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -44,6 +47,9 @@
       --c-llm-c: #cf8fb5;
       --c-llm-d: #e5a366;
       --c-llm-e: #c3c86e;
+      --c-llm-f: #d472b8;
+      --c-llm-g: #74c79a;
+      --c-llm-h: #a79bdb;
     }
   }
   :root[data-theme="dark"] {
@@ -57,6 +63,9 @@
       --c-llm-c: #cf8fb5;
       --c-llm-d: #e5a366;
       --c-llm-e: #c3c86e;
+      --c-llm-f: #d472b8;
+      --c-llm-g: #74c79a;
+      --c-llm-h: #a79bdb;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -69,6 +78,9 @@
     --c-llm-c: #8a3f6e;
     --c-llm-d: #b8631f;
     --c-llm-e: #7a7d2f;
+    --c-llm-f: #6a2f5a;
+    --c-llm-g: #2f6a4a;
+    --c-llm-h: #4a3f8a;
   }
   * { box-sizing: border-box; }
   body {
@@ -201,7 +213,7 @@
     <a href="../index.html">기초 매트릭스</a>
     <a href="../advanced/index.html">심화 매트릭스</a>
     <a href="../xai/index.html">XAI · 해석가능성</a>
-    <a href="../llm/index.html" class="active">LLM 실전</a>
+    <a href="../llm/index.html" class="active">LLM/Agent</a>
     <a href="../product/index.html">서비스 · 프로덕트 분석</a>
     <a href="../mlops/index.html">MLOps · 인프라</a>
     <a href="../recsys/index.html">추천시스템 · 랭킹</a>
@@ -209,15 +221,18 @@
     <a href="../process-mining/index.html">Process Mining</a>
   </nav>
 
-  <h1>프롬프팅부터 KV 캐시까지<br /><em>LLM 실전</em> 매트릭스</h1>
-  <p class="lede">프롬프팅, RAG, 파인튜닝/정렬, 추론최적화(스케일링·KV 캐시), 에이전트/평가까지 LLM을 실제로 다룰 때 거치는 다섯 층을 정리했습니다.</p>
-  <div class="source-note"><strong>참고.</strong> Chinchilla 스케일링 법칙 논문, vLLM의 PagedAttention 논문, LoRA/QLoRA 논문, DPO 논문, ReAct/Reflexion 논문을 뼈대로 구성했습니다.</div>
+  <h1>프롬프팅부터 멀티에이전트까지<br /><em>LLM/Agent</em> 매트릭스</h1>
+  <p class="lede">프롬프팅, RAG, 파인튜닝/정렬, 추론최적화(스케일링·KV 캐시·프롬프트 캐싱), 에이전트 설계·프레임워크·평가, 컨텍스트 엔지니어링, 구조화 출력, 멀티모달까지 LLM/Agent를 실제로 다룰 때 거치는 여덟 층을 정리했습니다.</p>
+  <div class="source-note"><strong>참고.</strong> Chinchilla 스케일링 법칙 논문, vLLM의 PagedAttention 논문, LoRA/QLoRA 논문, DPO 논문, ReAct/Reflexion/Tree of Thoughts 논문, Anthropic·OpenAI의 프롬프트 캐싱 문서, LangChain/LangGraph/AutoGen/CrewAI 등 에이전트 프레임워크 문서를 뼈대로 구성했습니다.</div>
   <div class="legend">
     <span class="legend-item"><span class="dot" style="background:var(--c-llm-a)"></span>프롬프팅 · 컨텍스트</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-llm-b)"></span>RAG · 지식증강</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-llm-c)"></span>파인튜닝 · 정렬</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-llm-d)"></span>추론최적화 · 서빙</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-llm-e)"></span>에이전트 · 평가</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-f)"></span>컨텍스트 엔지니어링</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-g)"></span>구조화 출력</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-llm-h)"></span>멀티모달 LLM</span>
   </div>
   <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
 
@@ -282,6 +297,12 @@
       </div>
     </div>
     <div class="sub-block">
+      <p class="sub-title">프롬프트 캐싱</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">캐싱 비용 구조</p><p class="formula">총비용 = 캐시미스토큰×기본단가 + 캐시쓰기토큰×쓰기단가(기본가의 약 1.25배) + 캐시히트토큰×읽기단가(기본가의 약 0.1배)</p></div><div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">캐시 히트율</p><p class="formula">히트율 = 캐시에서 읽은 토큰 수 / 전체 입력 토큰 수, 반복되는 시스템 프롬프트·few-shot 예시가 많을수록 상승</p></div><div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">프리픽스 캐싱(Prefix Caching)</p><p class="formula">입력 앞부분(시스템 프롬프트·대화 히스토리)이 요청마다 동일하면 그 구간 KV 캐시를 재사용, 뒤에 붙는 새 토큰만 재계산</p></div><div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">캐시 TTL</p><p class="formula">캐시가 유지되는 시간(보통 5분~1시간 수준), TTL 경과 시 캐시미스로 처리되어 전체 재계산</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
       <p class="sub-title">스케일링 · 양자화</p>
       <div class="chip-row">
         <div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">스케일링 법칙(Chinchilla)</p><p class="formula">모델 크기 · 데이터량 · 연산량의 최적 비율</p></div><div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">양자화(INT8/GPTQ/AWQ)</p><p class="formula">가중치를 저비트로 근사해 메모리 절감</p></div><div class="chip-card" style="--chip-c:var(--c-llm-d)"><p class="name">스펙큘레이티브 디코딩</p><p class="formula">작은 모델의 초안을 큰 모델이 검증</p></div>
@@ -291,24 +312,105 @@
 
   <div class="group-block">
     <p class="group-title"><span class="dot" style="background:var(--c-llm-e)"></span>에이전트 · 평가</p>
-    <p class="group-desc">LLM을 도구를 쓰는 주체로 확장하고, 결과를 재는 층입니다.</p>
+    <p class="group-desc">LLM을 도구를 쓰는 주체로 확장하고, 여러 에이전트를 조율하고, 결과를 재는 층입니다.</p>
     <div class="sub-block">
-      <p class="sub-title">에이전틱 패턴</p>
+      <p class="sub-title">에이전트 설계 패턴</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Tool Use</p><p class="formula">함수 호출로 외부 API/코드 실행</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Multi-agent 협업</p><p class="formula">역할이 다른 에이전트들의 상호작용</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Planning(Reflexion)</p><p class="formula">실패를 되짚어 다음 시도를 개선</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">ReAct</p><p class="formula">추론(Reasoning)과 행동(Action)을 교대로 반복하며 다음 행동을 결정</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Reflexion</p><p class="formula">실패 원인을 언어로 자기반성한 뒤 다음 시도에 반영해 재시도</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Plan-and-Execute</p><p class="formula">전체 계획을 먼저 수립한 뒤 하위 작업을 순차적으로 실행</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Tree of Thoughts</p><p class="formula">여러 추론 경로를 트리로 탐색하며 평가 후 최선의 경로를 선택</p></div>
       </div>
     </div>
     <div class="sub-block">
-      <p class="sub-title">평가 · 벤치마크</p>
+      <p class="sub-title">도구 사용 · 함수 호출</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Function Calling</p><p class="formula">모델이 사전 정의된 함수의 이름과 인자를 구조화된 형식으로 생성</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Tool Use 스키마 설계</p><p class="formula">함수의 입출력 타입과 설명을 명세해 모델의 호출 정확도를 높임</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">MCP(Model Context Protocol)</p><p class="formula">도구·데이터 소스를 표준화된 방식으로 모델에 연결하는 개방형 프로토콜</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">메모리 · 상태관리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">단기 vs 장기 메모리</p><p class="formula">단기는 컨텍스트 윈도우 안의 최근 대화, 장기는 벡터DB에 저장된 과거 정보</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">메모리 압축(요약 기반)</p><p class="formula">누적된 대화를 주기적으로 요약해 토큰 예산을 절약하며 핵심만 유지</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">에이전트 상태 머신</p><p class="formula">에이전트의 진행 단계를 명시적 상태와 전이 규칙으로 관리</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">멀티에이전트 오케스트레이션</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Supervisor 패턴</p><p class="formula">하나의 에이전트가 하위 에이전트들의 작업을 조율하고 결과를 취합</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">역할 분담형 협업</p><p class="formula">코더·리뷰어처럼 역할이 다른 에이전트가 순차 또는 병렬로 협업</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">에이전트 간 메시지 프로토콜</p><p class="formula">에이전트끼리 작업을 주고받는 메시지 형식과 라우팅 규칙</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">대표 프레임워크 · 라이브러리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">LangChain</p><p class="formula">체인·에이전트 구성을 위한 범용 LLM 오케스트레이션 프레임워크</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">LangGraph</p><p class="formula">상태 그래프 기반으로 에이전트 흐름을 명시적으로 제어하는 프레임워크</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">LlamaIndex</p><p class="formula">데이터 연결과 RAG 파이프라인 구축에 특화된 프레임워크</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">AutoGen</p><p class="formula">Microsoft가 만든 멀티에이전트 대화 오케스트레이션 프레임워크</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">CrewAI</p><p class="formula">역할 기반 멀티에이전트 협업을 정의하는 프레임워크</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">Semantic Kernel</p><p class="formula">Microsoft가 만든 엔터프라이즈 통합 지향 에이전트 SDK</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">OpenAI Agents SDK</p><p class="formula">OpenAI가 제공하는 에이전트/도구 오케스트레이션 SDK</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">에이전트 평가</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">태스크 성공률(Success Rate)</p><p class="formula">전체 시도 중 목표를 실제로 달성한 비율</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">궤적 평가(Trajectory Evaluation)</p><p class="formula">최종 답만이 아니라 중간 행동 순서와 도구 선택 과정을 채점</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">도구 호출 정확도</p><p class="formula">올바른 도구를 올바른 인자로 호출했는지 측정</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">일반 벤치마크 · 평가</p>
       <div class="chip-row">
         <div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">MMLU류 벤치마크</p><p class="formula">다분야 객관식 지식 평가</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">LLM-as-judge</p><p class="formula">다른 LLM이 답변 품질을 채점</p></div><div class="chip-card" style="--chip-c:var(--c-llm-e)"><p class="name">환각(Hallucination) 측정</p><p class="formula">사실성 검증 지표</p></div>
       </div>
     </div>
   </div>
 
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-llm-f)"></span>컨텍스트 엔지니어링</p>
+    <p class="group-desc">긴 컨텍스트 안에서 정보를 어디에, 어떤 순서로 배치할지 설계하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">긴 컨텍스트 배치</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-f)"><p class="name">Lost-in-the-middle</p><p class="formula">컨텍스트 중간에 위치한 정보는 양 끝에 놓인 정보보다 회상률이 낮아지는 현상</p></div><div class="chip-card" style="--chip-c:var(--c-llm-f)"><p class="name">정보 배치 전략</p><p class="formula">중요한 정보를 프롬프트의 시작 또는 끝 부분에 배치해 회상률을 높임</p></div><div class="chip-card" style="--chip-c:var(--c-llm-f)"><p class="name">컨텍스트 순서 민감도</p><p class="formula">같은 정보라도 제시 순서에 따라 모델 응답 품질이 달라짐</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">컨텍스트 구성 기법</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-f)"><p class="name">시스템/유저/어시스턴트 역할 분리</p><p class="formula">역할별로 메시지를 구분해 지시와 정보를 명확히 나눠 전달</p></div><div class="chip-card" style="--chip-c:var(--c-llm-f)"><p class="name">동적 컨텍스트 조립</p><p class="formula">검색 결과·도구 출력·대화 이력을 매 요청마다 새로 재구성</p></div><div class="chip-card" style="--chip-c:var(--c-llm-f)"><p class="name">컨텍스트 토큰 예산 관리</p><p class="formula">모델의 최대 토큰 한도 안에서 시스템·이력·검색결과에 토큰을 배분</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-llm-g)"></span>구조화 출력</p>
+    <p class="group-desc">모델의 출력 형식을 자유 텍스트가 아닌 정해진 구조로 강제하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">출력 형식 강제</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-g)"><p class="name">JSON mode</p><p class="formula">모델이 유효한 JSON만 생성하도록 디코딩 단계에서 제약</p></div><div class="chip-card" style="--chip-c:var(--c-llm-g)"><p class="name">함수 스키마 강제</p><p class="formula">함수 호출의 인자를 사전에 정의한 JSON 스키마에 맞춰 생성</p></div><div class="chip-card" style="--chip-c:var(--c-llm-g)"><p class="name">타입 검증 파싱</p><p class="formula">생성된 출력을 타입 스키마로 파싱하고 실패 시 재시도</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">문법 제약 디코딩</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-g)"><p class="name">Grammar-constrained Decoding</p><p class="formula">컨텍스트-프리 문법(CFG)에 맞는 토큰만 샘플링을 허용</p></div><div class="chip-card" style="--chip-c:var(--c-llm-g)"><p class="name">정규식/유한상태 제약</p><p class="formula">정규식을 유한 오토마타로 변환해 토큰 단위로 후보를 필터링</p></div><div class="chip-card" style="--chip-c:var(--c-llm-g)"><p class="name">구조화 출력의 트레이드오프</p><p class="formula">제약이 강할수록 형식 오류는 줄지만 표현력과 디코딩 속도가 저하될 수 있음</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-llm-h)"></span>멀티모달 LLM</p>
+    <p class="group-desc">텍스트 외에 이미지 등 다른 모달리티를 입력·출력으로 함께 다루는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">비전-언어 모델</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-h)"><p class="name">Vision-Language Model(VLM)</p><p class="formula">이미지 인코더와 언어모델을 연결해 이미지에 대해 텍스트로 응답</p></div><div class="chip-card" style="--chip-c:var(--c-llm-h)"><p class="name">CLIP류 정렬 사전학습</p><p class="formula">이미지와 텍스트 임베딩을 대조학습으로 같은 벡터 공간에 정렬</p></div><div class="chip-card" style="--chip-c:var(--c-llm-h)"><p class="name">Cross-attention 결합</p><p class="formula">이미지 특징을 언어모델의 어텐션에 주입해 두 모달리티를 융합</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">이미지 토큰화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-llm-h)"><p class="name">패치 토큰화</p><p class="formula">이미지를 고정 크기 패치로 분할해 각 패치를 토큰처럼 처리(ViT 방식)</p></div><div class="chip-card" style="--chip-c:var(--c-llm-h)"><p class="name">이미지 토큰 수</p><p class="formula">해상도가 커질수록 이미지 토큰 수가 늘어 컨텍스트 예산을 많이 소모</p></div><div class="chip-card" style="--chip-c:var(--c-llm-h)"><p class="name">타일링(Tiling)</p><p class="formula">고해상도 이미지를 여러 타일로 나눠 각각 인코딩한 뒤 결합</p></div>
+      </div>
+    </div>
+  </div>
+
 
   <footer>
-    <span>대분류 5 × 중분류 10 — 프롬프팅부터 에이전트/평가까지 실전 LLM 파이프라인</span>
+    <span>대분류 8 × 중분류 22 · 프롬프팅부터 에이전트/평가, 멀티모달까지 실전 LLM/Agent 파이프라인</span>
     <span>2026.07.12</span>
   </footer>
 </div>

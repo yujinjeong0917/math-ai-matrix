@@ -28,7 +28,12 @@
     --c-pd-c: #7d2f4f;
     --c-pd-d: #3f7d2f;
     --c-pd-e: #a1327d;
-    --c-pd-e: #a1327d;
+    --c-pd-f: #2f4a7d;
+    --c-pd-g: #7d5a2f;
+    --c-pd-h: #4a2f7d;
+    --c-pd-i: #2f7d5e;
+    --c-pd-j: #a15332;
+    --c-pd-k: #7d2f2f;
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -44,8 +49,13 @@
       --c-pd-b: #c9b06e;
       --c-pd-c: #d47ea1;
       --c-pd-d: #8fc46e;
-    --c-pd-e: #d98fc4;
       --c-pd-e: #d98fc4;
+      --c-pd-f: #7e9ad4;
+      --c-pd-g: #d4ab6e;
+      --c-pd-h: #9a7ed4;
+      --c-pd-i: #7ed4ac;
+      --c-pd-j: #d99a7e;
+      --c-pd-k: #d47e7e;
     }
   }
   :root[data-theme="dark"] {
@@ -58,6 +68,13 @@
       --c-pd-b: #c9b06e;
       --c-pd-c: #d47ea1;
       --c-pd-d: #8fc46e;
+      --c-pd-e: #d98fc4;
+      --c-pd-f: #7e9ad4;
+      --c-pd-g: #d4ab6e;
+      --c-pd-h: #9a7ed4;
+      --c-pd-i: #7ed4ac;
+      --c-pd-j: #d99a7e;
+      --c-pd-k: #d47e7e;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -69,6 +86,13 @@
     --c-pd-b: #6a5a2f;
     --c-pd-c: #7d2f4f;
     --c-pd-d: #3f7d2f;
+    --c-pd-e: #a1327d;
+    --c-pd-f: #2f4a7d;
+    --c-pd-g: #7d5a2f;
+    --c-pd-h: #4a2f7d;
+    --c-pd-i: #2f7d5e;
+    --c-pd-j: #a15332;
+    --c-pd-k: #7d2f2f;
   }
   * { box-sizing: border-box; }
   body {
@@ -201,7 +225,7 @@
     <a href="../index.html">기초 매트릭스</a>
     <a href="../advanced/index.html">심화 매트릭스</a>
     <a href="../xai/index.html">XAI · 해석가능성</a>
-    <a href="../llm/index.html">LLM 실전</a>
+    <a href="../llm/index.html">LLM/Agent</a>
     <a href="../product/index.html" class="active">서비스 · 프로덕트 분석</a>
     <a href="../mlops/index.html">MLOps · 인프라</a>
     <a href="../recsys/index.html">추천시스템 · 랭킹</a>
@@ -218,6 +242,12 @@
     <span class="legend-item"><span class="dot" style="background:var(--c-pd-c)"></span>어트리뷰션 · 귀속</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-pd-d)"></span>성장 · 리텐션</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-pd-e)"></span>마케팅 지표 공식</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-f)"></span>세그멘테이션 · 코호트 심화</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-g)"></span>가격 전략</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-h)"></span>그로스 루프 · 바이럴</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-i)"></span>추천 · 개인화 성과측정</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-j)"></span>가설 검증 프레임워크</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-k)"></span>리스크 · 이상탐지</span>
   </div>
   <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
 
@@ -313,8 +343,110 @@
     </div>
   </div>
 
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-f)"></span>세그멘테이션 · 코호트 심화</p>
+    <p class="group-desc">고객을 가치와 행동으로 세분화하고, 코호트를 더 정교한 시간축으로 쪼개보는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">고객 등급화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">RFM 분석</p><p class="formula">Recency, Frequency, Monetary 3축 점수화로 고객 등급 산출</p></div><div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">행동 기반 세그멘테이션</p><p class="formula">사용 패턴 클러스터링으로 등급이 아닌 행동 유형으로 분리</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">코호트 매트릭스</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">코호트 삼각형</p><p class="formula">가입월 × 경과월 리텐션을 삼각행렬로 배치해 세대별 곡선 비교</p></div><div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">코호트 안정화 지점</p><p class="formula">리텐션 곡선이 평평해지는 시점, 진짜 잔존 규모의 근사치</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-g)"></span>가격 전략</p>
+    <p class="group-desc">얼마를 받을지 정하고, 그 가격이 실제로 맞는지 검증하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">가격 민감도 조사</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">Van Westendorp PSM</p><p class="formula">너무 쌈, 저렴, 비쌈, 너무 비쌈 4개 질문으로 수용 가격대 도출</p></div><div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">Gabor-Granger 방법</p><p class="formula">여러 제시 가격에 대한 구매의향 응답으로 수요곡선 추정</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">가격 실험과 전환</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">A/B 가격 테스트의 함정</p><p class="formula">동일 상품을 다른 가격에 팔면 가격차별 관련 윤리, 법적 이슈 발생</p></div><div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">프리미엄 전환율</p><p class="formula">Free to Paid CVR = 유료 전환자수 / 전체 무료 사용자수</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-h)"></span>그로스 루프 · 바이럴</p>
+    <p class="group-desc">한 사용자의 행동이 다시 새로운 사용자를 만들어내는 순환 구조를 설계하고 측정하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">루프 구조</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">그로스 루프</p><p class="formula">입력이 출력을 다시 늘리는 순환 구조, 끝이 다시 시작으로 연결되는 퍼널</p></div><div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">사이클 타임</p><p class="formula">루프 한 바퀴가 도는 데 걸리는 시간, 짧을수록 복리 성장 속도가 빨라짐</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">바이럴 측정</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">바이럴 계수 K</p><p class="formula">마케팅 지표 공식 그룹의 K-factor 참조, 루프 안 확산력 지표로도 쓰임</p></div><div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">바이럴 사이클 타임</p><p class="formula">한 사용자가 초대해서 신규 사용자가 활성화되기까지 걸리는 시간</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-i)"></span>추천 · 개인화 성과측정</p>
+    <p class="group-desc">추천 시스템이 실제로 비즈니스 지표를 얼마나 끌어올렸는지 검증하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">성과 지표</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">추천 클릭률 상승분(Uplift)</p><p class="formula">Uplift = 추천 노출군 CTR − 대조군 CTR</p></div><div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">커버리지</p><p class="formula">Coverage = 추천 가능한 아이템수 / 전체 아이템수</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">다양성 지표</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">Intra-List Diversity</p><p class="formula">추천 리스트 내 아이템 쌍의 평균 비유사도, 높을수록 다양한 추천</p></div><div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">세렌디피티</p><p class="formula">예상 밖이면서도 만족스러운 추천이 나온 비율</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-j)"></span>가설 검증 프레임워크</p>
+    <p class="group-desc">무엇을 먼저 실험할지 우선순위를 매기고, 지표 간 인과 구조를 설계하는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">우선순위화</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">ICE 스코어</p><p class="formula">ICE = Impact × Confidence × Ease, 실험 아이디어 우선순위 산출</p></div><div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">PIE 프레임워크</p><p class="formula">Potential × Importance × Ease, 페이지 및 퍼널 단위 개선 우선순위 산출</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">지표 트리</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">인풋 지표 트리</p><p class="formula">노스스타 지표를 하위 인풋 지표들로 분해한 트리, 팀별 담당 인풋을 명확화</p></div><div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">지표 트리 검증</p><p class="formula">인풋 지표 변화가 실제로 노스스타 지표를 움직이는지 상관, 인과 관계 재확인</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-k)"></span>리스크 · 이상탐지</p>
+    <p class="group-desc">정상적이지 않은 사용자 행동과 결제를 잡아내 프로덕트 지표를 오염시키지 않도록 지키는 층입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">사기 탐지</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">Precision-Recall 트레이드오프</p><p class="formula">정밀도를 올리면 재현율이 떨어지는 사기 탐지 모델의 근본적 긴장관계</p></div><div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">결제 이상 패턴 탐지</p><p class="formula">정상 결제 분포에서 벗어난 이상치를 실시간으로 탐지</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">트래픽 품질</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">스팸/봇 트래픽 필터링 지표</p><p class="formula">Invalid Traffic Rate = 필터링된 트래픽 / 전체 트래픽</p></div><div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">결제 사기율</p><p class="formula">Fraud Rate = 사기로 확인된 거래수 / 전체 거래수</p></div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <span>대분류 5 × 중분류 11 — 실험설계부터 리텐션까지 프로덕트 애널리틱스</span>
+    <span>대분류 11 × 중분류 23 · 실험설계부터 이상탐지까지 프로덕트 애널리틱스 전 영역</span>
     <span>2026.07.12</span>
   </footer>
 </div>
