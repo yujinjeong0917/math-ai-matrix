@@ -9133,4 +9133,1802 @@ $$\alpha_1=\frac1m\sum_j\gamma_{j1}=\frac{0.9+0.3}{2}=0.6$$
     ],
     related: [{ label: "계층적 군집화", slug: "hierarchical-clustering" }, { label: "그래프 스펙트럼", slug: "spectral-clustering" }]
   },
+  "chain-of-thought": {
+    title: String.raw`Chain-of-Thought: 중간 추론과정을 말로 풀어내게 하기`,
+    domain: "llm",
+    subLabel: String.raw`프롬프팅 기법`,
+    intuition: String.raw`<p>어려운 수학 문제를 풀 때 사람도 답을 바로 말하지 않고 종이에 풀이 과정을 적습니다. Chain-of-Thought(CoT)는 모델에게도 같은 걸 시킵니다. "답만 말해"가 아니라 "생각하는 과정을 먼저 써봐"라고 프롬프트에 요청하면 모델이 중간 추론 단계를 텍스트로 풀어내고 그 끝에 답을 냅니다.</p><p>이렇게 하면 모델이 한 번의 짧은 출력으로 답을 억지로 맞히는 대신 자기가 방금 쓴 문장을 참고하며 다음 단계를 생각할 수 있습니다. 특히 여러 단계를 거쳐야 풀리는 산술이나 논리 문제에서 정답률이 크게 오릅니다.</p>`,
+    explanation: String.raw`<p>CoT는 프롬프트에 "단계별로 생각해보자" 같은 트리거 문장을 넣는 제로샷 방식이나, 풀이 과정이 포함된 예시 몇 개를 미리 보여주는 퓨샷 방식으로 적용합니다. 디코더 기반 언어모델은 자기회귀적으로 토큰을 하나씩 생성하고 각 토큰은 그 앞의 모든 토큰을 조건으로 삼습니다. 그래서 중간 추론을 먼저 출력하면 모델은 최종 답을 내기 전에 스스로 쓴 단서를 추가 입력처럼 다시 읽어들이는 셈이 됩니다.</p><p>직접 답변 프롬프팅의 한계는 모델이 질문을 받자마자 정답 토큰을 바로 예측해야 한다는 점입니다. 한 번의 순전파 안에서 처리할 수 있는 계산량은 사실상 고정되어 있어서 여러 단계를 거쳐야 풀리는 문제는 이 한 번의 시도로 감당하기 어렵습니다. CoT는 답을 내기 전에 여러 토큰만큼의 생성 과정을 추가로 확보해주는 셈이라 실질적인 연산 여유를 늘려주는 효과를 냅니다.</p><p>CoT의 효과는 모델 규모와 관계가 깊습니다. 충분히 큰 모델에서는 CoT가 정답률을 크게 끌어올리지만 작은 모델에서는 오히려 효과가 약하거나 없다는 관찰이 널리 보고되었습니다. 이후 등장한 self-consistency는 같은 질문에 대해 여러 CoT 경로를 샘플링한 뒤 다수결로 최종 답을 고르는 방식으로 CoT의 변동성을 보완합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="16" font-size="12" class="dg-dim">직접 답변</text>
+<rect x="20" y="24" width="90" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="65" y="46" font-size="12" text-anchor="middle">질문</text>
+<line x1="110" y1="41" x2="500" y2="41" class="dg-line" stroke-width="1.5"/>
+<polygon points="500,41 490,36 490,46" class="dg-dim"/>
+<rect x="500" y="24" width="110" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="555" y="46" font-size="12" text-anchor="middle">오답</text>
+<text x="20" y="150" font-size="12" class="dg-accent">Chain-of-Thought</text>
+<rect x="20" y="160" width="80" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="182" font-size="12" text-anchor="middle">질문</text>
+<line x1="100" y1="177" x2="140" y2="177" class="dg-line" stroke-width="1.5"/>
+<polygon points="140,177 132,172 132,182" class="dg-dim"/>
+<rect x="140" y="160" width="80" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="180" y="182" font-size="12" text-anchor="middle">단계1</text>
+<line x1="220" y1="177" x2="260" y2="177" class="dg-line" stroke-width="1.5"/>
+<polygon points="260,177 252,172 252,182" class="dg-dim"/>
+<rect x="260" y="160" width="80" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="300" y="182" font-size="12" text-anchor="middle">단계2</text>
+<line x1="340" y1="177" x2="380" y2="177" class="dg-line" stroke-width="1.5"/>
+<polygon points="380,177 372,172 372,182" class="dg-dim"/>
+<rect x="380" y="160" width="80" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="420" y="182" font-size="12" text-anchor="middle">단계3</text>
+<line x1="460" y1="177" x2="500" y2="177" class="dg-line" stroke-width="1.5"/>
+<polygon points="500,177 492,172 492,182" class="dg-accent"/>
+<rect x="500" y="160" width="110" height="34" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="555" y="182" font-size="12" text-anchor="middle">정답</text>
+</svg>`,
+    diagramCaption: String.raw`직접 답변은 한 번에 답을 내지만 CoT는 중간 단계를 거쳐 답에 도달합니다.`,
+    example: String.raw`<p>"철수는 사과를 5개 가지고 있었는데 3개를 더 사고 그중 2개를 먹었습니다. 남은 사과는 몇 개일까요?" 라는 질문에서 직접 답변 프롬프팅은 곧바로 틀린 값을 낼 위험이 있습니다.</p><p>CoT는 다음처럼 풀어씁니다. 처음 5개, 3개를 사면 $5+3=8$개, 2개를 먹으면 $8-2=6$개. 각 단계가 다음 단계의 입력이 되므로 최종 답 6에 안정적으로 도달합니다.</p>`,
+    related: [{ label: "Few-shot Prompting", slug: "few-shot-prompting" }, { label: "ReAct", slug: "react-llm" }],
+    sections: []
+  },
+  "few-shot-prompting": {
+    title: String.raw`Few-shot Prompting: 예시 몇 개로 태스크 형식 암시하기`,
+    domain: "llm",
+    subLabel: String.raw`프롬프팅 기법`,
+    intuition: String.raw`<p>새 직원에게 업무를 알려줄 때 규칙을 말로 설명하는 것보다 처리된 예시 몇 건을 보여주는 편이 빠를 때가 많습니다. Few-shot Prompting은 언어모델에게도 같은 방식을 씁니다. 실제 질문을 던지기 전에 입력과 출력이 짝을 이룬 예시를 두세 개 프롬프트에 넣어두면 모델은 그 예시들을 보고 원하는 출력 형식과 스타일을 스스로 짐작합니다.</p><p>모델 가중치를 전혀 바꾸지 않고 프롬프트 안에 예시만 추가하는 것이라 별도 학습 없이 즉시 적용할 수 있습니다.</p>`,
+    explanation: String.raw`<p>제로샷 프롬프팅은 태스크 설명만 주고 바로 답을 요구합니다. 문제는 출력 형식이 모호할 때가 많다는 점입니다. 예를 들어 감정분류를 시키면 모델이 "긍정입니다" 라고 답할지 "positive" 라고 답할지 예측하기 어렵습니다. Few-shot은 입력과 원하는 출력 형식이 담긴 예시 쌍을 프롬프트 앞부분에 배치해 이 모호함을 줄입니다. 모델은 예시들의 패턴을 문맥 안에서 그대로 학습한 것처럼 따라가는데 이를 in-context learning이라 부릅니다.</p><p>파인튜닝과 비교하면 차이가 분명합니다. 파인튜닝은 라벨링된 데이터셋으로 그레이디언트를 갱신해 모델 가중치 자체를 바꾸지만 few-shot은 추론 시점에 프롬프트만 바꿉니다. 그만큼 빠르고 비용이 적게 들지만 예시 몇 개로 전달할 수 있는 정보량은 제한적입니다.</p><p>few-shot의 알려진 약점은 예시의 순서, 선택, 라벨 분포에 결과가 민감하게 반응한다는 점입니다. 같은 예시라도 나열 순서를 바꾸면 정답률이 달라지고 예시의 라벨이 한쪽으로 치우쳐 있으면 모델도 그쪽으로 편향된 답을 내는 경향이 보고되어 있습니다. 그래서 실무에서는 예시 선택과 순서를 검증 세트로 확인하는 과정이 필요합니다.</p>`,
+    example: String.raw`<p>감정분류 태스크에서 제로샷은 "다음 리뷰의 감정을 분류하세요: '배송이 느렸어요'" 라고만 주면 모델이 "부정적입니다" 라고 답할 수도, "negative" 라고 답할 수도 있습니다.</p><p>Few-shot은 "리뷰: '최고예요' → 라벨: 긍정" "리뷰: '별로였어요' → 라벨: 부정" 같은 예시를 앞에 두 개 준 뒤 새 리뷰를 질문합니다. 모델은 예시의 "라벨: [단어]" 형식을 그대로 따라 출력 형식이 안정됩니다.</p>`,
+    related: [{ label: "Chain-of-Thought", slug: "chain-of-thought" }, { label: "ReAct", slug: "react-llm" }],
+    sections: []
+  },
+  "react-llm": {
+    title: String.raw`ReAct: 추론과 행동을 교대로 반복하기`,
+    domain: "llm",
+    subLabel: String.raw`프롬프팅 기법`,
+    intuition: String.raw`<p>사람이 낯선 문제를 풀 때는 머릿속으로만 생각하지 않고 중간중간 확인 행동을 합니다. 검색해보고, 결과를 보고, 다시 생각하고, 또 검색합니다. ReAct는 언어모델에게 이 패턴을 그대로 시킵니다. 모델이 "생각한다" 와 "행동한다" 를 한 번씩 번갈아 반복하면서 행동의 결과를 다시 다음 생각의 재료로 씁니다.</p><p>여기서 행동은 검색엔진 호출, 계산기 실행, API 조회처럼 모델 바깥의 실제 도구를 쓰는 것을 뜻합니다. 그래서 ReAct는 순수하게 텍스트만으로 추론하는 방식과 달리 실제 세계에서 얻은 정보로 자신의 추론을 계속 검증하고 고쳐나갈 수 있습니다.</p>`,
+    explanation: String.raw`<p>ReAct라는 이름은 Reasoning과 Acting을 합친 말입니다. 한 스텝은 세 부분으로 구성됩니다. Thought에서 모델은 지금까지 알고 있는 것과 다음에 무엇을 해야 할지 문장으로 정리합니다. Action에서 모델은 실제로 호출할 도구와 그 인자를 정합니다. Observation에서는 그 도구를 실행한 실제 결과가 프롬프트에 다시 삽입됩니다. 이 세 부분이 목표를 달성하거나 최대 스텝 수에 도달할 때까지 반복됩니다.</p><p>ReAct가 풀어낸 한계는 순수 CoT의 근본적인 약점입니다. CoT는 모델이 이미 학습 때 본 지식만으로 추론을 이어가기 때문에 학습 시점 이후의 정보나 모델이 애초에 몰랐던 사실이 필요한 문제에서는 그럴듯하지만 틀린 추론을 만들어내기 쉽습니다. ReAct는 매 스텝마다 실제 도구 호출 결과를 관찰로 끼워 넣기 때문에 추론이 외부 사실에 계속 닻을 내리게 됩니다. 중간에 잘못된 가정을 세워도 다음 Observation에서 틀렸다는 게 드러나면 Thought에서 경로를 수정할 수 있습니다.</p><p>이 구조는 프롬프팅 기법으로도 에이전트 설계 패턴으로도 같이 쓰입니다. 단발성 질의응답에 쓸 때는 검색 도구 하나를 붙인 프롬프트 템플릿 정도로 충분하지만, 여러 도구와 여러 턴에 걸친 작업을 시키는 에이전트를 만들 때는 이 Thought, Action, Observation 루프가 에이전트의 기본 실행 루프 자체가 됩니다. 이후 등장한 Reflexion, Plan-and-Execute 같은 에이전트 패턴들도 이 루프 위에 자기반성이나 사전 계획 단계를 얹은 확장으로 볼 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg">
+<circle cx="280" cy="60" r="42" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="65" font-size="13" text-anchor="middle">Thought</text>
+<circle cx="450" cy="210" r="42" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="450" y="215" font-size="13" text-anchor="middle">Action</text>
+<circle cx="110" cy="210" r="42" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="110" y="215" font-size="12" text-anchor="middle">Observation</text>
+<path d="M310,95 L420,180" class="dg-line" fill="none" stroke-width="1.5"/>
+<polygon points="420,180 407,178 413,167" class="dg-dim"/>
+<path d="M408,225 L152,225" class="dg-line" fill="none" stroke-width="1.5"/>
+<polygon points="152,225 164,219 164,231" class="dg-dim"/>
+<path d="M140,180 L250,95" class="dg-line" fill="none" stroke-width="1.5"/>
+<polygon points="250,95 237,97 243,108" class="dg-dim"/>
+<line x1="322" y1="45" x2="480" y2="45" class="dg-line" stroke-width="1.5"/>
+<polygon points="480,45 470,40 470,50" class="dg-accent"/>
+<rect x="480" y="26" width="70" height="38" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="515" y="49" font-size="12" text-anchor="middle">답변</text>
+</svg>`,
+    diagramCaption: String.raw`Thought, Action, Observation을 반복하다가 충분한 근거가 모이면 답을 냅니다.`,
+    example: String.raw`<p>"현재 애플 CEO의 출생년도는?" 라는 질문에 ReAct는 다음처럼 진행합니다. Thought: 애플 CEO가 누구인지 먼저 검색해야 한다. Action: 검색("애플 현재 CEO"). Observation: 팀 쿡. Thought: 팀 쿡의 출생년도를 검색해야 한다. Action: 검색("팀 쿡 출생년도"). Observation: 1960년. Thought: 답을 알았다. 최종 답: 1960년.</p>`,
+    related: [{ label: "Chain-of-Thought", slug: "chain-of-thought" }, { label: "Self-RAG", slug: "self-rag" }],
+    sections: []
+  },
+  "context-window-llm": {
+    title: String.raw`컨텍스트 윈도우: 입력 토큰 길이의 제한과 트레이드오프`,
+    domain: "llm",
+    subLabel: String.raw`컨텍스트 관리`,
+    intuition: String.raw`<p>언어모델은 한 번에 읽을 수 있는 글자 수에 한계가 있습니다. 이 한계를 컨텍스트 윈도우라 부르고 보통 토큰 개수로 잽니다. 시스템 프롬프트, 대화 이력, 검색해온 문서, 그리고 모델이 앞으로 쓸 답변까지 전부 이 한정된 공간 안에 같이 들어가야 합니다.</p><p>윈도우가 넉넉하면 더 많은 정보를 한 번에 줄 수 있지만 그만큼 계산 비용과 응답 속도, 정보를 놓치지 않고 잘 활용하는 능력 사이에서 트레이드오프가 생깁니다.</p>`,
+    explanation: String.raw`<p>표준 트랜스포머의 어텐션은 시퀀스 안의 모든 토큰 쌍 사이의 관계를 계산합니다. 토큰 수를 $n$이라 하면 어텐션 계산량과 메모리는 대략 $O(n^2)$로 늘어납니다. 그래서 컨텍스트 윈도우를 단순히 늘리기만 하면 비용이 제곱으로 불어나고, 이것이 초기 모델들의 윈도우가 수천 토큰 수준에 머물렀던 주된 이유입니다.</p><p>이후 KV 캐시 최적화, 슬라이딩 윈도우 어텐션, 위치 인코딩 개선 등으로 실질적인 윈도우가 수만에서 수십만 토큰까지 늘었지만 여전히 유한한 예산이라는 사실은 바뀌지 않습니다. 실무에서는 이 예산을 시스템 지시문, 대화 이력, 검색 결과, 출력 여유분으로 나눠 배분해야 하고 어느 하나가 커지면 다른 항목을 줄여야 합니다.</p><p>윈도우가 커져도 안에 든 정보를 고르게 잘 쓰는 것은 별개 문제입니다. 컨텍스트 중간에 놓인 정보는 양 끝에 놓인 정보보다 모델이 잘 놓치는 경향이 관찰되어 있고 이를 lost-in-the-middle이라 부릅니다. 그래서 컨텍스트 윈도우를 다루는 실전 기법은 단순히 더 길게가 아니라 무엇을 넣고 무엇을 뺄지, 어디에 배치할지를 판단하는 프롬프트 압축, 대화 요약, 정보 배치 전략과 함께 움직입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="24" font-size="12" class="dg-dim">컨텍스트 윈도우(최대 토큰 수)</text>
+<rect x="40" y="40" width="560" height="50" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="40" width="90" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="85" y="70" font-size="11" text-anchor="middle">시스템</text>
+<rect x="130" y="40" width="280" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="270" y="65" font-size="11" text-anchor="middle">대화 이력</text>
+<text x="270" y="80" font-size="11" text-anchor="middle">+ 검색결과</text>
+<rect x="410" y="40" width="190" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="505" y="70" font-size="11" text-anchor="middle" class="dg-accent">출력 여유분</text>
+<path d="M40,110 L10,140" class="dg-line" stroke-width="1.5" fill="none"/>
+<polygon points="10,140 20,138 16,128" class="dg-dim"/>
+<text x="20" y="160" font-size="12" class="dg-dim">밀려나는 오래된 토큰</text>
+</svg>`,
+    diagramCaption: String.raw`고정된 토큰 예산 안에서 시스템, 이력, 출력이 자리를 나눠 쓰고 넘치면 오래된 부분이 밀려납니다.`,
+    example: String.raw`<p>윈도우가 128,000토큰이고 시스템 프롬프트가 500토큰, 검색 문서가 3,000토큰을 쓴다면 대화 이력과 출력에 쓸 수 있는 예산은 $128000 - 500 - 3000 = 124500$ 토큰으로 줄어듭니다. 대화가 길어질수록 이 예산을 두고 이력과 출력이 경쟁하게 됩니다.</p>`,
+    related: [{ label: "프롬프트 압축", slug: "prompt-compression" }, { label: "대화 요약", slug: "conversation-summarization" }],
+    sections: []
+  },
+  "prompt-compression": {
+    title: String.raw`프롬프트 압축: 토큰 수는 줄이고 정보는 지키기`,
+    domain: "llm",
+    subLabel: String.raw`컨텍스트 관리`,
+    intuition: String.raw`<p>긴 문서나 긴 대화를 통째로 프롬프트에 넣으면 토큰 수가 금방 불어나서 비용과 지연시간이 늘고 컨텍스트 윈도우 예산도 빠듯해집니다. 프롬프트 압축은 원래 텍스트의 핵심 정보는 최대한 지키면서 실제로 모델에 넣는 토큰 수를 줄이는 기법입니다.</p><p>사람이 긴 보고서를 읽고 중요한 문장만 골라 밑줄 긋는 것과 비슷합니다. 다만 이 작업을 별도의 작은 모델이나 통계적 기준으로 자동화합니다.</p>`,
+    explanation: String.raw`<p>가장 단순한 접근은 규칙 기반으로 불용어나 중복 표현을 제거하는 것이지만 문장의 의미를 해치기 쉽습니다. 더 정교한 방식은 작은 언어모델로 원문의 각 토큰이 담고 있는 정보량, 흔히 퍼플렉시티나 자기정보량으로 추정한 값을 계산해서 정보량이 낮은 토큰부터 순서대로 제거합니다. 남은 토큰만으로 압축된 프롬프트를 다시 구성해 원래 모델에 넣습니다.</p><p>압축이 필요한 이유는 컨텍스트 윈도우가 유한하고 토큰당 비용이 든다는 제약 때문입니다. 검색으로 가져온 문서를 그대로 다 넣으면 정작 중요한 질문이나 지시문이 상대적으로 작은 비중을 차지하게 되고 비용도 커집니다. 압축률 $r$을 압축된 토큰 수 $|C|$와 원문 토큰 수 $|X|$의 비율 $r = |C| / |X|$로 정의하면, 같은 정보를 더 작은 $r$로 담아낼수록 효율적인 압축입니다.</p><p>다만 압축은 손실이 있는 변환입니다. 너무 공격적으로 압축하면 세부 수치나 예외 조건처럼 짧지만 중요한 정보가 함께 잘려나갈 위험이 있습니다. 그래서 실무에서는 질문과 직접 관련된 구간은 압축을 약하게, 배경 설명처럼 부차적인 구간은 압축을 강하게 거는 식으로 구간별 압축률을 다르게 주는 경우가 많습니다.</p>`,
+    example: String.raw`<p>1,000토큰짜리 배경 설명 문단을 압축률 $r=0.3$으로 압축하면 약 300토큰만 남깁니다. 질문에 직접 필요한 수치나 고유명사가 담긴 문장은 그대로 두고 부연 설명이나 예시 문장을 우선적으로 줄이는 식입니다.</p>`,
+    related: [{ label: "컨텍스트 윈도우", slug: "context-window-llm" }, { label: "대화 요약", slug: "conversation-summarization" }],
+    sections: []
+  },
+  "conversation-summarization": {
+    title: String.raw`대화 요약: 긴 대화를 압축해 다시 넣기`,
+    domain: "llm",
+    subLabel: String.raw`컨텍스트 관리`,
+    intuition: String.raw`<p>대화가 길어지면 처음 나눈 이야기까지 전부 매번 다시 모델에 넣기가 부담스러워집니다. 대화 요약은 지금까지의 대화 내용을 짧은 요약문으로 압축해두고, 다음 턴부터는 원본 대화 대신 이 요약문을 프롬프트에 넣는 방식입니다.</p><p>사람이 긴 회의록을 다 다시 읽는 대신 지금까지 결론은 이렇다는 한 문단짜리 정리를 보고 이어서 회의를 진행하는 것과 비슷합니다.</p>`,
+    explanation: String.raw`<p>구현은 보통 두 단계로 이뤄집니다. 대화가 일정 길이나 턴 수를 넘어서면 별도의 요약 호출을 통해 지금까지의 대화를 몇 문장으로 압축합니다. 이후 턴에서는 이 요약과 최근 몇 턴의 원문 대화만 함께 프롬프트에 넣고 그보다 오래된 원문은 버립니다. 대화가 더 길어지면 이 요약 자체를 다시 새로운 내용과 합쳐 요약하는 식으로 계속 갱신합니다.</p><p>이 기법이 필요한 이유는 컨텍스트 윈도우가 유한하기 때문입니다. 원본 대화를 전부 유지하는 슬라이딩 윈도우 방식은 구현이 단순하지만 윈도우를 넘어가는 순간 가장 오래된 대화가 통째로 사라져 초반에 정한 이름이나 조건 같은 정보를 잃어버립니다. 요약은 오래된 대화를 완전히 버리지 않고 핵심만 남겨 계속 가져간다는 점에서 단순 절단보다 정보 손실이 적습니다.</p><p>대신 요약 과정 자체가 손실 압축이라 세부 수치나 정확한 표현이 뭉개질 위험이 있고 요약을 요약하는 과정을 반복하면 오차가 누적될 수 있습니다. 그래서 실무에서는 요약 대상에서 제외해야 할 핵심 사실, 예를 들어 사용자 ID나 예약 번호 같은 값은 별도로 구조화된 필드에 저장해두고 자유 텍스트 요약과 분리해서 관리하는 경우가 많습니다.</p>`,
+    example: String.raw`<p>20턴짜리 상담 대화가 3,000토큰이라면 이를 "고객은 환불을 원하고, 주문번호는 12345이며, 배송 지연이 사유다" 같은 50토큰짜리 요약으로 바꿔 다음 턴부터는 3,000토큰 대신 50토큰과 최근 대화만 사용합니다.</p>`,
+    related: [{ label: "컨텍스트 윈도우", slug: "context-window-llm" }, { label: "프롬프트 압축", slug: "prompt-compression" }],
+    sections: []
+  },
+  "vector-db-hnsw": {
+    title: String.raw`벡터DB(HNSW): 근사최근접 탐색으로 빠르게 검색하기`,
+    domain: "llm",
+    subLabel: String.raw`검색 · 인덱싱`,
+    intuition: String.raw`<p>텍스트를 임베딩 벡터로 바꾸고 나면 가장 비슷한 문서 찾기는 결국 수백만 개 벡터 중에서 질문 벡터와 가장 가까운 것을 찾는 문제가 됩니다. 벡터를 하나하나 거리 계산으로 비교하면 정확하지만 데이터가 많아질수록 느려집니다. HNSW는 정확도를 살짝 포기하는 대신 훨씬 빠르게 가까운 벡터를 찾아주는 인덱스 구조입니다.</p><p>비유하자면 고속도로에서 시작해 점점 국도, 골목길로 좁혀가며 목적지에 접근하는 것과 비슷합니다. 처음부터 골목길만 뒤지면 느리지만 큰 길에서 대략적인 방향을 잡고 점점 좁은 길로 내려오면 훨씬 빨리 도착합니다.</p>`,
+    explanation: String.raw`<p>HNSW는 Hierarchical Navigable Small World의 약자로, 벡터들을 여러 층의 그래프로 연결해둡니다. 가장 위층은 노드가 적고 서로 멀리까지 연결된 성긴 그래프이고 아래로 내려갈수록 노드가 촘촘해지며 마지막 최하층에는 전체 벡터가 다 들어 있습니다. 검색은 맨 위층의 임의 진입점에서 시작해 질문 벡터와 더 가까운 이웃으로 그래프를 따라 이동하다가 더 가까워지지 않으면 한 층 아래로 내려가는 과정을 반복합니다.</p><p>모든 벡터를 하나하나 비교하는 전수 탐색은 벡터 개수를 $n$이라 할 때 $O(n)$의 비교가 필요합니다. 데이터가 수백만, 수천만 개로 늘어나면 질의 하나에도 시간이 오래 걸려서 실시간 서비스에 쓰기 어렵습니다. HNSW는 이 문제를 완화하기 위해 정확한 최근접 대신 근사최근접을 찾는 쪽으로 타협합니다. 계층 구조 덕분에 평균적인 탐색 비용은 대략 $O(\log n)$ 수준으로 줄어들고, 이 덕분에 대규모 벡터DB에서도 밀리초 단위 검색이 가능해집니다.</p><p>대가는 결과가 항상 진짜 최근접이라는 보장이 없다는 점입니다. 그래프를 따라가다가 지역적으로 더 가까운 길목을 놓치면 진짜 최근접이 아닌 근사값을 반환할 수 있습니다. 실무에서는 탐색 중 유지하는 후보 개수 같은 파라미터를 조절해 속도와 정확도 사이의 균형을 맞춥니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="20" font-size="12" class="dg-dim">Layer 2 (성긴 장거리 연결)</text>
+<line x1="150" y1="40" x2="350" y2="40" class="dg-line" stroke-width="1.5"/>
+<line x1="350" y1="40" x2="500" y2="40" class="dg-line" stroke-width="1.5"/>
+<circle cx="150" cy="40" r="8" class="dg-accent"/>
+<circle cx="350" cy="40" r="8" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="500" cy="40" r="8" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="110" font-size="12" class="dg-dim">Layer 1</text>
+<line x1="80" y1="130" x2="150" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="130" x2="260" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="260" y1="130" x2="350" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="350" y1="130" x2="430" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="430" y1="130" x2="500" y2="130" class="dg-line" stroke-width="1.5"/>
+<circle cx="80" cy="130" r="7" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="150" cy="130" r="7" class="dg-accent"/>
+<circle cx="260" cy="130" r="7" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="350" cy="130" r="7" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="430" cy="130" r="7" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="500" cy="130" r="7" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="200" font-size="12" class="dg-dim">Layer 0 (전체 노드)</text>
+<line x1="40" y1="220" x2="110" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="110" y1="220" x2="180" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="220" x2="250" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="250" y1="220" x2="320" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="320" y1="220" x2="390" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="390" y1="220" x2="460" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="460" y1="220" x2="530" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="530" y1="220" x2="580" y2="220" class="dg-line" stroke-width="1.5"/>
+<circle cx="40" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="110" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="180" cy="220" r="6" class="dg-accent"/>
+<circle cx="250" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="320" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="390" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="460" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="530" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="580" cy="220" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M150,48 L150,122" class="dg-stroke-accent" stroke-width="2" fill="none"/>
+<path d="M150,138 L180,212" class="dg-stroke-accent" stroke-width="2" fill="none"/>
+</svg>`,
+    diagramCaption: String.raw`위층의 성긴 연결에서 시작해 아래층으로 내려가며 목표 벡터에 가까워집니다.`,
+    example: String.raw`<p>벡터 100만 개 중 하나를 전수 비교로 찾으면 매 질의마다 100만 번의 거리 계산이 필요합니다. HNSW로 찾으면 평균적으로 $\log_2 1000000 \approx 20$, 즉 약 20번 수준의 훨씬 적은 비교만으로 충분히 가까운 벡터에 도달합니다.</p>`,
+    related: [{ label: "하이브리드 검색", slug: "hybrid-search-bm25" }, { label: "청킹 전략", slug: "chunking-strategy" }],
+    sections: []
+  },
+  "hybrid-search-bm25": {
+    title: String.raw`하이브리드 검색: 키워드와 임베딩을 함께 쓰기`,
+    domain: "llm",
+    subLabel: String.raw`검색 · 인덱싱`,
+    intuition: String.raw`<p>임베딩 검색은 의미가 비슷한 문서를 잘 찾지만 정확한 고유명사나 특정 숫자, 코드명처럼 딱 맞는 단어가 중요한 검색에는 약할 때가 있습니다. 반대로 키워드 검색은 정확한 단어 일치에는 강하지만 같은 뜻을 다른 단어로 쓴 문서는 놓칩니다. 하이브리드 검색은 이 둘을 같이 써서 서로의 약점을 메웁니다.</p><p>두 검색을 각각 돌려서 나온 두 개의 순위 목록을 하나로 합쳐 최종 순위를 만드는 방식입니다.</p>`,
+    explanation: String.raw`<p>키워드 검색 쪽에서 가장 널리 쓰이는 방법은 BM25입니다. 질의 $Q$의 각 단어 $q_i$에 대해 문서 $D$의 점수는 대략 다음과 같이 계산됩니다.</p><p>$$\text{score}(D,Q) = \sum_i \mathrm{IDF}(q_i) \cdot \frac{f(q_i,D)\,(k_1+1)}{f(q_i,D) + k_1\left(1 - b + b \cdot \frac{|D|}{\text{avgdl}}\right)}$$</p><p>여기서 $f(q_i,D)$는 단어가 문서에 등장한 횟수, $|D|$는 문서 길이, $\text{avgdl}$은 전체 문서의 평균 길이이고 $k_1$과 $b$는 단어 빈도의 포화 정도와 문서 길이 보정 강도를 조절하는 파라미터입니다. IDF 항은 흔한 단어의 가중치를 낮추고 드문 단어의 가중치를 높입니다.</p><p>임베딩 검색만 쓰는 시스템의 한계는 벡터가 뭉뚱그려 담은 의미 유사도 안에서 정확한 문자열 일치가 희석된다는 점입니다. 제품 모델명이나 에러 코드처럼 정확히 일치해야 의미가 있는 토큰도 임베딩 공간에서는 비슷한 다른 토큰과 섞여버릴 수 있습니다. 반대로 BM25만 쓰면 동의어나 다른 표현으로 쓰인 관련 문서를 완전히 놓칩니다. 하이브리드 검색은 BM25 순위와 임베딩 유사도 순위를 각각 구한 뒤 순위나 점수를 가중합하거나 Reciprocal Rank Fusion 같은 방법으로 합쳐 최종 순위를 만듭니다.</p><p>두 점수의 척도가 다르기 때문에 단순히 원점수를 더하면 한쪽이 다른 쪽을 압도할 수 있습니다. 그래서 실무에서는 각 순위 목록의 등수만 사용하는 융합 방식을 선호하는 경우가 많고, 이는 RAG-Fusion에서 쓰는 방식과 같은 계열입니다.</p>`,
+    example: String.raw`<p>질의가 "GPT-4 토큰 한도" 라면 BM25는 "GPT-4" 라는 정확한 문자열이 들어간 문서에 높은 점수를 주고, 임베딩 검색은 "GPT-4" 라는 단어가 없어도 대형 언어모델의 컨텍스트 길이를 다루는 문서를 의미상 가깝다고 판단해 끌어올 수 있습니다. 두 결과를 합치면 정확한 일치 문서와 의미상 관련된 문서를 모두 상위권에 올릴 수 있습니다.</p>`,
+    related: [{ label: "벡터DB(HNSW)", slug: "vector-db-hnsw" }, { label: "RAG-Fusion", slug: "rag-fusion" }, { label: "Reranking", slug: "reranking-llm" }],
+    sections: []
+  },
+  "chunking-strategy": {
+    title: String.raw`청킹 전략: 문서를 얼마나 잘게, 얼마나 겹치게 자를까`,
+    domain: "llm",
+    subLabel: String.raw`검색 · 인덱싱`,
+    intuition: String.raw`<p>RAG는 문서를 통째로 검색하는 게 아니라 작은 조각, 즉 청크 단위로 나눠서 검색합니다. 청킹 전략은 이 조각을 얼마나 크게, 어디서 자르고, 이웃한 조각과 얼마나 겹치게 할지 정하는 설계입니다.</p><p>너무 잘게 자르면 문맥이 끊겨서 조각 하나만 봐서는 무슨 말인지 알기 어렵고, 너무 크게 자르면 조각 안에 불필요한 내용이 섞여 정작 필요한 문장의 존재감이 흐려집니다.</p>`,
+    explanation: String.raw`<p>가장 단순한 방식은 고정 토큰 수로 자르는 것입니다. 예를 들어 500토큰씩 잘라 조각을 만듭니다. 이 방식은 구현이 쉽지만 문장이나 문단 중간에서 잘릴 위험이 있습니다. 좀 더 나은 방식은 문단이나 문장 경계를 존중하며 자르는 재귀적 분할이고, 표나 코드 블록처럼 구조가 있는 문서는 그 구조 단위를 청크 경계로 삼는 방식도 씁니다.</p><p>청크를 나누는 이유는 임베딩 모델과 컨텍스트 윈도우 모두 한 번에 처리할 수 있는 길이에 한계가 있기 때문입니다. 문서 전체를 하나의 벡터로 임베딩하면 문서 안의 서로 다른 주제가 뭉개져서 정확히 관련된 부분만 찾아내기 어렵습니다. 반대로 청크가 지나치게 작으면 하나의 청크가 질문에 답하기에 충분한 맥락을 담지 못합니다.</p><p>겹침(overlap)은 청크 경계에서 발생하는 문맥 단절을 완화하는 장치입니다. 청크 사이에 일정 구간을 겹치게 자르면 경계 근처에 있던 문장이 양쪽 청크에 모두 포함되어 어느 쪽이 검색되더라도 필요한 맥락을 잃지 않습니다. 다만 겹침을 너무 크게 주면 같은 내용이 여러 청크에 중복 저장되어 인덱스 크기와 검색 비용이 늘어나므로 청크 크기와 겹침 비율은 문서 성격과 질의 유형에 맞춰 실험적으로 정합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="18" font-size="12" class="dg-dim">원본 문서</text>
+<rect x="20" y="26" width="560" height="26" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="80" font-size="12" class="dg-dim">청크 분할 (겹침 구간 강조)</text>
+<rect x="20" y="90" width="150" height="30" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="140" y="90" width="150" height="30" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="260" y="90" width="150" height="30" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="380" y="90" width="150" height="30" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="140" y="90" width="30" height="30" class="dg-accent" opacity="0.5"/>
+<rect x="260" y="90" width="30" height="30" class="dg-accent" opacity="0.5"/>
+<rect x="380" y="90" width="30" height="30" class="dg-accent" opacity="0.5"/>
+<text x="70" y="145" font-size="11" text-anchor="middle">청크1</text>
+<text x="190" y="145" font-size="11" text-anchor="middle">청크2</text>
+<text x="310" y="145" font-size="11" text-anchor="middle">청크3</text>
+<text x="430" y="145" font-size="11" text-anchor="middle">청크4</text>
+<text x="330" y="175" font-size="11" class="dg-accent">겹침 구간이 문맥 단절을 줄임</text>
+</svg>`,
+    diagramCaption: String.raw`이웃한 청크가 일부 구간을 겹쳐 잘라 경계에서 문맥이 끊기지 않게 합니다.`,
+    example: String.raw`<p>500토큰 청크에 겹침을 50토큰(10%)으로 주면 두번째 청크는 첫번째 청크의 마지막 50토큰부터 다시 시작합니다. 그 50토큰 구간에 있던 문장은 두 청크 모두에서 검색될 수 있어 경계에 걸친 정보를 놓칠 확률이 줄어듭니다.</p>`,
+    related: [{ label: "벡터DB(HNSW)", slug: "vector-db-hnsw" }, { label: "하이브리드 검색", slug: "hybrid-search-bm25" }],
+    sections: []
+  },
+  "reranking-llm": {
+    title: String.raw`Reranking: 검색결과를 한 번 더 정밀하게 정렬하기`,
+    domain: "llm",
+    subLabel: String.raw`증강 · 재순위화`,
+    intuition: String.raw`<p>1차 검색은 수백만 개 문서 중에서 후보를 빠르게 수백 개 정도로 좁혀줍니다. 다만 속도를 위해 질문과 문서를 각각 따로 임베딩해서 비교하기 때문에 둘 사이의 미묘한 관련성까지는 놓치기 쉽습니다. Reranking은 이렇게 추려진 소수의 후보만 대상으로 질문과 문서를 함께 놓고 훨씬 정밀한 모델로 다시 순위를 매기는 두 번째 단계입니다.</p><p>서류전형으로 지원자를 100명으로 추린 뒤 면접으로 최종 순위를 다시 매기는 과정과 비슷합니다.</p>`,
+    explanation: String.raw`<p>1차 검색에 쓰는 임베딩 모델은 흔히 bi-encoder 구조입니다. 질문과 문서를 각각 독립적으로 벡터로 인코딩한 뒤 $\mathrm{sim}(q,d) = \cos(E(q), E(d))$처럼 두 벡터의 코사인 유사도로 관련성을 잽니다. 이 구조는 문서 벡터를 미리 계산해 인덱스에 저장해둘 수 있어 매우 빠르지만 질문과 문서를 따로 인코딩하기 때문에 둘 사이의 세밀한 상호작용은 반영하지 못합니다.</p><p>Reranker는 보통 cross-encoder 구조를 씁니다. 질문과 문서를 하나의 입력으로 이어붙여 $s(q,d) = f_\theta(q,d)$처럼 함께 모델에 넣고 관련성 점수를 직접 출력합니다. 질문과 문서의 각 단어가 서로 어텐션을 주고받을 수 있어 훨씬 정밀하지만 후보마다 모델을 새로 돌려야 하므로 계산 비용이 커서 전체 문서에 적용하기는 어렵습니다.</p><p>그래서 실무에서는 두 방식을 단계적으로 결합합니다. bi-encoder나 BM25로 먼저 넓게 후보를 추린 뒤 그중 상위 수십에서 수백 개만 cross-encoder로 재정렬합니다. 이렇게 하면 전체 문서에 대해서는 빠른 1차 검색의 속도를 유지하면서 최종적으로 사용자에게 노출되는 소수의 결과에 대해서는 정밀한 모델의 정확도를 얻을 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="10" y="90" width="80" height="40" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="50" y="114" font-size="12" text-anchor="middle">질문</text>
+<line x1="90" y1="110" x2="140" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="140,110 130,105 130,115" class="dg-dim"/>
+<text x="140" y="30" font-size="11" class="dg-dim">1단계: 임베딩 검색(빠름)</text>
+<rect x="140" y="50" width="60" height="120" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="70" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="95" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="120" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="145" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="170" y="190" font-size="10" text-anchor="middle" class="dg-dim">후보 수백개</text>
+<line x1="200" y1="110" x2="260" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="260,110 250,105 250,115" class="dg-dim"/>
+<text x="260" y="30" font-size="11" class="dg-accent">2단계: Reranker(정밀)</text>
+<rect x="260" y="70" width="120" height="80" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="108" font-size="11" text-anchor="middle" class="dg-accent">질문+문서</text>
+<text x="320" y="122" font-size="11" text-anchor="middle" class="dg-accent">정밀 채점</text>
+<line x1="380" y1="110" x2="440" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="440,110 430,105 430,115" class="dg-accent"/>
+<rect x="440" y="80" width="80" height="30" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="480" y="100" font-size="11" text-anchor="middle">상위1</text>
+<rect x="440" y="120" width="80" height="30" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="480" y="140" font-size="11" text-anchor="middle">상위2</text>
+</svg>`,
+    diagramCaption: String.raw`빠른 1차 검색으로 후보를 넓게 추리고 정밀한 reranker로 소수만 다시 정렬합니다.`,
+    example: String.raw`<p>1차 검색으로 추린 상위 100개 문서 중 실제로 질문과 가장 관련 있는 문서가 37번째 순위에 있었다면, cross-encoder reranker가 질문과 문서를 함께 보고 그 문서를 1위로 끌어올려 최종 답변에 쓰일 확률을 높입니다.</p>`,
+    related: [{ label: "하이브리드 검색", slug: "hybrid-search-bm25" }, { label: "RAG-Fusion", slug: "rag-fusion" }],
+    sections: []
+  },
+  "rag-fusion": {
+    title: String.raw`RAG-Fusion: 질문을 여러 갈래로 바꿔 검색결과를 합치기`,
+    domain: "llm",
+    subLabel: String.raw`증강 · 재순위화`,
+    intuition: String.raw`<p>같은 질문이라도 표현을 조금만 바꾸면 검색 결과가 크게 달라질 때가 있습니다. RAG-Fusion은 원래 질문 하나로만 검색하는 대신, 모델이 그 질문을 여러 갈래로 다르게 표현한 쿼리 몇 개를 만들고 각각 따로 검색한 뒤 그 결과들을 하나로 합칩니다.</p><p>한 사람에게만 길을 묻지 않고 여러 사람에게 같은 목적지를 묻고 겹치는 답을 신뢰하는 것과 비슷합니다.</p>`,
+    explanation: String.raw`<p>과정은 세 단계로 이뤄집니다. 먼저 LLM이 원래 질문을 서로 다른 관점이나 표현으로 재구성한 쿼리를 여러 개 생성합니다. 다음으로 각 재구성 쿼리마다 독립적으로 검색을 수행해 쿼리 개수만큼의 순위 목록을 얻습니다. 마지막으로 이 순위 목록들을 Reciprocal Rank Fusion(RRF)으로 합쳐 하나의 최종 순위를 만듭니다. RRF는 문서 $d$의 융합 점수를 다음처럼 계산합니다.</p><p>$$\text{RRFscore}(d) = \sum_{r} \frac{1}{k + \text{rank}_r(d)}$$</p><p>여기서 합은 각 쿼리에서 나온 순위 목록 전체에 대해 이뤄지고 $\text{rank}_r(d)$는 그 목록에서 문서 $d$의 등수이며 $k$는 보통 60 정도로 두는 상수입니다. 여러 목록에서 골고루 상위에 오른 문서일수록 이 점수가 커집니다.</p><p>단일 쿼리 RAG의 한계는 검색 결과가 질문의 정확한 문구에 지나치게 민감하다는 점입니다. 사용자가 쓴 단어가 하필 문서의 표현과 다르면 실제로 관련 있는 문서라도 임베딩이나 키워드 매칭에서 낮은 순위로 밀려날 수 있습니다. RAG-Fusion은 질문을 여러 방식으로 바꿔 던짐으로써 이 표현 의존성을 줄입니다. 한 표현으로는 놓친 문서도 다른 표현의 쿼리에서는 상위에 걸릴 기회를 얻고, RRF는 등수 기반으로 합치기 때문에 검색 엔진마다 점수 스케일이 달라도 안정적으로 결합됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 660 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="10" y="105" width="90" height="40" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="55" y="129" font-size="12" text-anchor="middle">원 질문</text>
+<line x1="100" y1="115" x2="170" y2="40" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="125" x2="170" y2="125" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="135" x2="170" y2="210" class="dg-line" stroke-width="1.5"/>
+<rect x="170" y="20" width="100" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="41" font-size="11" text-anchor="middle">재구성 쿼리1</text>
+<rect x="170" y="108" width="100" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="129" font-size="11" text-anchor="middle">재구성 쿼리2</text>
+<rect x="170" y="196" width="100" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="217" font-size="11" text-anchor="middle">재구성 쿼리3</text>
+<line x1="270" y1="37" x2="330" y2="37" class="dg-line" stroke-width="1.5"/>
+<line x1="270" y1="125" x2="330" y2="125" class="dg-line" stroke-width="1.5"/>
+<line x1="270" y1="213" x2="330" y2="213" class="dg-line" stroke-width="1.5"/>
+<rect x="330" y="20" width="90" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="375" y="41" font-size="11" text-anchor="middle">순위목록1</text>
+<rect x="330" y="108" width="90" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="375" y="129" font-size="11" text-anchor="middle">순위목록2</text>
+<rect x="330" y="196" width="90" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="375" y="217" font-size="11" text-anchor="middle">순위목록3</text>
+<line x1="420" y1="37" x2="480" y2="115" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="125" x2="480" y2="125" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="213" x2="480" y2="135" class="dg-line" stroke-width="1.5"/>
+<rect x="480" y="105" width="80" height="40" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="520" y="123" font-size="11" text-anchor="middle" class="dg-accent">RRF</text>
+<text x="520" y="137" font-size="10" text-anchor="middle" class="dg-accent">융합</text>
+<line x1="560" y1="125" x2="620" y2="125" class="dg-line" stroke-width="1.5"/>
+<polygon points="620,125 610,120 610,130" class="dg-accent"/>
+<text x="590" y="160" font-size="11" text-anchor="middle">최종 순위</text>
+</svg>`,
+    diagramCaption: String.raw`원 질문을 여러 쿼리로 재구성해 각각 검색한 뒤 RRF로 하나의 순위로 합칩니다.`,
+    example: String.raw`<p>"파이썬 리스트 정렬" 이라는 질문을 "파이썬에서 리스트를 정렬하는 방법", "sort와 sorted의 차이" 로 재구성해 각각 검색하면, 원 질문만으로는 하위권이었던 "sorted 함수 활용법" 문서가 두번째 재구성 쿼리에서 상위에 올라 RRF 합산 후 최종 순위에서도 상위권에 들 수 있습니다.</p>`,
+    related: [{ label: "하이브리드 검색", slug: "hybrid-search-bm25" }, { label: "Self-RAG", slug: "self-rag" }, { label: "Reranking", slug: "reranking-llm" }],
+    sections: []
+  },
+  "self-rag": {
+    title: String.raw`Self-RAG: 검색이 필요한지도 모델이 스스로 판단하기`,
+    domain: "llm",
+    subLabel: String.raw`증강 · 재순위화`,
+    intuition: String.raw`<p>모든 질문이 검색을 필요로 하지는 않습니다. "1 더하기 1은?" 같은 질문에까지 매번 문서를 검색하면 시간과 비용만 낭비합니다. Self-RAG는 검색을 할지 말지, 그리고 검색한 결과가 실제로 쓸만한지를 모델 스스로 판단하게 만드는 방식입니다.</p><p>비서가 질문을 받을 때마다 매번 자료실로 뛰어가는 게 아니라 자기가 이미 아는 내용인지 먼저 판단하고 필요할 때만 자료를 찾아오는 것과 비슷합니다.</p>`,
+    explanation: String.raw`<p>Self-RAG는 모델이 일반 텍스트 토큰과 함께 특수한 판단 토큰을 같이 생성하도록 학습합니다. 이 판단 토큰에는 지금 검색이 필요한지를 나타내는 것, 검색해온 문서가 질문과 관련 있는지를 나타내는 것, 생성한 답변이 그 문서에 실제로 근거하고 있는지를 나타내는 것, 답변 전체의 품질을 나타내는 것이 포함됩니다. 모델은 생성 과정 중에 이 토큰들을 스스로 내뱉으면서 자기 출력을 실시간으로 점검합니다.</p><p>이 방식이 겨냥하는 한계는 항상 검색부터 하고 보는 RAG의 비효율입니다. 표준 RAG 파이프라인은 질문의 성격과 무관하게 매번 검색을 수행하는데, 이미 모델이 확실히 아는 사실이나 검색해도 관련 문서가 없는 질문에서는 이 검색이 그대로 낭비가 되거나 오히려 관련 없는 문서를 억지로 답변에 끼워 넣어 품질을 떨어뜨릴 수 있습니다. Self-RAG는 검색 필요 여부 판단을 파이프라인 밖의 규칙이 아니라 모델 자신의 학습된 판단으로 내재화합니다.</p><p>또한 검색을 하기로 했더라도 가져온 문서가 실제로 도움이 되는지, 생성한 문장이 그 문서 내용과 어긋나지 않는지를 같은 방식으로 스스로 점검합니다. 이 자기 점검 신호는 생성 도중에 여러 후보 중 더 근거가 탄탄한 답변을 고르는 데 쓰일 수 있어, 검색 여부 판단과 사실성 검증을 하나의 학습된 절차로 묶어낸다는 점이 이 접근의 핵심입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="90" width="100" height="50" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="70" y="112" font-size="11" text-anchor="middle">질문 입력</text>
+<text x="70" y="128" font-size="10" text-anchor="middle" class="dg-dim">검색 필요?</text>
+<line x1="120" y1="100" x2="220" y2="40" class="dg-line" stroke-width="1.5"/>
+<polygon points="220,40 208,42 214,52" class="dg-dim"/>
+<text x="230" y="35" font-size="11" class="dg-dim">아니오</text>
+<rect x="220" y="15" width="120" height="40" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="39" font-size="11" text-anchor="middle">바로 답변 생성</text>
+<line x1="120" y1="130" x2="220" y2="180" class="dg-line" stroke-width="1.5"/>
+<polygon points="220,180 208,175 214,168" class="dg-dim"/>
+<text x="230" y="200" font-size="11" class="dg-accent">예</text>
+<rect x="220" y="160" width="120" height="40" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="184" font-size="11" text-anchor="middle" class="dg-accent">검색 후 답변 생성</text>
+<line x1="340" y1="35" x2="420" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="340" y1="180" x2="420" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="420,90 408,90 414,100" class="dg-dim"/>
+<polygon points="420,110 408,110 414,100" class="dg-accent"/>
+<rect x="420" y="80" width="120" height="50" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="480" y="100" font-size="11" text-anchor="middle">자기 비평 토큰</text>
+<text x="480" y="116" font-size="10" text-anchor="middle" class="dg-dim">관련성·근거 점검</text>
+</svg>`,
+    diagramCaption: String.raw`검색이 필요한 질문인지 모델이 먼저 판단하고 필요할 때만 검색 후 근거를 점검합니다.`,
+    example: String.raw`<p>"수도는 어디인가" 처럼 흔한 사실 질문은 검색 없이 바로 답하고, "이번 분기 우리 회사 매출 정책 변경 사항은" 처럼 최신 내부 문서가 필요한 질문에는 검색 토큰을 내며 문서를 가져온 뒤, 가져온 문서가 실제로 매출 정책을 다루는지, 생성한 답이 그 문서와 일치하는지를 차례로 점검합니다.</p>`,
+    related: [{ label: "RAG-Fusion", slug: "rag-fusion" }, { label: "ReAct", slug: "react-llm" }, { label: "Reranking", slug: "reranking-llm" }],
+    sections: []
+  },
+  "lora-peft": {
+    title: String.raw`LoRA: 원가중치는 고정하고 저랭크 행렬만 학습하기`,
+    domain: "llm",
+    subLabel: String.raw`파라미터효율 튜닝(PEFT)`,
+    intuition: String.raw`<p>큰 언어모델 전체를 다시 학습시키려면 수십억 개 파라미터 전부를 업데이트해야 한다. 그러려면 파라미터 자체뿐 아니라 옵티마이저가 쓰는 추가 상태값까지 GPU 메모리에 올려야 해서 비용이 매우 크다. LoRA는 원래 가중치는 그대로 얼어붙여 두고 그 옆에 작은 행렬 두 개만 새로 붙여서 그 작은 행렬만 학습시킨다.</p>
+<p>비유하면 두꺼운 책 전체를 다시 쓰는 대신 얇은 정정 쪽지를 몇 장 끼워 넣는 것과 같다. 원본은 그대로 두고 쪽지만 새로 만들면 되니 훨씬 적은 자원으로 원하는 방향으로 모델을 바꿀 수 있다.</p>`,
+    explanation: String.raw`<p>LoRA는 사전학습된 가중치 행렬 $W_0$를 고정한 채 그 옆에 저랭크 분해 행렬 $B$와 $A$를 새로 둔다. 파인튜닝된 가중치는 $W = W_0 + BA$로 표현되는데 $B$는 $d \times r$, $A$는 $r \times k$ 크기이고 랭크 $r$은 $d$나 $k$보다 훨씬 작게 잡는다. 학습 중에는 $W_0$의 그래디언트를 구할 필요가 없고 $B$와 $A$만 역전파로 갱신하면 된다.</p>
+<p>이 방식이 필요한 이유는 전체 파인튜닝의 메모리 비용 때문이다. Adam 같은 옵티마이저는 파라미터마다 모멘텀과 분산 추정치를 따로 저장하므로 학습 가능한 파라미터 하나당 실제로는 그 몇 배에 달하는 메모리가 필요하다. 수십억 개 파라미터를 통째로 학습하면 옵티마이저 상태만으로도 GPU 메모리가 금방 바닥난다. LoRA는 학습 가능한 파라미터 수를 원래 가중치의 일부 수준으로 줄여서 이 옵티마이저 상태 비용을 함께 줄인다.</p>
+<p>LoRA가 통하는 배경에는 파인튜닝으로 생기는 가중치 변화량이 실제로는 낮은 차원의 부분공간 안에서 대부분 설명된다는 관찰이 있다. $W_0$를 완전히 자유롭게 바꿀 필요 없이 몇 개의 방향만 조정해도 원하는 태스크에 맞출 수 있다는 뜻이다. 추론 시점에는 $BA$를 $W_0$에 미리 더해 하나의 행렬로 합쳐버릴 수 있어서 추가 연산이나 지연 없이 원래 모델과 같은 구조로 서빙할 수 있다.</p>
+<p>랭크 $r$을 어디에 적용할지도 선택 사항이다. 보통 어텐션의 쿼리와 밸류 투영 행렬에만 LoRA를 붙여도 효과가 크고 $r$을 4에서 64 사이로만 잡아도 전체 파인튜닝과 비슷한 성능에 근접하는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="124" font-size="13">입력 x</text>
+<line x1="60" y1="120" x2="110" y2="62" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="120" x2="110" y2="185" class="dg-line" stroke-width="1.5"/>
+<rect x="110" y="40" width="200" height="44" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="210" y="67" text-anchor="middle" font-size="13">W0 (원가중치, 고정)</text>
+<line x1="310" y1="62" x2="420" y2="62" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="62" x2="420" y2="105" class="dg-line" stroke-width="1.5"/>
+<rect x="110" y="163" width="90" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="155" y="190" text-anchor="middle" font-size="13">A (r×k)</text>
+<line x1="200" y1="185" x2="240" y2="185" class="dg-line" stroke-width="1.5"/>
+<rect x="240" y="163" width="90" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="285" y="190" text-anchor="middle" font-size="13">B (d×r)</text>
+<line x1="330" y1="185" x2="420" y2="185" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="185" x2="420" y2="135" class="dg-line" stroke-width="1.5"/>
+<circle cx="420" cy="120" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="420" y="125" text-anchor="middle" font-size="14">+</text>
+<line x1="436" y1="120" x2="490" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="540" y="124" font-size="13">출력 h</text>
+</svg>`,
+    diagramCaption: String.raw`원가중치 W0는 고정한 채 저랭크 행렬 A, B의 곱을 더해 출력을 만든다.`,
+    example: String.raw`<p>은닉차원이 4096인 정사각 가중치 행렬 하나를 전체 파인튜닝하면 학습 파라미터는 $4096 \times 4096 = 16777216$개다. 같은 자리에 랭크 $r=8$인 LoRA를 붙이면 학습 파라미터는 $A$가 $8 \times 4096$, $B$가 $4096 \times 8$이므로 합쳐서 $4096 \times 8 \times 2 = 65536$개다.</p><p>전체 파인튜닝 파라미터 16,777,216개와 비교하면 LoRA의 65,536개는 약 $0.39\%$ 수준이다. 옵티마이저 상태까지 이 파라미터 수에 비례해서 줄어드므로 학습 메모리도 그만큼 크게 줄어든다.</p>`,
+    related: [{ label: "QLoRA", slug: "qlora" }, { label: "Adapter", slug: "adapter-tuning" }],
+    sections: []
+  },
+  "qlora": {
+    title: String.raw`QLoRA: 4비트로 양자화한 모델 위에 LoRA 얹기`,
+    domain: "llm",
+    subLabel: String.raw`파라미터효율 튜닝(PEFT)`,
+    intuition: String.raw`<p>LoRA는 학습해야 하는 파라미터 수는 크게 줄였지만 그래디언트를 흘려보내려면 여전히 원본 모델 전체를 GPU 메모리에 fp16이나 bf16 형태로 올려두어야 한다. 700억 개 파라미터짜리 모델이라면 이것만으로도 100GB가 넘는 메모리가 필요해서 일반적인 GPU 한두 장으로는 감당하기 어렵다.</p>
+<p>QLoRA는 이 원본 모델 자체를 4비트로 눌러서 저장해두고 그 위에 LoRA의 작은 학습 가능한 행렬만 얹는다. 무거운 원본은 압축된 채로 자리만 지키고 실제로 배우는 부분만 정밀한 정밀도로 따로 둔다.</p>`,
+    explanation: String.raw`<p>QLoRA는 기본 모델의 가중치를 NF4(4비트 NormalFloat)라는 자료형으로 양자화해 저장한다. 사전학습된 가중치는 대체로 정규분포를 따른다는 사실을 이용해 값이 몰리는 구간에 더 많은 표현 구간을 배분한 4비트 자료형으로 기존 INT4보다 오차를 줄인다. 순전파와 역전파 때는 이 4비트 가중치를 필요한 순간에만 bf16으로 복원해 계산하고 그래디언트는 원본 가중치가 아니라 그 위에 얹은 LoRA 어댑터로만 흘려보낸다.</p>
+<p>여기에 이중 양자화(double quantization)를 더해 양자화 과정에서 생기는 스케일 상수 자체도 다시 양자화해서 저장 공간을 한 번 더 줄인다. 또한 시퀀스 길이가 갑자기 길어져 메모리 사용량이 순간적으로 치솟는 경우를 대비해 옵티마이저 상태를 CPU와 GPU 사이에 페이지 단위로 옮겨두는 페이지드 옵티마이저를 함께 쓴다. 이 덕분에 순간적인 메모리 스파이크로 학습이 중단되는 문제를 피할 수 있다.</p>
+<p>결과적으로 QLoRA는 LoRA가 줄이지 못했던 기본 모델의 메모리 점유를 4비트 압축으로 추가로 줄이면서도 성능 저하는 거의 없다는 점을 보였다. 700억 개 파라미터급 모델도 단일 GPU 한 장에서 파인튜닝할 수 있게 된 것이 QLoRA가 실제로 가져온 변화다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="35" font-size="13">LoRA</text>
+<rect x="100" y="15" width="260" height="44" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="230" y="42" text-anchor="middle" font-size="12">기본 모델 fp16/bf16 그대로 상주</text>
+<rect x="380" y="15" width="140" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="450" y="42" text-anchor="middle" font-size="12">LoRA 어댑터</text>
+
+<text x="20" y="145" font-size="13">QLoRA</text>
+<rect x="100" y="120" width="150" height="44" class="dg-dim" stroke="none"/>
+<text x="175" y="147" text-anchor="middle" font-size="12">기본 모델 4bit NF4</text>
+<rect x="270" y="120" width="140" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="340" y="147" text-anchor="middle" font-size="12">LoRA 어댑터 bf16</text>
+<text x="440" y="147" font-size="12" class="dg-dim">메모리 점유 대폭 감소</text>
+</svg>`,
+    diagramCaption: String.raw`QLoRA는 기본 모델을 4비트로 압축해 상주시키고 학습 가능한 LoRA 어댑터만 bf16으로 둔다.`,
+    related: [{ label: "LoRA", slug: "lora-peft" }, { label: "GPTQ/AWQ", slug: "gptq-awq-quantization" }, { label: "Adapter", slug: "adapter-tuning" }],
+    sections: []
+  },
+  "adapter-tuning": {
+    title: String.raw`Adapter: 층 사이에 작은 모듈을 끼워 학습하기`,
+    domain: "llm",
+    subLabel: String.raw`파라미터효율 튜닝(PEFT)`,
+    intuition: String.raw`<p>모델 전체를 다시 학습시키는 대신 층과 층 사이에 아주 작은 신경망 조각을 새로 끼워 넣고 그 조각만 학습시키는 방법도 있다. 원래 층들은 그대로 얼어붙어 있고 새로 끼운 조각이 태스크에 맞게 신호를 살짝 바꿔주는 역할을 한다.</p>
+<p>LoRA가 가중치 자체에 저랭크 행렬을 더하는 방식이라면 Adapter는 순전파 경로 중간에 작은 모듈 하나를 물리적으로 삽입하는 방식이라 두 방법은 위치와 형태가 다르다.</p>`,
+    explanation: String.raw`<p>Adapter 모듈은 보통 트랜스포머 한 블록 안에서 어텐션이나 피드포워드 다음에 삽입된다. 구조는 입력 차원 $d$를 훨씬 작은 병목 차원 $m$으로 줄이는 다운프로젝션, 비선형 활성함수, 다시 $d$로 되돌리는 업프로젝션으로 이루어진 작은 병목형 네트워크다. 출력에는 잔차 연결을 더해 원래 층의 출력에 작은 보정값만 얹는 형태로 만든다.</p>
+<p>Adapter가 필요한 이유도 전체 파인튜닝의 비용 문제에서 출발한다. 층 전체를 다시 학습시키는 대신 병목 차원 $m$을 원래 차원 $d$보다 훨씬 작게 잡은 모듈 몇 개만 학습하면 학습 파라미터 수를 전체 모델의 몇 퍼센트 수준으로 낮출 수 있다. 원래 층의 가중치는 전혀 건드리지 않으므로 태스크마다 이 작은 Adapter 모듈만 따로 저장해두고 필요할 때 갈아 끼우는 방식으로 여러 태스크를 하나의 기본 모델 위에서 운영할 수 있다.</p>
+<p>다만 Adapter는 순전파 경로 자체에 새 층을 끼워 넣으므로 추론 시 연산 단계가 하나 늘어나 약간의 지연이 생긴다. LoRA는 학습이 끝난 뒤 저랭크 행렬을 원래 가중치에 합쳐버릴 수 있어 이런 추가 지연이 없는 반면 Adapter는 병목 구조 자체에 비선형 활성함수가 들어 있어서 원래 가중치에 합쳐 넣을 수 없다는 차이가 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="150" y="10" width="260" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="280" y="35" text-anchor="middle" font-size="13">어텐션 / FFN 층 (고정)</text>
+<line x1="280" y1="50" x2="280" y2="80" class="dg-line" stroke-width="1.5"/>
+<rect x="230" y="80" width="100" height="30" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="100" text-anchor="middle" font-size="12">다운프로젝션 d→m</text>
+<line x1="280" y1="110" x2="280" y2="130" class="dg-line" stroke-width="1.5"/>
+<rect x="245" y="130" width="70" height="26" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="148" text-anchor="middle" font-size="12">비선형</text>
+<line x1="280" y1="156" x2="280" y2="176" class="dg-line" stroke-width="1.5"/>
+<rect x="230" y="176" width="100" height="30" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="196" text-anchor="middle" font-size="12">업프로젝션 m→d</text>
+<path d="M150,30 C 60,30 60,220 230,220" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="206" x2="280" y2="228" class="dg-line" stroke-width="1.5"/>
+<circle cx="280" cy="234" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="239" text-anchor="middle" font-size="13">+</text>
+<text x="370" y="238" font-size="12" class="dg-dim">잔차 연결</text>
+</svg>`,
+    diagramCaption: String.raw`원래 층 출력에 작은 병목형 Adapter 모듈의 보정값을 잔차로 더한다.`,
+    related: [{ label: "LoRA", slug: "lora-peft" }, { label: "QLoRA", slug: "qlora" }],
+    sections: []
+  },
+  "rlhf": {
+    title: String.raw`RLHF: 인간 선호로 보상모델을 만들고 PPO로 정렬하기`,
+    domain: "llm",
+    subLabel: String.raw`정렬(Alignment)`,
+    intuition: String.raw`<p>언어모델이 다음 단어를 얼마나 그럴듯하게 잇는지는 사람이 실제로 좋아하는 답인지와 다를 수 있다. 유창하지만 위험하거나 불성실한 답을 내놓을 수도 있다는 뜻이다. RLHF는 사람이 어떤 답을 더 선호하는지 직접 비교해 알려주고 그 선호를 학습한 별도의 채점 모델을 만든 다음 그 채점 모델의 점수를 높이는 방향으로 언어모델을 다시 학습시킨다.</p>
+<p>사람이 모든 답을 일일이 채점할 수는 없으니 사람의 선호 패턴을 배운 대리 채점자를 하나 만들어두고 그 대리 채점자에게 계속 점수를 받아가며 모델을 훈련시키는 셈이다.</p>`,
+    explanation: String.raw`<p>RLHF는 세 단계로 이루어진다. 먼저 지도학습으로 사람이 작성한 좋은 응답 예시들로 기본 모델을 한 번 다듬어 SFT(supervised fine-tuning) 모델을 만든다. 다음으로 같은 프롬프트에 대해 이 모델이 만든 여러 응답을 사람 평가자가 순위를 매기게 하고 이 순위 데이터로 보상모델을 학습시킨다. 보상모델은 응답 하나를 받아 사람이 매길 법한 점수를 예측하는 별도의 신경망이다.</p>
+<p>마지막 단계에서는 SFT 모델을 정책으로 두고 PPO(Proximal Policy Optimization) 알고리즘으로 강화학습을 진행한다. 정책이 만든 응답을 보상모델에 넣어 점수를 받고 그 점수를 높이는 방향으로 정책을 업데이트한다. 이때 정책이 원래 SFT 모델에서 너무 멀어지면 보상모델을 속이는 이상한 출력으로 흐를 수 있어서 KL 발산 항을 페널티로 더해 원래 모델 분포 근처에 머물도록 제약을 건다.</p>
+<p>RLHF가 필요한 이유는 다음 토큰 예측이라는 학습 목표 자체가 사람이 실제로 원하는 답의 특성, 즉 유용함이나 안전함이나 정직함과 직접적으로 일치하지 않기 때문이다. 사람이 응답 쌍을 비교해 우열만 표시해도 그로부터 학습된 보상모델이 사람의 판단 기준을 대신할 채점자 역할을 하고 강화학습이 이 채점자의 점수를 계속 높이는 방향으로 모델을 조금씩 바꿔나간다. 다만 보상모델과 PPO 파이프라인을 함께 굴려야 해서 학습 과정 자체가 무겁고 불안정해지기 쉽다는 단점이 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 660 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="30" width="120" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="56" text-anchor="middle" font-size="12">SFT 모델</text>
+<line x1="140" y1="52" x2="180" y2="52" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="30" width="140" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="250" y="48" text-anchor="middle" font-size="12">여러 응답 생성</text>
+<text x="250" y="64" text-anchor="middle" font-size="12">사람이 순위 매김</text>
+<line x1="320" y1="52" x2="360" y2="52" class="dg-line" stroke-width="1.5"/>
+<rect x="360" y="30" width="140" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="430" y="56" text-anchor="middle" font-size="12">보상모델</text>
+<line x1="430" y1="74" x2="430" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="130" y="110" width="300" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="132" text-anchor="middle" font-size="12">PPO: 보상 점수를 높이는 방향으로</text>
+<text x="280" y="150" text-anchor="middle" font-size="12">정책(=SFT 모델) 업데이트, KL 페널티로 제약</text>
+<path d="M130,135 C 60,135 60,52 20,52" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="30" y="95" font-size="11" class="dg-dim">정책 갱신</text>
+</svg>`,
+    diagramCaption: String.raw`SFT 모델의 여러 응답을 사람이 비교해 보상모델을 만들고 그 점수로 PPO가 정책을 업데이트한다.`,
+    related: [{ label: "Constitutional AI", slug: "constitutional-ai" }],
+    sections: []
+  },
+  "constitutional-ai": {
+    title: String.raw`Constitutional AI: 원칙에 따라 스스로 비평하고 다시 학습하기`,
+    domain: "llm",
+    subLabel: String.raw`정렬(Alignment)`,
+    intuition: String.raw`<p>RLHF는 사람이 응답 쌍마다 어느 쪽이 나은지 계속 판단해줘야 한다. 사람이 판단할 수 있는 양에는 한계가 있고 유해한 응답을 사람이 직접 평가하려면 평가자가 유해한 내용에 반복 노출되는 부담도 생긴다. Constitutional AI는 사람이 미리 적어둔 원칙 몇 가지를 모델에게 주고 모델 스스로 자기 답을 그 원칙에 비추어 비평하고 고치게 한 다음 그 고쳐진 답으로 다시 학습시킨다.</p>
+<p>사람이 매번 개입하는 대신 원칙이라는 기준만 던져주고 모델이 그 기준으로 스스로를 검사하고 수정하게 만드는 방식이다.</p>`,
+    explanation: String.raw`<p>Constitutional AI는 두 단계로 진행된다. 첫 단계는 지도학습 단계로 모델이 먼저 응답을 만들고 원칙 목록 중 하나를 골라 그 원칙에 비추어 자기 응답을 비평하게 한 다음 비평 내용을 반영해 응답을 다시 쓰게 한다. 이렇게 만들어진 원칙에 맞게 고쳐진 응답들로 모델을 다시 지도학습시킨다.</p>
+<p>둘째 단계는 RLHF와 비슷한 강화학습 단계이지만 사람이 응답 쌍의 우열을 매기는 대신 모델 자신에게 원칙을 기준으로 어느 응답이 더 나은지 판단하게 해서 그 판단으로 선호 데이터셋을 만든다. 이 AI가 만든 선호 데이터로 보상모델을 학습시키고 그 보상모델로 다시 정책을 강화학습시킨다. 사람이 매긴 선호 대신 AI가 매긴 선호를 쓴다는 뜻에서 이 단계를 RLAIF라고 부르기도 한다.</p>
+<p>Constitutional AI가 필요한 이유는 RLHF의 사람 평가 의존도를 낮추기 위해서다. 사람이 유해할 수 있는 응답 수천 수만 건을 일일이 비교하는 대신 원칙 몇 줄만 정해두면 모델이 그 원칙을 기준으로 스스로 비평과 수정을 반복하며 훨씬 많은 양의 학습 신호를 만들어낼 수 있다. 원칙 자체가 투명하게 문서로 공개될 수 있어 정렬 기준이 어디서 왔는지 추적하기도 RLHF보다 쉬워진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="120" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="46" text-anchor="middle" font-size="12">초기 응답</text>
+<line x1="140" y1="42" x2="180" y2="42" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="20" width="150" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="255" y="38" text-anchor="middle" font-size="12">원칙에 비추어</text>
+<text x="255" y="54" text-anchor="middle" font-size="12">자기 비평</text>
+<line x1="330" y1="42" x2="370" y2="42" class="dg-line" stroke-width="1.5"/>
+<rect x="370" y="20" width="130" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="435" y="46" text-anchor="middle" font-size="12">응답 재작성</text>
+<text x="600" y="46" font-size="12" class="dg-dim">SFT로 재학습</text>
+<line x1="435" y1="64" x2="435" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="365" y="110" width="140" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="435" y="128" text-anchor="middle" font-size="12">원칙 기준</text>
+<text x="435" y="144" text-anchor="middle" font-size="12">AI가 응답 쌍 비교</text>
+<line x1="365" y1="132" x2="320" y2="132" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="110" width="140" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="250" y="136" text-anchor="middle" font-size="12">보상모델 학습</text>
+<line x1="180" y1="132" x2="140" y2="132" class="dg-line" stroke-width="1.5"/>
+<rect x="20" y="110" width="120" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="128" text-anchor="middle" font-size="12">RL로 정책</text>
+<text x="80" y="144" text-anchor="middle" font-size="12">업데이트</text>
+</svg>`,
+    diagramCaption: String.raw`사람 대신 원칙과 AI 스스로의 비평이 지도학습 데이터와 선호 데이터를 모두 만들어낸다.`,
+    related: [{ label: "RLHF", slug: "rlhf" }],
+    sections: []
+  },
+  "paged-attention": {
+    title: String.raw`PagedAttention: KV 캐시를 페이지 단위로 관리하기`,
+    domain: "llm",
+    subLabel: String.raw`KV 캐시 · 메모리`,
+    intuition: String.raw`<p>KV 캐시는 시퀀스가 길어질수록 커지는데 순진하게 구현하면 요청마다 미리 최대 길이만큼 통짜로 연속된 메모리 공간을 예약해둔다. 실제로 쓰이는 길이는 그보다 훨씬 짧은 경우가 많아서 예약해둔 공간의 상당 부분이 낭비된다. 여러 요청을 동시에 처리하는 서버에서는 이 낭비가 누적되어 동시에 처리할 수 있는 요청 수 자체를 크게 줄인다.</p>
+<p>PagedAttention은 운영체제가 메모리를 고정 크기 페이지로 나눠 관리하는 아이디어를 그대로 KV 캐시에 옮겨왔다. 캐시를 통짜로 예약하는 대신 작은 블록 단위로 필요한 만큼만 나눠주고 필요 없어지면 회수한다.</p>`,
+    explanation: String.raw`<p>PagedAttention은 각 시퀀스의 KV 캐시를 고정 크기 블록(페이지) 여러 개로 쪼개 관리한다. 논리적으로는 하나의 연속된 캐시처럼 보이지만 실제 물리 메모리에서는 블록마다 서로 다른 위치에 흩어져 있을 수 있고 블록 테이블이 논리 위치와 물리 위치를 연결해준다. 새 토큰이 생성될 때마다 필요한 만큼만 새 블록을 할당하므로 시퀀스 길이를 미리 최대치로 예약해둘 필요가 없다.</p>
+<p>이 방식이 필요한 이유는 순진한 KV 캐시 구현의 메모리 단편화 문제 때문이다. 요청마다 최대 시퀀스 길이만큼 연속된 공간을 미리 잡아두면 실제 생성 길이가 그보다 짧을 때 남는 공간은 다른 요청이 쓸 수 없이 버려진다. 요청마다 필요한 길이가 제각각이라 연속된 빈 공간을 찾기도 점점 어려워진다. 페이지 단위로 나누면 필요한 만큼만 그때그때 블록을 배정하고 요청이 끝나면 블록을 즉시 회수해 다른 요청에 재사용할 수 있어 메모리 낭비가 거의 사라진다.</p>
+<p>블록 단위 관리는 부가 이득도 준다. 여러 요청이 같은 프리픽스, 예를 들어 같은 시스템 프롬프트를 공유한다면 그 프리픽스에 해당하는 블록을 여러 요청이 함께 가리키게 해서 캐시 자체를 복제하지 않고 공유할 수 있다. 결과적으로 PagedAttention은 같은 GPU 메모리로 훨씬 많은 요청을 동시에 처리할 수 있게 해주는 서빙 엔진의 핵심 기법으로 자리잡았다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="18" font-size="12">기존 방식: 최대 길이만큼 통짜 예약</text>
+<rect x="20" y="28" width="320" height="36" class="dg-dim" stroke="none"/>
+<rect x="20" y="28" width="90" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="65" y="50" text-anchor="middle" font-size="11">사용중</text>
+<text x="230" y="50" text-anchor="middle" font-size="11" class="dg-dim">낭비되는 예약 공간</text>
+<text x="20" y="100" font-size="12">PagedAttention: 논리 시퀀스</text>
+<rect x="20" y="110" width="40" height="30" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="40" y="130" text-anchor="middle" font-size="11">P0</text>
+<rect x="65" y="110" width="40" height="30" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="85" y="130" text-anchor="middle" font-size="11">P1</text>
+<rect x="110" y="110" width="40" height="30" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="130" y="130" text-anchor="middle" font-size="11">P2</text>
+<text x="20" y="180" font-size="12">물리 메모리: 블록 테이블로 매핑, 흩어져 있어도 무방</text>
+<rect x="60" y="190" width="40" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="210" text-anchor="middle" font-size="11">P1</text>
+<rect x="180" y="190" width="40" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="200" y="210" text-anchor="middle" font-size="11">P0</text>
+<rect x="300" y="190" width="40" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="320" y="210" text-anchor="middle" font-size="11">P2</text>
+<path d="M40,140 C 40,170 200,175 200,190" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<path d="M85,140 C 85,160 80,170 80,190" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<path d="M130,140 C 130,165 320,175 320,190" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+</svg>`,
+    diagramCaption: String.raw`논리적으로 이어진 시퀀스도 물리 메모리에서는 블록 테이블을 통해 흩어진 페이지에 매핑된다.`,
+    related: [{ label: "Multi/Grouped-Query Attention", slug: "multi-grouped-query-attention" }, { label: "프리픽스 캐싱", slug: "prefix-caching" }],
+    sections: []
+  },
+  "multi-grouped-query-attention": {
+    title: String.raw`Multi/Grouped-Query Attention: Key/Value 헤드 수를 줄여 캐시 아끼기`,
+    domain: "llm",
+    subLabel: String.raw`KV 캐시 · 메모리`,
+    intuition: String.raw`<p>기존 멀티헤드 어텐션은 쿼리, 키, 밸류 각각을 헤드 수만큼 따로 두고 헤드마다 독립적으로 어텐션을 계산한다. 헤드가 32개면 캐시에 저장해야 할 키와 밸류도 32벌이 필요하다는 뜻이라 헤드가 많을수록 캐시 크기도 그만큼 커진다.</p>
+<p>Multi-Query Attention과 Grouped-Query Attention은 쿼리 헤드는 그대로 여러 개 두되 키와 밸류 헤드 수만 줄여서 여러 쿼리 헤드가 같은 키, 밸류 헤드를 공유하게 만든다. 계산에 참여하는 시선의 다양성은 유지하면서 저장해야 할 키, 밸류 양만 줄이는 방식이다.</p>`,
+    explanation: String.raw`<p>표준 멀티헤드 어텐션(MHA)은 쿼리 헤드 수 $h$개마다 키 헤드와 밸류 헤드도 각각 $h$개씩 따로 둔다. Multi-Query Attention(MQA)은 이를 극단적으로 줄여 키와 밸류 헤드를 단 1개만 두고 모든 쿼리 헤드가 이 하나의 키, 밸류 헤드를 공유하게 한다. Grouped-Query Attention(GQA)은 그 중간 지점으로 쿼리 헤드 $h$개를 $g$개의 그룹으로 묶고 그룹마다 하나씩, 즉 $g$개의 키, 밸류 헤드만 둔다. $g=h$이면 MHA와 같고 $g=1$이면 MQA와 같다.</p>
+<p>이 방식이 필요한 이유는 KV 캐시 메모리가 헤드 수에 정비례해서 커지기 때문이다. 시퀀스가 길어지고 배치가 커질수록 캐시 크기가 헤드 수만큼 불어나 서빙 GPU 메모리의 병목이 된다. 키, 밸류 헤드 수를 $h$에서 $g$로 줄이면 캐시 크기도 그 비율 $g/h$만큼 줄어든다. 예를 들어 헤드가 32개인 모델을 그룹 8개짜리 GQA로 바꾸면 캐시 크기는 원래의 4분의 1로 줄어든다.</p>
+<p>다만 키, 밸류를 공유하는 만큼 모델이 표현할 수 있는 어텐션 패턴의 다양성은 약간 줄어든다. MQA는 캐시를 가장 크게 줄이지만 품질 저하가 상대적으로 크고 GQA는 그룹 수를 조절해 캐시 절감과 품질 사이의 절충점을 고를 수 있어 최근 대형 모델들이 널리 채택하는 절충안이 되었다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="100" y="18" text-anchor="middle" font-size="13">MHA</text>
+<text x="320" y="18" text-anchor="middle" font-size="13">GQA</text>
+<text x="540" y="18" text-anchor="middle" font-size="13">MQA</text>
+<circle cx="40" cy="50" r="10" class="dg-accent"/><circle cx="80" cy="50" r="10" class="dg-accent"/>
+<circle cx="120" cy="50" r="10" class="dg-accent"/><circle cx="160" cy="50" r="10" class="dg-accent"/>
+<rect x="25" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="65" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="105" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="145" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="40" y1="60" x2="40" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="80" y1="60" x2="80" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="120" y1="60" x2="120" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="160" y1="60" x2="160" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="100" y="140" text-anchor="middle" font-size="11" class="dg-dim">KV 헤드 4개</text>
+<circle cx="260" cy="50" r="10" class="dg-accent"/><circle cx="300" cy="50" r="10" class="dg-accent"/>
+<circle cx="340" cy="50" r="10" class="dg-accent"/><circle cx="380" cy="50" r="10" class="dg-accent"/>
+<rect x="265" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="345" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="260" y1="60" x2="280" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="60" x2="280" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="340" y1="60" x2="360" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="380" y1="60" x2="360" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="320" y="140" text-anchor="middle" font-size="11" class="dg-dim">KV 헤드 2개(그룹 공유)</text>
+<circle cx="480" cy="50" r="10" class="dg-accent"/><circle cx="520" cy="50" r="10" class="dg-accent"/>
+<circle cx="560" cy="50" r="10" class="dg-accent"/><circle cx="600" cy="50" r="10" class="dg-accent"/>
+<rect x="525" y="90" width="30" height="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="480" y1="60" x2="540" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="520" y1="60" x2="540" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="560" y1="60" x2="540" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="600" y1="60" x2="540" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="540" y="140" text-anchor="middle" font-size="11" class="dg-dim">KV 헤드 1개(전체 공유)</text>
+</svg>`,
+    diagramCaption: String.raw`쿼리 헤드 수는 유지한 채 키, 밸류 헤드 수만 줄여 캐시 크기를 줄인다.`,
+    related: [{ label: "PagedAttention", slug: "paged-attention" }],
+    sections: []
+  },
+  "prompt-caching-cost-structure": {
+    title: String.raw`캐싱 비용 구조: 캐시 미스, 쓰기, 히트가 각각 다른 단가를 갖는다`,
+    domain: "llm",
+    subLabel: String.raw`프롬프트 캐싱`,
+    intuition: String.raw`<p>프롬프트 캐싱을 쓰면 같은 입력을 반복해서 보낼 때 앞부분을 다시 계산하지 않아도 되니 무조건 싸질 것 같지만 실제로는 세 가지 다른 단가가 섞여 청구된다. 처음 보는 부분은 기본 단가로 계산되고 캐시에 새로 저장하는 부분은 오히려 기본 단가보다 비싸게 청구되며 캐시에서 그대로 읽어오는 부분만 훨씬 싸게 청구된다.</p>
+<p>그래서 프롬프트 캐싱으로 얼마나 절약되는지는 캐시를 쓰느냐 안 쓰느냐가 아니라 전체 입력 중 얼마만큼이 캐시에서 읽히는지에 달려 있다.</p>`,
+    explanation: String.raw`<p>비용은 세 부분으로 나뉜다. 캐시에 없어서 새로 계산해야 하는 캐시 미스 토큰은 기본 입력 단가로 청구된다. 이번에 새로 캐시에 저장해두는 캐시 쓰기 토큰은 기본 단가의 약 1.25배로 청구된다. 이전에 저장해둔 캐시를 그대로 읽어와 재계산을 생략하는 캐시 히트 토큰은 기본 단가의 약 0.1배로 청구된다. 기본 입력 단가를 1로 둔 상대값으로 총비용 $C$는 다음과 같이 쓸 수 있다.</p>
+$$C = M \times 1 + W \times 1.25 + H \times 0.1$$
+<p>여기서 $M$은 캐시미스 토큰 수, $W$는 캐시쓰기 토큰 수, $H$는 캐시히트 토큰 수다. 캐시 쓰기 단가가 기본가보다 오히려 비싼 이유는 캐시에 저장할 값을 계산하고 저장 인프라에 올려두는 과정 자체에 추가 비용이 들기 때문이다. 반대로 캐시 히트 단가가 기본가의 10분의 1 수준으로 싼 이유는 이미 계산해 저장해둔 키, 밸류를 그대로 불러오기만 하면 되어 순전파 연산의 대부분을 건너뛸 수 있기 때문이다.</p>
+<p>이 구조가 필요한 이유는 캐싱 인프라 자체가 공짜가 아니기 때문이다. 캐시를 쓰기 위해 준비하는 비용과 캐시를 유지하는 데 드는 비용을 어딘가에는 반영해야 하고 그 몫이 캐시 쓰기 단가에 얹힌다. 대신 같은 프리픽스를 반복해서 보내는 워크로드는 두 번째 요청부터 캐시 히트 구간이 늘어나면서 전체 평균 단가가 빠르게 낮아진다. 시스템 프롬프트가 길고 반복 호출이 많은 워크로드일수록 프롬프트 캐싱으로 얻는 절감 폭이 커지는 이유가 여기 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="190" x2="480" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="90" y="90" width="60" height="100" class="dg-dim" stroke="none"/>
+<text x="120" y="205" text-anchor="middle" font-size="12">캐시미스</text>
+<text x="120" y="80" text-anchor="middle" font-size="12">1.0배</text>
+<rect x="230" y="65" width="60" height="125" class="dg-accent" stroke="none"/>
+<text x="260" y="205" text-anchor="middle" font-size="12">캐시쓰기</text>
+<text x="260" y="55" text-anchor="middle" font-size="12">1.25배</text>
+<rect x="370" y="180" width="60" height="10" class="dg-dim" stroke="none"/>
+<text x="400" y="205" text-anchor="middle" font-size="12">캐시히트</text>
+<text x="400" y="170" text-anchor="middle" font-size="12">0.1배</text>
+</svg>`,
+    diagramCaption: String.raw`기본 단가를 1로 두면 캐시 쓰기는 약 1.25배, 캐시 히트는 약 0.1배로 청구된다.`,
+    example: String.raw`<p>시스템 프롬프트와 few-shot 예시로 이루어진 프리픽스가 8000토큰이고 매 요청마다 새로 붙는 질문이 200토큰이라고 하자. 기본 입력 단가를 토큰당 1원이라 하면 첫 요청은 프리픽스 전체가 캐시에 없으므로 8000토큰을 캐시 쓰기 단가로, 200토큰을 캐시 미스 단가로 계산한다.</p>
+$$8000 \times 1.25 + 200 \times 1 = 10200$$
+<p>즉 10,200원이다. 두 번째 요청부터는 같은 프리픽스 8000토큰이 캐시에 남아 있으므로 캐시 히트 단가로, 새 질문 200토큰만 캐시 미스 단가로 계산한다.</p>
+$$8000 \times 0.1 + 200 \times 1 = 1000$$
+<p>즉 1,000원이다. 같은 프리픽스를 계속 재사용하는 요청이라면 두 번째 요청부터 비용이 10,200원에서 1,000원으로 10분의 1 수준까지 줄어든다. 캐싱을 처음 준비하는 비용은 더 들지만 반복 호출이 쌓일수록 평균 단가가 빠르게 내려가는 이유다.</p>`,
+    related: [{ label: "캐시 히트율", slug: "prompt-cache-hit-rate" }, { label: "프리픽스 캐싱", slug: "prefix-caching" }, { label: "캐시 TTL", slug: "prompt-cache-ttl" }],
+    sections: []
+  },
+  "prompt-cache-hit-rate": {
+    title: String.raw`캐시 히트율: 반복되는 프롬프트가 많을수록 올라간다`,
+    domain: "llm",
+    subLabel: String.raw`프롬프트 캐싱`,
+    intuition: String.raw`<p>프롬프트 캐싱이 실제로 얼마나 도움이 되는지를 한 숫자로 요약하면 캐시 히트율이다. 전체 입력 토큰 중에서 캐시에서 그대로 읽어온 토큰이 몇 퍼센트인지를 나타내는 값으로 이 비율이 높을수록 평균 비용과 지연 시간이 함께 낮아진다.</p>
+<p>매번 완전히 다른 내용을 보내는 워크로드라면 캐시에서 읽어올 부분이 없어 히트율은 0에 가깝고 반대로 긴 시스템 프롬프트나 few-shot 예시를 매번 그대로 재사용하는 워크로드라면 히트율이 매우 높아진다.</p>`,
+    explanation: String.raw`<p>캐시 히트율은 캐시에서 읽은 토큰 수를 전체 입력 토큰 수로 나눈 값이다. 분자는 이번 요청에서 캐시 히트로 처리된 토큰 수이고 분모는 프리픽스와 새로 붙는 부분을 합친 전체 입력 토큰 수다. 같은 시스템 프롬프트나 도구 설명, few-shot 예시가 요청마다 반복해서 앞부분에 들어가는 워크로드는 그 반복되는 구간이 매번 캐시에서 그대로 읽히므로 히트율이 자연히 올라간다.</p>
+<p>히트율을 끌어올리는 실무적인 방법은 캐시에 걸리는 부분, 즉 자주 바뀌지 않는 내용을 프롬프트의 앞쪽에 몰아두고 매번 달라지는 사용자 질문이나 최신 대화 턴은 뒤쪽에 두는 것이다. 캐시는 앞에서부터 일치하는 구간까지만 재사용되므로 자주 바뀌는 내용이 앞쪽에 섞여 있으면 그 지점부터 뒤는 전부 캐시 미스로 처리되어 히트율이 뚝 떨어진다.</p>
+<p>히트율이 중요한 이유는 캐시 히트 단가가 기본가의 약 0.1배로 가장 싸기 때문이다. 같은 트래픽이라도 히트율이 높은 워크로드는 평균 단가가 기본가보다 훨씬 낮게 내려가고 히트율이 낮은 워크로드는 캐시 쓰기 비용만 반복해서 물면서 오히려 캐싱을 안 쓰는 것보다 비싸질 수도 있다. 그래서 캐싱을 도입할 때는 실제 트래픽 패턴에서 반복되는 프리픽스 비율이 얼마나 되는지를 먼저 가늠해보는 것이 중요하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="30" font-size="12">매번 다른 프롬프트</text>
+<rect x="20" y="40" width="20" height="30" class="dg-accent" stroke="none"/>
+<rect x="40" y="40" width="280" height="30" class="dg-dim" stroke="none"/>
+<text x="180" y="90" text-anchor="middle" font-size="11" class="dg-dim">히트율 낮음</text>
+<text x="20" y="130" font-size="12">반복되는 시스템 프롬프트</text>
+<rect x="20" y="140" width="260" height="30" class="dg-accent" stroke="none"/>
+<rect x="280" y="140" width="40" height="30" class="dg-dim" stroke="none"/>
+<text x="180" y="190" text-anchor="middle" font-size="11" class="dg-dim">히트율 높음</text>
+</svg>`,
+    diagramCaption: String.raw`캐시에서 읽힌 구간(강조)이 넓을수록 히트율이 높다.`,
+    related: [{ label: "캐싱 비용 구조", slug: "prompt-caching-cost-structure" }, { label: "프리픽스 캐싱", slug: "prefix-caching" }],
+    sections: []
+  },
+  "prefix-caching": {
+    title: String.raw`프리픽스 캐싱: 앞부분이 같으면 그 구간만 재사용하기`,
+    domain: "llm",
+    subLabel: String.raw`프롬프트 캐싱`,
+    intuition: String.raw`<p>대화형 서비스에서는 시스템 프롬프트나 이전 대화 내용처럼 매 요청마다 앞부분이 그대로 반복되는 경우가 많다. 이 반복되는 앞부분까지 매번 처음부터 다시 계산한다면 뒤에 붙는 새 질문 몇 마디를 처리하기 위해 앞의 수천 토큰을 불필요하게 다시 계산하는 셈이다.</p>
+<p>프리픽스 캐싱은 입력의 앞부분이 이전 요청과 똑같다면 그 구간의 KV 캐시를 그대로 재사용하고 뒤에 새로 붙은 부분만 계산한다. 겹치는 만큼만 건너뛴다는 단순한 원리다.</p>`,
+    explanation: String.raw`<p>프리픽스 캐싱은 입력 토큰 시퀀스를 앞에서부터 훑으면서 이전에 캐시해둔 시퀀스와 얼마나 겹치는지를 확인한다. 예를 들어 이전 요청의 프리픽스가 시스템 프롬프트 500토큰이었고 이번 요청도 같은 500토큰으로 시작한다면 그 500토큰에 대한 키, 밸류는 이미 계산되어 있으므로 다시 계산하지 않는다. 겹치는 구간이 끝나는 지점부터, 즉 새로 추가된 사용자 질문 부분부터만 새로 순전파를 돌려 키, 밸류를 계산하고 이어붙인다.</p>
+<p>이 방식이 필요한 이유는 자기회귀 생성에서 프리필(prefill) 단계, 즉 입력 전체를 한 번 훑어 초기 KV 캐시를 만드는 단계의 비용이 입력 길이에 비례해서 커지기 때문이다. 대화가 길어질수록 매 턴 반복해서 앞부분 전체를 프리필하는 비용이 누적되어 응답이 나오기까지 걸리는 첫 토큰 지연 시간이 계속 늘어난다. 프리픽스 캐싱은 이미 계산해둔 구간의 프리필을 건너뛰어 이 지연을 크게 줄인다.</p>
+<p>PagedAttention 같은 블록 단위 KV 캐시 관리와 함께 쓰이면 효과가 더 커진다. 서로 다른 요청이라도 같은 시스템 프롬프트로 시작한다면 그 프리픽스에 해당하는 블록을 여러 요청이 함께 가리키게 해서 계산은 물론 캐시가 차지하는 메모리 자체도 공유할 수 있다. 다만 프리픽스 뒤에 붙는 내용이 조금이라도 달라지면 그 지점부터는 캐시를 재사용할 수 없으므로 자주 바뀌는 내용을 프롬프트 앞쪽에 두지 않는 것이 프리픽스 캐싱의 효과를 살리는 핵심이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="20" font-size="12">요청 1</text>
+<rect x="20" y="30" width="260" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="150" y="54" text-anchor="middle" font-size="12">시스템 프롬프트(프리픽스)</text>
+<rect x="280" y="30" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="340" y="54" text-anchor="middle" font-size="12">질문 1</text>
+<text x="420" y="54" font-size="11" class="dg-dim">전체 새로 계산</text>
+<text x="20" y="120" font-size="12">요청 2</text>
+<rect x="20" y="130" width="260" height="40" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="150" y="154" text-anchor="middle" font-size="12">같은 프리픽스(캐시 재사용)</text>
+<rect x="280" y="130" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="340" y="154" text-anchor="middle" font-size="12">질문 2</text>
+<text x="420" y="154" font-size="11" class="dg-dim">여기만 새로 계산</text>
+</svg>`,
+    diagramCaption: String.raw`앞부분이 요청마다 동일하면 그 구간의 KV 캐시를 재사용하고 새로 붙은 뒷부분만 계산한다.`,
+    related: [{ label: "PagedAttention", slug: "paged-attention" }, { label: "캐시 TTL", slug: "prompt-cache-ttl" }, { label: "캐시 히트율", slug: "prompt-cache-hit-rate" }],
+    sections: []
+  },
+  "prompt-cache-ttl": {
+    title: String.raw`캐시 TTL: 캐시도 유효기간이 있다`,
+    domain: "llm",
+    subLabel: String.raw`프롬프트 캐싱`,
+    intuition: String.raw`<p>캐시에 저장해둔 KV 값을 영원히 붙들고 있을 수는 없다. 요청이 뜸한 프리픽스를 위해 GPU 메모리를 무한정 붙잡아두면 정작 활발히 쓰이는 다른 요청이 그 메모리를 못 쓰게 된다. 그래서 캐시에는 보통 유효기간, 즉 TTL(Time To Live)이 붙는다.</p>
+<p>정해진 시간 동안 그 캐시를 다시 참조하는 요청이 없으면 캐시는 지워지고 다음 요청은 처음부터 다시 계산해야 한다.</p>`,
+    explanation: String.raw`<p>TTL은 캐시 항목이 마지막으로 쓰인 시점부터 다음 요청이 오기까지 허용되는 최대 대기 시간이다. 제공업체마다 다르지만 보통 5분에서 1시간 사이로 설정된다. TTL 안에 같은 프리픽스로 다시 요청이 오면 캐시가 갱신되며 유효기간이 다시 연장되고 TTL을 넘기면 캐시가 만료되어 그 프리픽스는 캐시 미스로 처리되고 처음부터 다시 계산해 새로 캐시에 쓴다.</p>
+<p>TTL이 필요한 이유는 캐시가 차지하는 메모리가 유한한 자원이기 때문이다. 모든 요청의 프리픽스를 영구히 캐시에 남겨두면 실제로는 다시 쓰이지 않는 캐시가 계속 쌓여 메모리를 낭비하고 결국 활발히 재사용되는 캐시를 위한 공간까지 밀어낼 수 있다. TTL은 일정 시간 이상 재사용되지 않는 캐시를 자동으로 회수해 이런 낭비를 막는 장치다.</p>
+<p>실무에서는 TTL을 고려해 호출 간격을 설계하는 것이 중요하다. 같은 시스템 프롬프트를 쓰는 요청이라도 TTL보다 뜸하게 들어오면 매번 캐시가 만료된 뒤 다시 계산되어 캐시 쓰기 단가만 반복해서 물게 되고 캐시 히트로 인한 절감 효과를 전혀 못 본다. 반대로 TTL 안에 충분히 자주 요청이 들어오는 트래픽 패턴이라면 캐시가 계속 살아있는 상태로 유지되어 캐시 히트 단가의 이득을 안정적으로 누릴 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg">
+<line x1="20" y1="140" x2="600" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="60" cy="140" r="5" class="dg-accent" stroke="none"/>
+<text x="60" y="165" text-anchor="middle" font-size="11">요청1(쓰기)</text>
+<rect x="60" y="100" width="160" height="20" class="dg-dim" stroke="none"/>
+<text x="140" y="95" text-anchor="middle" font-size="11" class="dg-dim">TTL 유효 구간</text>
+<circle cx="180" cy="140" r="5" class="dg-accent" stroke="none"/>
+<text x="180" y="165" text-anchor="middle" font-size="11">요청2(히트)</text>
+<rect x="180" y="100" width="160" height="20" class="dg-dim" stroke="none"/>
+<text x="260" y="95" text-anchor="middle" font-size="11" class="dg-dim">TTL 연장</text>
+<circle cx="500" cy="140" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="500" y="165" text-anchor="middle" font-size="11">요청3(TTL 만료 후, 미스)</text>
+</svg>`,
+    diagramCaption: String.raw`TTL 안에 다시 요청이 오면 캐시가 히트되며 연장되고 TTL을 넘기면 만료되어 다시 계산한다.`,
+    related: [{ label: "캐싱 비용 구조", slug: "prompt-caching-cost-structure" }, { label: "캐시 히트율", slug: "prompt-cache-hit-rate" }, { label: "프리픽스 캐싱", slug: "prefix-caching" }],
+    sections: []
+  },
+  "gptq-awq-quantization": {
+    title: String.raw`GPTQ/AWQ: LLM 가중치를 저비트로 정밀하게 눌러 담기`,
+    domain: "llm",
+    subLabel: String.raw`스케일링 · 양자화`,
+    intuition: String.raw`<p>학습이 끝난 모델의 가중치는 보통 16비트 실수로 저장된다. 이 값을 4비트나 8비트 같은 훨씬 작은 표현으로 눌러 담으면 모델 파일 크기와 추론에 필요한 메모리가 크게 줄어든다. 문제는 그냥 값을 반올림해서 눌러 담으면 오차가 누적돼 모델 품질이 눈에 띄게 떨어진다는 점이다.</p>
+<p>GPTQ와 AWQ는 어떤 가중치를 어떻게 눌러 담아야 오차가 최소가 되는지를 계산해서 양자화하는 방법이다. 무작정 반올림하는 대신 오차가 뒤로 전파되지 않도록, 또는 중요한 값은 덜 다치도록 신경 써서 압축한다.</p>`,
+    explanation: String.raw`<p>GPTQ는 층 하나씩 순서대로 가중치를 양자화하면서 한 값을 양자화할 때 생기는 오차를 아직 양자화하지 않은 나머지 가중치들에 보정값으로 나누어 반영한다. 이차 근사(헤시안 기반) 정보를 이용해 어떤 방향으로 오차를 흘려보내야 전체 출력에 미치는 영향이 최소가 되는지를 계산하고 그 방향으로 나머지 가중치를 살짝 조정한다. 이렇게 하면 값 하나하나를 독립적으로 반올림할 때보다 훨씬 적은 오차로 4비트 수준까지 압축할 수 있다.</p>
+<p>AWQ는 접근이 다르다. 모든 가중치가 출력에 똑같이 중요한 게 아니라 활성화 값이 크게 나타나는 채널에 대응하는 가중치 소수가 출력 품질에 특히 큰 영향을 미친다는 관찰에서 출발한다. AWQ는 이런 중요한 채널을 찾아 양자화 전에 스케일을 조정해서 그 채널의 가중치가 양자화 격자에서 더 세밀하게 표현되도록 만들고 상대적으로 덜 중요한 채널은 좀 더 거칠게 눌러 담는다. GPTQ처럼 값 하나하나를 순서대로 보정하지 않아도 되어 양자화 자체에 걸리는 시간이 더 짧다는 실무적 장점도 있다.</p>
+<p>이런 정교한 양자화 방법이 필요한 이유는 단순 반올림 방식의 INT8이나 INT4로는 비트 수를 줄일수록 품질 저하가 급격해지기 때문이다. GPTQ와 AWQ는 오차를 재분배하거나 중요한 값을 보호하는 방식으로 4비트급 압축에서도 원본과 비슷한 성능을 유지한다. 결과적으로 700억 개 파라미터급 모델도 fp16 기준 약 140GB에서 4비트 기준 약 35GB 수준으로 줄어들어 훨씬 적은 GPU 메모리로 서빙할 수 있게 된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="190" x2="480" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="80" y="30" width="60" height="160" class="dg-dim" stroke="none"/>
+<text x="110" y="205" text-anchor="middle" font-size="12">fp16</text>
+<text x="110" y="20" text-anchor="middle" font-size="12">약 140GB</text>
+<rect x="220" y="110" width="60" height="80" class="dg-dim" stroke="none"/>
+<text x="250" y="205" text-anchor="middle" font-size="12">INT8</text>
+<text x="250" y="100" text-anchor="middle" font-size="12">약 70GB</text>
+<rect x="360" y="150" width="60" height="40" class="dg-accent" stroke="none"/>
+<text x="390" y="205" text-anchor="middle" font-size="12">GPTQ/AWQ 4bit</text>
+<text x="390" y="140" text-anchor="middle" font-size="12">약 35GB</text>
+</svg>`,
+    diagramCaption: String.raw`비트 수를 줄일수록 모델이 차지하는 메모리도 비례해서 줄어든다(700억 파라미터 모델 기준).`,
+    related: [{ label: "QLoRA", slug: "qlora" }, { label: "스펙큘레이티브 디코딩", slug: "speculative-decoding" }],
+    sections: []
+  },
+  "speculative-decoding": {
+    title: String.raw`스펙큘레이티브 디코딩: 작은 모델이 초안 쓰고 큰 모델이 검증하기`,
+    domain: "llm",
+    subLabel: String.raw`스케일링 · 양자화`,
+    intuition: String.raw`<p>큰 언어모델은 토큰을 한 번에 하나씩만 만들어낸다. 다음 토큰을 만들려면 반드시 이전 토큰까지의 계산이 끝나야 하므로 아무리 GPU가 여유가 있어도 생성 속도는 토큰 하나하나를 순서대로 만드는 속도에 묶인다.</p>
+<p>스펙큘레이티브 디코딩은 작고 빠른 모델에게 몇 토큰을 먼저 미리 써보게 하고 진짜 크고 정확한 모델은 그 초안을 한 번에 검증만 하게 한다. 초안이 맞으면 여러 토큰을 한 번의 검증으로 확정할 수 있어 큰 모델이 토큰마다 처음부터 생성하는 것보다 빨라진다.</p>`,
+    explanation: String.raw`<p>스펙큘레이티브 디코딩은 작은 초안 모델(draft model)이 다음 몇 토큰, 이를테면 $k$개를 순차적으로 빠르게 생성한 뒤 이 $k$개 토큰 전체를 큰 목표 모델(target model)에 한 번의 순전파로 통과시켜 각 위치에서 목표 모델이 실제로 예측했을 확률을 얻는다. 목표 모델의 확률 분포와 초안 모델의 확률 분포를 비교해서 초안 토큰을 받아들일지 기각할지를 토큰 위치마다 순서대로 판정한다. 앞쪽 토큰부터 확인하다가 하나라도 기각되면 그 지점에서 목표 모델의 분포로 새 토큰을 하나 뽑고 그 뒤 초안은 버린다.</p>
+<p>이 검증 방식은 단순히 초안이 맞았는지를 근사적으로 확인하는 게 아니라 수용 확률을 목표 모델과 초안 모델의 확률 비로 계산해서 최종적으로 나오는 토큰 분포가 목표 모델 혼자 생성했을 때의 분포와 수학적으로 동일하도록 설계되어 있다. 속도를 얻는 대신 출력 품질이나 분포가 달라지는 손해는 보지 않는다.</p>
+<p>스펙큘레이티브 디코딩이 필요한 이유는 자기회귀 생성의 근본적인 순차 의존성 때문이다. 토큰을 하나 만들 때마다 큰 모델의 순전파를 한 번씩 돌려야 하므로 GPU 연산력에 여유가 있어도 지연 시간은 줄지 않는다. 반면 여러 토큰을 한꺼번에 검증하는 순전파 한 번은 토큰 하나를 생성하는 순전파 한 번과 비교해 GPU 연산량은 늘지만 걸리는 시간은 비슷한 경우가 많다. 초안이 자주 맞아떨어지는 만큼 큰 모델의 순전파 호출 횟수 자체를 줄일 수 있어 전체 생성 속도가 빨라진다.</p>
+<p>속도 향상 폭은 초안 모델이 목표 모델의 출력을 얼마나 잘 예측하는지에 달려 있다. 초안이 자주 틀리면 기각이 잦아져 오히려 검증에 드는 순전파 비용만 늘어날 수 있으므로 초안 모델은 목표 모델과 비슷한 경향을 보이면서도 충분히 빠른 소형 모델로 골라야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="20" font-size="12">초안 모델이 순차로 빠르게 생성</text>
+<rect x="20" y="30" width="50" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="45" y="52" text-anchor="middle" font-size="12">t1</text>
+<rect x="80" y="30" width="50" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="105" y="52" text-anchor="middle" font-size="12">t2</text>
+<rect x="140" y="30" width="50" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="165" y="52" text-anchor="middle" font-size="12">t3</text>
+<rect x="200" y="30" width="50" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="225" y="52" text-anchor="middle" font-size="12">t4</text>
+<line x1="135" y1="64" x2="135" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="20" y="100" width="230" height="40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="135" y="124" text-anchor="middle" font-size="12">목표 모델이 한 번에 검증</text>
+<line x1="135" y1="140" x2="135" y2="170" class="dg-line" stroke-width="1.5"/>
+<rect x="20" y="170" width="50" height="34" class="dg-accent" stroke="none"/>
+<text x="45" y="192" text-anchor="middle" font-size="12">t1 수용</text>
+<rect x="80" y="170" width="50" height="34" class="dg-accent" stroke="none"/>
+<text x="105" y="192" text-anchor="middle" font-size="12">t2 수용</text>
+<rect x="140" y="170" width="50" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="165" y="192" text-anchor="middle" font-size="12">t3 기각</text>
+<rect x="200" y="170" width="70" height="34" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="235" y="192" text-anchor="middle" font-size="12">목표모델이 대체</text>
+</svg>`,
+    diagramCaption: String.raw`초안 토큰 중 앞부분은 그대로 받아들이고 어긋나는 지점부터는 목표 모델이 새로 뽑는다.`,
+    related: [{ label: "GPTQ/AWQ", slug: "gptq-awq-quantization" }, { label: "PagedAttention", slug: "paged-attention" }],
+    sections: []
+  },
+  "reflexion-agent": {
+    title: String.raw`Reflexion: 실패 이유를 스스로 반성하고 다시 시도하기`,
+    domain: "llm",
+    subLabel: String.raw`에이전트 설계 패턴`,
+    intuition: String.raw`<p>에이전트에게 코드를 짜서 테스트를 통과시키라고 시켰다고 하자. 첫 시도가 실패하면 가장 단순한 대응은 그냥 다시 시도하는 것이다. 하지만 아무 힌트도 없이 다시 돌리면 똑같은 실수를 반복하기 쉽다. Reflexion은 실패한 다음 왜 실패했는지를 사람처럼 말로 정리하게 시킨다. 그 반성문을 다음 시도의 참고자료로 넘겨준다.</p>
+<p>시험을 보고 틀린 문제를 그냥 다시 푸는 것과 오답노트를 쓰고 나서 다시 푸는 것의 차이와 같다. 오답노트 한 줄이 다음 시도의 방향을 바꿔준다.</p>`,
+    explanation: String.raw`<p>Reflexion은 세 부분으로 나뉜다. 행동을 만드는 액터, 결과를 채점하는 평가자, 실패 이유를 언어로 정리하는 반성 모듈이다. 액터가 시도를 만들면 평가자가 성공인지 실패인지 판단한다. 실패라면 반성 모듈이 이번 시도의 궤적을 보고 무엇이 잘못됐는지 문장으로 요약한다. 이 문장은 별도의 메모리에 저장되고 다음 시도를 만들 때 액터의 입력에 함께 들어간다.</p>
+<p>이 구조는 단순 재시도의 한계를 메운다. 단순 재시도는 실패한 시도와 다음 시도 사이에 학습 신호가 전혀 없다. 모델 가중치를 바꾸는 것도 아니고 무엇을 고쳐야 하는지 알려주는 것도 아니라서 같은 실수가 반복되기 쉽다. Reflexion은 가중치를 업데이트하는 대신 실패 원인을 자연어 문장으로 만들어 다음 프롬프트에 끼워 넣는다. 파인튜닝 없이도 시도와 시도 사이에 정보가 이어지게 만드는 값싼 방법이다.</p>
+<p>이 방식이 잘 작동하려면 평가자가 신뢰할 수 있어야 한다. 코드라면 실제 테스트 실행 결과가 그 신호고 게임이라면 환경이 주는 보상이 그 신호다. 이렇게 명확한 신호가 있을 때 반성문의 품질도 함께 높아진다. 평가 신호가 애매하면 반성 모듈도 엉뚱한 원인을 짚어낼 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="105" y="60" text-anchor="middle" font-size="13">시도 생성</text>
+<rect x="240" y="30" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="305" y="60" text-anchor="middle" font-size="13">평가</text>
+<rect x="460" y="30" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="525" y="60" text-anchor="middle" font-size="13">완료</text>
+<rect x="240" y="150" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="305" y="180" text-anchor="middle" font-size="13">반성문 작성</text>
+<rect x="40" y="150" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="105" y="180" text-anchor="middle" font-size="13">반성 메모리</text>
+<line x1="170" y1="55" x2="240" y2="55" class="dg-line" stroke-width="1.5"/>
+<line x1="370" y1="55" x2="460" y2="55" class="dg-line" stroke-width="1.5"/>
+<text x="415" y="45" text-anchor="middle" font-size="12">성공</text>
+<line x1="305" y1="80" x2="305" y2="150" class="dg-line" stroke-width="1.5"/>
+<text x="330" y="118" font-size="12">실패</text>
+<line x1="240" y1="175" x2="170" y2="175" class="dg-line" stroke-width="1.5"/>
+<line x1="105" y1="150" x2="105" y2="80" class="dg-stroke-accent" stroke-width="2"/>
+<text x="10" y="118" font-size="12" class="dg-dim">다음 시도에</text>
+</svg>`,
+    diagramCaption: String.raw`실패하면 반성문을 메모리에 남기고 다음 시도에 그 메모리를 다시 사용한다.`,
+    example: String.raw`<p>과제: 10 미만 소수의 합을 한 줄 파이썬 코드로 구하기.</p>
+<p><strong>시도 1</strong> <code>sum(range(10))</code> 코드를 냈다. 평가자는 실패로 판정했다. 소수가 아니라 그냥 모든 수를 더했기 때문이다.</p>
+<p><strong>반성문</strong> 소수 판별 조건을 넣지 않고 range 전체를 더해서 틀렸다. 각 수가 소수인지 확인하는 조건을 추가해야 한다.</p>
+<p><strong>시도 2</strong> <code>sum(n for n in range(2,10) if all(n%d for d in range(2,n)))</code> 코드를 냈고 테스트를 통과했다.</p>`,
+    related: [{ label: "Tree of Thoughts", slug: "tree-of-thoughts" }, { label: "Plan-and-Execute", slug: "plan-and-execute" }, { label: "에이전트 상태 머신", slug: "agent-state-machine" }],
+    sections: []
+  },
+  "plan-and-execute": {
+    title: String.raw`Plan-and-Execute: 계획부터 세우고 하나씩 실행하기`,
+    domain: "llm",
+    subLabel: String.raw`에이전트 설계 패턴`,
+    intuition: String.raw`<p>여행 준비를 항공권 예약 숙소 예약 렌터카 예약 일정표 정리까지 한 번에 시키면 에이전트가 중간에 원래 목표를 놓칠 수 있다. 한 단계씩 반응하며 움직이는 방식은 방금 한 일에만 집중하다가 전체 그림을 잃어버리기 쉽다. Plan-and-Execute는 먼저 전체 순서를 목록으로 적어두고 그 목록을 하나씩 지워가며 실행한다.</p>
+<p>여행 가기 전에 할 일 목록을 종이에 써두고 하나씩 체크하며 처리하는 것과 같다. 목록이 있으니 지금 몇 번째 할 일을 하고 있는지 항상 알 수 있다.</p>`,
+    explanation: String.raw`<p>Plan-and-Execute는 계획자와 실행자로 나뉜다. 계획자는 목표를 받아 순서가 있는 하위 작업 목록을 미리 만든다. 실행자는 그 목록을 하나씩 꺼내 실제로 수행한다. 도구를 부르거나 하위 에이전트를 호출하는 식이다. 각 하위 작업이 끝나면 결과를 계획에 반영하고 다음 하위 작업으로 넘어간다.</p>
+<p>이 구조는 한 단계씩 추론과 행동을 반복하는 방식의 약점을 메운다. 매 순간 다음 행동 하나만 결정하는 방식은 직전 몇 걸음의 맥락만 보고 판단하기 때문에 작업이 길어질수록 애초의 목표를 잊거나 이미 한 일을 반복하거나 순서를 뒤섞기 쉽다. Plan-and-Execute는 전체 순서를 별도의 목록으로 밖에 꺼내둔다. 지금 무엇을 해야 하는지를 매번 다시 추론할 필요 없이 목록을 보면 되므로 다음 행동 하나를 고르는 부담이 줄어든다.</p>
+<p>다만 처음 세운 계획이 실제 상황과 어긋날 수 있다. 항공권이 매진됐거나 예상과 다른 결과가 나오면 그 시점에서 남은 계획을 다시 세우는 재계획 단계를 넣는 구현이 많다. 계획을 고정된 것으로 보지 않고 실행 결과에 따라 갱신되는 것으로 다루는 편이 실제로는 더 안전하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="105" width="100" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="70" y="135" text-anchor="middle" font-size="13">목표</text>
+<rect x="180" y="105" width="110" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="235" y="135" text-anchor="middle" font-size="13">계획자</text>
+<line x1="120" y1="130" x2="180" y2="130" class="dg-line" stroke-width="1.5"/>
+<rect x="350" y="20" width="240" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="362" y="38" font-size="12" class="dg-dim">계획 목록</text>
+<text x="362" y="60" font-size="12">1. 항공권 예약</text>
+<rect x="356" y="70" width="228" height="24" class="dg-accent" opacity="0.35"/>
+<text x="362" y="87" font-size="12">2. 숙소 예약 (진행중)</text>
+<text x="362" y="114" font-size="12">3. 렌터카 예약</text>
+<text x="362" y="141" font-size="12">4. 일정표 정리</text>
+<line x1="290" y1="130" x2="350" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="350" y="195" width="240" height="45" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="470" y="222" text-anchor="middle" font-size="13">실행자: 현재 단계 수행</text>
+<line x1="470" y1="160" x2="470" y2="195" class="dg-line" stroke-width="1.5"/>
+<path d="M350,220 L235,220 L235,155" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="245" y="205" font-size="12">결과 반영 · 필요시 재계획</text>
+</svg>`,
+    diagramCaption: String.raw`계획자가 순서를 정하고 실행자가 각 단계를 차례로 수행하며 필요하면 다시 계획한다.`,
+    related: [{ label: "Tree of Thoughts", slug: "tree-of-thoughts" }, { label: "에이전트 상태 머신", slug: "agent-state-machine" }, { label: "Reflexion", slug: "reflexion-agent" }],
+    sections: []
+  },
+  "tree-of-thoughts": {
+    title: String.raw`Tree of Thoughts: 여러 추론 경로를 트리로 펼쳐보고 고르기`,
+    domain: "llm",
+    subLabel: String.raw`에이전트 설계 패턴`,
+    intuition: String.raw`<p>24 만들기 게임처럼 몇 개의 수를 사칙연산으로 조합해 목표 값을 만드는 문제를 생각해보자. 한 가지 풀이 경로만 쭉 따라가다가 중간에 잘못된 선택을 하면 그 이후 계산은 전부 틀린 채로 끝까지 이어진다. Tree of Thoughts는 매 단계마다 여러 후보를 동시에 만들어보고 가능성이 낮아 보이는 가지는 버리고 유망한 가지만 이어간다.</p>
+<p>미로를 풀 때 한 길만 끝까지 가보는 대신 갈림길마다 몇 갈래를 조금씩 살펴보고 막다른 길이면 되돌아가는 것과 같다.</p>`,
+    explanation: String.raw`<p>Tree of Thoughts는 문제 풀이 과정을 하나의 이어진 문장이 아니라 트리로 다룬다. 각 노드는 지금까지의 중간 추론 상태이고 한 노드에서 다음 단계로 넘어갈 때 모델이 여러 후보 다음 생각을 동시에 만들어낸다. 각 후보는 별도의 평가 단계에서 얼마나 가능성 있어 보이는지 점수를 받는다. 점수가 낮은 후보는 가지치기로 버려지고 남은 후보들만 다음 단계로 확장된다. 이 과정을 반복하며 너비 우선이나 깊이 우선 같은 탐색 전략으로 트리를 넓혀가다가 목표에 도달한 경로 중 가장 좋은 것을 최종 답으로 고른다.</p>
+<p>이 방식은 하나의 연쇄만 따라가는 사고 방식의 한계를 메운다. 한 줄로 이어지는 추론은 한 번 잘못된 단계를 밟으면 되돌릴 방법이 없다. 앞 단계가 이미 다음 프롬프트에 그대로 들어가 버렸기 때문이다. Tree of Thoughts는 여러 경로를 동시에 열어두고 각 경로를 평가한 뒤 버릴 것은 버리기 때문에 초반의 실수를 나중에 고칠 기회가 생긴다. 전통적인 탐색 알고리즘이 하던 일을 언어모델의 추론 과정에 그대로 옮겨온 셈이다.</p>
+<p>대가는 비용이다. 후보 수를 $b$개씩 매 단계 만들고 깊이 $d$까지 탐색하면 대략 $b^d$에 비례하는 만큼 모델 호출이 늘어난다. 그래서 실전에서는 후보 수와 탐색 깊이를 작게 제한하거나 평가 점수가 확실히 낮은 가지는 일찍 쳐내는 식으로 비용을 관리한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="300" y1="44" x2="170" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="44" x2="300" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="300" y1="44" x2="430" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="110" x2="230" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="110" x2="370" y2="190" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="300" cy="30" r="16" class="dg-accent"/>
+<circle cx="170" cy="110" r="12" class="dg-dim"/>
+<circle cx="300" cy="110" r="12" class="dg-accent"/>
+<circle cx="430" cy="110" r="12" class="dg-dim"/>
+<circle cx="230" cy="190" r="10" class="dg-dim"/>
+<circle cx="370" cy="190" r="10" class="dg-accent"/>
+<text x="300" y="14" text-anchor="middle" font-size="12">시작</text>
+<text x="170" y="140" text-anchor="middle" font-size="12" class="dg-dim">가지치기</text>
+<text x="430" y="140" text-anchor="middle" font-size="12" class="dg-dim">가지치기</text>
+<text x="230" y="215" text-anchor="middle" font-size="12" class="dg-dim">가지치기</text>
+<text x="370" y="215" text-anchor="middle" font-size="12">최종 경로</text>
+</svg>`,
+    diagramCaption: String.raw`여러 후보 생각을 만들고 평가해 점수가 낮은 가지는 버리고 유망한 경로만 끝까지 확장한다.`,
+    example: String.raw`<p>목표: 4, 9, 10, 13 네 수로 24를 만들기.</p>
+<p>첫 단계에서 모델은 후보 셋을 만든다. 13 빼기 9는 4, 10 더하기 4는 14, 13 더하기 4는 17. 각 후보를 평가해보면 13 빼기 9로 4를 만드는 경로가 남은 수 4 4 10과 함께 24를 만들기 가장 쉬워 보인다는 평가를 받는다. 나머지 두 후보는 가지치기로 버려진다.</p>
+<p>남은 경로에서 4 곱하기 4는 16이고 16 더하기 10은 26이라 실패다. 10 빼기 4는 6이고 6 곱하기 4는 24라 성공이다. 이 경로가 최종 답으로 선택된다.</p>`,
+    related: [{ label: "Reflexion", slug: "reflexion-agent" }, { label: "Plan-and-Execute", slug: "plan-and-execute" }],
+    sections: []
+  },
+  "function-calling": {
+    title: String.raw`Function Calling: 모델이 함수 이름과 인자를 구조화해서 뱉기`,
+    domain: "llm",
+    subLabel: String.raw`도구 사용 · 함수 호출`,
+    intuition: String.raw`<p>모델에게 지금 서울 날씨가 어떤지 물어보면 모델은 실제 날씨를 알 방법이 없다. 그런데 날씨 API를 부르는 함수 하나를 모델에게 알려주면 모델은 직접 답을 지어내는 대신 그 함수를 이름과 인자를 갖춰 호출해달라고 요청한다. 함수 자체는 여전히 우리 쪽 코드가 실행하고 그 결과만 모델에게 다시 돌려준다.</p>
+<p>모델은 스스로 API를 두드리지 않는다. 어떤 함수를 어떤 값으로 부르고 싶은지 구조화된 형식으로 말해줄 뿐이고 실제 실행은 항상 우리 쪽 애플리케이션이 맡는다.</p>`,
+    explanation: String.raw`<p>개발자는 요청할 때 사용 가능한 함수 목록을 이름과 설명과 인자 스키마 형태로 모델에 함께 전달한다. 모델은 사용자의 질문을 보고 함수를 부를 필요가 있다고 판단하면 자유문 대신 함수 이름과 인자를 채운 구조화된 출력을 낸다. 애플리케이션은 이 출력을 파싱해 실제 함수를 실행하고 그 결과를 새 메시지로 모델에게 되돌려준다. 모델은 그 결과를 바탕으로 이어서 답을 완성하거나 필요하면 또 다른 함수를 부른다.</p>
+<p>이 방식이 필요한 이유는 언어모델의 출력이 기본적으로 자유문이기 때문이다. Function Calling 이전에는 모델이 낸 문장에서 정규식이나 규칙으로 의도와 인자를 억지로 뽑아내야 했고 문장 표현이 조금만 달라져도 파싱이 깨졌다. 모델 제공사들은 구조화된 함수 호출 형식을 안정적으로 내도록 별도로 정렬한 모델을 내놓았고 그 결과 모델이 하려는 행동이 사람이 읽는 문장이 아니라 기계가 그대로 실행할 수 있는 형식으로 나오게 됐다.</p>
+<p>한 번의 대화 안에서 모델은 여러 번 함수를 연달아 부를 수 있다. 검색 함수로 정보를 찾은 뒤 그 결과를 보고 계산 함수를 부르는 식이다. 언제 함수 호출을 멈추고 최종 답을 낼지도 모델이 스스로 판단한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="90" width="110" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="75" y="120" text-anchor="middle" font-size="13">사용자 질문</text>
+<rect x="180" y="90" width="100" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="230" y="120" text-anchor="middle" font-size="13">모델</text>
+<rect x="330" y="90" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="405" y="115" text-anchor="middle" font-size="12">함수 실행</text>
+<text x="405" y="132" text-anchor="middle" font-size="12" class="dg-dim">(앱 코드)</text>
+<rect x="530" y="90" width="90" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="575" y="120" text-anchor="middle" font-size="13">최종 답</text>
+<line x1="130" y1="115" x2="180" y2="115" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="115" x2="330" y2="115" class="dg-line" stroke-width="1.5"/>
+<text x="305" y="80" text-anchor="middle" font-size="12">이름+인자(JSON)</text>
+<path d="M405,90 L405,50 L230,50 L230,90" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="317" y="42" text-anchor="middle" font-size="12">실행 결과 반환</text>
+<line x1="280" y1="130" x2="530" y2="130" class="dg-line" stroke-width="1.5"/>
+<text x="405" y="165" text-anchor="middle" font-size="12" class="dg-dim">답 완성 시</text>
+</svg>`,
+    diagramCaption: String.raw`모델은 함수 이름과 인자만 구조화해서 내고 실제 실행과 결과 반환은 애플리케이션이 담당한다.`,
+    related: [{ label: "Tool Use 스키마 설계", slug: "tool-use-schema" }, { label: "MCP", slug: "mcp-protocol" }],
+    sections: []
+  },
+  "tool-use-schema": {
+    title: String.raw`Tool Use 스키마 설계: 함수 명세를 잘 써야 모델이 잘 부른다`,
+    domain: "llm",
+    subLabel: String.raw`도구 사용 · 함수 호출`,
+    intuition: String.raw`<p>같은 날씨 함수라도 설명을 날씨를 가져온다 한 줄로만 써두면 모델은 도시 이름을 어떤 필드에 넣어야 할지 어떤 형식으로 넣어야 할지 헷갈릴 수 있다. 도시는 문자열이고 필수값이며 단위는 섭씨 또는 화씨 중 하나만 고르라고 못 박아두면 모델이 틀릴 확률이 크게 줄어든다. 함수 자체의 성능이 아니라 함수 설명서를 얼마나 꼼꼼히 쓰느냐가 호출 정확도를 좌우한다.</p>`,
+    explanation: String.raw`<p>스키마는 보통 함수 이름과 무엇을 하는 함수인지 설명하는 문장과 인자 목록으로 이루어진다. 인자마다 타입을 문자열 숫자 배열 중 무엇으로 정할지 필수인지 선택인지 값의 범위를 열거형으로 제한할지를 명시한다. 모델은 요청 시점에 이 스키마 텍스트를 그대로 함께 받아서 그것을 기준으로 다음 출력의 형식을 맞춘다. 사실상 스키마 자체가 모델에게 주는 출력 형식 예시나 다름없다.</p>
+<p>스키마 설계가 중요한 이유는 Function Calling이라는 능력 자체는 있어도 설명이 부실하면 모델이 추측에 의존하게 되기 때문이다. 인자 이름이 줄임말이거나 인자 설명이 아예 없거나 어떤 값이 허용되는지 열거되어 있지 않으면 모델은 그럴듯한 값을 지어내야 한다. 그 결과 타입이 틀리거나 존재하지 않는 인자 이름을 만들어내거나 필수값을 빼먹는 실수가 늘어난다. 사람이 쓰는 API 문서가 부실하면 연동 버그가 늘어나는 것과 같은 이치가 모델에게도 그대로 적용된다.</p>
+<p>실전에서 도움이 되는 몇 가지 습관이 있다. 인자 이름은 줄임말 대신 의미가 분명한 단어로 쓴다. 값이 정해진 범위 안에 있다면 자유 문자열 대신 열거형으로 제한한다. 필수 인자는 명시적으로 표시한다. 한 번에 노출하는 함수 개수가 너무 많으면 비슷한 함수들 사이에서 모델이 헷갈리므로 개수를 적절히 추린다.</p>`,
+    related: [{ label: "Function Calling", slug: "function-calling" }, { label: "MCP", slug: "mcp-protocol" }],
+    sections: []
+  },
+  "mcp-protocol": {
+    title: String.raw`MCP: 도구와 데이터 소스를 표준 방식으로 모델에 연결하기`,
+    domain: "llm",
+    subLabel: String.raw`도구 사용 · 함수 호출`,
+    intuition: String.raw`<p>캘린더 조회 메일 검색 코드 검색 사내 데이터베이스 조회 같은 도구를 다섯 개 만들었는데 이걸 서로 다른 세 가지 에이전트 프레임워크에서 쓰고 싶다고 하자. 표준이 없으면 도구마다 프레임워크마다 따로 연결 코드를 짜야 한다. 다섯 개 도구와 세 개 프레임워크면 열다섯 벌의 연동 코드가 필요할 수 있다. MCP는 도구를 만드는 쪽과 도구를 쓰는 쪽이 같은 규격을 따르게 해서 이 반복을 없앤다.</p>`,
+    explanation: String.raw`<p>MCP는 클라이언트와 서버로 나뉘는 프로토콜이다. MCP 서버는 자신이 제공하는 기능을 표준화된 형식으로 노출한다. 호출 가능한 도구 파일이나 데이터베이스 행 같은 읽을 수 있는 자원 재사용 가능한 프롬프트 템플릿까지 포함한다. MCP 클라이언트는 모델을 품고 있는 애플리케이션 쪽에 붙어서 서버가 무엇을 제공하는지 확인하고 모델의 도구 호출이나 자원 조회를 이 표준 인터페이스를 거쳐 서버로 전달한다.</p>
+<p>이 구조가 필요한 이유는 공통 규격이 없을 때 도구와 모델 애플리케이션을 연결하는 경우의 수가 도구 개수와 애플리케이션 개수를 곱한 만큼 늘어나기 때문이다. 각 조합마다 인증 방식과 인자 형식과 오류 처리 방식이 제각각이라 연동 코드도 따로 짜야 한다. MCP는 양쪽이 하나의 인터페이스에만 맞추게 해서 이 곱셈 문제를 덧셈 문제로 바꾼다. 서버를 만드는 쪽은 한 번만 구현하면 되고 클라이언트를 만드는 쪽도 한 번만 구현하면 모든 서버와 통할 수 있다. USB가 기기와 컴퓨터의 연결 방식을 표준화한 것과 같은 모양의 해법이다.</p>
+<p>MCP는 특정 회사에 종속되지 않은 개방형 프로토콜로 공개되어 있고 커뮤니티가 만든 서버 구현이 빠르게 늘고 있다. 새 도구를 붙일 때마다 각 프레임워크용 연동 코드를 새로 짜는 대신 MCP 서버 하나만 만들어두면 이미 MCP를 지원하는 모든 클라이언트에서 바로 쓸 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="16" text-anchor="middle" font-size="12" class="dg-dim">MCP 이전: 연결마다 따로 구현</text>
+<rect x="30" y="26" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="120" y="26" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="210" y="26" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="46" text-anchor="middle" font-size="12">앱1</text>
+<text x="150" y="46" text-anchor="middle" font-size="12">앱2</text>
+<text x="240" y="46" text-anchor="middle" font-size="12">앱3</text>
+<rect x="30" y="210" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="120" y="210" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="210" y="210" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="230" text-anchor="middle" font-size="12">도구A</text>
+<text x="150" y="230" text-anchor="middle" font-size="12">도구B</text>
+<text x="240" y="230" text-anchor="middle" font-size="12">도구C</text>
+<line x1="60" y1="56" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="56" x2="150" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="56" x2="240" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="150" y1="56" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="150" y1="56" x2="150" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="150" y1="56" x2="240" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="240" y1="56" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="240" y1="56" x2="150" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="240" y1="56" x2="240" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="320" y1="20" x2="320" y2="240" class="dg-line" stroke-width="1"/>
+<text x="480" y="16" text-anchor="middle" font-size="12" class="dg-dim">MCP 이후: 표준 인터페이스 하나</text>
+<rect x="380" y="26" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="460" y="26" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="540" y="26" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="410" y="46" text-anchor="middle" font-size="12">앱1</text>
+<text x="490" y="46" text-anchor="middle" font-size="12">앱2</text>
+<text x="570" y="46" text-anchor="middle" font-size="12">앱3</text>
+<rect x="440" y="110" width="120" height="40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="500" y="134" text-anchor="middle" font-size="13">MCP</text>
+<rect x="380" y="210" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="460" y="210" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="540" y="210" width="60" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="410" y="230" text-anchor="middle" font-size="12">도구A</text>
+<text x="490" y="230" text-anchor="middle" font-size="12">도구B</text>
+<text x="570" y="230" text-anchor="middle" font-size="12">도구C</text>
+<line x1="410" y1="56" x2="470" y2="110" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="490" y1="56" x2="500" y2="110" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="570" y1="56" x2="530" y2="110" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="470" y1="150" x2="410" y2="210" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="500" y1="150" x2="490" y2="210" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="530" y1="150" x2="570" y2="210" class="dg-stroke-accent" stroke-width="1.5"/>
+</svg>`,
+    diagramCaption: String.raw`표준 없이 이어붙이면 연동 수가 도구 곱하기 앱만큼 늘지만 MCP는 하나의 표준 인터페이스로 연결을 단순화한다.`,
+    related: [{ label: "Function Calling", slug: "function-calling" }, { label: "Tool Use 스키마 설계", slug: "tool-use-schema" }],
+    sections: []
+  },
+  "agent-short-long-memory": {
+    title: String.raw`단기 vs 장기 메모리: 지금 대화와 쌓인 과거를 다르게 다루기`,
+    domain: "llm",
+    subLabel: String.raw`메모리 · 상태관리`,
+    intuition: String.raw`<p>몇 달에 걸쳐 계속 대화하는 비서를 상상해보자. 매번 지금까지 나눈 모든 대화를 전부 프롬프트에 욱여넣을 수는 없다. 컨텍스트 창 크기에는 한계가 있고 넣는 만큼 비용도 늘어난다. 단기 메모리는 지금 이 대화창 안에 그대로 들어있는 최근 내용이다. 장기 메모리는 그 밖에 따로 저장해뒀다가 필요할 때만 꺼내오는 과거 정보다.</p>`,
+    explanation: String.raw`<p>단기 메모리는 현재 컨텍스트 윈도우 안에 있는 토큰 그 자체다. 모델이 별도의 검색 없이 바로 참조할 수 있지만 창 크기라는 물리적 한계가 있고 대화가 끝나거나 창이 가득 차 오래된 부분이 잘려나가면 사라진다. 장기 메모리는 창 밖에 저장된다. 흔히 과거 대화 조각이나 추출된 사실을 임베딩 벡터로 바꿔 벡터 데이터베이스에 쌓아두고 세션이 끝나도 남는다. 지금 사용자의 질문과 유사도가 높은 항목만 검색으로 꺼내와서 그 턴의 컨텍스트 윈도우에 끼워 넣는다.</p>
+<p>이렇게 나누는 이유는 컨텍스트 윈도우의 고정된 크기 한계 때문이다. 오래 이어지는 에이전트가 알아야 할 정보는 지난 작업 이력이나 몇 달에 걸쳐 쌓인 사용자 선호나 과거 결정처럼 한 번에 창 하나에 다 담기 어렵다. 설령 억지로 담더라도 매번 모든 걸 넣으면 토큰 비용이 커지고 정작 지금 필요한 정보가 방대한 과거 속에 묻혀 모델이 놓치기 쉬워진다. 빠르고 작은 작업 공간과 느리지만 큰 저장소로 나누고 필요할 때만 꺼내오는 방식은 컴퓨터가 캐시와 디스크를 나누는 것과 같은 발상이다.</p>
+<p>다만 검색 품질이 완벽하지 않다는 점은 감안해야 한다. 임베딩 유사도만으로는 정말 필요한 기억을 놓치거나 관련 없는 기억을 끌어올 수 있다. 검색 대신 대화 전체를 압축해 항상 곁에 두는 요약 기반 방식과 조합해서 쓰는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="220" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="150" y="50" text-anchor="middle" font-size="13">컨텍스트 윈도우(단기)</text>
+<rect x="60" y="70" width="180" height="24" class="dg-dim" opacity="0.5"/>
+<text x="150" y="87" text-anchor="middle" font-size="12">지난 턴</text>
+<rect x="60" y="100" width="180" height="24" class="dg-dim" opacity="0.5"/>
+<text x="150" y="117" text-anchor="middle" font-size="12">지난 턴</text>
+<rect x="60" y="130" width="180" height="24" class="dg-accent"/>
+<text x="150" y="147" text-anchor="middle" font-size="12">현재 턴</text>
+<rect x="380" y="10" width="220" height="200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="490" y="30" text-anchor="middle" font-size="13">벡터DB(장기)</text>
+<circle cx="420" cy="60" r="6" class="dg-dim"/>
+<circle cx="460" cy="80" r="6" class="dg-dim"/>
+<circle cx="500" cy="55" r="6" class="dg-accent"/>
+<circle cx="540" cy="90" r="6" class="dg-dim"/>
+<circle cx="430" cy="110" r="6" class="dg-dim"/>
+<circle cx="560" cy="60" r="6" class="dg-dim"/>
+<circle cx="480" cy="130" r="6" class="dg-dim"/>
+<circle cx="520" cy="150" r="6" class="dg-dim"/>
+<path d="M500,55 L260,130" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="330" y="105" text-anchor="middle" font-size="12">유사도로 검색해 주입</text>
+</svg>`,
+    diagramCaption: String.raw`단기 메모리는 창 안의 최근 대화, 장기 메모리는 벡터DB에서 검색해 필요할 때만 가져온다.`,
+    related: [{ label: "메모리 압축", slug: "memory-compression-summarization" }, { label: "에이전트 상태 머신", slug: "agent-state-machine" }],
+    sections: []
+  },
+  "memory-compression-summarization": {
+    title: String.raw`메모리 압축: 쌓인 대화를 주기적으로 요약해서 줄이기`,
+    domain: "llm",
+    subLabel: String.raw`메모리 · 상태관리`,
+    intuition: String.raw`<p>고객 상담 대화가 200턴 넘게 이어졌다고 하자. 모든 메시지를 토씨 하나 안 빼고 계속 프롬프트에 남겨두면 자리만 차지하고 정작 최근 대화를 넣을 공간이 부족해진다. 그렇다고 오래된 부분을 통째로 버리면 사용자가 앞서 알려준 계좌번호 같은 중요한 정보까지 사라진다. 메모리 압축은 오래된 대화 구간을 짧은 요약 하나로 바꿔치기해서 핵심만 남기고 공간을 되찾는 방법이다.</p>`,
+    explanation: String.raw`<p>대화가 어느 정도 길이나 턴 수를 넘어서면 가장 최근 구간을 제외한 나머지 오래된 메시지들을 요약 단계로 보낸다. 흔히 같은 모델에게 그 구간을 핵심 사실과 결정 사항과 아직 해결되지 않은 항목 위주로 압축해달라고 시킨다. 이렇게 만든 요약이 원래의 여러 메시지를 대신해 컨텍스트에 남고 최근 구간은 그대로 이어붙인다. 대화가 다시 길어지면 이 과정을 반복하며 필요하면 요약을 다시 요약하는 식으로 계속 압축한다.</p>
+<p>이 방식도 컨텍스트 윈도우의 고정 크기 한계를 다루지만 접근이 다르다. 필요할 때만 꺼내오는 장기 메모리 방식은 검색에서 놓치는 항목이 생길 위험이 있다. 압축은 정보 손실은 있어도 항상 무언가는 컨텍스트 안에 남겨둔다는 점이 다르다. 과거의 어느 부분이 나중에 중요해질지 예측하기 어려운 상황에서는 검색 실패 위험을 감수하기보다 손실이 있더라도 전체를 압축된 형태로나마 계속 곁에 두는 편이 안전할 때가 많다.</p>
+<p>두 방식은 서로 대체재가 아니라 보완재에 가깝다. 실전에서는 전체 대화의 압축 요약을 계속 유지하면서 동시에 특정 과거 사실은 벡터 저장소에 따로 보관해 정확히 검색해오는 식으로 두 방식을 함께 쓰는 경우가 많다. 요약 과정 자체가 정보를 걸러내는 손실 압축이므로 계좌번호처럼 정확히 보존해야 하는 값은 요약하기 전에 구조화된 형태로 따로 추출해두는 습관이 손실을 줄여준다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" text-anchor="middle" font-size="12" class="dg-dim">압축 전</text>
+<rect x="30" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="85" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="140" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="195" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="250" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="52" y="50" text-anchor="middle" font-size="12">1</text>
+<text x="107" y="50" text-anchor="middle" font-size="12">2</text>
+<text x="162" y="50" text-anchor="middle" font-size="12">3</text>
+<text x="217" y="50" text-anchor="middle" font-size="12">4</text>
+<text x="272" y="50" text-anchor="middle" font-size="12">5</text>
+<rect x="305" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="360" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="415" y="30" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="327" y="50" text-anchor="middle" font-size="12">6</text>
+<text x="382" y="50" text-anchor="middle" font-size="12">7</text>
+<text x="437" y="50" text-anchor="middle" font-size="12">8</text>
+<line x1="240" y1="90" x2="150" y2="130" class="dg-line" stroke-width="1.5"/>
+<text x="480" y="90" text-anchor="middle" font-size="12" class="dg-dim">압축</text>
+<rect x="30" y="140" width="220" height="45" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="140" y="167" text-anchor="middle" font-size="12">요약(1~5의 핵심)</text>
+<line x1="437" y1="60" x2="437" y2="130" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="140" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="435" y="140" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="490" y="140" width="45" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="402" y="160" text-anchor="middle" font-size="12">6</text>
+<text x="457" y="160" text-anchor="middle" font-size="12">7</text>
+<text x="512" y="160" text-anchor="middle" font-size="12">8</text>
+<text x="330" y="192" text-anchor="middle" font-size="12" class="dg-dim">요약 + 최근 턴만 유지</text>
+</svg>`,
+    diagramCaption: String.raw`오래된 턴들은 요약 하나로 합치고 최근 턴만 그대로 남겨 컨텍스트 공간을 확보한다.`,
+    related: [{ label: "단기 vs 장기 메모리", slug: "agent-short-long-memory" }, { label: "에이전트 상태 머신", slug: "agent-state-machine" }],
+    sections: []
+  },
+  "agent-state-machine": {
+    title: String.raw`에이전트 상태 머신: 진행 단계를 명시적으로 관리하기`,
+    domain: "llm",
+    subLabel: String.raw`메모리 · 상태관리`,
+    intuition: String.raw`<p>코딩 에이전트가 요구사항 파악 코드 작성 테스트 실행 버그 수정 완료라는 단계를 거쳐야 한다고 하자. 매 턴마다 지금까지의 대화를 보고 알아서 다음에 뭘 할지 판단하게만 두면 단계를 건너뛰거나 이미 끝난 단계로 되돌아가거나 어디까지 했는지 헷갈릴 수 있다. 상태 머신은 단계 이름을 명확히 정해두고 어떤 단계에서 어떤 조건이면 다음 어느 단계로 넘어가는지 규칙으로 못 박아둔다.</p>`,
+    explanation: String.raw`<p>상태 머신은 에이전트가 있을 수 있는 단계를 몇 개의 상태로 정의하고 각 상태에서 어떤 사건이 일어나면 어느 상태로 넘어가는지를 전이 규칙으로 정의한다. 지금 어떤 상태에 있느냐에 따라 어떤 도구를 쓸 수 있는지 어떤 프롬프트 틀을 쓰는지가 정해진다. 전이는 행동의 결과로 일어난다. 테스트를 통과하면 실행 상태에서 완료 상태로 넘어가고 실패하면 다시 실행 상태로 돌아가는 식이다. LangGraph 같은 프레임워크는 이 구조를 상태를 노드로 전이를 엣지로 둔 그래프로 그대로 구현해서 모델의 자유로운 텍스트 생성 바깥에서 오케스트레이터가 직접 흐름을 관리하게 한다.</p>
+<p>이 구조가 필요한 이유는 상태 머신 없이 프롬프트만으로 진행 단계를 추적하면 쉽게 깨지기 때문이다. 지금 작업이 어디까지 왔는지가 오직 대화 기록 속에 암묵적으로만 남아 있으면 모델은 매 턴 그 기록을 다시 읽고 스스로 지금 단계를 추측해야 한다. 작업이 길어질수록 이 추측은 어긋나기 쉽고 필요한 단계를 건너뛰거나 이미 끝난 단계를 반복할 수 있다. 상태와 허용된 전이를 코드 바깥의 명시적 구조로 빼두면 다음에 무엇이 허용되는지는 모델의 판단이 아니라 오케스트레이터가 결정하고 강제한다. 그 상태 안에서 실제로 무엇을 생성할지만 모델에게 맡기면 된다.</p>
+<p>Plan-and-Execute와 비슷해 보이지만 차이가 있다. 계획은 보통 하나의 순서로 쭉 이어지는 목록이고 상태 머신은 실패 시 되돌아가는 분기나 반복 같은 더 복잡한 흐름까지 표현할 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="100" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="100" y="130" text-anchor="middle" font-size="13">계획 수립</text>
+<rect x="220" y="100" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="280" y="130" text-anchor="middle" font-size="13">실행</text>
+<rect x="400" y="100" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="460" y="130" text-anchor="middle" font-size="13">검증</text>
+<rect x="560" y="100" width="60" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="590" y="130" text-anchor="middle" font-size="13">완료</text>
+<line x1="160" y1="125" x2="220" y2="125" class="dg-line" stroke-width="1.5"/>
+<line x1="340" y1="125" x2="400" y2="125" class="dg-line" stroke-width="1.5"/>
+<line x1="520" y1="125" x2="560" y2="125" class="dg-stroke-accent" stroke-width="2"/>
+<text x="540" y="115" text-anchor="middle" font-size="12">통과</text>
+<path d="M460,150 L460,195 L280,195 L280,150" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="370" y="212" text-anchor="middle" font-size="12">실패시 다시 실행</text>
+</svg>`,
+    diagramCaption: String.raw`각 상태에서 할 수 있는 일이 정해져 있고 전이 조건에 따라서만 다음 상태로 넘어간다.`,
+    related: [{ label: "Plan-and-Execute", slug: "plan-and-execute" }, { label: "단기 vs 장기 메모리", slug: "agent-short-long-memory" }, { label: "Reflexion", slug: "reflexion-agent" }],
+    sections: []
+  },
+  "supervisor-pattern-agent": {
+    title: String.raw`Supervisor 패턴: 한 에이전트가 나머지를 조율하기`,
+    domain: "llm",
+    subLabel: String.raw`멀티에이전트 오케스트레이션`,
+    intuition: String.raw`<p>하나의 에이전트에게 모든 일을 다 시키면 프롬프트가 점점 길어지고 지시사항이 서로 부딪힌다. 리서치도 하고 코드도 짜고 검토도 하라고 하면 어느 하나에도 집중하지 못한다. Supervisor 패턴은 관리자 역할을 하는 에이전트 하나를 따로 두고 나머지 에이전트는 각자 좁은 역할만 맡게 한다. 관리자는 무엇을 누구에게 시킬지 정하고 하위 에이전트가 낸 결과를 모아서 다음 지시를 내린다.</p>
+<p>이 구조는 회사의 팀장과 팀원 관계와 비슷하다. 팀장은 직접 코드를 짜지 않아도 되고 어떤 작업을 누구에게 맡길지 판단만 잘하면 된다. 하위 에이전트는 자기가 맡은 좁은 영역만 잘하면 되니 프롬프트도 단순해지고 결과도 예측하기 쉬워진다.</p>`,
+    explanation: String.raw`<p>단일 에이전트가 검색과 코드 작성과 검증까지 한 번에 처리하도록 설계하면 프롬프트 안에 서로 다른 목적의 지시가 뒤섞인다. 모델은 지금 어떤 역할을 수행해야 하는지 매 턴마다 스스로 구분해야 하고 이 과정에서 지시를 놓치거나 이전 단계의 맥락을 다음 단계로 잘못 끌고 오는 실수가 잦아진다. 작업이 길어질수록 컨텍스트 안에 쌓인 서로 다른 목적의 정보가 뒤섞이면서 성능이 떨어진다.</p>
+<p>Supervisor 패턴은 이 책임을 분리한다. Supervisor 에이전트는 사용자 요청을 받아 하위 작업으로 쪼개고 각 하위 작업에 맞는 워커 에이전트를 호출한다. 워커는 자기 몫만 처리하고 결과를 Supervisor에게 돌려준다. Supervisor는 그 결과를 보고 다음에 어떤 워커를 호출할지 다시 판단한다. 이 판단 루프가 이어지다가 목표가 달성됐다고 판단하면 최종 결과를 사용자에게 반환한다.</p>
+<p>이 구조의 장점은 워커 에이전트를 독립적으로 교체하거나 늘릴 수 있다는 점이다. 검색 워커를 더 정교한 검색 워커로 바꾸거나 새 워커를 하나 추가해도 Supervisor의 라우팅 로직만 손보면 된다. 다만 Supervisor 자체가 병목이 될 수 있다. 모든 판단이 Supervisor를 거쳐야 하므로 Supervisor가 잘못된 워커를 선택하면 전체 작업이 잘못된 방향으로 흘러간다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="260" y="20" width="120" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="50" text-anchor="middle" font-size="13">Supervisor</text>
+<rect x="60" y="150" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="120" y="180" text-anchor="middle" font-size="12">워커 A</text>
+<rect x="260" y="150" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="320" y="180" text-anchor="middle" font-size="12">워커 B</text>
+<rect x="460" y="150" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="520" y="180" text-anchor="middle" font-size="12">워커 C</text>
+<line x1="280" y1="70" x2="140" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="320" y1="70" x2="320" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="360" y1="70" x2="500" y2="150" class="dg-line" stroke-width="1.5"/>
+<text x="320" y="115" text-anchor="middle" font-size="11" class="dg-dim">지시와 결과 취합</text>
+</svg>`,
+    diagramCaption: String.raw`Supervisor가 워커 에이전트를 호출하고 결과를 모아 다음 지시를 정한다.`,
+    related: [{ label: "역할 분담형 협업", slug: "role-based-multi-agent" }, { label: "에이전트 메시지 프로토콜", slug: "agent-message-protocol" }, { label: "LangGraph", slug: "langgraph" }],
+    sections: []
+  },
+  "role-based-multi-agent": {
+    title: String.raw`역할 분담형 협업: 코더와 리뷰어처럼 역할을 나누기`,
+    domain: "llm",
+    subLabel: String.raw`멀티에이전트 오케스트레이션`,
+    intuition: String.raw`<p>한 사람이 코드를 짜고 그 코드를 스스로 검토하면 자기 실수를 알아채기 어렵다. 사람도 다른 사람이 봐줘야 놓친 부분이 보인다. 역할 분담형 협업은 이 원리를 에이전트에 그대로 적용한다. 코드를 짜는 에이전트와 그 코드를 검토하는 에이전트를 따로 두고 서로 다른 관점에서 결과물을 주고받게 한다.</p>
+<p>Supervisor 패턴과 달리 중앙에서 지시를 내리는 관리자가 꼭 필요하지는 않다. 정해진 순서대로 역할이 결과물을 넘기거나 필요하면 동시에 각자 작업을 하고 나중에 결과를 합친다.</p>`,
+    explanation: String.raw`<p>하나의 에이전트가 코드를 작성하고 그 코드를 스스로 검토하도록 시키면 자기가 방금 만든 논리 안에서 오류를 찾으려는 경향이 생긴다. 같은 프롬프트 같은 문맥에서 이어지는 판단은 처음의 착오를 그대로 반복하기 쉽다. 역할 분담형 협업은 코더 역할과 리뷰어 역할에 서로 다른 시스템 프롬프트와 서로 다른 관점을 부여해서 이 편향을 깨뜨린다. 리뷰어는 코드를 새로 작성한 적이 없으므로 코더가 당연하게 여긴 전제를 의심할 수 있다.</p>
+<p>역할은 순차적으로 이어질 수도 있고 병렬로 진행될 수도 있다. 순차적인 경우 코더가 초안을 내면 리뷰어가 피드백을 주고 코더가 다시 수정하는 루프를 반복한다. 병렬인 경우 예를 들어 리서처 역할과 팩트체커 역할이 동시에 같은 자료를 각자 다른 기준으로 살펴본 뒤 결과를 합친다.</p>
+<p>이 패턴이 잘 작동하려면 역할 간 경계가 분명해야 한다. 리뷰어가 코더의 역할까지 겸하면 그저 같은 모델이 프롬프트만 바뀐 채 스스로에게 말을 거는 셈이 되어 서로 다른 관점을 만들어내지 못한다. 역할마다 다른 도구 접근 권한이나 다른 평가 기준을 주는 것도 관점을 실제로 갈라놓는 방법이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="80" width="140" height="56" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="130" y="113" text-anchor="middle" font-size="13">코더</text>
+<rect x="400" y="80" width="140" height="56" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="470" y="113" text-anchor="middle" font-size="13">리뷰어</text>
+<line x1="200" y1="98" x2="400" y2="98" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="300" y="88" text-anchor="middle" font-size="11" class="dg-dim">코드 초안</text>
+<line x1="400" y1="120" x2="200" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="300" y="140" text-anchor="middle" font-size="11" class="dg-dim">피드백</text>
+</svg>`,
+    diagramCaption: String.raw`코더와 리뷰어가 초안과 피드백을 주고받으며 결과물을 다듬는다.`,
+    related: [{ label: "Supervisor 패턴", slug: "supervisor-pattern-agent" }, { label: "에이전트 메시지 프로토콜", slug: "agent-message-protocol" }, { label: "궤적 평가", slug: "trajectory-evaluation" }],
+    sections: []
+  },
+  "agent-message-protocol": {
+    title: String.raw`에이전트 간 메시지 프로토콜: 서로 어떤 형식으로 주고받을까`,
+    domain: "llm",
+    subLabel: String.raw`멀티에이전트 오케스트레이션`,
+    intuition: String.raw`<p>에이전트가 여러 개로 늘어나면 한 에이전트의 출력이 다음 에이전트의 입력이 되는 경우가 많아진다. 이때 출력 형식이 매번 제각각이면 받는 쪽 에이전트가 그 안에서 필요한 정보를 다시 파싱해야 한다. 메시지 프로토콜은 에이전트끼리 주고받는 메시지의 형식과 그 메시지를 누구에게 보낼지 정하는 규칙이다.</p>
+<p>사람 조직에서 보고서 양식을 정해두면 누가 봐도 어디에 결론이 있고 어디에 근거가 있는지 알 수 있다. 에이전트 사이의 메시지도 형식이 정해져 있으면 다음 에이전트가 무엇을 읽어야 할지 헤매지 않는다.</p>`,
+    explanation: String.raw`<p>가장 단순한 형태는 발신자와 수신자와 메시지 내용만 있는 대화 로그다. 여러 에이전트가 하나의 대화 히스토리를 공유하면서 각자 자기 턴에 발언을 추가하는 방식으로 AutoGen 같은 프레임워크의 대화형 멀티에이전트가 이런 구조를 쓴다. 이 방식은 구현이 단순하지만 대화가 길어질수록 어떤 메시지가 어떤 에이전트를 향한 것인지 구분하기 어려워질 수 있다.</p>
+<p>더 구조화된 방식은 메시지에 역할과 목적 필드를 명시적으로 붙인다. 이 메시지가 계획 수립 결과인지 도구 호출 요청인지 최종 답변인지를 타입으로 표시하고 수신자를 지정한다. LangGraph처럼 그래프 기반 프레임워크는 노드 사이를 흐르는 상태 객체 자체가 이 역할을 하는 경우가 많다. 상태 객체 안에 각 에이전트가 채워 넣은 필드가 누적되고 다음 노드는 그중 자기가 필요한 필드만 읽는다.</p>
+<p>라우팅 규칙은 메시지를 누구에게 전달할지 정한다. 고정된 파이프라인이라면 순서가 코드에 미리 박혀 있지만 Supervisor 패턴처럼 동적으로 다음 수신자를 정해야 하는 구조라면 메시지 자체에 다음 수신자 후보나 작업 상태를 함께 실어 보내야 한다. 메시지 형식이 느슨하면 파싱 오류가 늘고 형식이 지나치게 엄격하면 에이전트가 자연스러운 추론을 표현하기 어려워지는 트레이드오프가 있다.</p>`,
+    related: [{ label: "Supervisor 패턴", slug: "supervisor-pattern-agent" }, { label: "역할 분담형 협업", slug: "role-based-multi-agent" }, { label: "LangGraph", slug: "langgraph" }],
+    sections: []
+  },
+  "langchain": {
+    title: String.raw`LangChain: 체인과 에이전트를 조립하는 범용 프레임워크`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>LLM 하나만으로 애플리케이션을 만들려면 프롬프트 작성과 모델 호출과 출력 파싱과 외부 API 호출을 매번 직접 이어 붙여야 한다. 모델 제공자를 바꾸거나 벡터DB를 바꿀 때마다 코드 전체를 다시 손봐야 하는 경우도 흔하다. LangChain은 이런 구성 요소들을 표준화된 인터페이스 뒤에 감춰서 프롬프트와 모델 호출과 검색기와 출력 파서를 레고 블록처럼 이어 붙일 수 있게 해주는 라이브러리다.</p>
+<p>개발자 입장에서 가장 크게 얻는 것은 통일된 인터페이스다. 모델 제공자를 바꿔도 체인을 구성하는 코드 대부분은 그대로 유지된다. 프롬프트 템플릿과 검색기와 메모리와 도구 같은 구성 요소도 각각 표준 인터페이스를 따르므로 서로 다른 구현체끼리 교체하기 쉽다.</p>`,
+    explanation: String.raw`<p>LangChain의 핵심 개념은 체인이다. 체인은 여러 구성 요소를 순서대로 연결한 파이프라인으로 프롬프트 템플릿에 값을 채워 모델에 보내고 모델 출력을 파서에 통과시켜 원하는 형태로 뽑아내는 흐름을 하나의 객체로 표현한다. 이 연결을 파이프 연산자로 표현하는 LCEL 스타일을 제공해서 각 구성 요소를 함수처럼 이어붙일 수 있다.</p>
+<p>에이전트 기능은 모델이 스스로 다음에 어떤 도구를 호출할지 판단하게 하는 얇은 층으로 체인 위에 얹힌다. 도구 목록과 모델을 묶어주면 모델이 도구 이름과 인자를 생성하고 LangChain이 그 호출을 실제로 실행한 뒤 결과를 다시 모델에 돌려주는 루프를 돌린다. 다만 복잡한 분기나 반복이 있는 에이전트 흐름을 체인만으로 표현하려면 로직이 암묵적으로 숨어버리는 경우가 많아서 LangChain 생태계 안에서도 상태를 명시적으로 다루고 싶을 때는 LangGraph를 함께 쓰는 경우가 많다.</p>
+<p>LangChain은 벡터DB와 임베딩 모델과 문서 로더와 다양한 LLM 제공자에 대한 커넥터를 폭넓게 제공한다는 점이 가장 실용적인 장점으로 꼽힌다. RAG 파이프라인을 처음부터 직접 짜는 대신 문서 로더로 파일을 읽고 텍스트 분할기로 청크를 나누고 벡터스토어에 넣는 과정을 표준 인터페이스로 조립할 수 있다. 대신 추상화 층이 여러 겹 쌓이다 보니 내부에서 정확히 무슨 일이 일어나는지 파악하려면 추상화를 한 겹씩 걷어내야 하는 학습 비용이 따른다.</p>`,
+    related: [{ label: "LangGraph", slug: "langgraph" }, { label: "LlamaIndex", slug: "llamaindex" }, { label: "에이전트 메시지 프로토콜", slug: "agent-message-protocol" }],
+    sections: []
+  },
+  "langgraph": {
+    title: String.raw`LangGraph: 상태 그래프로 에이전트 흐름을 명시적으로 제어하기`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>에이전트가 다음에 뭘 할지 매번 모델의 자유 판단에만 맡기면 같은 입력에도 다른 경로로 흘러가거나 도구 호출을 멈추지 않는 상황이 생길 수 있다. 개발자는 이 흐름을 눈에 보이는 구조로 통제하고 싶어한다. LangGraph는 에이전트의 각 단계를 노드로 그 사이의 전이를 엣지로 그린 그래프를 직접 정의하게 해주는 프레임워크다.</p>
+<p>체인처럼 한 방향으로만 흐르는 파이프라인이 아니라 조건에 따라 이전 노드로 돌아가거나 여러 노드로 갈라지는 흐름을 그래프 구조로 명시적으로 표현할 수 있다는 점이 핵심이다. 개발자는 이 조건을 코드로 직접 정의하므로 에이전트가 어떤 경로로 갈 수 있는지 미리 알 수 있다.</p>`,
+    explanation: String.raw`<p>LangGraph에서 노드는 상태를 입력받아 상태를 갱신해 돌려주는 함수다. 상태는 대화 이력과 중간 계산 결과와 다음에 호출할 도구 같은 정보를 담은 객체이고 그래프를 따라 흐르며 각 노드를 거칠 때마다 갱신된다. 엣지는 한 노드에서 다음 노드로 가는 경로를 정의하는데 조건부 엣지를 쓰면 상태 값을 보고 다음에 어느 노드로 갈지 런타임에 분기시킬 수 있다.</p>
+<p>이 구조 덕분에 도구를 호출하고 결과를 확인한 뒤 다시 추론 노드로 돌아가는 루프나 특정 조건이 만족될 때까지 반복하는 루프나 여러 노드로 갈라졌다가 다시 합류하는 흐름을 모두 그래프 위에서 표현할 수 있다. LangChain의 체인이 대체로 한 방향 파이프라인에 가깝다면 LangGraph는 순환과 분기를 1급 시민으로 다룬다는 점에서 다르다.</p>
+<p>LangGraph는 상태를 체크포인트로 저장하는 기능도 제공해서 실행 중간에 사람이 개입해 승인하거나 값을 수정한 뒤 이어서 실행하는 human-in-the-loop 패턴이나 실패한 지점부터 다시 실행하는 재시도 패턴을 구현하기 쉽게 해준다. Supervisor 패턴이나 역할 분담형 협업 같은 멀티에이전트 구조도 각 에이전트를 노드로 라우팅 로직을 조건부 엣지로 표현하면 그대로 그래프 위에 옮길 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="130" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="134" text-anchor="middle" font-size="12">시작</text>
+<rect x="150" y="104" width="120" height="52" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="210" y="134" text-anchor="middle" font-size="13">추론 노드</text>
+<rect x="360" y="104" width="120" height="52" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="420" y="134" text-anchor="middle" font-size="13">도구 호출 노드</text>
+<circle cx="580" cy="130" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="580" y="134" text-anchor="middle" font-size="12">종료</text>
+<line x1="86" y1="130" x2="150" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="270" y1="130" x2="360" y2="130" class="dg-line" stroke-width="1.5"/>
+<path d="M420 104 C 420 40 210 40 210 104" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="315" y="35" text-anchor="middle" font-size="11" class="dg-dim">도구 결과를 들고 재추론</text>
+<line x1="480" y1="130" x2="554" y2="130" class="dg-line" stroke-width="1.5"/>
+<text x="517" y="150" text-anchor="middle" font-size="11" class="dg-dim">조건부</text>
+</svg>`,
+    diagramCaption: String.raw`조건부 엣지가 루프와 종료 경로를 함께 표현한다.`,
+    related: [{ label: "LangChain", slug: "langchain" }, { label: "Supervisor 패턴", slug: "supervisor-pattern-agent" }, { label: "에이전트 메시지 프로토콜", slug: "agent-message-protocol" }],
+    sections: []
+  },
+  "llamaindex": {
+    title: String.raw`LlamaIndex: 데이터 연결과 RAG 파이프라인에 특화된 프레임워크`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>RAG를 구현하려면 문서를 읽어와 적절한 크기로 쪼개고 임베딩으로 바꿔 검색 가능한 형태로 저장한 뒤 질문이 들어오면 관련 조각을 찾아 모델에 넘겨야 한다. 이 과정을 하나하나 직접 구현하려면 손이 많이 간다. LlamaIndex는 이 데이터 적재부터 검색까지의 파이프라인에 특화된 라이브러리로 다양한 데이터 소스를 읽어와 인덱스로 만드는 작업을 표준화한다.</p>
+<p>LangChain이 에이전트와 체인 구성 전반을 아우르는 범용 도구에 가깝다면 LlamaIndex는 데이터를 모델이 쓸 수 있는 형태로 준비하는 쪽에 무게가 실려 있다. PDF와 데이터베이스와 API 응답처럼 형태가 제각각인 데이터를 일관된 방식으로 읽어와 인덱싱하고 싶을 때 특히 도움이 된다.</p>`,
+    explanation: String.raw`<p>LlamaIndex의 핵심은 다양한 데이터 커넥터와 인덱스 구조다. 파일과 웹페이지와 SQL 데이터베이스와 여러 SaaS API에서 데이터를 읽어오는 로더를 제공하고 읽어온 문서를 청크로 나눈 뒤 벡터 인덱스나 트리 인덱스나 키워드 인덱스 같은 여러 인덱스 구조 중 하나로 조직화한다. 벡터 인덱스가 가장 널리 쓰이지만 문서 사이의 계층 구조가 중요한 경우 트리 인덱스처럼 다른 구조를 선택할 수 있다.</p>
+<p>질의 시점에는 쿼리 엔진이 인덱스에서 관련 조각을 찾아 모델에 전달하고 응답을 합성한다. LlamaIndex는 이 검색과 합성 과정에 재순위화와 여러 인덱스를 동시에 조회하는 라우터와 하위 질문으로 쪼개 각각 검색한 뒤 합치는 기법처럼 RAG 품질을 높이기 위한 여러 모듈을 함께 제공한다.</p>
+<p>에이전트 기능도 지원하지만 LlamaIndex의 강점은 여전히 데이터 계층에 있다. 에이전트가 판단 중에 필요한 정보를 검색해오는 도구로 쿼리 엔진을 등록해 쓰는 식으로 LangChain이나 LangGraph 같은 오케스트레이션 프레임워크와 함께 조합해 쓰는 경우도 흔하다.</p>`,
+    related: [{ label: "LangChain", slug: "langchain" }, { label: "LangGraph", slug: "langgraph" }],
+    sections: []
+  },
+  "autogen-framework": {
+    title: String.raw`AutoGen: 멀티에이전트 대화를 오케스트레이션하는 프레임워크`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>여러 에이전트가 협업하는 구조를 직접 짜려면 누가 언제 말할 차례인지 대화를 언제 끝낼지 같은 세부 로직을 매번 새로 구현해야 한다. AutoGen은 이런 멀티에이전트 대화의 뼈대를 미리 만들어둔 프레임워크로 여러 에이전트가 하나의 대화방에서 메시지를 주고받듯 상호작용하도록 설계돼 있다.</p>
+<p>Microsoft가 만든 이 프레임워크는 에이전트를 대화 참여자로 모델링한다는 점이 특징이다. 개발자는 각 에이전트의 역할과 시스템 프롬프트를 정의하고 누가 다음 발언자가 될지 정하는 규칙만 설정하면 나머지 대화 흐름은 프레임워크가 이어간다.</p>`,
+    explanation: String.raw`<p>AutoGen의 기본 단위는 대화형 에이전트다. 각 에이전트는 시스템 프롬프트로 역할이 정의되고 대화방에 참여해 메시지를 주고받는다. 가장 단순한 구성은 어시스턴트 에이전트와 사용자 프록시 에이전트 둘만 있는 대화로 사용자 프록시가 사람 대신 코드 실행이나 도구 호출 같은 실무를 대행하고 어시스턴트가 그 결과를 보고 다음 지시를 낸다.</p>
+<p>여러 에이전트가 참여하는 그룹 대화에서는 다음 발언자를 정하는 방식이 핵심 설계 지점이다. 정해진 순서대로 돌아가게 할 수도 있고 매 턴마다 별도의 관리자 역할이 다음에 누가 말할지 판단하게 할 수도 있다. 이 관리자 기반 선택 방식은 앞서 본 Supervisor 패턴과 개념적으로 맞닿아 있다.</p>
+<p>AutoGen은 에이전트가 직접 코드를 생성하고 실행 결과를 다시 대화에 반영하는 코드 실행 루프를 초기부터 강조해온 프레임워크다. 어시스턴트가 코드를 제안하면 사용자 프록시 에이전트가 그 코드를 실제로 실행하고 결과나 에러 메시지를 다시 대화에 실어 보낸다. 이 루프 덕분에 데이터 분석이나 디버깅처럼 실행 결과를 보며 다음 시도를 조정해야 하는 작업에 특히 잘 맞는다는 평가를 받는다.</p>`,
+    related: [{ label: "CrewAI", slug: "crewai" }, { label: "Supervisor 패턴", slug: "supervisor-pattern-agent" }, { label: "역할 분담형 협업", slug: "role-based-multi-agent" }],
+    sections: []
+  },
+  "crewai": {
+    title: String.raw`CrewAI: 역할 기반 멀티에이전트 협업을 정의하는 프레임워크`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>여러 에이전트가 협업하는 팀을 짜려면 누가 어떤 역할을 맡고 어떤 작업을 누구에게 맡길지를 코드로 표현해야 한다. CrewAI는 이 구성을 역할과 작업과 팀이라는 세 가지 개념으로 나눠서 선언적으로 정의하게 해주는 프레임워크다.</p>
+<p>개발자는 각 에이전트에게 역할과 목표와 배경 설명을 부여하고 수행할 작업 목록을 정의한 뒤 이 에이전트들을 크루로 묶는다. 세부 프롬프트 엔지니어링보다 팀 구성 자체를 설계하는 데 집중할 수 있게 해주는 것이 이 프레임워크의 지향점이다.</p>`,
+    explanation: String.raw`<p>CrewAI의 세 축은 에이전트와 태스크와 크루다. 에이전트는 역할과 목표 그리고 그 역할이 왜 존재하는지 설명하는 배경 스토리를 가진다. 이 배경 스토리는 실제로 모델에게 전달되는 시스템 프롬프트의 일부가 되어 에이전트가 자기 역할에 맞는 어조와 판단 기준을 유지하도록 유도한다. 태스크는 구체적으로 수행할 작업과 기대 출력 형식을 정의하고 특정 에이전트에 할당된다.</p>
+<p>크루는 이 에이전트들과 태스크들을 묶어 실행 단위로 만든다. 실행 방식은 순차 실행과 계층적 실행 중에서 고를 수 있는데 순차 실행은 태스크를 정해진 순서대로 하나씩 처리하고 계층적 실행은 관리자 역할의 에이전트가 각 태스크를 어떤 에이전트에게 맡길지 그때그때 판단한다. 후자는 앞서 다룬 Supervisor 패턴을 CrewAI 방식으로 구현한 것에 가깝다.</p>
+<p>CrewAI는 역할과 태스크를 선언적으로 정의하는 데 초점을 맞추다 보니 LangGraph처럼 상태 전이를 세밀하게 코드로 제어하는 유연성은 상대적으로 적다. 대신 역할이 명확한 협업 구조를 빠르게 구성하고 싶을 때는 보일러플레이트가 적다는 점이 실용적인 장점으로 꼽힌다.</p>`,
+    related: [{ label: "AutoGen", slug: "autogen-framework" }, { label: "역할 분담형 협업", slug: "role-based-multi-agent" }, { label: "Supervisor 패턴", slug: "supervisor-pattern-agent" }],
+    sections: []
+  },
+  "semantic-kernel": {
+    title: String.raw`Semantic Kernel: 엔터프라이즈 통합에 특화된 에이전트 SDK`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>기업 환경에서 LLM 기능을 기존 시스템에 끼워 넣으려면 사내 인증 체계와 기존 서비스 API와 로깅과 모니터링 같은 요구사항을 함께 만족시켜야 한다. Semantic Kernel은 Microsoft가 만든 SDK로 LLM 호출과 도구 사용을 닷넷이나 파이썬 같은 기존 엔터프라이즈 코드베이스 안에 자연스럽게 통합하는 데 초점을 맞춘다.</p>
+<p>리서치 목적의 실험보다는 이미 운영 중인 서비스에 에이전트 기능을 얹어야 하는 개발자를 겨냥한다는 점이 이 SDK의 성격을 설명한다. 기존 엔터프라이즈 스택에서 일하던 개발자가 익숙한 언어와 패턴 그대로 LLM 기능을 추가할 수 있게 하는 것이 주된 목표다.</p>`,
+    explanation: String.raw`<p>Semantic Kernel의 핵심 개념은 커널이다. 커널은 모델 연결과 플러그인과 메모리 같은 구성 요소를 담는 컨테이너 역할을 한다. 플러그인은 모델이 호출할 수 있는 함수 묶음으로 기존 코드베이스에 있는 함수를 속성만 붙여 플러그인으로 노출시킬 수 있다는 점이 특징이다. 새 도구를 처음부터 작성하기보다 이미 존재하는 비즈니스 로직 함수를 그대로 모델에 노출시키는 시나리오에 맞춰져 있다.</p>
+<p>플래너 기능은 사용자 목표를 여러 플러그인 함수 호출로 분해하는 역할을 한다. 모델이 어떤 플러그인 함수를 어떤 순서로 호출해야 목표를 달성할 수 있을지 판단하고 그 계획에 따라 함수들을 순차적으로 실행한다. 여러 에이전트를 정의하고 서로 협업시키는 에이전트 오케스트레이션 기능도 갖추고 있어 단일 에이전트를 넘어선 구조도 지원한다.</p>
+<p>Semantic Kernel은 닷넷과 파이썬과 자바 여러 언어에서 동일한 개념 모델을 제공하는 것을 강조한다. 여러 언어를 혼용하는 대규모 조직에서 언어별로 서로 다른 프레임워크를 따로 익히지 않고 같은 방식으로 에이전트 기능을 붙일 수 있게 하려는 설계 방향이다.</p>`,
+    related: [{ label: "OpenAI Agents SDK", slug: "openai-agents-sdk" }, { label: "AutoGen", slug: "autogen-framework" }, { label: "LangChain", slug: "langchain" }],
+    sections: []
+  },
+  "openai-agents-sdk": {
+    title: String.raw`OpenAI Agents SDK: OpenAI가 제공하는 에이전트 오케스트레이션 도구`,
+    domain: "llm",
+    subLabel: String.raw`대표 프레임워크 · 라이브러리`,
+    intuition: String.raw`<p>OpenAI 모델로 에이전트를 만들 때 도구 호출과 에이전트 간 위임과 안전장치 같은 반복되는 구조를 매번 직접 짜지 않아도 되게 해주는 것이 OpenAI Agents SDK의 목적이다. OpenAI가 자사 모델과 함수 호출 기능에 맞춰 직접 제공하는 경량 SDK로 에이전트 정의와 도구 연결과 에이전트 사이의 작업 위임을 비교적 적은 코드로 표현할 수 있게 해준다.</p>
+<p>서드파티 프레임워크를 거치지 않고 OpenAI 플랫폼 기능과 밀접하게 맞물려 동작한다는 점이 다른 범용 프레임워크와 다른 지점이다. 모델 제공자를 여럿 오가야 하는 프로젝트보다는 OpenAI 생태계 안에서 빠르게 에이전트를 구성하려는 경우에 자연스럽게 맞는다.</p>`,
+    explanation: String.raw`<p>OpenAI Agents SDK에서 에이전트는 이름과 지시문과 사용할 도구 목록을 가진 단위로 정의된다. 도구는 함수 호출 스키마로 표현되고 에이전트가 대화 중 필요하다고 판단하면 도구를 호출하고 그 결과를 다시 대화에 반영하는 루프를 SDK가 대신 관리해준다.</p>
+<p>여러 에이전트를 다룰 때는 핸드오프라는 개념을 쓴다. 한 에이전트가 대화를 처리하다가 자기 영역을 벗어난 요청이 들어오면 다른 에이전트에게 대화 처리권을 통째로 넘기는 방식이다. 이는 Supervisor 패턴처럼 중앙 관리자가 매번 다음 워커를 호출하고 결과를 받아 다시 판단하는 구조와는 결이 다르다. 핸드오프는 대화의 주도권 자체를 다음 에이전트로 넘기고 원래 에이전트는 그 이후의 진행에는 관여하지 않는다.</p>
+<p>SDK는 에이전트 실행 과정을 추적하는 기능과 입력과 출력에 대한 가드레일 검사 기능도 함께 제공한다. 가드레일은 에이전트에게 부적절한 입력이 들어오거나 출력이 정책을 위반할 소지가 있을 때 이를 미리 걸러내는 검사 단계로 별도의 체크 로직을 에이전트 실행 파이프라인에 끼워 넣을 수 있게 해준다.</p>`,
+    related: [{ label: "LangGraph", slug: "langgraph" }, { label: "에이전트 메시지 프로토콜", slug: "agent-message-protocol" }, { label: "Semantic Kernel", slug: "semantic-kernel" }],
+    sections: []
+  },
+  "agent-success-rate": {
+    title: String.raw`태스크 성공률: 시도 중 실제로 목표를 달성한 비율`,
+    domain: "llm",
+    subLabel: String.raw`에이전트 평가`,
+    intuition: String.raw`<p>에이전트가 얼마나 쓸만한지 가장 먼저 궁금한 질문은 결국 이거다. 시켜본 일 중 몇 번이나 제대로 끝냈는가. 태스크 성공률은 이 질문에 숫자로 답하는 가장 단순한 지표다.</p>
+<p>다만 이 숫자 하나만으로는 에이전트가 그 일을 어떻게 해냈는지 얼마나 위태롭게 해냈는지는 알 수 없다는 한계가 있다.</p>`,
+    explanation: String.raw`<p>태스크 성공률은 $\dfrac{S}{N}$로 정의된다. 여기서 $S$는 목표를 달성한 시도 수이고 $N$은 전체 시도 수다. 목표 달성 여부를 어떻게 판정하느냐가 지표의 신뢰도를 좌우한다. 최종 출력이 정답과 정확히 일치하는지를 문자열 비교로 판정할 수도 있고 사람이 직접 검수할 수도 있고 별도의 채점 모델이 판단할 수도 있다.</p>
+<p>이 지표의 가장 흔한 함정은 성공 여부만 보고 과정을 무시한다는 점이다. 어떤 시도는 처음부터 효율적인 경로로 목표에 도달하고 어떤 시도는 불필요한 도구를 여러 번 잘못 호출하다가 우연히 정답에 도달한다. 둘 다 성공률 계산에서는 똑같이 성공 1건으로 집계된다. 과정의 질을 구분하려면 궤적 평가처럼 중간 행동까지 함께 채점하는 지표가 필요하다.</p>
+<p>또 하나 주의할 점은 시도 난이도의 편차다. 쉬운 태스크만 잔뜩 포함된 평가셋에서는 성공률이 실제 능력보다 부풀려질 수 있고 반대로 극단적으로 어려운 태스크가 섞이면 실제로는 쓸만한 에이전트도 낮은 점수를 받을 수 있다. 태스크 난이도 분포를 함께 명시하지 않은 성공률은 다른 에이전트나 다른 버전과 비교하기 어렵다.</p>`,
+    example: String.raw`<p>어떤 에이전트에게 스무 번 같은 유형의 작업을 시켰다고 하자. 그중 열네 번은 최종 결과가 목표와 정확히 일치했고 여섯 번은 실패했다. 성공률은 $\dfrac{14}{20} = 0.7$로 70퍼센트가 된다.</p>
+<p>다만 이 열네 번 중 몇 번은 처음부터 곧장 목표에 도달했고 몇 번은 잘못된 경로를 헤매다가 결국 우연히 정답에 닿았을 수 있다. 성공률 하나만 보면 이 둘을 구분할 수 없다.</p>`,
+    related: [{ label: "궤적 평가", slug: "trajectory-evaluation" }, { label: "도구 호출 정확도", slug: "tool-call-accuracy" }],
+    sections: []
+  },
+  "trajectory-evaluation": {
+    title: String.raw`궤적 평가: 정답만이 아니라 과정을 채점하기`,
+    domain: "llm",
+    subLabel: String.raw`에이전트 평가`,
+    intuition: String.raw`<p>시험에서 답만 맞으면 되는 문제도 있지만 풀이 과정 자체를 채점해야 하는 문제도 있다. 에이전트 평가도 마찬가지다. 최종 답이 맞았더라도 그 과정에서 위험한 도구를 잘못 호출했거나 불필요하게 많은 단계를 거쳤다면 그건 좋은 에이전트라고 하기 어렵다. 궤적 평가는 에이전트가 목표에 도달하기까지 거친 행동의 순서 전체를 채점 대상으로 삼는다.</p>
+<p>여기서 궤적이란 에이전트가 각 턴에 무엇을 관찰하고 어떤 도구를 어떤 인자로 호출했고 그 결과를 어떻게 다음 판단에 반영했는지를 순서대로 기록한 로그를 말한다.</p>`,
+    explanation: String.raw`<p>궤적 평가는 크게 두 가지 방식으로 이뤄진다. 하나는 정답 궤적과 비교하는 방식으로 미리 정해둔 이상적인 행동 순서나 반드시 호출해야 하는 도구 목록과 실제 궤적을 대조한다. 순서가 완전히 일치할 필요는 없고 필수 단계가 모두 포함됐는지 순서가 논리적으로 타당한지를 기준으로 채점하는 경우가 많다.</p>
+<p>다른 하나는 궤적 자체를 별도의 채점 모델이나 사람이 읽고 품질을 평가하는 방식이다. 이 경우 판단 기준을 명확한 루브릭으로 정해두는 것이 중요하다. 불필요한 도구 호출이 있었는지 같은 실수를 반복하지 않고 이전 실패에서 배웠는지 위험하거나 되돌릴 수 없는 행동을 하기 전에 확인 절차를 거쳤는지를 각각 별도 항목으로 채점한다.</p>
+<p>궤적 평가가 필요한 이유는 성공률만으로는 과정의 위험성을 잡아내지 못하기 때문이다. 최종 답이 맞았더라도 그 과정에서 존재하지 않는 파일을 삭제하려 시도했거나 같은 검색을 열 번 반복했다면 실제 서비스에 투입했을 때 다른 상황에서 큰 사고로 이어질 수 있다. 궤적 평가는 이런 과정상의 문제를 성공률과 별개로 드러낸다는 점에서 성공률의 사각지대를 보완한다.</p>`,
+    example: String.raw`<p>폴더 안 중복 이미지를 정리해달라는 작업을 가정해보자. 이상적인 궤적은 폴더를 스캔하고 파일 해시를 비교해 중복을 찾은 뒤 삭제 전에 사용자에게 목록을 확인받고 승인된 파일만 삭제하는 순서다. 어떤 시도가 스캔과 해시 비교를 건너뛰고 파일명만 보고 곧바로 삭제를 실행했다면 최종적으로 중복 파일이 사라져 성공률 집계에서는 성공으로 잡히더라도 궤적 평가에서는 확인 절차 누락으로 낮은 점수를 받는다.</p>`,
+    related: [{ label: "태스크 성공률", slug: "agent-success-rate" }, { label: "도구 호출 정확도", slug: "tool-call-accuracy" }, { label: "역할 분담형 협업", slug: "role-based-multi-agent" }],
+    sections: []
+  },
+  "tool-call-accuracy": {
+    title: String.raw`도구 호출 정확도: 맞는 도구를 맞는 인자로 불렀는가`,
+    domain: "llm",
+    subLabel: String.raw`에이전트 평가`,
+    intuition: String.raw`<p>에이전트가 도구를 잘 쓰는지 확인하려면 두 가지를 따로 봐야 한다. 애초에 맞는 도구를 골랐는가 그리고 그 도구를 부를 때 인자를 제대로 채웠는가. 둘 중 하나만 봐서는 실제로 도구를 얼마나 잘 다루는지 알 수 없다.</p>
+<p>날씨를 물어봤는데 검색 도구 대신 계산기 도구를 부르면 도구 선택이 틀린 것이고 검색 도구를 제대로 골랐어도 도시 이름 인자에 오타가 들어가면 그 호출은 실패한다.</p>`,
+    explanation: String.raw`<p>도구 호출 정확도는 보통 도구 선택 정확도와 인자 정확도 두 층으로 나눠 측정한다. 도구 선택 정확도는 주어진 상황에서 실제로 필요한 도구와 에이전트가 실제로 호출한 도구가 일치하는 비율이다. 인자 정확도는 도구 선택이 맞았다는 전제 아래 그 도구에 넘긴 인자 값이 기대한 값과 일치하는지를 따진다.</p>
+<p>두 층을 분리해서 봐야 하는 이유는 실패 원인이 완전히 다르기 때문이다. 도구 선택이 틀리면 모델이 어떤 상황에 어떤 도구가 필요한지 애초에 잘못 이해하고 있다는 뜻이고 도구 스키마 설명을 더 명확히 쓰거나 도구 목록을 정리해야 하는 문제다. 도구 선택은 맞았는데 인자가 틀리면 도구 자체는 잘 골랐지만 필요한 값을 대화 맥락에서 정확히 추출하지 못했다는 뜻으로 프롬프트나 스키마의 인자 설명을 보완해야 하는 문제다.</p>
+<p>인자 정확도를 판정할 때는 완전 일치만 기준으로 삼으면 지나치게 엄격할 수 있다. 날짜 형식이 다르거나 소수점 자리수가 다른 정도의 차이는 실질적으로는 맞는 값인 경우가 많아서 값의 의미를 비교하는 정규화 단계를 거친 뒤 채점하는 것이 일반적이다. 여러 도구를 순서대로 호출해야 하는 작업이라면 호출 순서 자체도 평가 대상에 포함되는데 이 부분은 궤적 평가와 겹치는 지점이다.</p>`,
+    related: [{ label: "태스크 성공률", slug: "agent-success-rate" }, { label: "궤적 평가", slug: "trajectory-evaluation" }],
+    sections: []
+  },
+  "mmlu-benchmark": {
+    title: String.raw`MMLU류 벤치마크: 여러 분야 객관식으로 지식을 재기`,
+    domain: "llm",
+    subLabel: String.raw`일반 벤치마크 · 평가`,
+    intuition: String.raw`<p>모델이 얼마나 많이 아는지 확인하는 가장 손쉬운 방법은 시험을 보게 하는 것이다. MMLU류 벤치마크는 수학과 법학과 의학과 역사처럼 여러 분야에 걸친 객관식 문제를 모아 모델에게 풀게 하고 정답률로 지식 수준을 잰다.</p>
+<p>사람이 보는 표준화 시험과 비슷한 형식이라 채점이 명확하고 여러 모델을 같은 잣대로 비교하기 쉽다는 것이 이런 벤치마크가 널리 쓰이는 이유다.</p>`,
+    explanation: String.raw`<p>이 부류의 벤치마크는 보통 수십 개 과목에 걸쳐 수천에서 수만 문항을 제공하고 각 문항은 네 개 안팎의 선택지 중 하나를 고르는 형식이다. 점수는 전체 문항 중 정답을 고른 비율로 집계되고 과목별 점수를 따로 볼 수도 있다. 모델이 특정 분야에서만 강하고 다른 분야에서는 약한지 세부적으로 뜯어보는 용도로도 쓰인다.</p>
+<p>이런 벤치마크의 한계는 명확하다. 객관식 문제를 잘 푸는 능력과 실제 대화에서 유용한 답을 만들어내는 능력은 완전히 같지 않다. 선택지 중 하나를 고르는 형식은 정답을 추론해서 도출하지 않고 선택지의 표현 방식이나 상대적 그럴듯함만으로 정답을 맞히는 얕은 전략에도 취약할 수 있다. 또한 벤치마크 문항이 모델의 사전학습 데이터에 그대로 포함돼 있었다면 실제 추론 능력이 아니라 암기한 답을 그대로 재현한 것일 수 있는데 이를 데이터 오염이라 부른다.</p>
+<p>그래서 실무에서는 MMLU류 점수 하나만으로 모델을 최종 선택하기보다 실제 사용 시나리오에 가까운 별도 평가와 함께 참고하는 경우가 많다. 객관식 지식 점수가 높다고 해서 긴 대화를 자연스럽게 이어가거나 모호한 지시를 해석하는 능력까지 좋다고 보장되지는 않는다.</p>`,
+    related: [{ label: "LLM-as-judge", slug: "llm-as-judge" }, { label: "환각 측정", slug: "hallucination-measurement" }],
+    sections: []
+  },
+  "llm-as-judge": {
+    title: String.raw`LLM-as-judge: 다른 LLM에게 답변을 채점시키기`,
+    domain: "llm",
+    subLabel: String.raw`일반 벤치마크 · 평가`,
+    intuition: String.raw`<p>모델이 만든 답변이 좋은지 나쁜지 사람이 일일이 읽고 채점하면 정확하지만 시간이 오래 걸리고 비용도 크다. 답변 수가 많아지면 특히 그렇다. LLM-as-judge는 이 채점 작업 자체를 다른 LLM에게 맡기는 방법이다. 채점 기준을 프롬프트로 알려주고 두 답변 중 어느 쪽이 나은지 고르게 하거나 하나의 답변에 점수를 매기게 한다.</p>
+<p>사람이 매번 채점하는 것보다 훨씬 빠르고 저렴하게 대량의 답변을 평가할 수 있다는 점이 이 방법이 널리 쓰이는 이유다.</p>`,
+    explanation: String.raw`<p>LLM-as-judge를 쓰는 방식은 크게 두 가지다. 하나는 절대 평가로 답변 하나를 놓고 정해진 기준에 따라 점수를 매기게 하는 방식이다. 다른 하나는 상대 평가로 같은 질문에 대한 두 답변을 나란히 보여주고 어느 쪽이 더 나은지 고르게 하는 방식이다. 상대 평가는 절대적인 점수 기준을 정의하기 어려운 항목에서 특히 판단이 안정적인 경향이 있다.</p>
+<p>채점 기준을 프롬프트에 명확히 명시하는 것이 이 방법의 신뢰도를 크게 좌우한다. 정확성과 관련성과 어조처럼 여러 기준을 한 번에 뭉뚱그려 물어보면 채점 모델이 어떤 기준에 무게를 두었는지 알기 어렵다. 기준을 항목별로 나누고 각 항목에 대한 근거를 함께 서술하게 하면 채점 결과를 검증하기도 쉬워진다.</p>
+<p>LLM-as-judge 자체도 편향에서 자유롭지 않다는 점은 반드시 감안해야 한다. 널리 보고되는 편향으로는 더 긴 답변을 더 좋은 답변으로 착각하는 길이 편향과 두 답변을 나란히 놓았을 때 먼저 제시된 답변을 선호하는 위치 편향과 채점 모델 자신과 비슷한 스타일로 쓰인 답변을 선호하는 자기 선호 편향이 있다. 이런 편향을 줄이기 위해 답변 제시 순서를 무작위로 바꿔가며 채점하거나 채점 모델을 사람 평가와 주기적으로 대조해 검증하는 절차를 함께 쓰는 것이 권장된다.</p>`,
+    related: [{ label: "MMLU류 벤치마크", slug: "mmlu-benchmark" }, { label: "환각 측정", slug: "hallucination-measurement" }, { label: "궤적 평가", slug: "trajectory-evaluation" }],
+    sections: []
+  },
+  "hallucination-measurement": {
+    title: String.raw`환각 측정: 모델이 없는 사실을 지어내는지 재기`,
+    domain: "llm",
+    subLabel: String.raw`일반 벤치마크 · 평가`,
+    intuition: String.raw`<p>모델이 그럴듯하게 들리지만 실제로는 근거 없는 사실을 답변에 섞어 넣는 경우가 있다. 존재하지 않는 논문을 인용하거나 없는 함수 이름을 지어내는 식이다. 환각 측정은 모델이 답변 안에서 얼마나 자주 이런 근거 없는 진술을 만들어내는지를 재는 지표들을 통틀어 가리킨다.</p>
+<p>정답이 하나로 딱 떨어지는 문제와 달리 환각은 답변 문장 하나하나가 사실에 부합하는지를 따로 확인해야 해서 채점 자체가 까다롭다.</p>`,
+    explanation: String.raw`<p>환각을 재는 방법은 크게 참조 자료가 있는 경우와 없는 경우로 나뉜다. RAG처럼 모델에게 근거 문서를 함께 준 상황이라면 답변의 각 진술이 그 문서 안에서 실제로 뒷받침되는지를 대조하는 방식으로 측정할 수 있다. 이 경우 답변을 개별 진술 단위로 쪼갠 뒤 각 진술이 주어진 문서에서 근거를 찾을 수 있는지를 판정하는 사실 검증 모델을 쓰는 것이 흔한 방법이다. 근거 문서와 무관한 내용이 섞여 있으면 그 비율만큼 환각으로 집계한다.</p>
+<p>참조 문서가 없는 개방형 질문에서는 답변 안의 사실 주장을 하나씩 추출한 뒤 각 주장을 외부 지식 소스나 검색 결과와 대조해서 검증하는 방식을 쓴다. 답변에 등장하는 인물과 날짜와 수치와 인용 문헌을 뽑아내 실제로 존재하는지 언급된 내용과 일치하는지 하나씩 확인하는 식이다. 이런 사실 단위 분해와 검증 과정은 수작업으로도 가능하지만 검증 자체를 또 다른 LLM에게 맡기는 경우도 많은데 이때는 검증 모델의 정확도가 측정 결과의 신뢰도를 그대로 좌우한다.</p>
+<p>환각 측정에서 자주 놓치는 부분은 환각의 종류가 균일하지 않다는 점이다. 주어진 문서와 모순되는 진술과 문서에 없는 내용을 추가한 진술은 위험도가 다르고 사소한 수치 오차와 존재하지 않는 인용을 지어내는 것도 심각도가 다르다. 단일한 환각률 숫자 하나로 뭉뚱그리기보다 환각의 유형을 나눠 보고하는 편이 실제 위험을 더 잘 드러낸다.</p>`,
+    related: [{ label: "LLM-as-judge", slug: "llm-as-judge" }, { label: "MMLU류 벤치마크", slug: "mmlu-benchmark" }],
+    sections: []
+  },
+  "lost-in-the-middle": {
+    title: String.raw`Lost-in-the-middle: 중간에 넣은 정보는 잘 기억되지 않는다`,
+    domain: "llm",
+    subLabel: String.raw`긴 컨텍스트 배치`,
+    intuition: String.raw`<p>RAG 시스템을 만들다 보면 이상한 일을 겪게 된다. 정답이 담긴 문서를 검색 결과에 분명히 포함시켰는데 모델이 엉뚱한 답을 낸다. 검색은 성공했는데 답변은 실패한 셈이다.</p>
+<p>원인은 그 문서를 프롬프트 어디에 넣었는지에 있는 경우가 많다. 정답 문서가 20개 청크 중 10번째쯤 그러니까 컨텍스트 한가운데에 있었다면 모델은 그 정보를 잘 기억하지 못한다. 같은 문서를 맨 앞이나 맨 뒤로 옮기기만 해도 정답률이 오른다. 이 현상을 lost-in-the-middle이라고 부른다.</p>`,
+    explanation: String.raw`<p>이 현상은 모델 내부의 주의(attention) 배분과 관련이 깊다. 트랜스포머는 모든 토큰을 동등하게 참고할 것 같지만 실제로는 프롬프트 시작 부분과 가장 최근에 나온 부분에 더 강하게 반응하는 경향을 보인다. 시작 부분은 지시문이나 핵심 맥락이 오는 자리라 학습 중에도 중요한 정보로 취급됐을 가능성이 크고 끝부분은 답변을 만들기 직전에 참고하는 자리라 자연스럽게 주의가 쏠린다. 두 효과 어디에도 속하지 못하는 중간 구간의 정보는 상대적으로 희석된다.</p>
+<p>이 문제는 검색이 잘 됐는지와는 별개다. 20개 청크를 검색해서 정답이 포함된 청크를 정확히 찾아냈더라도 그 청크를 프롬프트 중간에 그대로 붙여넣으면 모델이 놓칠 수 있다. 그래서 RAG 시스템을 평가할 때는 검색 정확도와 별개로 생성 단계에서 그 정보를 실제로 활용했는지를 따로 확인해야 한다. 특정 문장을 긴 문서 중간에 심어두고 모델이 찾아내는지 보는 needle-in-a-haystack 테스트가 이를 확인하는 대표적인 방법이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="70" y1="40" x2="70" y2="210" class="dg-line" stroke-width="1.5"/>
+<line x1="70" y1="210" x2="590" y2="210" class="dg-line" stroke-width="1.5"/>
+<path d="M100,70 Q220,205 330,195 Q440,205 560,70" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<circle cx="100" cy="70" r="6" class="dg-accent"/>
+<circle cx="330" cy="195" r="6" class="dg-dim"/>
+<circle cx="560" cy="70" r="6" class="dg-accent"/>
+<text x="100" y="55" text-anchor="middle" font-size="12">회상률 높음</text>
+<text x="330" y="230" text-anchor="middle" font-size="12" class="dg-dim">회상률 낮음</text>
+<text x="560" y="55" text-anchor="middle" font-size="12">회상률 높음</text>
+<text x="100" y="245" text-anchor="middle" font-size="12">시작</text>
+<text x="330" y="245" text-anchor="middle" font-size="12">중간</text>
+<text x="560" y="245" text-anchor="middle" font-size="12">끝</text>
+<text x="30" y="30" font-size="12" class="dg-dim">회상률</text>
+</svg>`,
+    diagramCaption: String.raw`정보가 프롬프트의 양 끝에 있을 때 회상률이 가장 높고 중간에 있을 때 가장 낮다.`,
+    example: String.raw`<p>정답 문서를 20개 청크 중 어디에 두느냐만 바꿔가며 정답률을 재보면 대략 이런 모양이 나온다.</p><p>맨 앞 1번째 청크에 두면 정답률 92%. 한가운데 10번째 청크에 두면 정답률 61%. 맨 뒤 20번째 청크에 두면 정답률 89%다.</p><p>검색은 매번 똑같이 성공했지만 정답 문서의 위치만 바뀌었을 뿐인데 정답률이 30%p 가까이 흔들린다.</p>`,
+    related: [{ label: "정보 배치 전략", slug: "context-placement-strategy" }, { label: "컨텍스트 순서 민감도", slug: "context-order-sensitivity" }],
+    sections: []
+  },
+  "context-placement-strategy": {
+    title: String.raw`정보 배치 전략: 중요한 건 앞이나 뒤에 놓기`,
+    domain: "llm",
+    subLabel: String.raw`긴 컨텍스트 배치`,
+    intuition: String.raw`<p>긴 컨텍스트를 쓰다 보면 자연스러운 질문이 생긴다. 모델이 정답을 못 찾는다면 어디에 놓아야 잘 찾을까. 답은 의외로 단순하다. 중요한 정보를 프롬프트의 시작 아니면 끝에 두면 된다.</p>
+<p>예를 들어 시스템 프롬프트에 핵심 지시사항을 먼저 명확히 적어두고 검색된 참고 자료는 중간에 배치한 뒤 실제 질문과 함께 핵심 지시를 프롬프트 맨 끝에 한 번 더 반복한다. 같은 정보를 두 번 넣는 게 아깝게 느껴질 수 있지만 회상률을 지키는 데는 이 반복이 값을 한다.</p>`,
+    explanation: String.raw`<p>이 전략은 모델의 주의 편향을 없애려는 시도가 아니라 그 편향을 그대로 이용하는 방식이다. lost-in-the-middle이 보여주듯 시작과 끝은 회상률이 높은 구간이므로 정말 중요한 정보를 그 구간에 배치해서 손해를 최소화한다. 반대로 배경 설명이나 참고용 자료처럼 놓쳐도 치명적이지 않은 내용은 중간에 채운다.</p>
+<p>실무에서는 여기에 재정렬(rerank) 단계를 더한다. 검색 결과를 관련도 순서 그대로 나열하면 가장 중요한 청크가 우연히 컨텍스트 한가운데에 놓일 수 있다. 그래서 관련도가 가장 높은 청크를 맨 앞이나 맨 끝으로 옮기고 나머지를 중간에 배치하는 재정렬을 거친 뒤에 프롬프트를 조립한다.</p>
+<p>다만 이 전략은 근본적인 해결책이 아니라 완화책이다. 정말 중요한 정보가 너무 많아서 시작과 끝 구간만으로는 다 담을 수 없다면 배치를 아무리 잘해도 일부는 여전히 중간에 놓일 수밖에 없다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="70" width="560" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="40" y="70" width="120" height="60" class="dg-accent"/>
+<rect x="160" y="70" width="320" height="60" class="dg-dim"/>
+<rect x="480" y="70" width="120" height="60" class="dg-accent"/>
+<text x="100" y="105" text-anchor="middle" font-size="12">핵심 지시</text>
+<text x="320" y="105" text-anchor="middle" font-size="12">참고 자료 다수</text>
+<text x="540" y="105" text-anchor="middle" font-size="12">질문·핵심 재강조</text>
+<text x="40" y="50" font-size="13">프롬프트 시작</text>
+<text x="600" y="50" text-anchor="end" font-size="13">프롬프트 끝</text>
+<text x="320" y="160" text-anchor="middle" font-size="12" class="dg-dim">회상률이 낮은 구간에는 덜 중요한 내용을 둔다</text>
+</svg>`,
+    diagramCaption: String.raw`핵심 지시와 질문은 양 끝에, 부수적인 참고 자료는 중간에 배치한다.`,
+    related: [{ label: "Lost-in-the-middle", slug: "lost-in-the-middle" }, { label: "컨텍스트 순서 민감도", slug: "context-order-sensitivity" }, { label: "컨텍스트 토큰 예산 관리", slug: "context-token-budget" }],
+    sections: []
+  },
+  "context-order-sensitivity": {
+    title: String.raw`컨텍스트 순서 민감도: 같은 정보라도 순서가 답을 바꾼다`,
+    domain: "llm",
+    subLabel: String.raw`긴 컨텍스트 배치`,
+    intuition: String.raw`<p>같은 few-shot 예시 세 개를 순서만 바꿔서 프롬프트에 넣었는데 모델 답변의 정확도가 눈에 띄게 달라진 경험이 있다면 우연이 아니다. LLM은 프롬프트에 담긴 정보의 순서에 생각보다 민감하다.</p>
+<p>이 특성은 lost-in-the-middle과 뿌리가 같다. 정보의 위치가 회상률에 영향을 준다면 여러 정보를 나열하는 순서 자체도 응답 품질에 영향을 줄 수밖에 없다. 다만 이번에는 하나의 정보를 어디 두느냐가 아니라 여러 정보 사이의 상대적 순서가 문제가 된다.</p>`,
+    explanation: String.raw`<p>순서가 결과를 바꾸는 이유는 두 가지로 나눌 수 있다. 하나는 앞서 본 위치 편향이다. 나열된 정보 중 어느 것이 시작 근처에 오고 어느 것이 끝 근처에 오느냐에 따라 각 정보가 받는 관심이 달라진다. 다른 하나는 순서가 암묵적인 맥락을 만든다는 점이다. 먼저 나온 문장이 이후 문장의 해석 방향을 정해버리는 경우가 있어서 같은 사실이라도 어떤 순서로 제시되느냐에 따라 모델이 그 사실들 사이의 관계를 다르게 추론한다.</p>
+<p>이 성질은 프로덕션 파이프라인에서 재현성 문제로 나타난다. 벡터 검색이 동점 점수를 처리하는 방식이나 데이터베이스가 결과를 반환하는 내부 순서가 요청마다 살짝 달라지면 같은 질문에 같은 문서를 검색하고도 실제로 프롬프트에 들어가는 순서가 흔들리고 답변 품질도 함께 흔들린다.</p>
+<p>대응 방법은 순서를 우연에 맡기지 않는 것이다. 관련도 점수 같은 명시적인 기준으로 정렬 규칙을 고정해두고 평가 단계에서는 같은 입력을 여러 순열로 바꿔가며 답변이 얼마나 흔들리는지 미리 측정해두는 편이 안전하다.</p>`,
+    related: [{ label: "Lost-in-the-middle", slug: "lost-in-the-middle" }, { label: "정보 배치 전략", slug: "context-placement-strategy" }],
+    sections: []
+  },
+  "role-separated-messages": {
+    title: String.raw`시스템/유저/어시스턴트 역할 분리: 지시와 정보를 구분해서 전달하기`,
+    domain: "llm",
+    subLabel: String.raw`컨텍스트 구성 기법`,
+    intuition: String.raw`<p>프롬프트를 그냥 하나의 긴 문자열로 뭉쳐서 보내면 지시문과 사용자가 입력한 데이터가 뒤섞인다. 사용자 입력 안에 우연히 지시문처럼 보이는 문장이 섞여 있으면 모델이 그걸 진짜 지시로 착각하는 일도 생긴다.</p>
+<p>시스템 유저 어시스턴트 세 역할로 메시지를 나눠서 보내면 이 혼선이 줄어든다. 지시사항은 시스템 메시지에 사용자의 질문이나 검색된 데이터는 유저 메시지에 이전 모델 응답은 어시스턴트 메시지에 담아서 이건 규칙이고 이건 처리할 대상이라는 구분을 모델에게 명확히 준다.</p>`,
+    explanation: String.raw`<p>채팅용으로 학습된 모델은 역할을 구분하는 특수 토큰이 채팅 템플릿에 미리 박혀 있다. 학습 과정에서 시스템 메시지의 내용은 대화 전반의 규칙으로, 유저 메시지의 내용은 그때그때 처리할 입력으로 취급하도록 반복 학습되기 때문에 같은 문장이라도 어느 역할에 담겨 있느냐에 따라 모델이 부여하는 우선순위가 달라진다.</p>
+<p>이 구분은 보안 측면에서도 도움이 된다. 지시와 데이터가 하나의 문자열로 섞여 있으면 사용자 입력에 프롬프트 인젝션 문장을 끼워넣기가 쉬워진다. 역할을 나눠두면 유저 메시지에 지시문처럼 보이는 문장이 들어와도 모델이 그것을 시스템 메시지보다 낮은 우선순위로 다루도록 유도할 수 있다. 엔지니어링 관점에서도 시스템 메시지는 그대로 재사용하고 유저 메시지만 요청마다 갈아끼우는 식으로 프롬프트 조립이 단순해진다는 이점이 있다.</p>
+<p>다만 역할 분리가 완벽한 방화벽은 아니다. 경계는 학습으로 형성된 경향일 뿐 하드웨어적으로 차단된 샌드박스가 아니라서 정교하게 짜인 인젝션 문장은 여전히 이 구분을 뚫고 지시로 오인될 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="20" width="480" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="60" y="50" font-size="13">시스템: 규칙과 역할 지시</text>
+<rect x="40" y="90" width="480" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="120" font-size="13">유저: 질문과 데이터</text>
+<rect x="40" y="160" width="480" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="60" y="190" font-size="13">어시스턴트: 모델의 응답</text>
+</svg>`,
+    diagramCaption: String.raw`역할마다 메시지를 나누면 규칙과 처리 대상이 뒤섞이지 않는다.`,
+    related: [{ label: "동적 컨텍스트 조립", slug: "dynamic-context-assembly" }, { label: "컨텍스트 토큰 예산 관리", slug: "context-token-budget" }],
+    sections: []
+  },
+  "dynamic-context-assembly": {
+    title: String.raw`동적 컨텍스트 조립: 요청마다 필요한 조각을 새로 모으기`,
+    domain: "llm",
+    subLabel: String.raw`컨텍스트 구성 기법`,
+    intuition: String.raw`<p>실제 서비스에서 쓰는 프롬프트는 미리 다 써둔 고정된 문장이 아니다. 사용자가 질문을 보낼 때마다 검색 결과와 도구 실행 결과와 최근 대화 몇 턴을 그때그때 모아서 하나의 프롬프트로 조립한 다음 모델에 보낸다.</p>
+<p>이 조립 과정 자체가 하나의 파이프라인이다. 어떤 조각을 넣고 뺄지 어느 순서로 배치할지 너무 길면 무엇을 잘라낼지를 매 요청마다 코드가 결정한다. 그래서 같은 시스템이라도 사용자마다 심지어 같은 사용자의 같은 질문이라도 대화가 길어질수록 실제로 모델에 들어가는 프롬프트 내용이 계속 달라진다.</p>`,
+    explanation: String.raw`<p>조립 파이프라인은 보통 몇 단계로 나뉜다. 먼저 질문과 관련된 문서를 검색하고 필요하면 계산기나 외부 API 같은 도구를 호출해 결과를 얻는다. 여기에 최근 대화 이력을 가져오고 앞서 정한 역할 구분과 배치 규칙에 따라 이 조각들을 하나의 메시지 묶음으로 합친다.</p>
+<p>이 과정이 필요한 이유는 프롬프트에 들어갈 정보 상당수가 요청 시점이 되기 전까지는 존재하지 않기 때문이다. 도구 실행 결과나 방금 사용자가 보낸 메시지는 미리 프롬프트에 박아둘 수 없다. 정적인 프롬프트로는 이런 실시간 정보를 담을 방법이 없으므로 매 요청마다 다시 조립하는 절차가 필수가 된다.</p>
+<p>이 구조는 디버깅 방식도 바꾼다. 답변이 이상하다는 문제 제보를 받으면 시스템 프롬프트만 봐서는 원인을 알 수 없다. 그 요청 순간에 실제로 조립됐던 프롬프트 전체를 그대로 로그로 남겨두어야 나중에 재현하고 원인을 찾을 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="50" text-anchor="middle" font-size="12">검색 결과</text>
+<rect x="20" y="90" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="120" text-anchor="middle" font-size="12">도구 실행 결과</text>
+<rect x="20" y="160" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="190" text-anchor="middle" font-size="12">최근 대화 이력</text>
+<line x1="170" y1="45" x2="330" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="115" x2="330" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="185" x2="330" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="330" y="70" width="240" height="90" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="450" y="110" text-anchor="middle" font-size="13">이번 요청에서</text>
+<text x="450" y="128" text-anchor="middle" font-size="13">새로 조립된 프롬프트</text>
+</svg>`,
+    diagramCaption: String.raw`매 요청마다 서로 다른 조각을 모아 그때그때 프롬프트를 새로 만든다.`,
+    related: [{ label: "시스템/유저/어시스턴트 역할 분리", slug: "role-separated-messages" }, { label: "컨텍스트 토큰 예산 관리", slug: "context-token-budget" }, { label: "정보 배치 전략", slug: "context-placement-strategy" }],
+    sections: []
+  },
+  "context-token-budget": {
+    title: String.raw`컨텍스트 토큰 예산 관리: 한정된 토큰을 어디에 나눠 쓸까`,
+    domain: "llm",
+    subLabel: String.raw`컨텍스트 구성 기법`,
+    intuition: String.raw`<p>모델이 아무리 긴 컨텍스트를 지원해도 무한하지는 않다. 시스템 프롬프트와 대화 이력과 검색 결과를 다 합쳤는데 모델의 최대 토큰 수를 넘기면 요청 자체가 거부되거나 오래된 내용부터 잘려나간다.</p>
+<p>그래서 각 구성요소에 토큰을 얼마나 배분할지 미리 정해둬야 한다. 시스템 프롬프트에 몇 토큰 대화 이력에 몇 토큰 검색 결과에 몇 토큰 그리고 모델이 답변을 쓸 공간까지 남겨두고 나머지를 나눠 쓰는 식이다. 예산을 안 짜두면 검색 결과를 욕심껏 채워넣다가 정작 모델이 답을 쓸 자리가 모자라는 상황이 벌어진다.</p>`,
+    explanation: String.raw`<p>토큰 예산은 대략 $T_{\text{system}} + T_{\text{history}} + T_{\text{retrieval}} + T_{\text{output}} \le T_{\text{max}}$ 형태의 부등식으로 생각할 수 있다. 요청을 보내기 전에 토크나이저로 각 조각의 토큰 수를 미리 세어보고 이 부등식을 넘지 않도록 조립 단계에서 조각을 줄이거나 자른다.</p>
+<p>예산을 안 짜면 어디부터 잘릴지 예측할 수 없다는 게 문제다. API가 알아서 자를 경우 흔히 오래된 대화 턴부터 잘리는데 이게 항상 안전한 선택은 아니다. 대화 초반에 사용자가 밝힌 중요한 전제가 잘려나가면 이후 답변이 그 전제를 잊어버린 것처럼 흘러갈 수 있다. 그래서 이력은 요약으로 압축하고 검색 결과는 관련도 상위 몇 개로만 자르는 식으로 어떤 부분을 먼저 줄일지 직접 정하는 편이 낫다.</p>
+<p>토큰 예산은 성능 문제만이 아니라 비용 문제이기도 하다. 대부분의 API는 토큰 수만큼 과금하므로 예산을 관리하는 일은 곧 요청 하나의 비용 상한을 관리하는 일과 같다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="30" font-size="13">모델의 최대 토큰 한도</text>
+<rect x="40" y="60" width="560" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="40" y="60" width="35" height="50" class="dg-dim"/>
+<rect x="75" y="60" width="105" height="50" class="dg-dim"/>
+<rect x="180" y="60" width="280" height="50" class="dg-accent"/>
+<rect x="460" y="60" width="140" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="58" y="140" text-anchor="middle" font-size="11">시스템</text>
+<text x="128" y="140" text-anchor="middle" font-size="11">대화 이력</text>
+<text x="320" y="140" text-anchor="middle" font-size="11">검색 결과</text>
+<text x="530" y="140" text-anchor="middle" font-size="11">출력 여유분</text>
+</svg>`,
+    diagramCaption: String.raw`한정된 토큰 한도 안에서 각 구성요소가 쓸 몫을 미리 정해둔다.`,
+    example: String.raw`<p>모델의 최대 토큰이 8000이라고 하면 예산을 이렇게 나눌 수 있다.</p><p>시스템 프롬프트 500토큰. 대화 이력 1500토큰. 검색 결과 4000토큰. 나머지 2000토큰은 모델의 답변 출력용으로 비워둔다.</p><p>검색 결과를 5000토큰까지 채우고 싶어도 출력 여유분을 지키려면 상위 청크 몇 개만 남기고 나머지는 잘라내야 한다.</p>`,
+    related: [{ label: "동적 컨텍스트 조립", slug: "dynamic-context-assembly" }, { label: "정보 배치 전략", slug: "context-placement-strategy" }],
+    sections: []
+  },
+  "json-mode-llm": {
+    title: String.raw`JSON mode: 디코딩 단계에서 유효한 JSON만 나오게 강제하기`,
+    domain: "llm",
+    subLabel: String.raw`출력 형식 강제`,
+    intuition: String.raw`<p>프롬프트에 반드시 JSON으로만 답하라고 아무리 강조해도 가끔 모델이 설명 한 줄을 앞에 붙이거나 따옴표를 하나 빼먹어서 JSON.parse가 깨지는 응답을 준다. 프롬프트로 부탁하는 방식은 모델이 그 약속을 지키기를 바라는 것일 뿐 강제하는 게 아니기 때문이다.</p>
+<p>JSON mode는 이 문제를 프롬프트가 아니라 디코딩 단계에서 해결한다. 모델이 다음 토큰을 고를 때 애초에 유효한 JSON 문법을 벗어나는 토큰은 후보에서 제외해버린다. 그래서 결과물이 통째로 파싱 가능한 JSON이라는 사실이 확률이 아니라 구조적으로 보장된다.</p>`,
+    explanation: String.raw`<p>근본 원인은 LLM의 출력이 결국 토큰에 대한 확률분포라는 데 있다. 프롬프트 지시는 이 분포를 원하는 방향으로 밀어줄 뿐 특정 토큰을 완전히 배제하지는 못한다. 생성이 길어질수록 표본추출 과정에서 분포를 벗어난 토큰이 뽑힐 여지가 쌓이고 특히 온도가 높거나 문장이 길어지면 모델이 중간에 설명을 덧붙이는 식으로 궤도를 이탈하기 쉽다.</p>
+<p>JSON mode는 매 생성 단계마다 지금까지 만든 부분 문자열이 여전히 유효한 JSON으로 이어질 수 있는지를 검사한다. 이어질 수 없게 만드는 토큰은 확률을 0으로 만들어 후보에서 지우고 살아남은 토큰들 사이에서만 표본을 뽑는다. 이 검사를 문장이 끝날 때까지 매 토큰마다 반복하기 때문에 완성된 출력은 항상 문법적으로 완결된 JSON이 된다.</p>
+<p>다만 JSON mode가 보장하는 건 문법적 유효성이지 의미적 정확성이 아니다. 괄호와 따옴표는 항상 맞더라도 필드 이름이 틀리거나 값의 타입이 어긋나는 경우는 막지 못한다. 그래서 실무에서는 이 위에 함수 스키마 강제나 타입 검증 파싱 같은 검사를 한 겹 더 얹는 경우가 많다.</p>`,
+    related: [{ label: "함수 스키마 강제", slug: "function-schema-enforcement" }, { label: "타입 검증 파싱", slug: "typed-output-parsing" }, { label: "Grammar-constrained Decoding", slug: "grammar-constrained-decoding" }],
+    sections: []
+  },
+  "function-schema-enforcement": {
+    title: String.raw`함수 스키마 강제: 인자를 미리 정한 형식에 맞춰 뽑아내기`,
+    domain: "llm",
+    subLabel: String.raw`출력 형식 강제`,
+    intuition: String.raw`<p>모델에게 함수를 호출하게 시킬 때 정작 문제는 모델이 함수를 부를지 말지가 아니라 인자를 어떤 형식으로 채우느냐다. 목적지를 서울이라고 쓸지 Seoul이라고 쓸지 날짜를 2026-07-20이라고 쓸지 7월 20일이라고 쓸지 제각각이면 그 인자를 받는 코드가 매번 다르게 파싱해야 한다.</p>
+<p>함수 스키마 강제는 함수마다 인자의 이름과 타입과 형식을 JSON 스키마로 미리 정의해두고 모델이 그 스키마에 맞는 값만 채우도록 디코딩을 제한하는 방식이다. 목적지는 반드시 문자열 날짜는 반드시 정해진 날짜 형식이라는 규칙을 벗어날 수 없게 만든다.</p>`,
+    explanation: String.raw`<p>메커니즘은 JSON mode의 확장판에 가깝다. JSON mode가 유효한 JSON 문법 전체를 허용한다면 함수 스키마 강제는 그중에서도 특정 스키마가 정한 필드 이름 타입 필수 여부 심지어 값의 후보 목록까지 만족하는 좁은 형태만 허용한다. 스키마 자체가 하나의 문법으로 컴파일되어 디코딩 단계에서 그 문법을 벗어나는 토큰을 걸러낸다.</p>
+<p>이 강제가 없으면 에이전트 프레임워크에서 여러 함수를 동시에 다룰 때 형식이 들쭉날쭉해서 실행 코드가 자주 깨진다. 숫자가 들어와야 할 자리에 문자열이 오거나 필수 필드가 빠지는 식의 오류가 쌓이면 결국 개발자가 정규식으로 후처리하는 임시방편에 의존하게 되는데 이는 원래 스키마 강제가 없애려던 불안정함을 코드 쪽으로 옮긴 것에 불과하다.</p>
+<p>스키마를 강제한다는 발상 자체는 뒤에서 볼 grammar-constrained decoding과 같은 원리를 쓴다. JSON 스키마 하나가 곧 하나의 문법 규칙이고 함수 스키마 강제는 그 문법을 함수 호출이라는 특정 목적에 맞춰 적용한 사례라고 볼 수 있다.</p>`,
+    example: String.raw`<p>항공권 예약 함수를 이런 스키마로 정의해두면 모델은 이 형태를 벗어난 값을 낼 수 없다.</p><p>book_flight 함수의 인자: destination은 문자열, date는 YYYY-MM-DD 형식의 문자열, passengers는 정수.</p><p>사용자가 어떤 문장으로 요청을 표현했든 실제로 채워지는 인자는 항상 이 세 필드와 정해진 타입을 따른다.</p>`,
+    related: [{ label: "JSON mode", slug: "json-mode-llm" }, { label: "타입 검증 파싱", slug: "typed-output-parsing" }],
+    sections: []
+  },
+  "typed-output-parsing": {
+    title: String.raw`타입 검증 파싱: 나온 출력을 타입으로 검증하고 실패하면 다시 시키기`,
+    domain: "llm",
+    subLabel: String.raw`출력 형식 강제`,
+    intuition: String.raw`<p>JSON mode나 함수 스키마 강제를 지원하지 않는 모델을 써야 할 때도 있고 지원하더라도 완벽하지는 않다. 이럴 때 마지막 안전장치로 쓰는 방법이 타입 검증 파싱이다. 모델이 뱉은 출력을 미리 정의한 타입 스키마로 파싱해보고 실패하면 그 실패 이유를 모델에게 알려주고 재시도를 시킨다.</p>
+<p>예를 들어 나이 필드에 문자열 스물다섯이 들어오면 파싱이 실패하고 나이는 정수여야 한다는 오류 메시지와 함께 모델에게 다시 요청한다. 몇 번 반복하다 보면 결국 타입에 맞는 값이 나오거나 정해진 횟수 안에 실패로 처리하고 포기한다.</p>`,
+    explanation: String.raw`<p>구현은 애플리케이션 코드 쪽에서 이루어진다. Pydantic이나 Zod 같은 타입 스키마 라이브러리로 모델 출력을 파싱하고 검증 오류가 나면 그 오류 메시지를 그대로 다음 프롬프트에 붙여서 재요청하는 루프를 정해진 횟수만큼 돈다.</p>
+<p>JSON mode나 함수 스키마 강제가 이미 있는데도 이 검증이 필요한 이유는 디코딩 단계의 제약이 잡아내지 못하는 오류가 있기 때문이다. 문법과 타입은 맞지만 나이가 음수이거나 시작일이 종료일보다 늦는 것처럼 필드 사이의 관계나 값의 범위를 어기는 경우는 문법 검사만으로는 걸러지지 않는다. 또한 이 방식은 모델이 무엇이든 클라이언트 쪽 코드만으로 동작하므로 디코딩 제약을 지원하지 않는 모델에도 그대로 쓸 수 있다는 장점이 있다.</p>
+<p>다만 재시도는 공짜가 아니다. 실패할 때마다 지연시간과 토큰 비용이 추가로 든다. 그래서 재시도 횟수에 상한을 두고 상한을 넘기면 기본값을 쓰거나 오류로 처리하는 마무리 절차를 함께 설계해야 한다.</p>`,
+    related: [{ label: "함수 스키마 강제", slug: "function-schema-enforcement" }, { label: "JSON mode", slug: "json-mode-llm" }],
+    sections: []
+  },
+  "grammar-constrained-decoding": {
+    title: String.raw`Grammar-constrained Decoding: 문법에 맞는 토큰만 고르게 하기`,
+    domain: "llm",
+    subLabel: String.raw`문법 제약 디코딩`,
+    intuition: String.raw`<p>JSON mode는 이름 그대로 JSON에만 통한다. 그런데 실제로 강제하고 싶은 형식은 SQL 쿼리일 수도 있고 사내에서 쓰는 커스텀 DSL일 수도 있고 체스 기보 표기법일 수도 있다. JSON 문법 하나만 아는 디코더로는 이런 형식을 강제할 수 없다.</p>
+<p>Grammar-constrained decoding은 문법 자체를 컨텍스트-프리 문법(CFG)으로 정의하게 해준다. JSON도 결국 하나의 CFG일 뿐이므로 이 방식으로 다룰 수 있는 형식의 범위는 JSON보다 훨씬 넓어진다. 원하는 형식의 문법 규칙만 정의하면 그 규칙에 맞는 토큰만 디코딩 과정에서 살아남는다.</p>`,
+    explanation: String.raw`<p>구현은 생성과 동시에 파서 상태를 함께 유지하는 방식으로 이루어진다. 토큰을 하나 생성할 때마다 지금까지의 출력이 정의한 CFG 안에서 어디까지 파싱됐는지를 갱신하고 그 상태에서 문법적으로 다음에 올 수 있는 토큰 집합만 남긴 뒤 나머지의 확률을 0으로 만든다. JSON mode는 이 기법을 JSON이라는 하나의 고정된 문법에만 적용한 특수한 사례라고 볼 수 있다.</p>
+<p>JSON mode와 다른 점은 문법을 하드코딩하지 않고 임의로 정의할 수 있다는 데 있다. 중첩 괄호가 정확히 짝을 맞춰야 하는 구조나 재귀적으로 깊어질 수 있는 구조처럼 임의의 형식 규칙을 CFG로 표현하기만 하면 그 형식을 그대로 강제할 수 있다.</p>
+<p>대신 비용이 따른다. CFG는 중첩과 재귀를 표현할 수 있어야 하므로 파서가 스택 같은 상태를 들고 다니며 매 토큰마다 파싱 규칙을 다시 적용해야 한다. 뒤에서 볼 정규식 기반 제약이 상태 하나를 참조하는 것만으로 다음 후보를 정할 수 있는 것과 달리 CFG 제약은 이 스택 연산 때문에 토큰당 계산량이 더 크다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="24" font-size="12" class="dg-dim">모델이 제안한 다음 토큰 후보</text>
+<rect x="20" y="40" width="100" height="34" class="dg-dim"/><text x="70" y="62" text-anchor="middle" font-size="12">"apple</text>
+<rect x="20" y="84" width="100" height="34" class="dg-dim"/><text x="70" y="106" text-anchor="middle" font-size="12">42</text>
+<rect x="20" y="128" width="100" height="34" class="dg-dim"/><text x="70" y="150" text-anchor="middle" font-size="12">{</text>
+<rect x="20" y="172" width="100" height="34" class="dg-dim"/><text x="70" y="194" text-anchor="middle" font-size="12">,</text>
+<rect x="240" y="70" width="160" height="100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="112" text-anchor="middle" font-size="12">문법 규칙에</text>
+<text x="320" y="130" text-anchor="middle" font-size="12">맞는 토큰만 통과</text>
+<line x1="120" y1="57" x2="240" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="120" y1="101" x2="240" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="120" y1="145" x2="240" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="120" y1="189" x2="240" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="400" y1="120" x2="480" y2="120" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="480" y="100" width="120" height="40" class="dg-accent"/>
+<text x="540" y="125" text-anchor="middle" font-size="13">"apple</text>
+<text x="540" y="165" text-anchor="middle" font-size="11" class="dg-dim">다음 토큰으로 채택</text>
+</svg>`,
+    diagramCaption: String.raw`문법 규칙과 맞지 않는 토큰은 확률이 0이 되어 후보에서 사라진다.`,
+    related: [{ label: "JSON mode", slug: "json-mode-llm" }, { label: "정규식/유한상태 제약", slug: "regex-fsm-constraint" }, { label: "구조화 출력의 트레이드오프", slug: "structured-output-tradeoff" }],
+    sections: []
+  },
+  "regex-fsm-constraint": {
+    title: String.raw`정규식/유한상태 제약: 정규식을 오토마타로 바꿔 토큰을 거르기`,
+    domain: "llm",
+    subLabel: String.raw`문법 제약 디코딩`,
+    intuition: String.raw`<p>전화번호나 상품 코드처럼 정해진 패턴만 나오면 되는 경우에는 문법 전체를 CFG로 설계할 필요가 없다. 정규식 하나면 충분한 상황이다. 다만 정규식은 원래 완성된 문자열을 검사하는 도구지 토큰을 하나씩 만들어가는 도중에 쓰는 도구가 아니다.</p>
+<p>regex/FSM 제약은 정규식을 유한 오토마타로 미리 컴파일해서 이 문제를 푼다. 오토마타의 각 상태는 지금까지 생성한 문자열이 정규식의 어디쯤 와 있는지를 나타내고 그 상태에서 다음에 허용되는 문자 집합이 정해진다. 토큰을 하나 생성할 때마다 오토마타 상태를 한 칸 옮기고 그 상태가 허용하는 토큰만 후보로 남긴다.</p>`,
+    explanation: String.raw`<p>정규식을 오토마타로 바꾸는 컴파일 작업은 생성이 시작되기 전에 딱 한 번만 이루어진다. 생성 도중에는 매 토큰마다 지금 상태에서 정해진 전이 테이블을 조회해 다음 상태와 허용 토큰 집합을 $O(1)$에 가까운 비용으로 얻는다. 새로 파싱을 다시 수행할 필요가 없다.</p>
+<p>이 방식이 CFG 기반 문법 제약 디코딩보다 가벼운 이유는 정규언어가 애초에 중첩이나 재귀를 표현하지 못하기 때문이다. 상태는 미리 정해둔 유한한 집합 안에서만 움직이고 그 상태를 기억하는 데 스택 같은 별도 자료구조가 필요 없다. 반면 CFG는 괄호처럼 임의 깊이로 중첩되는 구조를 다뤄야 해서 지금까지 열려 있는 구조를 기억하는 스택을 매 단계 갱신해야 한다. 이 차이가 토큰당 계산 비용의 차이로 이어진다.</p>
+<p>대신 표현할 수 있는 형식의 범위는 좁다. 전화번호나 코드처럼 평평한 패턴에는 잘 맞지만 괄호 짝이나 들여쓰기처럼 구조가 계층적으로 깊어지는 형식은 정규언어로 표현할 수 없어서 결국 CFG 기반의 grammar-constrained decoding으로 넘어가야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="100" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="105" text-anchor="middle" font-size="12">S0</text>
+<circle cx="230" cy="100" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="230" y="105" text-anchor="middle" font-size="12">S1</text>
+<circle cx="400" cy="100" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="400" y="105" text-anchor="middle" font-size="12">S2</text>
+<circle cx="570" cy="100" r="26" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<text x="570" y="105" text-anchor="middle" font-size="12">수락</text>
+<line x1="86" y1="100" x2="204" y2="100" class="dg-line" stroke-width="1.5"/>
+<text x="145" y="90" text-anchor="middle" font-size="11">숫자</text>
+<line x1="256" y1="100" x2="374" y2="100" class="dg-line" stroke-width="1.5"/>
+<text x="315" y="90" text-anchor="middle" font-size="11">기호</text>
+<line x1="426" y1="100" x2="544" y2="100" class="dg-line" stroke-width="1.5"/>
+<text x="485" y="90" text-anchor="middle" font-size="11">숫자</text>
+<text x="60" y="150" text-anchor="middle" font-size="11" class="dg-dim">시작 상태</text>
+<text x="570" y="150" text-anchor="middle" font-size="11" class="dg-dim">패턴 완성</text>
+</svg>`,
+    diagramCaption: String.raw`정규식이 만든 오토마타의 각 상태가 다음에 허용되는 토큰 집합을 정해준다.`,
+    related: [{ label: "Grammar-constrained Decoding", slug: "grammar-constrained-decoding" }, { label: "구조화 출력의 트레이드오프", slug: "structured-output-tradeoff" }],
+    sections: []
+  },
+  "structured-output-tradeoff": {
+    title: String.raw`구조화 출력의 트레이드오프: 형식을 조이면 표현력과 속도가 준다`,
+    domain: "llm",
+    subLabel: String.raw`문법 제약 디코딩`,
+    intuition: String.raw`<p>형식을 강하게 제약하면 좋은 점만 있을 것 같지만 그렇지 않다. 스키마를 빡빡하게 잠글수록 형식 오류는 거의 사라지지만 모델이 원래 하고 싶었을 자연스러운 답변의 폭이 좁아지고 매 토큰마다 제약을 검사하는 비용 때문에 응답 속도도 함께 느려진다.</p>
+<p>예를 들어 자유 서술형으로 두면 자연스럽게 설명했을 예외 상황도 딱딱한 스키마 안에서는 억지로 끼워맞추거나 아예 표현하지 못하는 경우가 생긴다. 제약과 자유 사이 어느 지점을 고를지는 그 작업이 형식을 얼마나 엄격하게 요구하는지에 달려 있다.</p>`,
+    explanation: String.raw`<p>속도 쪽 비용은 계산 구조에서 나온다. 문법 제약 디코딩은 매 토큰마다 지금 상태에서 허용되는 토큰 집합을 다시 계산해야 하고 문법이 복잡할수록 이 계산도 무거워진다. 정규식 기반 제약처럼 상태 전이 하나만 조회하면 되는 경우는 부담이 작지만 CFG처럼 스택을 갱신해야 하는 경우는 출력이 길어질수록 누적되는 오버헤드도 커진다.</p>
+<p>표현력 쪽 비용은 스키마가 애초에 상상하지 못한 상황에서 드러난다. 신뢰도를 상 중 하 세 단계 열거형으로만 받도록 강제해두면 확신이 서지 않는 이유를 함께 설명하고 싶어도 그럴 자리가 없다. 스키마가 현실의 모든 경우를 미리 다 담지 못하면 모델은 억지로 가장 가까운 값을 고르거나 스키마 자체를 어기려다 실패하는 쪽으로 몰린다.</p>
+<p>그래서 실무에서는 다운스트림 코드가 실제로 요구하는 만큼만 제약을 걸고 나머지는 열어두는 편이 낫다. 자유 서술을 담을 수 있는 선택적 필드 하나를 스키마에 남겨두거나 아주 엄격한 문법 제약 대신 타입 검증 파싱과 재시도 조합으로 느슨하게 걸러내는 방법도 같은 균형을 잡는 방식이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="590" y2="200" class="dg-line" stroke-width="1.5"/>
+<path d="M80,50 C220,70 400,140 570,180" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<path d="M80,90 C220,120 400,160 570,195" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="210" y="68" font-size="11" class="dg-accent">형식 오류율</text>
+<text x="210" y="135" font-size="11">표현력·속도</text>
+<text x="325" y="225" text-anchor="middle" font-size="12" class="dg-dim">제약 강도 (약함 → 강함)</text>
+</svg>`,
+    diagramCaption: String.raw`제약이 강해질수록 형식 오류율은 떨어지지만 표현력과 속도도 함께 떨어진다.`,
+    related: [{ label: "Grammar-constrained Decoding", slug: "grammar-constrained-decoding" }, { label: "정규식/유한상태 제약", slug: "regex-fsm-constraint" }],
+    sections: []
+  },
+  "vision-language-model": {
+    title: String.raw`Vision-Language Model: 이미지를 보고 텍스트로 대답하기`,
+    domain: "llm",
+    subLabel: String.raw`비전-언어 모델`,
+    intuition: String.raw`<p>언어모델은 원래 텍스트만 압니다. 문장을 토큰으로 쪼개고 그 토큰들 사이의 관계만 학습했을 뿐 픽셀이 무엇을 뜻하는지는 배운 적이 없습니다. 그런데 사진을 보여주고 무엇이 찍혀 있는지 설명해달라고 하면 모델은 먼저 그 사진을 자신이 이해하는 형태로 바꿔야 합니다.</p>
+<p>Vision-Language Model은 이미지를 읽는 부분과 문장을 만드는 부분을 하나로 이어 붙인 구조입니다. 이미지를 보는 눈과 그 내용을 말로 풀어내는 입을 따로 만들어 연결한 셈입니다.</p>`,
+    explanation: String.raw`<p>VLM은 크게 세 부분으로 이루어집니다. 이미지를 특징 벡터로 바꾸는 이미지 인코더 그 벡터를 언어모델이 다루는 임베딩 공간으로 옮기는 연결부 그리고 텍스트를 생성하는 언어모델입니다. 이미지 인코더는 흔히 ViT 계열이고 언어모델은 이미 텍스트로 사전학습된 대규모 모델을 그대로 가져다 씁니다. 텍스트만 다루는 모델은 애초에 이미지를 입력으로 받는 통로 자체가 없기 때문에 이 연결부가 없으면 이미지에 대해 아무것도 할 수 없습니다.</p>
+<p>연결부의 역할은 이미지 인코더가 만든 특징을 언어모델의 토큰 임베딩과 같은 차원 같은 성격의 벡터로 바꿔주는 것입니다. 단순한 선형투영 한 층일 수도 있고 여러 이미지 토큰을 더 적은 수의 벡터로 압축하는 리샘플러일 수도 있습니다. 이렇게 만들어진 이미지 벡터들은 이후 언어모델의 시퀀스에 이미지 토큰으로 섞여 들어가거나 별도의 어텐션 경로로 주입됩니다. 두 방식의 구체적인 차이는 cross-attention-fusion-vlm 항목에서 다룹니다.</p>
+<p>학습은 보통 단계적으로 진행됩니다. 이미지 인코더와 언어모델 각각은 이미 방대한 데이터로 사전학습되어 있으므로 처음부터 다시 학습시키지 않습니다. 대신 연결부를 이미지 캡션 데이터로 먼저 맞추고 이후 이미지와 대화가 섞인 지시문 데이터로 전체를 함께 미세조정합니다. 이미지 인코더 자체는 CLIP류 정렬 사전학습으로 이미 텍스트와 어느 정도 맞춰진 상태에서 시작하는 경우가 많아 이 단계가 훨씬 빨리 수렴합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="60" width="90" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="65" y="95" font-size="13" text-anchor="middle">이미지</text>
+<line x1="110" y1="90" x2="145" y2="90" class="dg-line" stroke-width="1.5"/>
+<polygon points="145,90 137,85 137,95" class="dg-line"/>
+<rect x="150" y="55" width="120" height="70" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="210" y="85" font-size="12" text-anchor="middle">이미지</text>
+<text x="210" y="102" font-size="12" text-anchor="middle">인코더</text>
+<line x1="270" y1="90" x2="315" y2="90" class="dg-line" stroke-width="1.5"/>
+<polygon points="315,90 307,85 307,95" class="dg-line"/>
+<text x="292" y="76" font-size="11" class="dg-dim" text-anchor="middle">투영</text>
+<rect x="320" y="20" width="170" height="150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="405" y="42" font-size="13" text-anchor="middle">언어모델</text>
+<circle cx="365" cy="90" r="7" class="dg-accent"/>
+<circle cx="405" cy="90" r="7" class="dg-accent"/>
+<circle cx="445" cy="90" r="7" class="dg-accent"/>
+<text x="405" y="122" font-size="11" class="dg-dim" text-anchor="middle">이미지 토큰 + 텍스트 토큰</text>
+<rect x="150" y="150" width="130" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="215" y="174" font-size="12" text-anchor="middle">텍스트 프롬프트</text>
+<line x1="215" y1="150" x2="365" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="490" y1="90" x2="535" y2="90" class="dg-line" stroke-width="1.5"/>
+<polygon points="535,90 527,85 527,95" class="dg-line"/>
+<rect x="540" y="60" width="85" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="582" y="86" font-size="12" text-anchor="middle">텍스트</text>
+<text x="582" y="102" font-size="12" text-anchor="middle">응답</text>
+</svg>`,
+    diagramCaption: String.raw`이미지 인코더가 뽑은 특징을 투영해 언어모델의 토큰 자리에 텍스트 프롬프트와 함께 넣는다.`,
+    related: [{ label: "CLIP류 정렬 사전학습", slug: "clip-style-alignment-pretraining" }, { label: "Cross-attention 결합", slug: "cross-attention-fusion-vlm" }, { label: "패치 토큰화", slug: "patch-tokenization" }],
+    sections: []
+  },
+  "clip-style-alignment-pretraining": {
+    title: String.raw`CLIP류 정렬 사전학습: 이미지와 텍스트를 같은 공간에 나란히 놓기`,
+    domain: "llm",
+    subLabel: String.raw`비전-언어 모델`,
+    intuition: String.raw`<p>이미지 하나와 그 이미지를 설명하는 문장 하나는 서로 다른 형태의 데이터입니다. 픽셀 배열과 단어 나열을 그냥 비교할 방법은 없습니다. 그런데 같은 대상을 가리키는 이미지와 문장이라면 어떤 공통된 좌표계 위에서는 서로 가까운 위치에 놓일 수 있어야 합니다.</p>
+<p>CLIP류 정렬 사전학습은 그 공통 좌표계를 학습으로 직접 만들어냅니다. 이미지와 그 이미지의 캡션을 같은 벡터 공간에 넣고 짝이 맞는 이미지와 문장은 가깝게 짝이 안 맞는 조합은 멀게 밀어내는 방식으로 학습합니다.</p>`,
+    explanation: String.raw`<p>구조는 두 개의 인코더로 이루어집니다. 이미지 인코더는 이미지를 벡터 하나로 압축하고 텍스트 인코더는 캡션 문장을 같은 차원의 벡터 하나로 압축합니다. 학습 배치 안에 이미지와 캡션 쌍이 $N$개 있다면 이미지 임베딩과 텍스트 임베딩 사이의 코사인 유사도를 모든 조합에 대해 계산해 $N \times N$ 유사도 행렬을 만듭니다. 정답 짝은 대각선 위치이고 나머지는 오답입니다.</p>
+<p>손실함수는 이 대각선 위치의 유사도를 키우고 나머지 위치의 유사도를 낮추는 대조학습 형태입니다. 온도 파라미터 $\tau$로 스케일을 조정한 뒤 각 이미지에 대해 정답 텍스트를 고르는 분류 문제처럼 소프트맥스 교차엔트로피를 적용합니다.</p>
+$$\mathcal{L} = -\frac{1}{N}\sum_{i=1}^{N} \log \frac{\exp(\mathrm{sim}(I_i, T_i)/\tau)}{\sum_{j=1}^{N}\exp(\mathrm{sim}(I_i, T_j)/\tau)}$$
+<p>같은 식을 텍스트 기준으로도 계산해 두 방향의 손실을 더하면 이미지에서 텍스트로 가는 방향과 텍스트에서 이미지로 가는 방향이 동시에 정렬됩니다.</p>
+<p>이 방식이 강력한 이유는 라벨링 비용에 있습니다. 분류 모델을 학습하려면 사람이 정해둔 클래스 목록과 그 클래스에 맞춰 라벨을 붙인 이미지가 있어야 합니다. CLIP류 모델은 대신 인터넷에 이미 널려 있는 이미지와 그 옆에 붙은 설명 문장을 그대로 학습 데이터로 씁니다. 새 클래스 목록을 사람이 미리 정하지 않아도 학습이 끝난 뒤 원하는 클래스 이름을 문장으로 적어 텍스트 인코더에 넣고 이미지 임베딩과 유사도만 비교하면 그 클래스에 대한 분류가 바로 가능합니다. 이것이 제로샷 분류이고 다운스트림 작업마다 새로 라벨링된 데이터셋을 모으지 않아도 되는 이유입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="95" width="140" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="110" y="124" font-size="12" text-anchor="middle">이미지 인코더</text>
+<line x1="180" y1="120" x2="253" y2="120" class="dg-line" stroke-width="1.5"/>
+<polygon points="253,120 245,115 245,125" class="dg-line"/>
+<text x="245" y="85" font-size="11" text-anchor="end">I1</text>
+<text x="245" y="125" font-size="11" text-anchor="end">I2</text>
+<text x="245" y="165" font-size="11" text-anchor="end">I3</text>
+<text x="280" y="52" font-size="11" text-anchor="middle">T1</text>
+<text x="320" y="52" font-size="11" text-anchor="middle">T2</text>
+<text x="360" y="52" font-size="11" text-anchor="middle">T3</text>
+<rect x="260" y="60" width="40" height="40" class="dg-accent dg-line" stroke-width="1"/>
+<rect x="300" y="60" width="40" height="40" class="dg-dim dg-line" stroke-width="1"/>
+<rect x="340" y="60" width="40" height="40" class="dg-dim dg-line" stroke-width="1"/>
+<rect x="260" y="100" width="40" height="40" class="dg-dim dg-line" stroke-width="1"/>
+<rect x="300" y="100" width="40" height="40" class="dg-accent dg-line" stroke-width="1"/>
+<rect x="340" y="100" width="40" height="40" class="dg-dim dg-line" stroke-width="1"/>
+<rect x="260" y="140" width="40" height="40" class="dg-dim dg-line" stroke-width="1"/>
+<rect x="300" y="140" width="40" height="40" class="dg-dim dg-line" stroke-width="1"/>
+<rect x="340" y="140" width="40" height="40" class="dg-accent dg-line" stroke-width="1"/>
+<line x1="385" y1="120" x2="437" y2="120" class="dg-line" stroke-width="1.5"/>
+<polygon points="437,120 429,115 429,125" class="dg-line"/>
+<rect x="440" y="95" width="140" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="510" y="124" font-size="12" text-anchor="middle">텍스트 인코더</text>
+<text x="310" y="212" font-size="11" class="dg-dim" text-anchor="middle">대각선 정답 쌍의 유사도는 높이고 나머지는 낮춘다</text>
+</svg>`,
+    diagramCaption: String.raw`이미지와 텍스트를 각각 인코딩해 만든 임베딩의 유사도 행렬에서 대각선 정답 쌍만 가깝게 학습한다.`,
+    related: [{ label: "Vision-Language Model", slug: "vision-language-model" }, { label: "패치 토큰화", slug: "patch-tokenization" }],
+    sections: []
+  },
+  "cross-attention-fusion-vlm": {
+    title: String.raw`Cross-attention 결합: 이미지 특징을 언어모델 어텐션에 주입하기`,
+    domain: "llm",
+    subLabel: String.raw`비전-언어 모델`,
+    intuition: String.raw`<p>이미지에서 뽑은 특징을 언어모델에 전달하는 가장 단순한 방법은 그 특징들을 텍스트 토큰 옆에 나란히 끼워 넣는 것입니다. 다만 이미지 하나가 수백 개의 토큰으로 변환되면 대화창 하나가 순식간에 이미지 토큰으로 가득 차 버립니다.</p>
+<p>Cross-attention 결합은 이미지 토큰을 시퀀스 안에 직접 밀어 넣지 않습니다. 대신 언어모델이 문장을 처리하는 중간중간에 이미지 쪽을 따로 들여다보는 창구를 하나 더 열어둡니다. 텍스트는 텍스트끼리 계속 자기들끼리 어텐션하고 필요할 때만 그 창구로 이미지를 참조합니다.</p>`,
+    explanation: String.raw`<p>이미지 토큰을 시퀀스에 그대로 이어붙이는 방식(LLaVA류)은 이미지 인코더의 출력을 언어모델 임베딩 차원으로 투영한 뒤 텍스트 토큰들과 함께 하나의 시퀀스로 만들어 기존 셀프어텐션에 통째로 넣습니다. 언어모델 구조를 거의 그대로 재사용할 수 있다는 장점이 있지만 이미지 토큰 수만큼 시퀀스 길이가 늘어나고 셀프어텐션 비용은 시퀀스 길이의 제곱에 비례하므로 이미지가 커질수록 계산량이 빠르게 불어납니다.</p>
+<p>Cross-attention 결합(Flamingo류)은 언어모델의 기존 셀프어텐션과 FFN 층 사이에 새로운 어텐션 층을 추가로 끼워 넣습니다. 이 층에서는 쿼리 $Q$가 텍스트 쪽 은닉상태에서 나오고 키 $K$와 값 $V$는 이미지 토큰에서 나옵니다.</p>
+$$\mathrm{CrossAttn}(Q,K,V) = \mathrm{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+<p>이미지 토큰은 텍스트 시퀀스 안에 섞이지 않고 K V로만 참조되기 때문에 텍스트 시퀀스 길이는 이미지 크기와 무관하게 유지되고 텍스트끼리의 셀프어텐션 비용도 그대로입니다.</p>
+<p>두 방식의 실질적인 차이는 여기서 갈립니다. 토큰 연결 방식은 모든 층이 같은 이미지 표현을 셀프어텐션 안에서 동일하게 취급하는 반면 cross-attention 방식은 층마다 독립된 어텐션 파라미터로 이미지를 얼마나 어떻게 참조할지 따로 학습합니다. 또한 원래의 언어모델 파라미터를 얼리고 새로 추가한 cross-attention 층만 학습하는 구성이 가능해서 이미 잘 학습된 언어모델의 능력을 크게 건드리지 않고 시각 능력만 얹을 수 있습니다. 대신 구조가 하나 더 늘어나는 만큼 구현과 학습 파이프라인은 토큰 연결 방식보다 복잡해집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 660 280" xmlns="http://www.w3.org/2000/svg">
+<text x="140" y="18" font-size="13" text-anchor="middle">방식 A: 토큰 연결</text>
+<rect x="40" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="53" y="53" font-size="10" text-anchor="middle">T</text>
+<rect x="74" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="87" y="53" font-size="10" text-anchor="middle">T</text>
+<rect x="108" y="35" width="26" height="28" class="dg-accent" stroke="none"/>
+<text x="121" y="53" font-size="10" text-anchor="middle">I</text>
+<rect x="142" y="35" width="26" height="28" class="dg-accent" stroke="none"/>
+<text x="155" y="53" font-size="10" text-anchor="middle">I</text>
+<rect x="176" y="35" width="26" height="28" class="dg-accent" stroke="none"/>
+<text x="189" y="53" font-size="10" text-anchor="middle">I</text>
+<rect x="210" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="223" y="53" font-size="10" text-anchor="middle">T</text>
+<line x1="138" y1="63" x2="138" y2="92" class="dg-line" stroke-width="1.5"/>
+<polygon points="138,92 133,84 143,84" class="dg-line"/>
+<rect x="30" y="95" width="220" height="54" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="118" font-size="12" text-anchor="middle">self-attention</text>
+<text x="140" y="138" font-size="10" class="dg-dim" text-anchor="middle">텍스트+이미지 토큰 함께 처리</text>
+<line x1="140" y1="149" x2="140" y2="177" class="dg-line" stroke-width="1.5"/>
+<polygon points="140,177 135,169 145,169" class="dg-line"/>
+<rect x="30" y="180" width="220" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="140" y="204" font-size="12" text-anchor="middle">다음 레이어로</text>
+<text x="500" y="18" font-size="13" text-anchor="middle">방식 B: Cross-attention</text>
+<rect x="380" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="393" y="53" font-size="10" text-anchor="middle">T</text>
+<rect x="414" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="427" y="53" font-size="10" text-anchor="middle">T</text>
+<rect x="448" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="461" y="53" font-size="10" text-anchor="middle">T</text>
+<rect x="482" y="35" width="26" height="28" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="495" y="53" font-size="10" text-anchor="middle">T</text>
+<line x1="444" y1="63" x2="444" y2="87" class="dg-line" stroke-width="1.5"/>
+<polygon points="444,87 439,79 449,79" class="dg-line"/>
+<rect x="370" y="90" width="150" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="445" y="114" font-size="11" text-anchor="middle">텍스트 self-attention</text>
+<rect x="545" y="90" width="90" height="46" class="dg-accent" stroke="none"/>
+<text x="590" y="110" font-size="11" text-anchor="middle">이미지 토큰</text>
+<text x="590" y="124" font-size="10" text-anchor="middle">(K, V)</text>
+<line x1="445" y1="130" x2="475" y2="158" class="dg-line" stroke-width="1.5"/>
+<polygon points="475,158 465,155 470,148" class="dg-line"/>
+<line x1="560" y1="136" x2="520" y2="158" class="dg-line" stroke-width="1.5"/>
+<polygon points="520,158 526,150 530,157" class="dg-line"/>
+<rect x="370" y="160" width="250" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="495" y="180" font-size="12" text-anchor="middle">cross-attention</text>
+<text x="495" y="198" font-size="10" class="dg-dim" text-anchor="middle">Q=텍스트, K,V=이미지</text>
+<line x1="495" y1="210" x2="495" y2="228" class="dg-line" stroke-width="1.5"/>
+<polygon points="495,228 490,220 500,220" class="dg-line"/>
+<rect x="370" y="230" width="250" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="495" y="253" font-size="12" text-anchor="middle">다음 레이어로</text>
+</svg>`,
+    diagramCaption: String.raw`토큰 연결은 이미지 토큰을 시퀀스에 그대로 섞어 넣고 cross-attention은 이미지 토큰을 K V로만 별도 주입한다.`,
+    related: [{ label: "Vision-Language Model", slug: "vision-language-model" }, { label: "패치 토큰화", slug: "patch-tokenization" }],
+    sections: []
+  },
+  "patch-tokenization": {
+    title: String.raw`패치 토큰화: 이미지를 조각내서 토큰처럼 다루기`,
+    domain: "llm",
+    subLabel: String.raw`이미지 토큰화`,
+    intuition: String.raw`<p>트랜스포머는 원래 순서가 있는 벡터들의 나열 즉 토큰 시퀀스를 입력으로 받도록 만들어졌습니다. 문장은 단어나 subword로 자연스럽게 쪼개져 토큰이 되지만 이미지는 그런 구분이 없는 픽셀의 2차원 격자일 뿐입니다.</p>
+<p>패치 토큰화는 이미지를 작은 정사각형 조각으로 자른 다음 각 조각을 트랜스포머가 원래 다루던 토큰처럼 취급합니다. 사진 한 장을 여러 개의 작은 퍼즐 조각으로 잘라 한 줄로 늘어놓는 것과 비슷합니다.</p>`,
+    explanation: String.raw`<p>ViT(Vision Transformer)는 이미지를 겹치지 않는 고정 크기 패치 예를 들어 $16\times16$ 픽셀 조각으로 나눕니다. 각 패치의 픽셀 값을 한 줄로 펼쳐 벡터로 만들고 선형투영 하나를 거쳐 모델의 임베딩 차원으로 옮깁니다. 이렇게 만들어진 벡터 하나하나가 트랜스포머 입장에서는 텍스트의 토큰 임베딩과 똑같은 역할을 합니다. 이미지 크기 $H\times W$를 패치 크기 $p$로 나누면 만들어지는 패치 개수는 다음과 같습니다.</p>
+$$N_{\mathrm{patch}} = \left\lceil \frac{H}{p} \right\rceil \times \left\lceil \frac{W}{p} \right\rceil$$
+<p>CNN은 합성곱 연산 자체에 인접한 픽셀끼리 더 강하게 연결된다는 공간적 지역성과 위치가 달라져도 같은 패턴을 인식한다는 이동 불변성이 구조적으로 박혀 있습니다. 반면 셀프어텐션은 모든 토큰 쌍을 동등하게 비교하는 연산이라 이런 공간적 가정이 전혀 없습니다. 그래서 이미지를 트랜스포머에 넣으려면 먼저 이미지를 토큰 시퀀스라는 형태로 바꿔주는 절차가 필요했고 그 절차가 패치 토큰화입니다.</p>
+<p>또한 어텐션 연산 자체는 입력 순서를 신경 쓰지 않는 순열 불변 연산이라 패치들을 그냥 나열하기만 하면 어떤 패치가 이미지의 어느 위치에 있었는지 정보가 사라집니다. 그래서 각 패치 토큰에 위치 임베딩을 더해 원래 격자 위의 좌표 정보를 되살려 줍니다. 논문 기준 $224\times224$ 이미지를 패치 크기 $16$으로 나누면 $224/16=14$이므로 한 변에 14개 전체 $14\times14=196$개의 패치 토큰이 만들어집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="18" font-size="12">이미지를 패치로 분할</text>
+<rect x="20" y="30" width="160" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="60" y1="30" x2="60" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="30" x2="100" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="30" x2="140" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="20" y1="70" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<line x1="20" y1="110" x2="180" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="20" y1="150" x2="180" y2="150" class="dg-line" stroke-width="1.5"/>
+<rect x="100" y="70" width="40" height="40" class="dg-accent" stroke="none"/>
+<line x1="190" y1="110" x2="248" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="248,110 240,105 240,115" class="dg-line"/>
+<text x="219" y="99" font-size="11" class="dg-dim" text-anchor="middle">펼쳐서 투영</text>
+<rect x="258" y="98" width="22" height="22" class="dg-accent" stroke="none"/>
+<rect x="286" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="314" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="342" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="370" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="398" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="426" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="454" y="98" width="22" height="22" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="490" y="115" font-size="14">...</text>
+<line x1="504" y1="109" x2="536" y2="109" class="dg-line" stroke-width="1.5"/>
+<polygon points="536,109 528,104 528,114" class="dg-line"/>
+<rect x="540" y="50" width="90" height="120" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="585" y="105" font-size="12" text-anchor="middle">Transformer</text>
+<text x="585" y="122" font-size="11" class="dg-dim" text-anchor="middle">인코더</text>
+<text x="370" y="140" font-size="11" class="dg-dim" text-anchor="middle">패치 토큰 시퀀스</text>
+</svg>`,
+    diagramCaption: String.raw`이미지를 고정 크기 패치로 나누고 각 패치를 펼쳐 투영한 뒤 하나의 토큰처럼 트랜스포머에 넣는다.`,
+    related: [{ label: "이미지 토큰 수", slug: "image-token-count" }, { label: "타일링", slug: "image-tiling" }],
+    sections: []
+  },
+  "image-token-count": {
+    title: String.raw`이미지 토큰 수: 해상도가 커질수록 컨텍스트를 많이 먹는다`,
+    domain: "llm",
+    subLabel: String.raw`이미지 토큰화`,
+    intuition: String.raw`<p>이미지를 패치로 잘라 토큰으로 바꾸고 나면 그 토큰들은 텍스트 토큰과 똑같이 언어모델의 컨텍스트 창 안 한 자리를 차지합니다. 사진 한 장을 더 세밀하게 보여주고 싶어서 해상도를 키우면 그만큼 잘리는 패치 조각 수도 늘어나고 결국 컨텍스트 창을 차지하는 이미지 토큰 수도 함께 늘어납니다.</p>
+<p>문제는 컨텍스트 창의 크기가 정해져 있다는 것입니다. 이미지가 토큰을 많이 먹을수록 같은 대화 안에서 텍스트에 쓸 수 있는 자리는 줄어듭니다.</p>`,
+    explanation: String.raw`<p>패치 토큰화에서 본 것처럼 토큰 수는 대략 $(H/p)\times(W/p)$입니다. 가로세로를 각각 $k$배 키우면 토큰 수는 $k^2$배로 늘어납니다. 해상도는 가로세로 두 방향으로 함께 커지기 때문에 선형으로 보이는 해상도 증가가 실제로는 제곱으로 토큰 수를 늘리는 셈입니다.</p>
+<p>이렇게 늘어난 이미지 토큰은 단순히 자리만 차지하는 게 아닙니다. 셀프어텐션의 계산량은 시퀀스 길이의 제곱에 비례하므로 이미지 토큰이 늘면 이미지 토큰들 사이 그리고 이미지 토큰과 텍스트 토큰 사이의 어텐션 계산량도 함께 불어납니다. 결국 해상도를 올리는 선택은 이미지를 더 선명하게 보여주는 대신 컨텍스트 예산과 계산 비용을 함께 지불하는 거래입니다.</p>
+<p>그래서 실제 서비스에서는 이미지를 무한정 원래 해상도로 넣지 않습니다. 모델이 지원하는 최대 해상도로 리사이즈하거나 아주 큰 이미지는 타일링으로 다루는 절충을 택합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+<text x="250" y="20" font-size="12" text-anchor="middle">해상도가 2배면 토큰 수는 4배</text>
+<line x1="60" y1="200" x2="460" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="140" y="160" width="70" height="40" class="dg-dim" stroke="none"/>
+<rect x="140" y="160" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="300" y="40" width="70" height="160" class="dg-accent" stroke="none"/>
+<rect x="300" y="40" width="70" height="160" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="175" y="216" font-size="11" text-anchor="middle">336×336</text>
+<text x="175" y="230" font-size="11" class="dg-dim" text-anchor="middle">576 토큰</text>
+<text x="335" y="216" font-size="11" text-anchor="middle">672×672</text>
+<text x="335" y="230" font-size="11" class="dg-dim" text-anchor="middle">2304 토큰</text>
+</svg>`,
+    diagramCaption: String.raw`해상도를 두 배로 올리면 면적이 네 배가 되어 패치 토큰 수도 네 배로 늘어난다.`,
+    example: String.raw`<p>CLIP ViT-L/14를 그대로 쓰는 경우 흔한 입력 해상도는 $336\times336$이고 패치 크기는 $14$입니다. 한 변의 패치 수는 $336 \div 14 = 24$이므로 전체 패치 토큰 수는 다음과 같습니다.</p>
+$$N_{\mathrm{patch}} = 24 \times 24 = 576$$
+<p>이미지를 가로세로 두 배인 $672\times672$로 키우면 한 변의 패치 수는 $672 \div 14 = 48$이 되고 전체 토큰 수는 $48\times48=2304$입니다. 해상도가 2배 늘었을 뿐인데 토큰 수는 $2304 \div 576 = 4$ 즉 4배로 늘어난 것입니다. 대화 컨텍스트가 8000토큰이라면 576개는 전체의 약 7퍼센트지만 2304개는 약 29퍼센트를 이미지 하나가 차지하게 됩니다.</p>`,
+    related: [{ label: "패치 토큰화", slug: "patch-tokenization" }, { label: "타일링", slug: "image-tiling" }],
+    sections: []
+  },
+  "image-tiling": {
+    title: String.raw`타일링: 고해상도 이미지를 조각내 나눠 인코딩하기`,
+    domain: "llm",
+    subLabel: String.raw`이미지 토큰화`,
+    intuition: String.raw`<p>이미지 인코더는 보통 정해진 해상도 예를 들어 $336\times336$ 같은 크기로만 학습되어 있습니다. 스캔한 문서나 큰 스크린샷처럼 실제로는 훨씬 큰 이미지를 그 작은 해상도로 억지로 줄이면 작은 글씨나 세부 정보가 뭉개져 사라집니다.</p>
+<p>타일링은 이미지를 억지로 줄이는 대신 인코더가 원래 익숙한 크기의 조각으로 잘라서 그 조각들을 하나씩 따로 인코딩합니다. 큰 지도를 한 장에 다 담는 대신 여러 장의 구역별 지도로 나눠 각각 자세히 그리는 것과 비슷합니다.</p>`,
+    explanation: String.raw`<p>큰 이미지를 그대로 패치 토큰화하면 토큰 수가 감당하기 힘든 수준으로 불어납니다. 그렇다고 이미지 인코더가 학습된 적 없는 해상도를 그대로 밀어 넣으면 성능이 떨어집니다. 타일링은 큰 이미지를 인코더가 학습된 고정 크기 타일 여러 개로 나누고 각 타일을 이미지 인코더에 독립적으로 통과시켜 이 두 문제를 동시에 피해갑니다.</p>
+<p>다만 타일 각각은 이미지의 일부만 보기 때문에 타일들끼리는 서로의 옆에 무엇이 있는지 모릅니다. 그래서 실제 구현에서는 원본 이미지를 작게 축소한 썸네일 하나를 별도로 함께 인코딩해서 전체 구도나 전역 맥락을 보완합니다. 각 타일이 이미지의 어느 위치에서 왔는지는 타일 순서나 위치 임베딩으로 표시해 언어모델이 조각들을 다시 이어 이해할 수 있게 합니다.</p>
+<p>결과적으로 언어모델에 들어가는 이미지 토큰은 타일마다 나온 토큰들과 썸네일에서 나온 토큰을 모두 이어붙인 형태가 됩니다. 타일 수를 늘릴수록 더 높은 해상도를 다룰 수 있지만 그만큼 토큰 수도 타일 개수에 비례해 늘어나므로 컨텍스트 예산 문제가 다시 그대로 나타납니다. 타일링은 해상도 한계를 풀어주는 대신 토큰 비용을 타일 단위로 다시 지불하게 만드는 절충입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="200" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="130" y1="30" x2="130" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="30" y1="110" x2="230" y2="110" class="dg-line" stroke-width="1.5"/>
+<text x="80" y="74" font-size="12" text-anchor="middle">타일1</text>
+<text x="180" y="74" font-size="12" text-anchor="middle">타일2</text>
+<text x="80" y="154" font-size="12" text-anchor="middle">타일3</text>
+<text x="180" y="154" font-size="12" text-anchor="middle">타일4</text>
+<rect x="270" y="30" width="70" height="56" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="305" y="100" font-size="11" text-anchor="middle">축소 썸네일</text>
+<text x="305" y="114" font-size="10" class="dg-dim" text-anchor="middle">(전역 맥락)</text>
+<line x1="230" y1="110" x2="384" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="384,110 376,105 376,115" class="dg-line"/>
+<line x1="305" y1="86" x2="418" y2="82" class="dg-line" stroke-width="1.5"/>
+<polygon points="418,82 410,79 411,88" class="dg-line"/>
+<rect x="390" y="80" width="150" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="465" y="105" font-size="12" text-anchor="middle">이미지 인코더</text>
+<text x="465" y="122" font-size="10" class="dg-dim" text-anchor="middle">타일마다 각각 실행</text>
+<line x1="465" y1="140" x2="465" y2="184" class="dg-line" stroke-width="1.5"/>
+<polygon points="465,184 460,176 470,176" class="dg-line"/>
+<rect x="360" y="190" width="32" height="26" class="dg-accent" stroke="none"/>
+<rect x="400" y="190" width="32" height="26" class="dg-accent" stroke="none"/>
+<rect x="440" y="190" width="32" height="26" class="dg-accent" stroke="none"/>
+<rect x="480" y="190" width="32" height="26" class="dg-accent" stroke="none"/>
+<rect x="520" y="190" width="32" height="26" class="dg-dim" stroke="none"/>
+<text x="456" y="245" font-size="11" class="dg-dim" text-anchor="middle">타일 토큰 + 썸네일 토큰을 순서대로 연결</text>
+</svg>`,
+    diagramCaption: String.raw`고해상도 이미지를 고정 크기 타일로 나눠 각각 인코딩하고 전역 맥락을 담은 축소 썸네일과 함께 연결한다.`,
+    related: [{ label: "이미지 토큰 수", slug: "image-token-count" }, { label: "패치 토큰화", slug: "patch-tokenization" }],
+    sections: []
+  },
 };
