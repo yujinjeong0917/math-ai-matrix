@@ -34,6 +34,11 @@
     --c-linalg-bg: #e9edf7; --c-calc-bg: #f6e8dd; --c-prob-bg: #e1f0ea;
     --c-info-bg: #efe1f3; --c-disc-bg: #f2ead9; --c-numeric-bg: #f5e3e7;
 
+    --c-xai: #6a3f8f; --c-llm: #2f6a5a; --c-product: #a1327d;
+    --c-mlops: #2f5a7d; --c-recsys: #7d3f2f; --c-arch: #6a5a1f; --c-pm: #7d2f5a;
+    --c-xai-bg: #efe6f5; --c-llm-bg: #e3f0ea; --c-product-bg: #f5e3ef;
+    --c-mlops-bg: #e6eef5; --c-recsys-bg: #f5e8e3; --c-arch-bg: #f0eee0; --c-pm-bg: #f5e3ee;
+
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -49,6 +54,10 @@
       --c-info: #cb8fdd; --c-disc: #d3b25c; --c-numeric: #db8fa0;
       --c-linalg-bg: #1c2333; --c-calc-bg: #2b2119; --c-prob-bg: #162a24;
       --c-info-bg: #291f2e; --c-disc-bg: #2a2216; --c-numeric-bg: #3a2028;
+      --c-xai: #b98fd6; --c-llm: #7ecbb0; --c-product: #d98fc4;
+      --c-mlops: #7eaad4; --c-recsys: #d69a7e; --c-arch: #cbc07e; --c-pm: #d67eb0;
+      --c-xai-bg: #2a2233; --c-llm-bg: #1a2b26; --c-product-bg: #2e1f2a;
+      --c-mlops-bg: #1c2733; --c-recsys-bg: #2e2119; --c-arch-bg: #28281a; --c-pm-bg: #2e1f29;
     }
   }
   :root[data-theme="dark"] {
@@ -60,6 +69,10 @@
     --c-info: #cb8fdd; --c-disc: #d3b25c; --c-numeric: #db8fa0;
     --c-linalg-bg: #1c2333; --c-calc-bg: #2b2119; --c-prob-bg: #162a24;
     --c-info-bg: #291f2e; --c-disc-bg: #2a2216; --c-numeric-bg: #3a2028;
+    --c-xai: #b98fd6; --c-llm: #7ecbb0; --c-product: #d98fc4;
+    --c-mlops: #7eaad4; --c-recsys: #d69a7e; --c-arch: #cbc07e; --c-pm: #d67eb0;
+    --c-xai-bg: #2a2233; --c-llm-bg: #1a2b26; --c-product-bg: #2e1f2a;
+    --c-mlops-bg: #1c2733; --c-recsys-bg: #2e2119; --c-arch-bg: #28281a; --c-pm-bg: #2e1f29;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -70,6 +83,10 @@
     --c-info: #7d3d92; --c-disc: #93701f; --c-numeric: #a13b52;
     --c-linalg-bg: #e9edf7; --c-calc-bg: #f6e8dd; --c-prob-bg: #e1f0ea;
     --c-info-bg: #efe1f3; --c-disc-bg: #f2ead9; --c-numeric-bg: #f5e3e7;
+    --c-xai: #6a3f8f; --c-llm: #2f6a5a; --c-product: #a1327d;
+    --c-mlops: #2f5a7d; --c-recsys: #7d3f2f; --c-arch: #6a5a1f; --c-pm: #7d2f5a;
+    --c-xai-bg: #efe6f5; --c-llm-bg: #e3f0ea; --c-product-bg: #f5e3ef;
+    --c-mlops-bg: #e6eef5; --c-recsys-bg: #f5e8e3; --c-arch-bg: #f0eee0; --c-pm-bg: #f5e3ee;
   }
 
   * { box-sizing: border-box; }
@@ -130,6 +147,41 @@
   .example-body p:last-child { margin-bottom: 0; }
   .example-body .katex-display { margin: 10px 0; overflow-x: auto; overflow-y: hidden; }
   .example-body strong { color: var(--ink); }
+
+  .intuition-box {
+    background: var(--surface); border-left: 3px solid var(--highlight); border-radius: 4px;
+    padding: 16px 20px; margin-bottom: 24px; max-width: 66ch;
+    color: var(--ink-dim); font-size: 14.5px; line-height: 1.85;
+  }
+  .intuition-box p { margin: 0 0 10px; }
+  .intuition-box p:last-child { margin-bottom: 0; }
+  .intuition-box strong { color: var(--ink); }
+
+  .diagram-box {
+    background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px;
+    padding: 24px; margin-bottom: 28px; max-width: 760px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .diagram-box svg { max-width: 100%; height: auto; }
+  .diagram-caption { font-size: 12.5px; color: var(--ink-faint); text-align: center; max-width: 60ch; }
+  .diagram-box text { fill: var(--ink); font-family: var(--font-kr); }
+  .diagram-box .dg-dim { fill: var(--ink-faint); }
+  .diagram-box .dg-accent { fill: var(--highlight); }
+  .diagram-box .dg-line { stroke: var(--line); }
+  .diagram-box .dg-stroke-accent { stroke: var(--highlight); }
+  .diagram-box .dg-stroke-ink { stroke: var(--ink-dim); }
+
+  .related-box { margin-bottom: 28px; }
+  .related-box .related-label {
+    font-family: var(--font-mono); font-size: 11.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin: 0 0 10px;
+  }
+  .related-links { display: flex; flex-wrap: wrap; gap: 8px; }
+  .related-links a {
+    font-size: 13px; color: var(--ink-dim); text-decoration: none;
+    padding: 6px 12px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .related-links a:hover { border-color: var(--ink-faint); color: var(--ink); }
 
   .proof-heading {
     font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
@@ -201,7 +253,7 @@
 <body>
 <div class="wrap">
   <div class="topbar">
-    <a class="back-link" href="../index.html">← 매트릭스로 돌아가기</a>
+    <a class="back-link" id="backLink" href="../index.html">← 매트릭스로 돌아가기</a>
     <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
       <span class="dot-bw"></span>
       <span id="themeToggleLabel">라이트</span>
@@ -238,7 +290,15 @@
 
   var DOMAIN_LABEL = {
     linalg: "선형대수", calc: "미적분 · 최적화", prob: "확률 · 통계",
-    info: "정보이론", disc: "이산수학 · 그래프", numeric: "수치해석 · 기하"
+    info: "정보이론", disc: "이산수학 · 그래프", numeric: "수치해석 · 기하",
+    xai: "XAI · 해석가능성", llm: "LLM/Agent", product: "서비스 · 프로덕트 분석",
+    mlops: "MLOps · 인프라", recsys: "추천시스템 · 랭킹", arch: "모델 아키텍처 심화", pm: "Process Mining"
+  };
+
+  var BACK_HREF = {
+    xai: "../xai/index.html", llm: "../llm/index.html", product: "../product/index.html",
+    mlops: "../mlops/index.html", recsys: "../recsys/index.html", arch: "../architectures/index.html",
+    pm: "../process-mining/index.html"
   };
 
   function qs(name) {
@@ -319,6 +379,49 @@
 
   function renderConcept(concept) {
     var domainLabel = concept.domainLabel || DOMAIN_LABEL[concept.domain] || concept.domain;
+    var hasProof = concept.sections && concept.sections.length > 0;
+
+    var headHtml =
+      '<span class="domain-tag" style="color:var(--c-' + concept.domain + '); background:var(--c-' + concept.domain + '-bg)">' +
+      '<span class="dot" style="background:var(--c-' + concept.domain + ')"></span>' + domainLabel +
+      (concept.subLabel ? ' · ' + escapeHtml(concept.subLabel) : '') +
+      '</span>' +
+      '<h1>' + escapeHtml(concept.title) + '</h1>' +
+      (concept.intuition
+        ? '<div class="intuition-box">' + concept.intuition + '</div>'
+        : '') +
+      '<div class="explanation">' + concept.explanation + '</div>' +
+      (concept.diagram
+        ? '<div class="diagram-box">' + concept.diagram +
+          (concept.diagramCaption ? '<p class="diagram-caption">' + escapeHtml(concept.diagramCaption) + '</p>' : '') +
+          '</div>'
+        : '') +
+      (concept.example
+        ? '<div class="example-box"><p class="example-label">숫자로 먼저 보기</p><div class="example-body">' + concept.example + '</div></div>'
+        : '');
+
+    var relatedHtml = (concept.related && concept.related.length)
+      ? '<div class="related-box"><p class="related-label">관련 개념</p><div class="related-links">' +
+        concept.related.map(function (r) {
+          return '<a href="?c=' + encodeURIComponent(r.slug) + '">' + escapeHtml(r.label) + '</a>';
+        }).join("") +
+        '</div></div>'
+      : '';
+
+    var html;
+    if (!hasProof) {
+      html = headHtml + relatedHtml;
+      document.getElementById("content").innerHTML = html;
+      if (window.renderMathInElement) {
+        window.renderMathInElement(document.getElementById("content"), {
+          delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
+          throwOnError: false,
+          errorColor: "#c0392b",
+        });
+      }
+      return;
+    }
+
     var parts = [];
     var currentPart = null;
     concept.sections.forEach(function (s) {
@@ -354,18 +457,7 @@
       );
     }).join("");
 
-    var html =
-      '<span class="domain-tag" style="color:var(--c-' + concept.domain + '); background:var(--c-' + concept.domain + '-bg)">' +
-      '<span class="dot" style="background:var(--c-' + concept.domain + ')"></span>' + domainLabel +
-      (concept.subLabel ? ' · ' + escapeHtml(concept.subLabel) : '') +
-      '</span>' +
-      '<h1>' + escapeHtml(concept.title) + '</h1>' +
-      '<div class="explanation">' + concept.explanation + '</div>' +
-      (concept.example
-        ? '<div class="example-box"><p class="example-label">숫자로 먼저 보기</p><div class="example-body">' + concept.example + '</div></div>'
-        : '') +
-      '<p class="proof-heading">빈칸 증명</p>' +
-      partsHtml;
+    html = headHtml + '<p class="proof-heading">빈칸 증명</p>' + partsHtml + relatedHtml;
 
     document.getElementById("content").innerHTML = html;
 
@@ -397,7 +489,14 @@
         '<p class="not-found">개념을 찾을 수 없어요. <a href="../index.html">매트릭스로 돌아가서</a> 다시 눌러보세요.</p>';
       return;
     }
-    document.title = concept.title + " · 개념 증명";
+    var backLink = document.getElementById("backLink");
+    if (backLink) {
+      var backHref = BACK_HREF[concept.domain] || "../index.html";
+      backLink.setAttribute("href", backHref);
+      backLink.textContent = "← " + (DOMAIN_LABEL[concept.domain] ? DOMAIN_LABEL[concept.domain] : "매트릭스") + "로 돌아가기";
+    }
+    var hasProof = concept.sections && concept.sections.length > 0;
+    document.title = concept.title + (hasProof ? " · 개념 증명" : " · 개념 노트");
     renderConcept(concept);
   }
 
