@@ -151,6 +151,8 @@
   .chip { border-left: 2.5px solid var(--chip-c, var(--line)); padding: 2px 0 2px 10px; border-radius: 2px; }
   .chip .name { font-size: 12.5px; font-weight: 700; }
   .chip .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 1px; }
+  a.chip-link { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-link:hover .name, a.chip-link:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   .group-block { margin: 0 0 36px; }
   .group-title {
@@ -172,6 +174,9 @@
   }
   .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
   .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+  a.chip-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-card:hover, a.chip-card:focus-visible { border-color: var(--chip-c, var(--ink-faint)); }
+  a.chip-card:hover .name, a.chip-card:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
@@ -239,66 +244,66 @@
       <tbody>
         <tr class="group-start" data-group="xa">
           <th><p class="row-eyebrow" style="color:var(--c-xa)">모델-불가지론적 설명</p><p class="row-name">게임이론 기반</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">SHAP값</p><p class="formula">Shapley value, 한계기여도 평균</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">DeepSHAP</p><p class="formula">배경분포 대비 기여도</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">잠재변수 SHAP</p><p class="formula">잠재차원별 기여도</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">보상분해 Shapley</p><p class="formula">멀티에이전트 기여도 배분</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=shap-value" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">SHAP값</p><p class="formula">Shapley value, 한계기여도 평균</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=deepshap" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">DeepSHAP</p><p class="formula">배경분포 대비 기여도</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=latent-shap" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">잠재변수 SHAP</p><p class="formula">잠재차원별 기여도</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=reward-decomposition-shapley" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">보상분해 Shapley</p><p class="formula">멀티에이전트 기여도 배분</p></a></div></td>
         </tr>
         <tr data-group="xa">
           <th><p class="row-eyebrow" style="color:var(--c-xa)">모델-불가지론적 설명</p><p class="row-name">국소 근사 기반</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">LIME</p><p class="formula">국소 선형 대리모델</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">이미지 LIME</p><p class="formula">슈퍼픽셀 교란</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">잠재공간 교란</p><p class="formula">국소 민감도 분석</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">정책 국소설명</p><p class="formula">상태 교란 기반 설명</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=lime" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">LIME</p><p class="formula">국소 선형 대리모델</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=image-lime" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">이미지 LIME</p><p class="formula">슈퍼픽셀 교란</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=latent-perturbation" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">잠재공간 교란</p><p class="formula">국소 민감도 분석</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=policy-local-explanation" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">정책 국소설명</p><p class="formula">상태 교란 기반 설명</p></a></div></td>
         </tr>
         <tr data-group="xa">
           <th><p class="row-eyebrow" style="color:var(--c-xa)">모델-불가지론적 설명</p><p class="row-name">특징 중요도</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--chip-c)"><p class="name">Permutation Importance</p><p class="formula">특징 셔플 시 성능 하락폭</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">Feature Ablation</p><p class="formula">특징 제거 영향 측정</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">잠재차원 중요도</p><p class="formula">차원별 재구성 기여도</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xa)"><p class="name">상태특징 중요도</p><p class="formula">Q값 민감도</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=permutation-importance" target="_blank" rel="noopener" style="--chip-c:var(--chip-c)"><p class="name">Permutation Importance</p><p class="formula">특징 셔플 시 성능 하락폭</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=feature-ablation" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">Feature Ablation</p><p class="formula">특징 제거 영향 측정</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=latent-dim-importance" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">잠재차원 중요도</p><p class="formula">차원별 재구성 기여도</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=state-feature-importance" target="_blank" rel="noopener" style="--chip-c:var(--c-xa)"><p class="name">상태특징 중요도</p><p class="formula">Q값 민감도</p></a></div></td>
         </tr>
         <tr class="group-start" data-group="xb">
           <th><p class="row-eyebrow" style="color:var(--c-xb)">모델-특화 설명</p><p class="row-name">그래디언트 기반</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">선형모델 계수</p><p class="formula">계수 크기 = 방향별 중요도</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">Saliency Map</p><p class="formula">∂output/∂input</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">Integrated Gradients</p><p class="formula">경로적분 기여도</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">정책 그래디언트 saliency</p><p class="formula">∂π/∂s</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=linear-model-coefficients" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">선형모델 계수</p><p class="formula">계수 크기 = 방향별 중요도</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=saliency-map" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">Saliency Map</p><p class="formula">∂output/∂input</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=integrated-gradients" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">Integrated Gradients</p><p class="formula">경로적분 기여도</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=policy-gradient-saliency" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">정책 그래디언트 saliency</p><p class="formula">∂π/∂s</p></a></div></td>
         </tr>
         <tr data-group="xb">
           <th><p class="row-eyebrow" style="color:var(--c-xb)">모델-특화 설명</p><p class="row-name">구조 특화 설명</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">트리 시각화</p><p class="formula">분기 경로 추적</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">Grad-CAM</p><p class="formula">클래스별 활성화맵</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">GAN Dissection</p><p class="formula">뉴런-개념 매핑</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">정책 네트워크 CAM</p><p class="formula">행동별 주목영역</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=tree-visualization" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">트리 시각화</p><p class="formula">분기 경로 추적</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=grad-cam" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">Grad-CAM</p><p class="formula">클래스별 활성화맵</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=gan-dissection" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">GAN Dissection</p><p class="formula">뉴런-개념 매핑</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=policy-network-cam" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">정책 네트워크 CAM</p><p class="formula">행동별 주목영역</p></a></div></td>
         </tr>
         <tr data-group="xb">
           <th><p class="row-eyebrow" style="color:var(--c-xb)">모델-특화 설명</p><p class="row-name">어텐션 기반</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">규칙 추출(Rule Extraction)</p><p class="formula">결정경계를 규칙으로 근사</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">Attention Rollout</p><p class="formula">층별 어텐션 누적</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">Cross-Attention 시각화</p><p class="formula">텍스트-이미지 정렬 시각화</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xb)"><p class="name">정책 어텐션 시각화</p><p class="formula">의사결정 주목영역</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=rule-extraction" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">규칙 추출(Rule Extraction)</p><p class="formula">결정경계를 규칙으로 근사</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=attention-rollout" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">Attention Rollout</p><p class="formula">층별 어텐션 누적</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=cross-attention-viz" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">Cross-Attention 시각화</p><p class="formula">텍스트-이미지 정렬 시각화</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=policy-attention-viz" target="_blank" rel="noopener" style="--chip-c:var(--c-xb)"><p class="name">정책 어텐션 시각화</p><p class="formula">의사결정 주목영역</p></a></div></td>
         </tr>
         <tr class="group-start" data-group="설명의 신뢰성 · 평가">
           <th><p class="row-eyebrow" style="color:var(--c-xc)">설명의 신뢰성 · 평가</p><p class="row-name">안정성 검증</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">설명 안정성</p><p class="formula">유사입력 → 유사설명</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">Sanity Check(Saliency)</p><p class="formula">무작위 가중치 대비 검증</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">설명 재현성</p><p class="formula">시드별 일관성</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">정책 설명 안정성</p><p class="formula">유사상태 일관성</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=explanation-stability" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">설명 안정성</p><p class="formula">유사입력 → 유사설명</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=sanity-check-saliency" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">Sanity Check(Saliency)</p><p class="formula">무작위 가중치 대비 검증</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=explanation-reproducibility" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">설명 재현성</p><p class="formula">시드별 일관성</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=policy-explanation-stability" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">정책 설명 안정성</p><p class="formula">유사상태 일관성</p></a></div></td>
         </tr>
         <tr data-group="설명의 신뢰성 · 평가">
           <th><p class="row-eyebrow" style="color:var(--c-xc)">설명의 신뢰성 · 평가</p><p class="row-name">반사실 설명</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">Counterfactual 설명</p><p class="formula">최소 변경으로 다른 예측</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">대조적 설명</p><p class="formula">클래스간 차이 강조</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">반사실 이미지 생성</p><p class="formula">속성 변경 생성</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">반사실 행동설명</p><p class="formula">다른 행동이었다면 결과는?</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=counterfactual-explanation" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">Counterfactual 설명</p><p class="formula">최소 변경으로 다른 예측</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=contrastive-explanation" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">대조적 설명</p><p class="formula">클래스간 차이 강조</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=counterfactual-image-generation" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">반사실 이미지 생성</p><p class="formula">속성 변경 생성</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=counterfactual-action-explanation" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">반사실 행동설명</p><p class="formula">다른 행동이었다면 결과는?</p></a></div></td>
         </tr>
         <tr data-group="설명의 신뢰성 · 평가">
           <th><p class="row-eyebrow" style="color:var(--c-xc)">설명의 신뢰성 · 평가</p><p class="row-name">대리모델 신뢰도</p></th>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">대리모델 충실도(Fidelity)</p><p class="formula">원모델과의 예측 일치도</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">설명 근사오차</p><p class="formula">국소근사 오차 측정</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">재구성 충실도</p><p class="formula">설명-생성 일관성</p></div></div></td>
-          <td><div class="cell"><div class="chip" style="--chip-c:var(--c-xc)"><p class="name">정책 대리설명 충실도</p><p class="formula">결정트리 정책 근사 정확도</p></div></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=surrogate-fidelity" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">대리모델 충실도(Fidelity)</p><p class="formula">원모델과의 예측 일치도</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=local-approx-error" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">설명 근사오차</p><p class="formula">국소근사 오차 측정</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=reconstruction-fidelity" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">재구성 충실도</p><p class="formula">설명-생성 일관성</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=policy-surrogate-fidelity" target="_blank" rel="noopener" style="--chip-c:var(--c-xc)"><p class="name">정책 대리설명 충실도</p><p class="formula">결정트리 정책 근사 정확도</p></a></div></td>
         </tr>
       </tbody>
     </table>
@@ -310,19 +315,19 @@
     <div class="sub-block">
       <p class="sub-title">교란 기반 설명</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">LIME for Text</p><p class="formula">단어 단위 교란으로 국소 선형 대리모델 학습</p></div><div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Partition SHAP</p><p class="formula">문장을 계층적으로 분할해 단어군 단위로 Shapley값 근사</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=lime-for-text" target="_blank" rel="noopener" style="--chip-c:var(--c-xd)"><p class="name">LIME for Text</p><p class="formula">단어 단위 교란으로 국소 선형 대리모델 학습</p></a><a class="chip-card" href="../concepts/index.html?c=partition-shap" target="_blank" rel="noopener" style="--chip-c:var(--c-xd)"><p class="name">Partition SHAP</p><p class="formula">문장을 계층적으로 분할해 단어군 단위로 Shapley값 근사</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">어텐션 · 그래디언트 기반</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Attention 설명의 한계</p><p class="formula">어텐션 가중치가 곧 설명이라는 가정에 대한 반박 논쟁(Attention is not Explanation)</p></div><div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Integrated Gradients(텍스트)</p><p class="formula">기준 임베딩부터 실제 임베딩까지 경로적분한 토큰별 기여도</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=attention-explanation-limits" target="_blank" rel="noopener" style="--chip-c:var(--c-xd)"><p class="name">Attention 설명의 한계</p><p class="formula">어텐션 가중치가 곧 설명이라는 가정에 대한 반박 논쟁(Attention is not Explanation)</p></a><a class="chip-card" href="../concepts/index.html?c=integrated-gradients-text" target="_blank" rel="noopener" style="--chip-c:var(--c-xd)"><p class="name">Integrated Gradients(텍스트)</p><p class="formula">기준 임베딩부터 실제 임베딩까지 경로적분한 토큰별 기여도</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">반사실 · 생성 기반</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">반사실 텍스트 생성</p><p class="formula">최소한의 단어 치환으로 예측 라벨을 뒤집는 문장 생성</p></div><div class="chip-card" style="--chip-c:var(--c-xd)"><p class="name">Rationale Extraction</p><p class="formula">예측을 정당화하는 최소 부분 문장(rationale) 추출</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=counterfactual-text-generation" target="_blank" rel="noopener" style="--chip-c:var(--c-xd)"><p class="name">반사실 텍스트 생성</p><p class="formula">최소한의 단어 치환으로 예측 라벨을 뒤집는 문장 생성</p></a><a class="chip-card" href="../concepts/index.html?c=rationale-extraction" target="_blank" rel="noopener" style="--chip-c:var(--c-xd)"><p class="name">Rationale Extraction</p><p class="formula">예측을 정당화하는 최소 부분 문장(rationale) 추출</p></a>
       </div>
     </div>
   </div>
@@ -333,13 +338,13 @@
     <div class="sub-block">
       <p class="sub-title">의존도 시각화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">PDP(부분의존도 플롯)</p><p class="formula">특징 하나를 바꿔가며 평균 예측 변화를 그린 전역 곡선</p></div><div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">ICE plot</p><p class="formula">PDP를 개별 샘플 단위로 쪼갠 곡선, 샘플 간 이질적 효과 포착</p></div><div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">ALE</p><p class="formula">상관관계 있는 특징에서 PDP보다 안전, 국소 구간 차분을 누적</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=pdp" target="_blank" rel="noopener" style="--chip-c:var(--c-xe)"><p class="name">PDP(부분의존도 플롯)</p><p class="formula">특징 하나를 바꿔가며 평균 예측 변화를 그린 전역 곡선</p></a><a class="chip-card" href="../concepts/index.html?c=ice-plot" target="_blank" rel="noopener" style="--chip-c:var(--c-xe)"><p class="name">ICE plot</p><p class="formula">PDP를 개별 샘플 단위로 쪼갠 곡선, 샘플 간 이질적 효과 포착</p></a><a class="chip-card" href="../concepts/index.html?c=ale" target="_blank" rel="noopener" style="--chip-c:var(--c-xe)"><p class="name">ALE</p><p class="formula">상관관계 있는 특징에서 PDP보다 안전, 국소 구간 차분을 누적</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">규칙 · 트리 특화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">Anchors</p><p class="formula">if-then 규칙, 조건 충족 시 예측이 거의 바뀌지 않음을 보장하는 고신뢰 설명</p></div><div class="chip-card" style="--chip-c:var(--c-xe)"><p class="name">TreeSHAP</p><p class="formula">트리 구조를 활용해 다항시간에 정확한 SHAP값을 계산하는 고속 변형</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=anchors" target="_blank" rel="noopener" style="--chip-c:var(--c-xe)"><p class="name">Anchors</p><p class="formula">if-then 규칙, 조건 충족 시 예측이 거의 바뀌지 않음을 보장하는 고신뢰 설명</p></a><a class="chip-card" href="../concepts/index.html?c=treeshap" target="_blank" rel="noopener" style="--chip-c:var(--c-xe)"><p class="name">TreeSHAP</p><p class="formula">트리 구조를 활용해 다항시간에 정확한 SHAP값을 계산하는 고속 변형</p></a>
       </div>
     </div>
   </div>
@@ -350,13 +355,13 @@
     <div class="sub-block">
       <p class="sub-title">격차 진단</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">그룹별 성능 격차(Disparate Impact)</p><p class="formula">보호집단 간 예측률 비율 비교</p></div><div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">Equalized Odds 점검</p><p class="formula">집단별 참양성률 · 위양성률 차이 측정</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=disparate-impact" target="_blank" rel="noopener" style="--chip-c:var(--c-xf)"><p class="name">그룹별 성능 격차(Disparate Impact)</p><p class="formula">보호집단 간 예측률 비율 비교</p></a><a class="chip-card" href="../concepts/index.html?c=equalized-odds-check" target="_blank" rel="noopener" style="--chip-c:var(--c-xf)"><p class="name">Equalized Odds 점검</p><p class="formula">집단별 참양성률 · 위양성률 차이 측정</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">반사실 · 소스 추적</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">반사실 공정성</p><p class="formula">보호속성만 바꾼 반사실 개체의 예측이 동일한지 검증</p></div><div class="chip-card" style="--chip-c:var(--c-xf)"><p class="name">SHAP 기반 편향 소스 추적</p><p class="formula">민감속성과 상관된 대리 특징의 기여도를 분리해 편향 경로 파악</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=counterfactual-fairness" target="_blank" rel="noopener" style="--chip-c:var(--c-xf)"><p class="name">반사실 공정성</p><p class="formula">보호속성만 바꾼 반사실 개체의 예측이 동일한지 검증</p></a><a class="chip-card" href="../concepts/index.html?c=shap-bias-tracing" target="_blank" rel="noopener" style="--chip-c:var(--c-xf)"><p class="name">SHAP 기반 편향 소스 추적</p><p class="formula">민감속성과 상관된 대리 특징의 기여도를 분리해 편향 경로 파악</p></a>
       </div>
     </div>
   </div>
@@ -367,13 +372,13 @@
     <div class="sub-block">
       <p class="sub-title">범용 설명 라이브러리</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">shap</p><p class="formula">SHAP값 계산의 사실상 표준 파이썬 라이브러리, TreeExplainer · KernelExplainer 제공</p></div><div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">InterpretML</p><p class="formula">Microsoft의 글래스박스(EBM)와 블랙박스 설명을 함께 제공하는 툴킷</p></div><div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">Alibi Explain</p><p class="formula">Anchors · Counterfactual 등 다양한 기법을 한 인터페이스로 제공</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=shap-library" target="_blank" rel="noopener" style="--chip-c:var(--c-xg)"><p class="name">shap</p><p class="formula">SHAP값 계산의 사실상 표준 파이썬 라이브러리, TreeExplainer · KernelExplainer 제공</p></a><a class="chip-card" href="../concepts/index.html?c=interpretml" target="_blank" rel="noopener" style="--chip-c:var(--c-xg)"><p class="name">InterpretML</p><p class="formula">Microsoft의 글래스박스(EBM)와 블랙박스 설명을 함께 제공하는 툴킷</p></a><a class="chip-card" href="../concepts/index.html?c=alibi-explain" target="_blank" rel="noopener" style="--chip-c:var(--c-xg)"><p class="name">Alibi Explain</p><p class="formula">Anchors · Counterfactual 등 다양한 기법을 한 인터페이스로 제공</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">딥러닝 특화 도구</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">Captum</p><p class="formula">PyTorch 공식 그래디언트 · 어트리뷰션 기반 설명 라이브러리</p></div><div class="chip-card" style="--chip-c:var(--c-xg)"><p class="name">tf-explain</p><p class="formula">TensorFlow/Keras 모델용 Grad-CAM 등 시각화 도구</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=captum" target="_blank" rel="noopener" style="--chip-c:var(--c-xg)"><p class="name">Captum</p><p class="formula">PyTorch 공식 그래디언트 · 어트리뷰션 기반 설명 라이브러리</p></a><a class="chip-card" href="../concepts/index.html?c=tf-explain" target="_blank" rel="noopener" style="--chip-c:var(--c-xg)"><p class="name">tf-explain</p><p class="formula">TensorFlow/Keras 모델용 Grad-CAM 등 시각화 도구</p></a>
       </div>
     </div>
   </div>
@@ -384,13 +389,13 @@
     <div class="sub-block">
       <p class="sub-title">범위 구분</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">전역 설명(Global)</p><p class="formula">모델 전체의 평균적 행동과 특징 영향력을 요약</p></div><div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">국소 설명(Local)</p><p class="formula">개별 예측 하나에 대한 근거만 설명</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=global-explanation" target="_blank" rel="noopener" style="--chip-c:var(--c-xh)"><p class="name">전역 설명(Global)</p><p class="formula">모델 전체의 평균적 행동과 특징 영향력을 요약</p></a><a class="chip-card" href="../concepts/index.html?c=local-explanation" target="_blank" rel="noopener" style="--chip-c:var(--c-xh)"><p class="name">국소 설명(Local)</p><p class="formula">개별 예측 하나에 대한 근거만 설명</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">전역 근사</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">Surrogate Model</p><p class="formula">해석 가능한 단순 모델(선형 · 트리)로 블랙박스 전체를 근사</p></div><div class="chip-card" style="--chip-c:var(--c-xh)"><p class="name">Global SHAP 요약</p><p class="formula">로컬 SHAP값들의 평균 절대값을 모아 전역 특징 중요도 산출</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=surrogate-model" target="_blank" rel="noopener" style="--chip-c:var(--c-xh)"><p class="name">Surrogate Model</p><p class="formula">해석 가능한 단순 모델(선형 · 트리)로 블랙박스 전체를 근사</p></a><a class="chip-card" href="../concepts/index.html?c=global-shap-summary" target="_blank" rel="noopener" style="--chip-c:var(--c-xh)"><p class="name">Global SHAP 요약</p><p class="formula">로컬 SHAP값들의 평균 절대값을 모아 전역 특징 중요도 산출</p></a>
       </div>
     </div>
   </div>

@@ -190,6 +190,9 @@
   }
   .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
   .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+  a.chip-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-card:hover, a.chip-card:focus-visible { border-color: var(--chip-c, var(--ink-faint)); }
+  a.chip-card:hover .name, a.chip-card:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
@@ -242,7 +245,7 @@
     <div class="sub-block">
       <p class="sub-title">발견 알고리즘</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-a)"><p class="name">Alpha Algorithm</p><p class="formula">이벤트 로그의 선후관계로 Petri Net 복원</p></div><div class="chip-card" style="--chip-c:var(--c-pm-a)"><p class="name">Heuristic Miner</p><p class="formula">빈도 기반으로 노이즈에 강한 모델 발견</p></div><div class="chip-card" style="--chip-c:var(--c-pm-a)"><p class="name">Inductive Miner</p><p class="formula">재귀적 분할로 항상 유효한 프로세스 트리 보장</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=alpha-algorithm" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-a)"><p class="name">Alpha Algorithm</p><p class="formula">이벤트 로그의 선후관계로 Petri Net 복원</p></a><a class="chip-card" href="../concepts/index.html?c=heuristic-miner" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-a)"><p class="name">Heuristic Miner</p><p class="formula">빈도 기반으로 노이즈에 강한 모델 발견</p></a><a class="chip-card" href="../concepts/index.html?c=inductive-miner" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-a)"><p class="name">Inductive Miner</p><p class="formula">재귀적 분할로 항상 유효한 프로세스 트리 보장</p></a>
       </div>
     </div>
   </div>
@@ -253,7 +256,7 @@
     <div class="sub-block">
       <p class="sub-title">검사 기법</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-b)"><p class="name">Token Replay</p><p class="formula">로그를 모델 위에서 재생시켜 이탈 지점 탐지</p></div><div class="chip-card" style="--chip-c:var(--c-pm-b)"><p class="name">Alignment 기반 적합성</p><p class="formula">로그와 모델 실행경로의 최소편집거리</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=token-replay" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-b)"><p class="name">Token Replay</p><p class="formula">로그를 모델 위에서 재생시켜 이탈 지점 탐지</p></a><a class="chip-card" href="../concepts/index.html?c=alignment-conformance" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-b)"><p class="name">Alignment 기반 적합성</p><p class="formula">로그와 모델 실행경로의 최소편집거리</p></a>
       </div>
     </div>
   </div>
@@ -264,7 +267,7 @@
     <div class="sub-block">
       <p class="sub-title">분석 · 예측</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-c)"><p class="name">병목구간 분석</p><p class="formula">대기시간이 긴 구간 식별</p></div><div class="chip-card" style="--chip-c:var(--c-pm-c)"><p class="name">예측 모니터링</p><p class="formula">진행중인 케이스의 남은 시간 · 결과 예측</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=bottleneck-analysis" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-c)"><p class="name">병목구간 분석</p><p class="formula">대기시간이 긴 구간 식별</p></a><a class="chip-card" href="../concepts/index.html?c=predictive-monitoring" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-c)"><p class="name">예측 모니터링</p><p class="formula">진행중인 케이스의 남은 시간 · 결과 예측</p></a>
       </div>
     </div>
   </div>
@@ -275,7 +278,7 @@
     <div class="sub-block">
       <p class="sub-title">표현 형식</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-d)"><p class="name">Petri Net</p><p class="formula">플레이스 · 트랜지션 · 토큰으로 동시성 표현</p></div><div class="chip-card" style="--chip-c:var(--c-pm-d)"><p class="name">BPMN</p><p class="formula">실무에서 널리 쓰는 비즈니스 프로세스 표기법</p></div><div class="chip-card" style="--chip-c:var(--c-pm-d)"><p class="name">프로세스 트리</p><p class="formula">재귀적 연산자로 표현한 블록구조 모델</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=petri-net" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-d)"><p class="name">Petri Net</p><p class="formula">플레이스 · 트랜지션 · 토큰으로 동시성 표현</p></a><a class="chip-card" href="../concepts/index.html?c=bpmn" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-d)"><p class="name">BPMN</p><p class="formula">실무에서 널리 쓰는 비즈니스 프로세스 표기법</p></a><a class="chip-card" href="../concepts/index.html?c=process-tree" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-d)"><p class="name">프로세스 트리</p><p class="formula">재귀적 연산자로 표현한 블록구조 모델</p></a>
       </div>
     </div>
   </div>
@@ -286,7 +289,7 @@
     <div class="sub-block">
       <p class="sub-title">동시성 · 검증</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-e)"><p class="name">AND-split/AND-join</p><p class="formula">하나의 트랜지션에서 여러 흐름이 동시에 갈라지고 다시 합쳐지는 병렬 구조</p></div><div class="chip-card" style="--chip-c:var(--c-pm-e)"><p class="name">XOR 분기</p><p class="formula">여러 흐름 중 하나만 배타적으로 선택되는 조건 분기</p></div><div class="chip-card" style="--chip-c:var(--c-pm-e)"><p class="name">데드락 · 라이브락 검증</p><p class="formula">더 이상 진행 불가능한 상태와 무한 순환 상태를 형식적으로 검증</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=and-split-join" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-e)"><p class="name">AND-split/AND-join</p><p class="formula">하나의 트랜지션에서 여러 흐름이 동시에 갈라지고 다시 합쳐지는 병렬 구조</p></a><a class="chip-card" href="../concepts/index.html?c=xor-branch" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-e)"><p class="name">XOR 분기</p><p class="formula">여러 흐름 중 하나만 배타적으로 선택되는 조건 분기</p></a><a class="chip-card" href="../concepts/index.html?c=deadlock-livelock-verification" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-e)"><p class="name">데드락 · 라이브락 검증</p><p class="formula">더 이상 진행 불가능한 상태와 무한 순환 상태를 형식적으로 검증</p></a>
       </div>
     </div>
   </div>
@@ -297,7 +300,7 @@
     <div class="sub-block">
       <p class="sub-title">대표 도구</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-f)"><p class="name">PM4Py</p><p class="formula">파이썬 기반 프로세스 마이닝 라이브러리</p></div><div class="chip-card" style="--chip-c:var(--c-pm-f)"><p class="name">ProM</p><p class="formula">대표적인 오픈소스 프로세스 마이닝 툴킷</p></div><div class="chip-card" style="--chip-c:var(--c-pm-f)"><p class="name">Celonis</p><p class="formula">상용 프로세스 마이닝 플랫폼</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=pm4py" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-f)"><p class="name">PM4Py</p><p class="formula">파이썬 기반 프로세스 마이닝 라이브러리</p></a><a class="chip-card" href="../concepts/index.html?c=prom" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-f)"><p class="name">ProM</p><p class="formula">대표적인 오픈소스 프로세스 마이닝 툴킷</p></a><a class="chip-card" href="../concepts/index.html?c=celonis" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-f)"><p class="name">Celonis</p><p class="formula">상용 프로세스 마이닝 플랫폼</p></a>
       </div>
     </div>
   </div>
@@ -308,7 +311,7 @@
     <div class="sub-block">
       <p class="sub-title">예측 기법</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-g)"><p class="name">Next Activity Prediction</p><p class="formula">진행중인 케이스의 다음 이벤트를 예측</p></div><div class="chip-card" style="--chip-c:var(--c-pm-g)"><p class="name">Remaining Time Prediction</p><p class="formula">케이스가 종료될 때까지 남은 시간을 예측</p></div><div class="chip-card" style="--chip-c:var(--c-pm-g)"><p class="name">이상 케이스 조기 경고</p><p class="formula">정상 패턴에서 벗어난 케이스를 진행 중에 탐지</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=next-activity-prediction" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-g)"><p class="name">Next Activity Prediction</p><p class="formula">진행중인 케이스의 다음 이벤트를 예측</p></a><a class="chip-card" href="../concepts/index.html?c=remaining-time-prediction" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-g)"><p class="name">Remaining Time Prediction</p><p class="formula">케이스가 종료될 때까지 남은 시간을 예측</p></a><a class="chip-card" href="../concepts/index.html?c=anomaly-early-warning" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-g)"><p class="name">이상 케이스 조기 경고</p><p class="formula">정상 패턴에서 벗어난 케이스를 진행 중에 탐지</p></a>
       </div>
     </div>
   </div>
@@ -319,7 +322,7 @@
     <div class="sub-block">
       <p class="sub-title">로그 구조 · 품질 이슈</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pm-h)"><p class="name">필수 3요소</p><p class="formula">케이스ID, 활동명, 타임스탬프로 구성된 최소 이벤트 구조</p></div><div class="chip-card" style="--chip-c:var(--c-pm-h)"><p class="name">로그 불완전성</p><p class="formula">누락된 이벤트로 인해 실제 흐름이 왜곡되는 문제</p></div><div class="chip-card" style="--chip-c:var(--c-pm-h)"><p class="name">노이즈 필터링</p><p class="formula">드물게 발생하는 비정상 경로를 제거해 모델 품질 향상</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=event-log-essentials" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-h)"><p class="name">필수 3요소</p><p class="formula">케이스ID, 활동명, 타임스탬프로 구성된 최소 이벤트 구조</p></a><a class="chip-card" href="../concepts/index.html?c=log-incompleteness" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-h)"><p class="name">로그 불완전성</p><p class="formula">누락된 이벤트로 인해 실제 흐름이 왜곡되는 문제</p></a><a class="chip-card" href="../concepts/index.html?c=noise-filtering" target="_blank" rel="noopener" style="--chip-c:var(--c-pm-h)"><p class="name">노이즈 필터링</p><p class="formula">드물게 발생하는 비정상 경로를 제거해 모델 품질 향상</p></a>
       </div>
     </div>
   </div>

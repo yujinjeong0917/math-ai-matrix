@@ -3687,4 +3687,2092 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     related: [{ label: "Auto Scaling", slug: "aws-auto-scaling" }, { label: "SageMaker", slug: "aws-sagemaker" }, { label: "ELB", slug: "aws-elb" }],
     sections: []
   },
+  "shap-value": {
+    title: String.raw`SHAP값: Shapley Value로 공정하게 기여도 나누기`,
+    domain: "xai",
+    subLabel: String.raw`게임이론 기반`,
+    intuition: String.raw`<p>여러 사람이 힘을 합쳐 얻은 성과를 각자에게 얼마씩 나눠줘야 공평할까. 이 질문은 게임이론에서 오래전에 답을 찾았다. 한 사람이 없을 때와 있을 때 팀 전체 성과가 얼마나 달라지는지를 모든 가능한 참여 순서에 대해 평균 내면 그 사람의 몫이 정해진다. 이걸 섀플리 값이라고 부른다.</p>
+<p>SHAP는 이 아이디어를 모델 예측에 그대로 옮겨온다. 참여자를 사람 대신 입력 특징으로 바꾸고 팀 성과를 모델 예측값으로 바꾼다. 어떤 특징들이 알려져 있을 때 모델이 내놓는 예측값을 팀 성과로 보고 각 특징이 예측값을 기준값에서 얼마나 밀어올렸는지 섀플리 값으로 계산한다. 특징 하나하나의 기여도를 공평하게 나눈 숫자를 얻는 셈이다.</p>`,
+    explanation: String.raw`<p>섀플리 값은 전체 특징 집합 $N$($|N|=n$)의 부분집합 $S$마다 정의되는 특성함수 $v(S)$에서 출발한다. $v(S)$는 특징 집합 $S$만 알고 있을 때 모델이 내놓는 예측값의 기댓값이다. 특징 $i$의 섀플리 값은 $\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(n-|S|-1)!}{n!} \big[v(S\cup\{i\}) - v(S)\big]$로 정의된다.</p>
+<p>이 식은 특징들이 임의의 순서로 하나씩 모델에 더해진다고 생각했을 때 특징 $i$가 합류하는 순간 예측값이 얼마나 뛰는지를 가능한 모든 순서에 대해 평균낸 값이다. 순서마다 이미 들어와 있는 특징 집합 $S$가 다르므로 한계기여도 $v(S\cup\{i\})-v(S)$도 매번 달라지고 그걸 조합론적으로 정확히 평균낸 것이 섀플리 값이다.</p>
+<p>왜 하필 이 가중치를 쓰는가는 섀플리가 증명한 공정성 조건들 때문이다. 기여가 없는 특징에는 0을 주고 똑같이 기여하는 두 특징에는 같은 값을 주고 전체 기여도의 합은 항상 실제 예측값과 기준값의 차이와 정확히 일치해야 한다는 조건들을 동시에 만족하는 배분 방식은 이 가중 평균이 유일하다. 그래서 $\sum_i \phi_i = f(x) - E[f(X)]$가 항상 성립한다.</p>
+<p>문제는 특징이 $n$개면 부분집합이 $2^n$개라 정확한 계산은 특징이 많아지면 순식간에 불가능해진다는 점이다. SHAP는 몬테카를로 샘플링으로 순서를 무작위로 뽑아 근사하거나 트리 모델이면 TreeSHAP처럼 트리 구조를 이용해 다항 시간에 정확히 계산하는 식으로 이 조합 폭발을 우회한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="610" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="50" y="160" width="70" height="30" class="dg-dim"/>
+<text x="85" y="150" font-size="12" text-anchor="middle">기준값</text>
+<text x="85" y="205" font-size="12" text-anchor="middle" class="dg-dim">0.30</text>
+<rect x="160" y="135" width="70" height="25" class="dg-accent"/>
+<text x="195" y="125" font-size="12" text-anchor="middle">+φ(소득)</text>
+<rect x="270" y="135" width="70" height="10" class="dg-dim"/>
+<text x="305" y="125" font-size="12" text-anchor="middle">φ(부채비율)</text>
+<rect x="380" y="118" width="70" height="27" class="dg-accent"/>
+<text x="415" y="108" font-size="12" text-anchor="middle">+φ(신용기간)</text>
+<rect x="490" y="118" width="70" height="72" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="525" y="108" font-size="13" text-anchor="middle">f(x)</text>
+<text x="525" y="205" font-size="12" text-anchor="middle">0.72</text>
+</svg>`,
+    diagramCaption: String.raw`기준값에서 시작해 특징별 섀플리 값을 더하고 빼면 최종 예측값에 도달한다.`,
+    example: String.raw`<p>참여자가 두 명뿐인 간단한 경우로 확인해보자. 특징 $A$만 알 때 예측값 기여는 $v(A)=4$, 특징 $B$만 알 때는 $v(B)=6$, 둘 다 알 때는 $v(A,B)=12$, 아무것도 모를 때는 $v(\emptyset)=0$이라 하자.</p>
+$$\phi_A = \frac{1}{2}\big[(v(A)-v(\emptyset)) + (v(A,B)-v(B))\big] = \frac{1}{2}(4+6) = 5$$
+$$\phi_B = \frac{1}{2}\big[(v(B)-v(\emptyset)) + (v(A,B)-v(A))\big] = \frac{1}{2}(6+8) = 7$$
+<p>$\phi_A+\phi_B=12=v(A,B)$로 두 값의 합이 정확히 전체 성과와 같다. 특징이 두 개뿐이라 순서는 $A\to B$와 $B\to A$ 두 가지뿐이고 각 순서에서의 한계기여도를 평균 낸 것이 위 식이다.</p>`,
+    related: [{ label: "DeepSHAP", slug: "deepshap" }, { label: "잠재변수 SHAP", slug: "latent-shap" }, { label: "LIME", slug: "lime" }],
+    sections: []
+  },
+  "deepshap": {
+    title: String.raw`DeepSHAP: 신경망을 위한 SHAP 근사`,
+    domain: "xai",
+    subLabel: String.raw`게임이론 기반`,
+    intuition: String.raw`<p>섀플리 값을 정확히 구하려면 특징 부분집합을 지수적으로 많이 살펴봐야 한다. 신경망처럼 특징이 수백 수천 개인 모델에서는 이 계산을 다 해볼 수가 없다. DeepSHAP는 신경망의 구조를 그대로 이용해서 이 계산을 훨씬 빠르게 근사하는 방법이다.</p>
+<p>핵심 아이디어는 층 하나짜리 간단한 연산에 대해서는 섀플리 값을 쉽게 구할 수 있다는 점을 이용하는 것이다. 신경망은 결국 단순한 연산들이 층층이 쌓인 구조이므로 각 층에서 구한 근사 기여도를 다음 층으로 체인처럼 전달하면 전체 네트워크에 대한 기여도를 한 번의 역전파로 얻을 수 있다.</p>`,
+    explanation: String.raw`<p>DeepSHAP는 DeepLIFT라는 기존 기법의 역전파 규칙을 섀플리 값의 언어로 재해석한 것이다. DeepLIFT는 입력을 기준 입력(baseline)과 비교해서 그 차이가 출력 차이에 얼마나 기여했는지를 층마다 곱셈 규칙으로 역전파한다. DeepSHAP는 이 곱셈 규칙이 특정 조건에서 섀플리 값의 근사와 같아진다는 점을 보이고 기준 입력 하나 대신 배경 데이터셋에서 뽑은 여러 샘플의 평균으로 baseline을 대체한다.</p>
+<p>배경 샘플을 여러 개 쓰는 이유는 하나의 기준 입력만으로는 특성함수 $v(S)=E[f(x)\mid x_S]$의 기댓값을 제대로 근사할 수 없기 때문이다. 배경 데이터셋의 각 샘플을 baseline으로 삼아 DeepLIFT를 반복 실행하고 그 결과를 평균 내면 특징이 없을 때의 기댓값을 더 현실적으로 흉내 낼 수 있다.</p>
+<p>결과 기여도는 여전히 섀플리 값의 핵심 성질을 만족한다. 모든 특징의 기여도 합은 실제 입력에 대한 출력과 기준 입력들 평균 출력의 차이와 같다. $\sum_i \phi_i = f(x) - E_{x' \sim \text{배경}}[f(x')]$가 항상 성립한다.</p>
+<p>이 성질 덕분에 CNN이나 RNN처럼 층이 깊은 모델에서도 정확한 조합 계산 없이 한 번의 순전파와 역전파만으로 특징별 기여도를 얻을 수 있다. 다만 이 값은 정확한 섀플리 값이 아니라 신경망 구조를 활용한 근사치라는 점은 분명히 해둘 필요가 있다.</p>`,
+    related: [{ label: "SHAP값", slug: "shap-value" }, { label: "잠재변수 SHAP", slug: "latent-shap" }],
+    sections: []
+  },
+  "latent-shap": {
+    title: String.raw`잠재변수 SHAP: 압축된 표현의 기여도 분해`,
+    domain: "xai",
+    subLabel: String.raw`게임이론 기반`,
+    intuition: String.raw`<p>오토인코더나 VAE 같은 생성모델은 입력을 그대로 다루지 않고 훨씬 작은 잠재벡터로 압축한 다음 그걸로 복원하거나 다음 작업을 수행한다. 원본 입력의 어떤 화소나 단어가 중요한지를 묻는 대신 압축된 잠재벡터의 어느 차원이 결과에 중요한지를 묻고 싶을 때가 있다. 잠재변수 SHAP는 섀플리 값의 틀을 원본 특징이 아니라 잠재차원에 그대로 적용한다.</p>
+<p>참여자를 원본 특징 대신 잠재벡터의 각 차원으로 바꾸는 것뿐이라 계산 원리는 SHAP와 같다. 다만 잠재차원은 사람이 보기에 의미를 바로 알기 어려운 경우가 많아서 어느 차원이 중요한지 안 다음에도 그 차원이 실제로 무엇을 인코딩하는지는 별도로 해석해야 한다.</p>`,
+    explanation: String.raw`<p>대상 모델이 인코더 $E$와 디코더 혹은 다음 단계 함수 $D$로 이루어져 있다고 하자. 입력 $x$는 $z=E(x)$로 압축되고 최종 출력은 $y=D(z)$다. 잠재변수 SHAP는 특성함수를 잠재차원의 부분집합 $S \subseteq \{1,\dots,d\}$에 대해 $v(S) = E_{z'}\big[D(z_S, z'_{\bar S})\big]$로 정의한다.</p>
+<p>여기서 $z_S$는 원래 값을 유지하는 차원이고 $z'_{\bar S}$는 배경 분포에서 뽑은 값으로 대체된 나머지 차원이다. 이렇게 정의한 $v(S)$에 그대로 섀플리 값 공식을 적용하면 잠재차원 $i$의 기여도 $\phi_i$를 얻는다.</p>
+<p>원본 입력 기준 SHAP와 다른 점은 배경 분포를 잠재공간에서 잡는다는 것과 잠재차원의 수가 원본 특징 수보다 훨씬 적어서 계산이 상대적으로 가볍다는 점이다. VAE처럼 잠재차원이 독립적인 정규분포를 따르도록 학습된 모델에서는 배경 분포를 표준정규분포로 간단히 근사하는 경우도 많다.</p>
+<p>이렇게 얻은 잠재차원별 기여도는 어떤 차원이 최종 출력에 크게 관여하는지를 알려주지만 그 차원이 밝기인지 회전인지 스타일인지는 알려주지 않는다. 그래서 잠재변수 SHAP는 보통 각 차원을 값별로 조금씩 바꿔가며 출력이 어떻게 변하는지 관찰하는 잠재공간 순회 같은 다른 해석 기법과 함께 쓰인다.</p>`,
+    related: [{ label: "SHAP값", slug: "shap-value" }, { label: "잠재공간 교란", slug: "latent-perturbation" }, { label: "잠재차원 중요도", slug: "latent-dim-importance" }],
+    sections: []
+  },
+  "reward-decomposition-shapley": {
+    title: String.raw`보상분해 Shapley: 멀티에이전트의 공로 배분`,
+    domain: "xai",
+    subLabel: String.raw`게임이론 기반`,
+    intuition: String.raw`<p>여러 에이전트가 협력해서 하나의 팀 보상을 받는 강화학습 환경이 있다고 하자. 게임이 끝나고 나면 팀 전체가 얻은 보상은 하나의 숫자로 나오는데 그 보상에 각 에이전트가 정확히 얼마나 기여했는지는 겉으로 드러나지 않는다. 보상분해 Shapley는 섀플리 값의 틀을 팀 보상 배분 문제에 그대로 적용해서 이 질문에 답한다.</p>
+<p>참여자는 특징이 아니라 에이전트이고 팀 성과는 모델 예측이 아니라 에이전트들이 함께 만들어낸 보상이다. 어떤 에이전트가 팀에 합류했을 때 보상이 얼마나 올라가는지를 가능한 모든 참여 순서에 대해 평균 내면 그 에이전트의 공로가 된다.</p>`,
+    explanation: String.raw`<p>에이전트 집합을 $N$이라 하고 부분집합 $S \subseteq N$이 협력할 때 얻는 보상을 특성함수 $v(S)$로 정의한다. $v(S)$는 보통 $S$에 속한 에이전트는 실제 정책대로 행동하고 나머지는 아무 행동도 하지 않거나 미리 정한 기본 정책을 따를 때 환경에서 얻는 누적 보상의 기댓값으로 잡는다. 이 $v(S)$에 섀플리 값 공식 $\phi_i = \sum_{S \subseteq N\setminus\{i\}} \frac{|S|!\,(n-|S|-1)!}{n!}\big[v(S\cup\{i\}) - v(S)\big]$을 그대로 적용하면 에이전트 $i$의 몫을 얻는다.</p>
+<p>단일 에이전트 강화학습에서는 보상이 어차피 하나의 에이전트 몫이라 배분 문제 자체가 없다. 하지만 여러 에이전트가 공유 보상을 받는 협력형 멀티에이전트 환경에서는 특정 에이전트가 보상 대부분을 만들어냈는지 아니면 다른 에이전트에 무임승차하고 있는지를 학습 곡선만 보고는 구분하기 어렵다. 보상분해 Shapley는 이 무임승차 여부를 수치로 드러낸다.</p>
+<p>실제 계산에서는 에이전트 수가 늘어나면 $2^n$개의 부분집합을 모두 평가하는 비용이 커지므로 무작위로 참여 순서를 샘플링해서 근사하거나 유사한 역할을 하는 에이전트를 묶어 그룹 단위로 섀플리 값을 근사하는 방법을 쓴다. 이렇게 구한 공로 배분은 학습이 끝난 뒤 사후 분석뿐 아니라 개별 에이전트에게 보상을 나눠주는 신용 할당 학습 신호로도 활용된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="190" x2="560" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="70" y="110" width="70" height="80" class="dg-accent"/>
+<text x="105" y="100" font-size="12" text-anchor="middle">에이전트 1</text>
+<text x="105" y="205" font-size="12" text-anchor="middle" class="dg-dim">φ=8</text>
+<rect x="200" y="150" width="70" height="40" class="dg-dim"/>
+<text x="235" y="140" font-size="12" text-anchor="middle">에이전트 2</text>
+<text x="235" y="205" font-size="12" text-anchor="middle" class="dg-dim">φ=4</text>
+<rect x="330" y="130" width="70" height="60" class="dg-accent"/>
+<text x="365" y="120" font-size="12" text-anchor="middle">에이전트 3</text>
+<text x="365" y="205" font-size="12" text-anchor="middle" class="dg-dim">φ=6</text>
+<rect x="460" y="70" width="70" height="120" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="495" y="60" font-size="13" text-anchor="middle">팀 보상</text>
+<text x="495" y="205" font-size="12" text-anchor="middle">v(N)=18</text>
+</svg>`,
+    diagramCaption: String.raw`세 에이전트의 섀플리 값을 더하면 팀 전체 보상과 정확히 같아진다.`,
+    related: [{ label: "SHAP값", slug: "shap-value" }, { label: "정책 국소설명", slug: "policy-local-explanation" }],
+    sections: []
+  },
+  "lime": {
+    title: String.raw`LIME: 국소 선형 근사로 블랙박스 설명하기`,
+    domain: "xai",
+    subLabel: String.raw`국소 근사 기반`,
+    intuition: String.raw`<p>복잡한 모델이 내리는 결정 하나를 설명하고 싶을 때 모델 전체를 이해할 필요는 없을 수도 있다. 궁금한 건 딱 이 입력 근처에서 모델이 어떻게 반응하는가이기 때문이다. LIME은 관심 있는 데이터 포인트 바로 주변에서만 모델이 대략 직선처럼 움직인다고 가정하고 그 근처에 딱 맞는 간단한 선형 모델을 하나 새로 학습시킨다.</p>
+<p>비유하자면 지구는 둥글지만 내가 서 있는 동네 지도는 평면 지도로 충분한 것과 같다. 모델 전체의 곡면은 복잡해도 한 점 근처만 잘라보면 평면 하나로 대략 흉내 낼 수 있다. LIME이라는 이름의 Local Interpretable Model-agnostic Explanations도 이 국소적이고 모델에 무관하다는 성질에서 나왔다.</p>`,
+    explanation: String.raw`<p>설명하고 싶은 입력 $x$ 주변에 교란된 샘플 $z'$들을 여러 개 만든다. 표 형태 데이터라면 특징값을 하나씩 껐다 켜거나 조금씩 바꾸는 식이다. 각 교란 샘플을 원래 모델 $f$에 통과시켜 예측값 $f(z)$를 얻고 원래 입력 $x$에 가까운 샘플일수록 더 큰 가중치 $\pi_x(z)$를 준다. 이 가중치 붙은 데이터로 해석 가능한 단순 모델 $g$(보통 선형회귀)를 학습시켜 $f$를 국소적으로 흉내 낸다. LIME은 이 국소 모델을 $\xi(x) = \arg\min_{g \in G}\ \mathcal{L}(f, g, \pi_x) + \Omega(g)$로 정의한다.</p>
+<p>손실 $\mathcal{L}(f,g,\pi_x) = \sum_{z,z'} \pi_x(z)\,(f(z) - g(z'))^2$는 단순모델 $g$가 원래 모델 $f$의 국소 예측을 얼마나 잘 재현하는지를 재고 $\pi_x$가 멀리 있는 교란 샘플의 영향을 줄인다. $\Omega(g)$는 $g$의 복잡도에 매기는 벌점으로 예를 들어 선형모델의 0이 아닌 계수 개수를 제한해서 설명을 사람이 읽을 수 있는 수준으로 억제한다.</p>
+<p>이렇게 학습된 $g$의 계수가 곧 설명이 된다. 계수가 크고 양수인 특징은 그 예측을 밀어올린 특징이고 음수인 특징은 끌어내린 특징이다. 핵심은 이 계수가 모델 $f$ 전체에 대해 성립하는 게 아니라 $x$ 근처에서만 성립한다는 점이다. 같은 모델이라도 다른 입력 근처에서는 완전히 다른 선형 근사와 다른 계수가 나올 수 있다.</p>
+<p>이 방식의 장점은 $f$가 어떤 구조든 상관없이 예측값만 뽑아낼 수 있으면 적용된다는 것이다. 트리든 신경망이든 앙상블이든 내부를 몰라도 된다. 대신 교란 샘플을 어떻게 만드는지와 근접도를 재는 커널을 어떻게 정하는지에 따라 설명이 꽤 달라질 수 있다는 약점도 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<path d="M40,220 Q200,40 560,180" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="120" r="7" class="dg-accent"/>
+<text x="300" y="100" font-size="12" text-anchor="middle">설명 대상 x</text>
+<circle cx="260" cy="140" r="4" class="dg-dim"/>
+<circle cx="330" cy="105" r="4" class="dg-dim"/>
+<circle cx="280" cy="100" r="4" class="dg-dim"/>
+<circle cx="320" cy="150" r="4" class="dg-dim"/>
+<circle cx="350" cy="130" r="4" class="dg-dim"/>
+<line x1="220" y1="170" x2="400" y2="80" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="420" y="70" font-size="12">국소 선형 근사 g</text>
+<text x="40" y="235" font-size="12" class="dg-dim">복잡한 결정경계 f</text>
+</svg>`,
+    diagramCaption: String.raw`x 주변에 뿌린 교란 샘플만으로 그 지점 근처에서 f를 흉내 내는 직선을 학습한다.`,
+    example: String.raw`<p>대출 승인 모델이 입력 $x=(\text{소득}=3000,\ \text{부채비율}=40\%)$에 대해 $f(x)=0.82$(승인 확률)를 낸다고 하자. $x$ 근처에서 소득과 부채비율을 조금씩 바꾼 교란 샘플 수백 개를 만들어 $f$에 통과시키고 $x$와 가까운 샘플일수록 큰 가중치를 줘서 선형회귀를 적합하면 예를 들어 $g(x') = 0.5 + 0.00008\cdot\text{소득} - 0.006\cdot\text{부채비율}$ 같은 식을 얻을 수 있다. 이 국소 모델은 이 대출 신청 근처에서만 소득이 오르면 승인 확률이 오르고 부채비율이 오르면 내려간다는 걸 계수 부호로 바로 보여준다.</p>`,
+    related: [{ label: "이미지 LIME", slug: "image-lime" }, { label: "SHAP값", slug: "shap-value" }, { label: "잠재공간 교란", slug: "latent-perturbation" }],
+    sections: []
+  },
+  "image-lime": {
+    title: String.raw`이미지 LIME: 슈퍼픽셀 단위로 교란하기`,
+    domain: "xai",
+    subLabel: String.raw`국소 근사 기반`,
+    intuition: String.raw`<p>이미지는 화소 하나하나가 수만 개라서 LIME을 화소 단위로 그대로 적용하면 교란해야 할 변수가 너무 많아진다. 화소 하나를 껐다 켠다고 사람 눈에 보이는 의미 있는 변화가 생기지도 않는다. 이미지 LIME은 화소를 개별로 다루는 대신 색과 질감이 비슷해서 같은 물체 조각처럼 보이는 덩어리로 이미지를 먼저 쪼갠다. 이 덩어리를 슈퍼픽셀이라고 부른다.</p>
+<p>이제 교란은 슈퍼픽셀 단위로 이루어진다. 특정 슈퍼픽셀 영역을 회색이나 평균색으로 지워버리거나 그대로 두는 식으로 켜고 끄면서 여러 버전의 이미지를 만들고 각 버전에 대한 모델 예측을 관찰한다. 어떤 조각을 지웠을 때 예측이 크게 흔들리면 그 조각이 예측에 중요했다는 뜻이다.</p>`,
+    explanation: String.raw`<p>먼저 분할 알고리즘(quickshift나 SLIC 등)으로 원본 이미지를 $M$개의 슈퍼픽셀로 나눈다. 해석 가능한 표현은 이 $M$개 슈퍼픽셀 각각의 켜짐 꺼짐을 나타내는 이진벡터 $z' \in \{0,1\}^M$이다. $z'$의 각 성분이 1이면 그 슈퍼픽셀은 원본 그대로 두고 0이면 회색이나 해당 영역의 평균색 같은 중립적인 값으로 덮어 새 이미지를 만든다.</p>
+<p>이렇게 만든 여러 교란 이미지를 원래 분류 모델에 통과시켜 관심 클래스에 대한 예측 확률을 얻는다. 원본 이미지($z'$가 전부 1인 경우)에 가까운 교란 이미지 즉 꺼진 슈퍼픽셀 수가 적은 이미지일수록 LIME의 근접도 가중치 $\pi_x$를 더 크게 준다. 이 가중치 붙은 데이터로 이진벡터 $z'$를 입력으로 받는 희소 선형모델을 학습시키면 슈퍼픽셀별 계수를 얻는다.</p>
+<p>양의 계수를 가진 슈퍼픽셀은 켜져 있을 때 예측 확률을 밀어올리는 영역이고 음의 계수는 끌어내리는 영역이다. 계수가 큰 상위 몇 개 슈퍼픽셀만 원본 위에 하이라이트로 표시하면 사람이 보기에 모델이 이미지의 어느 부분을 보고 그 클래스를 골랐는지 한눈에 들어오는 설명이 된다. 화소 단위 그래디언트 기반 설명과 달리 슈퍼픽셀 단위라 노이즈가 적고 물체 경계와도 잘 맞아떨어지는 편이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="220" height="180" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M30,90 L110,60 L160,100 L120,150 L30,140 Z" fill="none" class="dg-line" stroke-width="1.5"/>
+<path d="M110,60 L250,30 L250,120 L160,100 Z" class="dg-accent"/>
+<path d="M160,100 L250,120 L250,210 L120,150 Z" fill="none" class="dg-line" stroke-width="1.5"/>
+<path d="M30,140 L120,150 L250,210 L30,210 Z" class="dg-dim"/>
+<text x="140" y="20" font-size="12" text-anchor="middle">슈퍼픽셀로 분할</text>
+<line x1="255" y1="120" x2="330" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="292" y="110" font-size="12" text-anchor="middle">on/off</text>
+<rect x="330" y="60" width="200" height="120" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="430" y="90" font-size="12" text-anchor="middle">교란 이미지 → f(z)</text>
+<text x="430" y="115" font-size="12" text-anchor="middle" class="dg-dim">가까운 샘플에 큰 가중치</text>
+<text x="430" y="150" font-size="12" text-anchor="middle">→ 슈퍼픽셀별 계수</text>
+</svg>`,
+    diagramCaption: String.raw`일부 슈퍼픽셀을 지운 여러 버전의 이미지로 예측 변화를 관찰해 슈퍼픽셀별 중요도를 얻는다.`,
+    related: [{ label: "LIME", slug: "lime" }, { label: "잠재공간 교란", slug: "latent-perturbation" }],
+    sections: []
+  },
+  "latent-perturbation": {
+    title: String.raw`잠재공간 교란: 국소 민감도로 생성모델 설명하기`,
+    domain: "xai",
+    subLabel: String.raw`국소 근사 기반`,
+    intuition: String.raw`<p>VAE나 GAN 같은 생성모델은 잠재벡터 하나를 입력으로 받아 이미지나 문장 같은 결과물을 만들어낸다. 이 잠재벡터의 어느 방향으로 움직이면 결과물이 어떻게 바뀌는지 알고 싶을 때가 있다. 잠재공간 교란은 잠재벡터를 아주 살짝만 움직여보고 그때 출력이 얼마나 민감하게 반응하는지를 관찰해서 설명을 만든다.</p>
+<p>큰 폭으로 잠재벡터를 바꾸면 완전히 다른 결과물이 나와서 원래 샘플과의 관계를 알기 어렵다. 대신 아주 작은 변화만 줘서 원래 결과물 근처에서 국소적으로 어떤 방향이 결과를 가장 크게 흔드는지를 살펴보는 것이 핵심이다.</p>`,
+    explanation: String.raw`<p>잠재벡터 $z$에서 생성 함수 $G(z)$를 얻는다고 하자. 잠재차원 $i$ 방향으로 아주 작은 값 $\epsilon$만큼 이동시킨 뒤 생성 결과가 얼마나 변하는지를 $s_i(z) \approx \|G(z+\epsilon e_i) - G(z)\| / \epsilon$이라는 유한차분으로 근사한다.</p>
+<p>이 값이 크면 그 방향으로 잠재벡터를 조금만 움직여도 출력이 크게 바뀐다는 뜻이고 작으면 그 방향은 출력에 거의 영향을 주지 않는다는 뜻이다. 자동미분이 가능한 모델이라면 유한차분 대신 야코비안 $\partial G(z)/\partial z_i$를 직접 계산해서 같은 정보를 더 정확하게 얻을 수도 있다.</p>
+<p>이런 국소 민감도는 잠재차원 하나하나를 조금씩 바꿔가며 결과물이 어떻게 달라지는지 보여주는 잠재공간 순회와 짝을 이뤄 자주 쓰인다. 민감도가 큰 방향을 찾아낸 다음 그 방향으로 크게 이동시키며 실제로 어떤 시각적 속성이 바뀌는지 확인하면 그 차원이 무엇을 인코딩하는지 짐작할 수 있다. 예를 들어 얼굴 생성모델에서 특정 방향의 민감도가 유독 크게 나온다면 그 방향이 웃음이나 머리색처럼 사람이 알아볼 수 있는 속성과 대응될 가능성이 높다.</p>`,
+    related: [{ label: "잠재변수 SHAP", slug: "latent-shap" }, { label: "잠재차원 중요도", slug: "latent-dim-importance" }],
+    sections: []
+  },
+  "policy-local-explanation": {
+    title: String.raw`정책 국소설명: 상태를 흔들어 결정을 설명하기`,
+    domain: "xai",
+    subLabel: String.raw`국소 근사 기반`,
+    intuition: String.raw`<p>강화학습 에이전트가 어떤 상태에서 특정 행동을 골랐을 때 왜 그 행동을 골랐는지 궁금할 수 있다. 정책 자체는 신경망처럼 복잡한 함수라 내부를 들여다봐도 바로 답이 나오지 않는다. 정책 국소설명은 그 상태를 살짝 흔들어보고 에이전트의 선택이 얼마나 민감하게 반응하는지를 관찰해서 결정의 이유를 짐작한다.</p>
+<p>LIME이 이미지나 표 데이터의 입력을 교란하듯이 여기서는 상태를 이루는 특징들을 하나씩 가리거나 값을 바꿔가며 정책의 행동 확률이나 Q값이 얼마나 달라지는지 본다. 특정 상태 특징을 바꿨을 때 선택이 크게 뒤집힌다면 그 특징이 그 결정에서 중요했다는 뜻이다.</p>`,
+    explanation: String.raw`<p>상태 $s$에서 정책 $\pi(\cdot\mid s)$ 또는 행동가치 $Q(s,a)$가 주어졌을 때 상태를 이루는 특징 하나 $s_i$를 배경값이나 다른 상태에서 뽑은 값으로 바꿔치기한 교란 상태 $s'$를 만든다. 그 다음 정책 출력이 얼마나 달라졌는지를 $\Delta_i = D_{\mathrm{KL}}(\pi(\cdot\mid s)\,\|\,\pi(\cdot\mid s'))$처럼 잰다.</p>
+<p>또는 특정 행동 $a$에 대한 $Q$값의 변화량 $|Q(s,a) - Q(s',a)|$를 직접 쓰기도 한다. 이 값을 상태를 이루는 특징마다 반복해서 구하면 어떤 특징이 지금 이 상태에서의 결정에 가장 큰 영향을 미쳤는지 순위를 매길 수 있다.</p>
+<p>LIME을 상태에 그대로 적용하는 방식도 가능하다. 관심 상태 주변에 여러 교란 상태를 만들고 각 교란 상태에서 정책의 행동 확률을 관찰한 뒤 원래 상태에 가까운 교란 상태에 더 큰 가중치를 줘서 국소 선형모델을 학습시키는 식이다. 이렇게 하면 그 상태 근처에서 어떤 특징이 행동 선택을 어느 방향으로 미는지 계수로 확인할 수 있다.</p>
+<p>이 접근의 어려움은 강화학습 상태가 이미지 프레임 여러 장이나 시계열처럼 구조가 복잡한 경우가 많다는 점이다. 상태의 어느 부분을 하나의 단위로 묶어 교란할지 정하는 문제가 이미지 LIME의 슈퍼픽셀 선택과 비슷하게 결과 설명의 품질을 좌우한다.</p>`,
+    related: [{ label: "상태특징 중요도", slug: "state-feature-importance" }, { label: "LIME", slug: "lime" }, { label: "보상분해 Shapley", slug: "reward-decomposition-shapley" }],
+    sections: []
+  },
+  "permutation-importance": {
+    title: String.raw`Permutation Importance: 특징을 섞어서 중요도 재기`,
+    domain: "xai",
+    subLabel: String.raw`특징 중요도`,
+    intuition: String.raw`<p>어떤 특징이 모델 성능에 얼마나 중요한지 알고 싶을 때 가장 직관적인 방법은 그 특징을 못 쓰게 망가뜨려 보고 성능이 얼마나 떨어지는지 보는 것이다. Permutation Importance는 특징 값을 아예 지우는 대신 그 열의 값을 행끼리 무작위로 뒤섞어버린다. 특징의 분포 자체는 그대로 남지만 원래 그 값이 어느 샘플의 것이었는지는 완전히 뒤죽박죽이 된다.</p>
+<p>어떤 특징이 예측에 실제로 중요했다면 그 값을 섞는 순간 모델은 엉뚱한 정보를 받게 되고 성능이 크게 떨어진다. 반대로 모델이 그 특징을 거의 안 쓰고 있었다면 값을 섞어도 성능은 거의 그대로다. 이 성능 하락폭이 곧 그 특징의 중요도다.</p>`,
+    explanation: String.raw`<p>이미 학습이 끝난 모델 $f$와 평가 데이터 $(X,y)$, 성능 지표 $s$(정확도나 $R^2$ 등)가 있다고 하자. 원본 데이터에서의 점수 $s(f,X,y)$를 기준으로 삼고 특징 $j$번째 열만 무작위로 섞은 데이터 $X_{\pi_j}$에서의 점수를 다시 구해 $\mathrm{PI}_j = s(f,X,y) - \frac{1}{K}\sum_{k=1}^{K} s(f, X_{\pi_j^{(k)}}, y)$로 중요도를 정의한다.</p>
+<p>한 번만 섞으면 우연히 운 나쁜 순열이 뽑혀 결과가 들쭉날쭉할 수 있으므로 섞는 과정을 $K$번 반복하고 평균 낸다. $\mathrm{PI}_j$가 크다는 것은 그 특징을 섞었을 때 성능이 많이 떨어졌다는 뜻이므로 모델이 그 특징에 많이 의존하고 있었다는 신호다.</p>
+<p>이 방법의 장점은 모델을 재학습할 필요가 없고 트리든 신경망이든 어떤 모델에도 적용된다는 점이다. 다만 두 특징이 서로 강하게 상관되어 있으면 하나를 섞어도 남은 특징이 비슷한 정보를 대신 제공해서 중요도가 실제보다 낮게 나올 수 있다. 또한 섞은 데이터는 특징 간의 원래 결합분포를 깨뜨리기 때문에 모델이 한 번도 본 적 없는 비현실적인 조합을 평가하게 된다는 점도 해석에 주의가 필요한 부분이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="520" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="90" y="60" width="60" height="140" class="dg-accent"/>
+<text x="120" y="50" font-size="12" text-anchor="middle">소득</text>
+<text x="120" y="215" font-size="12" text-anchor="middle" class="dg-dim">0.18</text>
+<rect x="220" y="150" width="60" height="50" class="dg-accent"/>
+<text x="250" y="140" font-size="12" text-anchor="middle">지역</text>
+<text x="250" y="215" font-size="12" text-anchor="middle" class="dg-dim">0.04</text>
+<rect x="350" y="190" width="60" height="10" class="dg-dim"/>
+<text x="380" y="180" font-size="12" text-anchor="middle">가입일</text>
+<text x="380" y="215" font-size="12" text-anchor="middle" class="dg-dim">0.01</text>
+<text x="60" y="30" font-size="12">특징을 섞었을 때 정확도 하락폭</text>
+</svg>`,
+    diagramCaption: String.raw`특징을 섞었을 때 성능이 많이 떨어질수록 그 특징이 중요하다.`,
+    example: String.raw`<p>분류 정확도가 $0.90$인 모델이 있다고 하자. 소득 열만 무작위로 섞고 $K=5$번 반복해 평균 정확도를 재보니 $0.72$가 나왔다. 이 특징의 순열 중요도는 $\mathrm{PI}_{\text{소득}} = 0.90-0.72=0.18$이다. 같은 방식으로 지역 열을 섞었더니 평균 정확도가 $0.86$으로만 떨어졌다면 $\mathrm{PI}_{\text{지역}}=0.04$로 소득보다 훨씬 덜 중요한 특징이라는 뜻이다.</p>`,
+    related: [{ label: "Feature Ablation", slug: "feature-ablation" }, { label: "상태특징 중요도", slug: "state-feature-importance" }],
+    sections: []
+  },
+  "feature-ablation": {
+    title: String.raw`Feature Ablation: 특징을 지워서 영향 측정하기`,
+    domain: "xai",
+    subLabel: String.raw`특징 중요도`,
+    intuition: String.raw`<p>Permutation Importance가 특징 값을 뒤섞어 망가뜨린다면 Feature Ablation은 아예 그 특징을 없는 셈 치고 성능을 잰다. 특징 열을 통째로 지우거나 그 특징이 없을 때 흔히 나오는 값(평균이나 0 같은 기본값)으로 고정시켜버린다. 그 상태에서 모델 성능이 얼마나 떨어지는지를 보면 그 특징이 정말 없어도 되는 특징이었는지 알 수 있다.</p>
+<p>섞기와 지우기는 비슷해 보이지만 다르다. 섞으면 그 값은 여전히 데이터 어딘가에 존재하지만 엉뚱한 샘플에 붙어 있다. 지우면 그 정보 자체가 아예 사라진다. 그래서 두 방법이 어떤 특징에 대해 항상 같은 답을 주지는 않는다.</p>`,
+    explanation: String.raw`<p>가장 엄밀한 형태는 특징 $j$를 뺀 데이터로 모델을 처음부터 다시 학습시켜 비교하는 것이다. 전체 특징으로 학습한 모델의 점수 $s(f,X,y)$와 특징 $j$를 뺀 데이터로 새로 학습한 모델 $f_{-j}$의 점수를 비교해 $\mathrm{FA}_j = s(f,X,y) - s(f_{-j}, X_{-j}, y)$로 잰다.</p>
+<p>재학습은 특징 수만큼 모델을 여러 번 학습해야 해서 비용이 크다. 그래서 실무에서는 재학습 없이 이미 학습된 모델에 특징 $j$ 열만 평균값이나 0 같은 고정값으로 채워 넣은 데이터를 그대로 통과시키는 방식을 훨씬 자주 쓴다. 이 경우는 재학습 없는 근사이므로 그 특징이 모델 구조 자체에서 완전히 빠졌을 때의 영향과는 다를 수 있다는 점을 감안해야 한다.</p>
+<p>재학습판 Ablation은 그 특징이 존재하지 않는 세계에서 모델이 얼마나 잘할 수 있는지를 보여주므로 특징 선택이나 데이터 수집 우선순위를 정할 때 특히 유용하다. 반면 고정값 대체판은 지금 배포된 모델이 그 특징에 얼마나 의존하고 있는지를 빠르게 확인하는 용도에 가깝다. 두 관점 모두 특징 하나를 아예 없앤다는 점에서 값을 뒤섞는 Permutation Importance보다 더 극단적인 개입이다.</p>`,
+    related: [{ label: "Permutation Importance", slug: "permutation-importance" }, { label: "잠재차원 중요도", slug: "latent-dim-importance" }],
+    sections: []
+  },
+  "latent-dim-importance": {
+    title: String.raw`잠재차원 중요도: 어떤 축이 재구성에 기여하는가`,
+    domain: "xai",
+    subLabel: String.raw`특징 중요도`,
+    intuition: String.raw`<p>오토인코더는 입력을 잠재벡터로 압축했다가 다시 원본과 비슷하게 복원하도록 학습된다. 잠재벡터의 차원이 10개라면 그중 몇 개는 복원에 핵심적이고 몇 개는 거의 쓰이지 않을 수 있다. 잠재차원 중요도는 각 잠재차원을 하나씩 지워보고 복원 품질이 얼마나 나빠지는지를 재서 이 역할 분담을 드러낸다.</p>
+<p>원리는 Feature Ablation과 같다. 다만 지우는 대상이 원본 입력의 특징이 아니라 압축된 표현의 한 축이라는 점이 다르다.</p>`,
+    explanation: String.raw`<p>인코더 $E$와 디코더 $D$로 이루어진 오토인코더에서 $z=E(x)$라 하자. 잠재차원 $i$를 평균값이나 0으로 고정한 벡터 $z_{-i}$를 만들고 그걸로 복원한 결과와 원래 $z$로 복원한 결과의 재구성 오차 차이를 $\mathrm{LI}_i = \mathcal{L}_{\mathrm{recon}}(x, D(z_{-i})) - \mathcal{L}_{\mathrm{recon}}(x, D(z))$로 잰다.</p>
+<p>$\mathrm{LI}_i$가 크면 그 차원을 지웠을 때 복원이 크게 나빠졌다는 뜻이므로 그 차원이 입력의 중요한 정보를 담고 있었다는 신호다. 이 값을 데이터셋 전체에서 평균 내면 잠재차원별로 전역적인 중요도 순위를 매길 수 있다.</p>
+<p>이 방식은 VAE처럼 KL 발산 항으로 잠재차원에 정보량 제약을 거는 모델에서 특히 흥미로운 결과를 보여준다. 정보량 제약이 강하면 일부 차원이 아예 입력과 무관한 표준정규분포에 가깝게 붕괴해버리는 사후붕괴 현상이 생기는데 이런 차원은 지워도 재구성 오차가 거의 안 바뀐다. 잠재차원 중요도를 재보면 이렇게 사실상 죽어버린 차원을 찾아낼 수 있고 반대로 소수의 차원에 정보가 과도하게 몰려 있는지도 확인할 수 있다.</p>`,
+    related: [{ label: "잠재변수 SHAP", slug: "latent-shap" }, { label: "잠재공간 교란", slug: "latent-perturbation" }, { label: "Feature Ablation", slug: "feature-ablation" }],
+    sections: []
+  },
+  "state-feature-importance": {
+    title: String.raw`상태특징 중요도: Q값이 무엇에 민감한가`,
+    domain: "xai",
+    subLabel: String.raw`특징 중요도`,
+    intuition: String.raw`<p>강화학습에서 에이전트가 보는 상태는 위치, 속도, 주변 장애물 거리 같은 여러 특징으로 이루어진다. 이 중 어떤 특징이 에이전트의 가치 판단에 실제로 영향을 미치는지 알고 싶을 수 있다. 상태특징 중요도는 Permutation Importance나 Feature Ablation의 아이디어를 그대로 가져와 상태 특징 하나를 흔들거나 지웠을 때 Q값이 얼마나 달라지는지를 잰다.</p>
+<p>지도학습에서는 예측 정확도가 성능 지표였지만 여기서는 Q값 자체나 그 Q값을 따라 행동했을 때의 실제 보상이 지표가 된다. 어떤 상태 특징을 건드렸을 때 Q값이 크게 흔들리거나 최적 행동이 바뀐다면 그 특징이 가치 판단에서 핵심적인 역할을 하고 있었다는 뜻이다.</p>`,
+    explanation: String.raw`<p>학습된 Q함수 $Q(s,a)$와 상태 특징 $i$가 있을 때 그 특징만 배경 분포에서 뽑은 값으로 바꾸거나 다른 상태의 값으로 뒤섞은 교란 상태 $s_{\pi_i}$를 만든다. 원래 Q값과 교란 후 Q값의 차이를 $\Delta Q_i = |Q(s,a) - Q(s_{\pi_i}, a)|$로 특징별로 잰다.</p>
+<p>이 차이를 여러 상태와 여러 행동에 대해 평균 내면 그 특징이 전역적으로 Q값 추정에 얼마나 관여하는지 순위가 나온다. 표 데이터의 Permutation Importance와 다른 점은 성능 지표가 분류 정확도 같은 단일 숫자가 아니라 상태 행동마다 정의되는 Q값이라 평균을 어떤 상태 분포 위에서 잡을지가 결과에 영향을 준다는 점이다.</p>
+<p>Q값 대신 실제로 그 정책을 굴렸을 때의 누적 보상을 지표로 쓸 수도 있다. 특정 상태 특징을 계속 무작위 값으로 흔들면서 에피소드를 돌려보고 평균 보상이 원래 정책 대비 얼마나 떨어지는지를 재는 방식이다. 이 경우는 한 시점의 Q값 변화가 아니라 그 특징이 망가진 채로 여러 스텝을 거치며 누적되는 영향까지 반영하므로 더 실질적인 중요도를 보여주지만 계산 비용은 훨씬 크다.</p>`,
+    related: [{ label: "Permutation Importance", slug: "permutation-importance" }, { label: "정책 국소설명", slug: "policy-local-explanation" }],
+    sections: []
+  },
+  "linear-model-coefficients": {
+    title: String.raw`선형모델 계수: 가장 오래된 설명가능성`,
+    domain: "xai",
+    subLabel: String.raw`그래디언트 기반`,
+    intuition: String.raw`<p>모델이 어떤 근거로 예측했는지 알고 싶을 때 가장 오래되고 직접적인 방법은 모델의 수식 자체를 읽는 것이다. 선형회귀는 예측값을 각 입력값에 계수를 곱해 더한 식으로 만든다. 계수가 크면 그 입력이 예측에 크게 관여한다는 뜻이고 계수의 부호는 그 입력이 늘어날 때 예측이 늘어나는지 줄어드는지를 그대로 알려준다.</p>
+<p>딥러닝이나 트리 앙상블처럼 복잡한 모델이 등장한 뒤에도 이 발상은 사라지지 않았다. LIME 같은 후속 설명기법은 복잡한 모델을 국소적으로 흉내 내는 간단한 선형모델을 만들고 그 계수를 읽어서 설명을 만든다. 결국 선형모델 계수는 다른 설명기법들이 흉내 내려는 원본에 가깝다.</p>`,
+    explanation: String.raw`<p>선형회귀는 $\hat y = w_0 + \sum_i w_i x_i$ 형태로 예측한다. 분류에 쓰이는 로지스틱 회귀는 여기에 시그모이드를 씌워 $\hat p = \sigma(w_0 + \sum_i w_i x_i)$로 확률을 낸다. 이 경우 계수 $w_i$를 지수함수에 넣은 $e^{w_i}$가 그 입력이 한 단위 늘어날 때 오즈가 몇 배로 바뀌는지를 뜻하는 오즈비가 된다.</p>
+<p>계수 크기를 곧바로 중요도로 읽으려면 조건이 하나 붙는다. 입력값들의 단위와 스케일이 다르면 계수도 그 단위를 따라가기 때문에 절대적인 크기를 서로 비교할 수 없다. 소득을 원 단위로 넣은 계수와 나이를 년 단위로 넣은 계수는 숫자만으로 비교가 안 된다. 이 문제를 피하려면 입력을 평균 0 표준편차 1로 표준화한 뒤 계수를 비교해야 한다.</p>
+<p>입력들 사이에 상관관계가 강하면 또 다른 문제가 생긴다. 두 입력이 거의 같은 정보를 담고 있으면 모델은 중요도를 임의로 나눠 갖거나 부호를 뒤집기도 한다. 정규화(L1, L2)를 걸면 계수 크기가 더 줄어들기 때문에 정규화를 쓴 모델의 계수는 그 자체로 중요도라기보다 정규화 강도까지 함께 반영된 값으로 읽어야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="160" y1="30" x2="160" y2="210" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="160" y="50" width="220" height="22" class="dg-accent"/>
+<rect x="160" y="92" width="41" height="22" class="dg-dim"/>
+<rect x="110" y="134" width="50" height="22" class="dg-dim"/>
+<rect x="160" y="176" width="100" height="22" class="dg-dim"/>
+<text x="30" y="65" font-size="13">특징 A</text>
+<text x="30" y="107" font-size="13">특징 B</text>
+<text x="30" y="149" font-size="13">특징 C</text>
+<text x="30" y="191" font-size="13">특징 D</text>
+<text x="390" y="65" font-size="12" class="dg-dim">w = 0.80</text>
+<text x="211" y="107" font-size="12" class="dg-dim">w = 0.15</text>
+<text x="60" y="149" font-size="12" class="dg-dim">w = -0.20</text>
+<text x="270" y="191" font-size="12" class="dg-dim">w = 0.35</text>
+<text x="160" y="225" font-size="12" text-anchor="middle">계수 0</text>
+</svg>`,
+    diagramCaption: String.raw`계수가 클수록 그 특징이 예측을 크게 밀어올리거나 끌어내린다.`,
+    example: String.raw`<p>표준화된 입력에 대해 계수가 $w_A=0.8$, $w_B=0.15$, $w_C=-0.2$, $w_D=0.35$라고 하자. 절댓값 기준으로 A가 가장 크므로 예측을 가장 많이 좌우하는 특징이다. C는 부호가 음수이므로 C가 커질수록 예측은 오히려 줄어든다. B와 D는 둘 다 양의 방향이지만 D가 B보다 약 두 배 더 크게 기여한다.</p>`,
+    related: [{ label: "Saliency Map", slug: "saliency-map" }, { label: "규칙 추출", slug: "rule-extraction" }],
+    sections: []
+  },
+  "saliency-map": {
+    title: String.raw`Saliency Map: 입력에 대한 출력의 그래디언트`,
+    domain: "xai",
+    subLabel: String.raw`그래디언트 기반`,
+    intuition: String.raw`<p>선형모델은 계수를 읽으면 끝이지만 신경망은 그런 단일한 수식이 없다. 대신 신경망은 이미 학습 과정에서 역전파로 그래디언트를 계산해왔다. Saliency Map은 이 계산 도구를 학습이 아니라 설명에 그대로 재사용한다. 입력의 각 성분을 아주 살짝 바꿨을 때 출력이 얼마나 민감하게 반응하는지를 측정해서 민감도가 큰 위치를 밝게 표시한다.</p>
+<p>이미지 분류 모델이라면 이 민감도를 픽셀마다 계산해 이미지와 같은 크기의 지도를 그릴 수 있다. 밝게 나온 픽셀은 조금만 바뀌어도 모델의 판단이 흔들리는 지점이라는 뜻이고 이 지점들이 대략 모델이 결정을 내릴 때 주목한 부분과 겹친다.</p>`,
+    explanation: String.raw`<p>목표 클래스의 점수 $y_c$를 입력 $x$로 미분한 값 $S_i = \partial y_c / \partial x_i$가 saliency 값이다. 역전파를 한 번만 돌리면 모든 입력 성분에 대한 이 값을 동시에 얻을 수 있어서 계산 비용이 매우 낮다.</p>
+<p>그런데 그래디언트는 지금 서 있는 그 점에서의 순간 기울기일 뿐이다. ReLU가 음수 구간을 완전히 눌러버렸거나 활성화가 포화 구간에 들어간 경우 실제로는 그 입력이 중요한데도 그 지점에서의 기울기는 0에 가깝게 나올 수 있다. 이런 이유로 raw saliency map은 특징 없이 흩뿌려진 잡음처럼 보일 때가 많다.</p>
+<p>이 문제를 완화하려고 입력에 작은 무작위 노이즈를 여러 번 더해 계산한 saliency를 평균 내는 SmoothGrad 같은 보정법이 나왔고 아예 그래디언트를 한 점이 아니라 경로 전체에서 적분하는 Integrated Gradients도 등장했다. Sanity Checks for Saliency Maps 연구는 일부 saliency map이 모델의 가중치를 무작위로 초기화해도 거의 똑같은 모양을 낸다는 사실을 보여 어떤 saliency 기법이 실제로 학습된 가중치를 반영하는지 검증해야 한다는 경고를 남겼다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="80" width="110" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="85" y="60" font-size="13" text-anchor="middle">입력 x</text>
+<line x1="140" y1="125" x2="190" y2="125" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="190,120 202,125 190,130" class="dg-dim" stroke="none"/>
+<rect x="205" y="80" width="130" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="270" y="60" font-size="13" text-anchor="middle">모델 f</text>
+<text x="270" y="130" font-size="12" class="dg-dim" text-anchor="middle">순전파</text>
+<line x1="335" y1="125" x2="385" y2="125" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="385,120 397,125 385,130" class="dg-dim" stroke="none"/>
+<rect x="400" y="100" width="90" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="445" y="80" font-size="13" text-anchor="middle">출력 y_c</text>
+<path d="M400,160 C300,220 180,220 90,175" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="90,175 100,168 96,180" class="dg-accent" stroke="none"/>
+<text x="245" y="235" font-size="13" text-anchor="middle">역전파로 계산한 ∂y_c/∂x</text>
+<rect x="560" y="80" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="560" y="80" width="20" height="20" class="dg-accent"/>
+<rect x="600" y="100" width="20" height="20" class="dg-accent"/>
+<text x="590" y="160" font-size="12" text-anchor="middle" class="dg-dim">saliency map</text>
+</svg>`,
+    diagramCaption: String.raw`역전파로 얻은 출력의 입력에 대한 그래디언트를 이미지 위에 지도로 그린다.`,
+    example: String.raw`<p>$y = 3x_1 + x_2^2$라는 단순한 함수가 있고 $x=(1,2)$에서 평가한다고 하자. $\partial y/\partial x_1 = 3$이고 $\partial y/\partial x_2 = 2x_2 = 4$이다. 이 점에서는 $x_2$ 방향의 민감도가 $x_1$ 방향보다 더 크므로 saliency map은 $x_2$에 해당하는 위치를 더 밝게 표시한다.</p>`,
+    related: [{ label: "선형모델 계수", slug: "linear-model-coefficients" }, { label: "Integrated Gradients", slug: "integrated-gradients" }, { label: "Grad-CAM", slug: "grad-cam" }],
+    sections: []
+  },
+  "integrated-gradients": {
+    title: String.raw`Integrated Gradients: 기준점에서 경로적분으로 기여도 구하기`,
+    domain: "xai",
+    subLabel: String.raw`그래디언트 기반`,
+    intuition: String.raw`<p>Saliency map은 입력이 지금 있는 딱 한 지점에서의 기울기만 본다. 활성화가 포화된 구간에서는 그 지점의 기울기가 0이어도 그 특징이 없어졌을 때와 있을 때의 결과가 완전히 다를 수 있다. Integrated Gradients는 한 점만 보지 말고 아예 기준이 되는 텅 빈 입력에서 실제 입력까지 걸어가면서 그 길 위 모든 지점에서 기울기를 재고 다 더하자고 제안한다.</p>
+<p>비유하면 산의 높이를 한 지점의 경사만으로 판단하지 않고 출발점부터 도착점까지 걸어가며 매 걸음의 오르내림을 전부 더해 총 고도 변화를 재는 것과 같다. 중간에 평평한 구간이 있어도 전체 경로를 보면 결국 얼마나 올라갔는지가 정확히 나온다.</p>`,
+    explanation: String.raw`<p>기준점 $x'$(검은 이미지나 0 벡터처럼 아무 정보가 없다고 볼 수 있는 입력)에서 실제 입력 $x$까지를 $\alpha \in [0,1]$로 매개변수화한 직선 경로로 잇는다. 성분 $i$에 대한 기여도는 다음과 같다.</p>
+<p>$IG_i(x) = (x_i - x_i') \int_0^1 \frac{\partial F(x' + \alpha(x-x'))}{\partial x_i} d\alpha$</p>
+<p>이 값들을 모든 성분에 대해 더하면 정확히 모델 출력의 변화량과 같아진다는 완전성(completeness) 성질을 만족한다. $\sum_i IG_i(x) = F(x) - F(x')$. 한 점의 기울기만 보는 saliency map은 이 성질을 보장하지 않는다.</p>
+<p>실제 계산은 적분을 리만합으로 근사한다. 경로를 $m$개의 계단으로 나눠 각 계단에서 그래디언트를 구하고 평균 낸 뒤 $(x_i - x_i')$를 곱한다. $m$은 보통 20에서 300 사이로 잡는다. 기준점을 무엇으로 잡느냐도 결과를 바꾼다. 검은 이미지, 0 벡터, 데이터셋 평균 이미지는 모두 서로 다른 없음의 기준을 뜻하고 그만큼 기여도 해석도 달라진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="150" x2="560" y2="150" class="dg-line" stroke-width="2" stroke-dasharray="6,4"/>
+<circle cx="60" cy="150" r="8" class="dg-dim" stroke="none"/>
+<circle cx="560" cy="150" r="8" class="dg-accent" stroke="none"/>
+<text x="60" y="130" font-size="12" text-anchor="middle">기준점 x'</text>
+<text x="560" y="130" font-size="12" text-anchor="middle">입력 x</text>
+<circle cx="185" cy="150" r="5" class="dg-dim" stroke="none"/>
+<circle cx="310" cy="150" r="5" class="dg-dim" stroke="none"/>
+<circle cx="435" cy="150" r="5" class="dg-dim" stroke="none"/>
+<line x1="185" y1="150" x2="185" y2="110" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="310" y1="150" x2="310" y2="90" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="435" y1="150" x2="435" y2="70" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="185" y="105" font-size="11" text-anchor="middle" class="dg-dim">∂F/∂x</text>
+<text x="310" y="85" font-size="11" text-anchor="middle" class="dg-dim">∂F/∂x</text>
+<text x="435" y="65" font-size="11" text-anchor="middle" class="dg-dim">∂F/∂x</text>
+<text x="310" y="185" font-size="13" text-anchor="middle">α: 0에서 1까지 경로를 따라 그래디언트를 적분</text>
+<line x1="60" y1="205" x2="560" y2="205" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="560,205 550,199 550,211" class="dg-dim" stroke="none"/>
+<text x="310" y="225" font-size="12" text-anchor="middle" class="dg-dim">누적 기여도 = IG_i(x)</text>
+</svg>`,
+    diagramCaption: String.raw`기준점에서 입력까지 경로를 따라 그래디언트를 적분해 기여도를 구한다.`,
+    example: String.raw`<p>$F(x) = x^2$라는 함수와 기준점 $x'=0$, 실제 입력 $x=2$를 생각하자. 경로 위 점은 $z(\alpha) = 2\alpha$이고 그 지점의 그래디언트는 $\partial F/\partial x = 2z(\alpha) = 4\alpha$이다. 따라서 $IG(x) = (2-0)\int_0^1 4\alpha\, d\alpha = 2 \times 2 = 4$이다. 실제로 $F(x) - F(x') = 4 - 0 = 4$이므로 완전성 성질이 정확히 성립한다.</p>`,
+    related: [{ label: "Saliency Map", slug: "saliency-map" }, { label: "선형모델 계수", slug: "linear-model-coefficients" }],
+    sections: []
+  },
+  "policy-gradient-saliency": {
+    title: String.raw`정책 그래디언트 saliency: 어떤 상태 성분이 행동을 바꾸는가`,
+    domain: "xai",
+    subLabel: String.raw`그래디언트 기반`,
+    intuition: String.raw`<p>강화학습 에이전트는 상태 $s$를 받아 각 행동을 고를 확률 $\pi(a|s)$를 내놓는 정책망으로 움직인다. 이 정책망도 결국 신경망이므로 saliency map과 똑같은 방법을 쓸 수 있다. 상태의 어느 성분을 조금 바꿨을 때 특정 행동을 고를 확률이 얼마나 민감하게 반응하는지를 재면 화면의 어느 부분이 그 행동을 결정지었는지 짚어낼 수 있다.</p>
+<p>이 방법은 특히 게임 화면처럼 픽셀로 된 상태를 다루는 에이전트를 진단할 때 요긴하다. 에이전트가 공과 패들을 보고 반응하는지 아니면 화면 구석의 점수 숫자처럼 판단과 무관해야 할 부분에 반응하는지를 학습이 끝난 뒤에도 들여다볼 수 있기 때문이다. 다만 정책망은 사람이 이해하기 쉬우라고 학습되는 게 아니라 보상을 최대화하도록만 학습되므로 이 saliency가 항상 인과적으로 올바른 이유를 가리킨다고 보장하지는 않는다.</p>`,
+    explanation: String.raw`<p>기본 saliency map과 마찬가지로 선택한 행동의 확률 또는 로그확률을 상태로 미분한다. $S_i = \partial \pi_\theta(a|s)/\partial s_i$ 또는 수치적으로 더 안정적인 $\partial \log \pi_\theta(a|s)/\partial s_i$를 쓴다. 역전파 한 번으로 상태의 모든 성분에 대한 민감도를 동시에 얻는다는 점도 분류 모델의 saliency map과 같다.</p>
+<p>대표적으로 Atari 벽돌깨기류 게임에서 이 기법을 적용하면 잘 학습된 에이전트는 공과 패들 위치에 saliency가 집중되는 모습을 보인다. 반대로 화면 한구석의 점수 표시나 생명 개수 표시처럼 게임 진행과 우연히 상관관계가 있던 요소에 saliency가 몰리는 경우도 보고된 바 있는데 이는 에이전트가 겉보기 성능은 높아도 잘못된 단서에 의존하고 있다는 신호다.</p>
+<p>비슷한 방식으로 상태의 가치 $V(s)$를 상태로 미분하는 가치함수 saliency도 만들 수 있다. 가치함수 saliency는 이 상태가 얼마나 좋은지를 설명하는 것이고 정책 그래디언트 saliency는 왜 하필 이 행동을 골랐는지를 설명한다는 점에서 서로 다른 질문에 답한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="300" height="200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="180" cy="90" r="10" class="dg-accent" stroke="none"/>
+<rect x="150" y="200" width="70" height="14" class="dg-accent"/>
+<rect x="260" y="40" width="60" height="24" fill="none" class="dg-line" stroke-width="1.5"/>
+<text x="290" y="57" font-size="11" text-anchor="middle" class="dg-dim">점수 037</text>
+<text x="180" y="70" font-size="11" text-anchor="middle" class="dg-dim">공</text>
+<text x="185" y="232" font-size="11" text-anchor="middle" class="dg-dim">패들</text>
+<text x="420" y="90" font-size="13" text-anchor="middle">높은 ∂π/∂s</text>
+<text x="420" y="108" font-size="12" text-anchor="middle" class="dg-dim">공, 패들 위치</text>
+<text x="420" y="150" font-size="13" text-anchor="middle">낮은 ∂π/∂s</text>
+<text x="420" y="168" font-size="12" text-anchor="middle" class="dg-dim">점수판(정상)</text>
+<text x="420" y="210" font-size="12" text-anchor="middle" class="dg-dim">점수판이 밝다면</text>
+<text x="420" y="226" font-size="12" text-anchor="middle" class="dg-dim">가짜 상관 의심</text>
+</svg>`,
+    diagramCaption: String.raw`정책망의 saliency가 게임 요소에 집중되는지 무관한 표시에 쏠리는지로 학습이 제대로 됐는지 가늠할 수 있다.`,
+    related: [{ label: "Saliency Map", slug: "saliency-map" }, { label: "정책 네트워크 CAM", slug: "policy-network-cam" }, { label: "정책 어텐션 시각화", slug: "policy-attention-viz" }],
+    sections: []
+  },
+  "tree-visualization": {
+    title: String.raw`트리 시각화: 분기 경로를 그대로 보여주기`,
+    domain: "xai",
+    subLabel: String.raw`구조 특화 설명`,
+    intuition: String.raw`<p>결정트리는 예측 자체가 예 또는 아니오로 답하는 질문들을 순서대로 밟아가는 과정이라서 트리 구조를 그대로 보여주는 것만으로 완전한 설명이 된다. 별도의 설명기법을 덧붙일 필요 없이 뿌리 노드부터 리프까지 이 샘플이 실제로 지나간 경로를 추적하면 그게 곧 왜 이런 예측이 나왔는지에 대한 답이다.</p>
+<p>다만 랜덤포레스트나 그래디언트 부스팅처럼 트리를 수백 개 합쳐 예측하는 앙상블에서는 하나의 경로만으로는 설명이 안 된다. 이런 경우 시각화는 개별 경로 대신 전체 트리들에서 각 특징이 뿌리에 가까운 곳에서 얼마나 자주 쓰였는지 같은 요약된 통계로 옮겨간다.</p>`,
+    explanation: String.raw`<p>트리의 내부 노드는 하나의 특징에 대해 $x_j \le t$ 같은 임계값 조건을 검사하고 그 결과에 따라 왼쪽 또는 오른쪽 자식으로 이동한다. 리프 노드에는 회귀라면 예측값이 분류라면 클래스 분포가 저장돼 있다. 한 샘플의 예측은 뿌리에서 리프까지 지나온 조건들의 목록 그 자체로 설명된다.</p>
+<p>트리 깊이가 깊을수록 조건이 많아져서 해석이 어려워지기 때문에 해석가능성을 우선하는 상황에서는 정확도를 조금 희생하더라도 얕은 트리를 일부러 선택하기도 한다.</p>
+<p>단일 트리를 넘어 전체 모델의 특징 중요도를 낼 때는 각 특징이 분기에 쓰일 때마다 불순도(지니 불순도나 분산)가 얼마나 줄었는지를 그 분기에 도달한 샘플 수로 가중해 모든 트리에 걸쳐 합산한다. 이 평균 불순도 감소(MDI) 방식은 계산이 빠르지만 연속값이거나 범주가 많은 특징의 중요도를 과대평가하는 경향이 있어 무작위로 값을 섞어 성능 하락폭을 재는 permutation importance와 함께 비교하는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="300" y1="30" x2="180" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="300" y1="30" x2="420" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="110" x2="120" y2="190" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="180" y1="110" x2="240" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="110" x2="360" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="110" x2="480" y2="190" class="dg-line" stroke-width="1.5"/>
+<circle cx="300" cy="30" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="180" cy="110" r="14" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="420" cy="110" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="120" cy="190" r="12" class="dg-accent" stroke="none"/>
+<circle cx="240" cy="190" r="12" class="dg-dim" stroke="none"/>
+<circle cx="360" cy="190" r="12" class="dg-dim" stroke="none"/>
+<circle cx="480" cy="190" r="12" class="dg-dim" stroke="none"/>
+<text x="215" y="65" font-size="12" text-anchor="middle">소득 ≤ t</text>
+<text x="385" y="65" font-size="12" text-anchor="middle" class="dg-dim">소득 > t</text>
+<text x="130" y="155" font-size="12" text-anchor="middle">나이 ≤ s</text>
+<text x="230" y="155" font-size="12" text-anchor="middle" class="dg-dim">나이 > s</text>
+<text x="120" y="220" font-size="12" text-anchor="middle">예측 = A</text>
+</svg>`,
+    diagramCaption: String.raw`뿌리에서 리프까지 실제로 지나간 경로가 그대로 예측의 근거가 된다.`,
+    example: String.raw`<p>나이와 소득이라는 두 특징을 쓰는 트리가 있다고 하자. 어떤 샘플의 소득이 임계값 이하라면 뿌리 노드에서 왼쪽으로 이동하고 이어서 나이가 임계값 이하인지를 검사해 다시 왼쪽으로 이동해 리프에 도달한다. 이 리프의 예측이 최종 출력이고 지나온 두 조건 소득 이하와 나이 이하가 그대로 이 예측의 근거가 된다.</p>`,
+    related: [{ label: "선형모델 계수", slug: "linear-model-coefficients" }, { label: "규칙 추출", slug: "rule-extraction" }],
+    sections: []
+  },
+  "grad-cam": {
+    title: String.raw`Grad-CAM: 클래스별로 어디를 보고 판단했는가`,
+    domain: "xai",
+    subLabel: String.raw`구조 특화 설명`,
+    intuition: String.raw`<p>픽셀 하나하나의 그래디언트를 보는 saliency map은 점처럼 흩어진 잡음이 많아 읽기 어렵다. Grad-CAM은 더 거친 대신 훨씬 안정적인 단위에서 질문을 던진다. CNN의 마지막 합성곱층에는 여러 채널이 있고 각 채널은 이미지의 특정 위치에서 어떤 학습된 패턴이 나타나는지를 공간적으로 표시한 지도다. Grad-CAM은 지금 관심 있는 클래스에 대해 각 채널이 얼마나 중요한지를 재고 그 중요도로 채널들을 가중합해 하나의 지도로 합친다.</p>
+<p>이렇게 만든 지도는 위치 정보를 예측하도록 따로 학습된 적이 없는 일반 분류 모델에서도 물체의 위치를 어느 정도 짚어낸다는 점이 놀라운 부분이다. 또한 Grad-CAM은 클래스에 따라 결과가 달라진다. 개와 고양이가 함께 있는 사진에서 개 클래스에 대한 지도는 개가 있는 자리를, 고양이 클래스에 대한 지도는 고양이가 있는 자리를 밝힌다. 단순히 눈에 띄는 영역을 표시하는 게 아니라 그 클래스를 지지하는 영역을 표시한다는 뜻이다.</p>`,
+    explanation: String.raw`<p>선택한 합성곱층의 채널별 특징맵을 $A^k$, 목표 클래스 점수를 $y_c$라 하자. 먼저 $y_c$를 $A^k$의 모든 위치로 미분한 뒤 공간 위치에 대해 평균 내 채널별 중요도를 구한다. $\alpha_k^c = \frac{1}{Z}\sum_i \sum_j \frac{\partial y_c}{\partial A^k_{ij}}$.</p>
+<p>이 중요도로 채널들을 가중합하고 ReLU를 씌운다. $L^c_{Grad\text{-}CAM} = \mathrm{ReLU}\left(\sum_k \alpha_k^c A^k\right)$. ReLU를 쓰는 이유는 그 클래스를 밀어올리는 방향으로 기여하는 부분만 남기고 오히려 클래스를 억누르는 방향으로 기여하는 부분은 지도에서 제외하기 위해서다.</p>
+<p>이렇게 나온 지도는 선택한 층의 해상도를 그대로 가지므로 보통 원본 이미지보다 훨씬 작다. 이를 원본 크기로 보간해서 확대한 뒤 이미지 위에 반투명하게 겹쳐 표시한다. 마지막 합성곱층을 주로 선택하는 이유는 그 층이 깊어서 클래스와 관련된 의미 있는 정보를 담고 있으면서도 완전연결층과 달리 아직 공간적 위치 정보를 유지하고 있기 때문이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="30" y="30" width="30" height="30" class="dg-dim"/>
+<rect x="60" y="60" width="30" height="30" class="dg-accent"/>
+<text x="60" y="105" font-size="12" text-anchor="middle">채널 1, α₁=0.7</text>
+<rect x="30" y="130" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="30" y="130" width="30" height="30" class="dg-accent"/>
+<rect x="60" y="160" width="30" height="30" class="dg-dim"/>
+<text x="60" y="205" font-size="12" text-anchor="middle">채널 2, α₂=0.2</text>
+<line x1="95" y1="60" x2="230" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="95" y1="160" x2="230" y2="140" class="dg-line" stroke-width="1.5"/>
+<text x="260" y="120" font-size="12" text-anchor="middle">Σ αₖAᵏ</text>
+<text x="260" y="140" font-size="12" text-anchor="middle">ReLU</text>
+<line x1="290" y1="130" x2="360" y2="130" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="360,125 372,130 360,135" class="dg-dim" stroke="none"/>
+<rect x="380" y="60" width="140" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="450" cy="130" r="45" class="dg-accent" stroke="none"/>
+<text x="450" y="220" font-size="13" text-anchor="middle">클래스 c에 대한 활성화맵</text>
+</svg>`,
+    diagramCaption: String.raw`채널별 그래디언트로 중요도를 구하고 가중합한 뒤 ReLU를 씌워 클래스별 활성화맵을 만든다.`,
+    example: String.raw`<p>2×2 크기의 특징맵을 가진 채널이 두 개 있고 채널 1의 중요도가 $\alpha_1=0.7$, 채널 2의 중요도가 $\alpha_2=0.2$라고 하자. 채널 1의 왼쪽 위 값이 5, 채널 2의 같은 위치 값이 2라면 그 위치의 가중합은 $0.7 \times 5 + 0.2 \times 2 = 3.9$이고 이 값이 양수이므로 ReLU를 통과해 그대로 활성화맵에 남는다. 만약 가중합이 음수로 나온 위치가 있다면 ReLU가 그 위치를 0으로 눌러 지도에서 사라진다.</p>`,
+    related: [{ label: "Saliency Map", slug: "saliency-map" }, { label: "정책 네트워크 CAM", slug: "policy-network-cam" }, { label: "GAN Dissection", slug: "gan-dissection" }],
+    sections: []
+  },
+  "gan-dissection": {
+    title: String.raw`GAN Dissection: 뉴런 하나가 만드는 개념 찾기`,
+    domain: "xai",
+    subLabel: String.raw`구조 특화 설명`,
+    intuition: String.raw`<p>GAN은 무작위 노이즈 하나로부터 사실적인 이미지를 만들어내는데 이 과정은 생성기 내부의 수많은 합성곱 채널을 거치며 이뤄진다. GAN Dissection은 아주 직접적인 질문을 던진다. 이 채널들 중 특정 채널 하나가 나무를 그리는 일이나 창문을 그리는 일처럼 사람이 알아볼 수 있는 하나의 개념을 전담하고 있는가. 이를 확인하려면 이미지를 실제로 분할해주는 별도의 세그멘테이션망으로 생성된 이미지에서 나무나 창문 같은 영역을 찾아낸 뒤 특정 채널이 강하게 반응하는 위치와 그 영역이 얼마나 겹치는지를 여러 이미지에 걸쳐 확인한다.</p>
+<p>더 나아가 이 발견을 인과적으로 검증할 수도 있다. 나무를 담당한다고 의심되는 채널을 강제로 꺼버리면 다시 생성한 이미지에서 나무가 사라지고 반대로 그 채널을 모든 위치에서 강제로 켜두면 원래는 나무가 나올 수 없는 자리에도 나무가 그려진다. 단순히 상관관계를 관찰하는 데서 그치지 않고 그 채널을 직접 조작해 개념을 지우거나 그려 넣을 수 있다는 점이 이 방법을 특별하게 만든다.</p>`,
+    explanation: String.raw`<p>먼저 상관관계를 점수화한다. 특정 층의 유닛(채널) $u$가 강하게 반응하는 위치의 집합과 세그멘테이션망이 찾아낸 어떤 개념(나무, 창문, 하늘 등)의 영역을 여러 생성 이미지에 걸쳐 겹침 정도(IoU)로 비교해 그 유닛이 어떤 개념과 가장 잘 맞는지를 찾는다.</p>
+<p>다음으로 인과 관계를 검증한다. 후보 유닛의 활성화를 모든 위치에서 0으로 고정한 채 다시 이미지를 생성해 목표 개념의 영역이 얼마나 줄어드는지를 재거나 반대로 그 유닛을 강제로 높은 값에 고정해 개념이 얼마나 넓게 나타나는지를 잰다. 겹침 점수도 높고 개입에 따른 변화도 큰 유닛만이 실제로 해당 개념을 담당하는 유닛으로 인정된다.</p>
+<p>모든 유닛이 이렇게 깔끔하게 하나의 개념에 대응하지는 않는다. 특별한 지도 없이 학습됐음에도 상당수의 유닛이 사람이 알아볼 수 있는 부분 개념으로 스스로 분화한다는 관찰 자체가 이 방법의 핵심 전제이고 나머지 유닛들은 뚜렷한 단일 개념 없이 여러 패턴에 걸쳐 반응한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="40" width="200" height="100" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="130" y="30" font-size="13" text-anchor="middle">생성기 내부 유닛들</text>
+<rect x="45" y="55" width="30" height="30" class="dg-dim"/>
+<rect x="85" y="55" width="30" height="30" class="dg-dim"/>
+<rect x="125" y="55" width="30" height="30" class="dg-accent"/>
+<rect x="165" y="55" width="30" height="30" class="dg-dim"/>
+<rect x="45" y="95" width="30" height="30" class="dg-dim"/>
+<rect x="85" y="95" width="30" height="30" class="dg-dim"/>
+<rect x="125" y="95" width="30" height="30" class="dg-dim"/>
+<rect x="165" y="95" width="30" height="30" class="dg-dim"/>
+<text x="140" y="115" font-size="11" text-anchor="middle">유닛 u</text>
+<line x1="230" y1="90" x2="330" y2="90" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="330,85 342,90 330,95" class="dg-accent" stroke="none"/>
+<rect x="360" y="40" width="220" height="100" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="470" y="30" font-size="13" text-anchor="middle">생성된 이미지</text>
+<path d="M400,120 C410,80 450,70 480,90 C500,100 470,130 440,130 Z" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="470" y="118" font-size="11" text-anchor="middle" class="dg-dim">나무 영역</text>
+<text x="320" y="175" font-size="12" text-anchor="middle">유닛 u 끄기 → 나무만 사라짐</text>
+<text x="320" y="195" font-size="12" text-anchor="middle" class="dg-dim">유닛 u 강제로 켜기 → 아무 곳에나 나무 생성</text>
+</svg>`,
+    diagramCaption: String.raw`특정 유닛을 끄면 해당 개념만 사라지고 강제로 켜면 아무 곳에나 그 개념이 나타난다.`,
+    related: [{ label: "Grad-CAM", slug: "grad-cam" }, { label: "Cross-Attention 시각화", slug: "cross-attention-viz" }],
+    sections: []
+  },
+  "policy-network-cam": {
+    title: String.raw`정책 네트워크 CAM: 에이전트가 화면의 어디를 보는가`,
+    domain: "xai",
+    subLabel: String.raw`구조 특화 설명`,
+    intuition: String.raw`<p>화면 이미지를 입력으로 받는 강화학습 에이전트의 정책망은 구조상 이미지 분류 모델과 똑같은 CNN이다. Grad-CAM에서 클래스 점수 대신 지금 고른 행동의 점수를 넣으면 똑같은 방법으로 화면의 어느 영역이 그 행동을 고르게 만들었는지 지도로 그릴 수 있다. 개와 고양이를 구분하던 계산 도구를 왼쪽으로 갈지 오른쪽으로 갈지 구분하는 데 그대로 재사용하는 셈이다.</p>
+<p>이 지도는 순전히 보상 신호만으로 학습된 에이전트를 점검하는 유용한 창구가 된다. 점프라는 행동에 대한 지도가 앞에 놓인 장애물 위에 꾸준히 나타난다면 에이전트가 그럴듯한 시각적 단서에 반응하고 있다는 뜻이다. 반대로 그 지도가 점수판이나 생명 표시 같은 고정된 UI 요소에 계속 몰려 있다면 학습 중 우연히 보상과 상관관계가 있었을 뿐인 엉뚱한 단서에 의존하고 있을 가능성이 크고 이는 화면 구성이 조금만 바뀌어도 무너질 수 있는 취약한 정책임을 시사한다.</p>`,
+    explanation: String.raw`<p>Grad-CAM과 같은 절차를 그대로 따른다. 선택한 합성곱층의 채널별 특징맵 $A^k$를 목표 행동의 점수로 미분해 채널별 중요도를 구하고 이를 가중합한 뒤 ReLU를 씌운다. 목표 행동의 점수로는 정책기반 방법이면 행동의 로그확률 $\log \pi(a|s)$를, 가치기반 방법이면 그 행동의 $Q(s,a)$를 쓴다. $\alpha_k^a = \frac{1}{Z}\sum_{ij} \partial Q(s,a)/\partial A^k_{ij}$, $L^a = \mathrm{ReLU}(\sum_k \alpha_k^a A^k)$.</p>
+<p>이미지 분류는 클래스가 수천 개일 수 있지만 게임 에이전트는 보통 몇 개 안 되는 행동 중 하나를 고른다. 그래서 같은 화면에서 서로 다른 후보 행동에 대한 지도를 나란히 비교하는 게 특히 유용하다. 왼쪽으로 이동과 오른쪽으로 이동에 대한 지도가 서로 다른 영역을 짚는다면 정책이 공간 배치를 실제로 활용하고 있다는 뜻이고 두 지도가 거의 구분되지 않는다면 행동 선택이 이미지의 공간 정보보다는 몇몇 수치 채널에 더 의존하고 있을 수 있다는 신호다.</p>
+<p>이 방법은 화면처럼 공간 구조를 가진 입력에만 적용할 수 있다. 센서 값처럼 벡터로 된 상태를 쓰는 정책에는 합성곱층 자체가 없어 이 방법을 쓸 수 없고 그런 경우에는 정책 그래디언트 saliency나 트랜스포머 기반 정책이라면 정책 어텐션 시각화가 대안이 된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="40" width="220" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="150" y="26" font-size="13" text-anchor="middle">행동: 왼쪽</text>
+<circle cx="100" cy="120" r="30" class="dg-accent" stroke="none"/>
+<text x="150" y="220" font-size="12" text-anchor="middle" class="dg-dim">왼쪽 장애물에 집중</text>
+<rect x="340" y="40" width="220" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="450" y="26" font-size="13" text-anchor="middle">행동: 오른쪽</text>
+<circle cx="500" cy="120" r="30" class="dg-accent" stroke="none"/>
+<text x="450" y="220" font-size="12" text-anchor="middle" class="dg-dim">오른쪽 장애물에 집중</text>
+</svg>`,
+    diagramCaption: String.raw`같은 화면이라도 후보 행동을 바꾸면 활성화맵이 서로 다른 영역으로 옮겨간다.`,
+    related: [{ label: "Grad-CAM", slug: "grad-cam" }, { label: "정책 그래디언트 saliency", slug: "policy-gradient-saliency" }, { label: "정책 어텐션 시각화", slug: "policy-attention-viz" }],
+    sections: []
+  },
+  "rule-extraction": {
+    title: String.raw`규칙 추출: 블랙박스를 if-then 규칙으로 근사하기`,
+    domain: "xai",
+    subLabel: String.raw`규칙 · 트리 특화`,
+    intuition: String.raw`<p>결정트리처럼 원래부터 구조가 읽기 쉬운 모델도 있지만 앙상블이나 신경망처럼 그 자체로는 사람이 읽을 수 있는 근거가 없는 모델도 많다. 규칙 추출은 이런 블랙박스 모델의 결정 경계를 소득이 얼마 이상이고 나이가 얼마 이하면 승인 같은 if-then 규칙 몇 개로 근사한다. 원래 모델과 완벽히 똑같지는 않지만 사람이 그대로 읽고 검토할 수 있는 요약을 얻는 대가다.</p>
+<p>이 규칙은 두 갈래로 쓰인다. 하나는 모델 전체의 대략적인 행동을 몇 개의 규칙으로 요약하는 전역 방식이고 다른 하나는 특정 예측 하나를 둘러싼 조건만 뽑아 그 조건이 유지되는 한 예측이 거의 바뀌지 않는다는 것을 보장하는 국소 방식이다. Anchors가 대표적인 국소 방식으로 이 매트릭스의 정형데이터 특화 설명 항목에도 등장한다. 방식은 다르지만 목표는 같다. 숫자로 된 결정 경계를 사람이 실행할 수 있는 말로 바꾸는 것이다.</p>`,
+    explanation: String.raw`<p>일반적인 절차는 이렇다. 이미 학습된 블랙박스 모델 $f$에 다양한 입력을 넣어보고 그 예측 $f(x)$를 라벨로 삼아 새로운 데이터셋을 만든다. 이 데이터셋에 결정트리나 규칙 목록처럼 원래부터 해석하기 쉬운 모델을 학습시킨다. 이 대리모델은 실제 정답이 아니라 블랙박스의 예측을 흉내 내도록 학습된다는 점이 핵심이다.</p>
+<p>대리모델의 품질은 정확도가 아니라 충실도(fidelity)로 잰다. 홀드아웃 데이터에서 추출한 규칙의 예측이 원래 블랙박스의 예측과 얼마나 자주 일치하는지를 본다. 규칙 개수를 늘리거나 조건을 길게 하면 충실도는 올라가지만 그만큼 읽기 어려워지므로 충실도와 간결함 사이에서 항상 타협해야 한다.</p>
+<p>Anchors 방식의 국소 규칙 추출은 전역 대리모델을 따로 학습하지 않는다. 대신 관심 있는 예측 주변의 입력을 직접 교란해서 그 규칙의 조건을 만족하는 입력들에서 블랙박스의 예측이 실제로 거의 바뀌지 않는지를 통계적으로 검증한다. 이렇게 하면 이 조건이 성립하는 한 예측은 X일 확률이 최소 95퍼센트다처럼 개별 예측 단위의 확률적 보장을 얻는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="220" x2="500" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="60" y2="30" class="dg-line" stroke-width="1.5"/>
+<path d="M70,60 C160,40 220,120 260,140 C320,170 380,120 480,200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="90" y="60" width="150" height="90" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="165" y="50" font-size="12" text-anchor="middle">규칙: x1≤a and x2≤b</text>
+<text x="380" y="45" font-size="12" text-anchor="middle" class="dg-dim">실제 결정경계(곡선)</text>
+<text x="60" y="240" font-size="12" text-anchor="middle">x1</text>
+<text x="35" y="35" font-size="12">x2</text>
+</svg>`,
+    diagramCaption: String.raw`곡선으로 된 실제 결정경계를 사람이 읽을 수 있는 사각형 규칙 하나로 근사한다.`,
+    example: String.raw`<p>추출한 규칙이 홀드아웃 데이터 1000개 중 950개에서 원래 블랙박스 모델과 같은 예측을 냈다면 이 규칙의 충실도는 $950/1000=95\%$이다. 나머지 50개는 규칙이 원래 모델의 실제 결정 경계를 정확히 따라가지 못한 지점이다.</p>`,
+    related: [{ label: "트리 시각화", slug: "tree-visualization" }, { label: "선형모델 계수", slug: "linear-model-coefficients" }],
+    sections: []
+  },
+  "attention-rollout": {
+    title: String.raw`Attention Rollout: 층을 거친 어텐션을 하나로 누적하기`,
+    domain: "xai",
+    subLabel: String.raw`어텐션 기반`,
+    intuition: String.raw`<p>트랜스포머는 층마다 각 토큰이 다른 모든 토큰을 얼마나 주목하는지 나타내는 어텐션 행렬을 계산한다. 마지막 층의 어텐션 값만 보고 이게 모델이 주목한 부분이라고 단정하고 싶지만 실제로는 한 토큰의 최종 표현이 여러 층을 거치며 만들어진다. 어떤 토큰의 정보는 앞쪽 층에서 다른 토큰에게 한 번 전달된 뒤 다시 뒤쪽 층에서 또 다른 토큰에게 전달되는 식으로 계주하듯 간접적으로 흘러갈 수 있다. 한 층만 들여다보면 이런 여러 단계를 거친 흐름을 놓친다.</p>
+<p>Attention Rollout은 각 층의 어텐션 행렬을 정보가 한 단계씩 흘러가는 전이 행렬처럼 다루고 이를 층 순서대로 전부 곱해서 최종적으로 각 입력 토큰이 각 출력 토큰에 얼마나 영향을 미쳤는지를 누적된 하나의 값으로 계산한다.</p>`,
+    explanation: String.raw`<p>층 $l$의 (행 방향으로 정규화된) 어텐션 행렬을 $A^{(l)}$이라 하자. 잔차연결 때문에 각 토큰은 다른 토큰을 참고하는 것 외에 자기 자신의 표현도 그대로 이어받는다. 이를 반영해 어텐션 행렬과 항등행렬을 절반씩 섞고 다시 정규화한 $\hat A^{(l)} = 0.5 A^{(l)} + 0.5 I$를 쓴다.</p>
+<p>Rollout은 첫 층부터 마지막 층까지 이 행렬들을 순서대로 곱한 것이다. $\mathrm{Rollout} = \hat A^{(L)} \hat A^{(L-1)} \cdots \hat A^{(1)}$. 이 곱셈 결과의 $(i,j)$ 성분은 출력 위치 $i$의 표현 중 얼마만큼이 여러 층에 걸친 모든 경로를 통해 입력 위치 $j$로부터 왔는지를 나타낸다.</p>
+<p>이 값은 정확한 정보량 회계라기보다 발견적인 근사치다. 어텐션 가중치가 곧 모델의 판단 근거라는 가정 자체에 반박하는 연구도 있다(Attention is not Explanation). 그럼에도 단일 층의 어텐션만 보는 것보다는 모델이 실제로 여러 층을 거쳐 계산하는 구조를 훨씬 충실히 반영하고 이미 순전파 과정에서 계산된 어텐션 행렬만 있으면 되므로 추가로 그래디언트를 계산할 필요 없이 저렴하게 구할 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<text x="120" y="30" font-size="13" text-anchor="middle">층 2 어텐션 Â⁽²⁾</text>
+<rect x="60" y="45" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="120" y="45" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="80" font-size="12" text-anchor="middle">0.6</text>
+<text x="150" y="80" font-size="12" text-anchor="middle" class="dg-dim">0.4</text>
+<rect x="60" y="105" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="120" y="105" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="140" font-size="12" text-anchor="middle" class="dg-dim">0.3</text>
+<text x="150" y="140" font-size="12" text-anchor="middle">0.7</text>
+<text x="260" y="105" font-size="18" text-anchor="middle">×</text>
+<text x="360" y="30" font-size="13" text-anchor="middle">층 1 어텐션 Â⁽¹⁾</text>
+<rect x="300" y="45" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="360" y="45" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="330" y="80" font-size="12" text-anchor="middle">0.7</text>
+<text x="390" y="80" font-size="12" text-anchor="middle" class="dg-dim">0.3</text>
+<rect x="300" y="105" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="360" y="105" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="330" y="140" font-size="12" text-anchor="middle" class="dg-dim">0.2</text>
+<text x="390" y="140" font-size="12" text-anchor="middle">0.8</text>
+<text x="440" y="105" font-size="18" text-anchor="middle">=</text>
+<text x="540" y="30" font-size="13" text-anchor="middle">누적 Rollout</text>
+<rect x="480" y="45" width="60" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="540" y="45" width="60" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="510" y="80" font-size="12" text-anchor="middle">0.50</text>
+<text x="570" y="80" font-size="12" text-anchor="middle">0.50</text>
+<rect x="480" y="105" width="60" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="540" y="105" width="60" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="510" y="140" font-size="12" text-anchor="middle">0.35</text>
+<text x="570" y="140" font-size="12" text-anchor="middle">0.65</text>
+<text x="320" y="200" font-size="12" text-anchor="middle" class="dg-dim">각 층의 어텐션을 곱해 여러 층을 거친 누적 영향력을 구한다</text>
+</svg>`,
+    diagramCaption: String.raw`각 층의 어텐션 행렬을 순서대로 곱해 여러 층을 거친 누적 영향력을 구한다.`,
+    example: String.raw`<p>토큰이 두 개이고 층이 두 개인 단순한 경우를 생각하자. 잔차연결까지 반영한 층 1의 어텐션이 $\hat A^{(1)} = \begin{pmatrix}0.7 & 0.3 \\ 0.2 & 0.8\end{pmatrix}$이고 층 2가 $\hat A^{(2)} = \begin{pmatrix}0.6 & 0.4 \\ 0.3 & 0.7\end{pmatrix}$라고 하자. Rollout은 $\hat A^{(2)} \hat A^{(1)}$로 계산한다. 첫 번째 행은 $(0.6\times0.7+0.4\times0.2,\ 0.6\times0.3+0.4\times0.8)=(0.50,\ 0.50)$이고 두 번째 행은 $(0.3\times0.7+0.7\times0.2,\ 0.3\times0.3+0.7\times0.8)=(0.35,\ 0.65)$이다. 두 층만 거쳤는데도 이미 토큰 1의 최종 영향력 배분이 층 1 단독일 때의 (0.7, 0.3)과는 달라졌다.</p>`,
+    related: [{ label: "Cross-Attention 시각화", slug: "cross-attention-viz" }, { label: "정책 어텐션 시각화", slug: "policy-attention-viz" }],
+    sections: []
+  },
+  "cross-attention-viz": {
+    title: String.raw`Cross-Attention 시각화: 텍스트와 이미지가 어떻게 정렬되는가`,
+    domain: "xai",
+    subLabel: String.raw`어텐션 기반`,
+    intuition: String.raw`<p>이미지 캡션 생성 모델이나 텍스트로 이미지를 만드는 생성모델처럼 서로 다른 두 가지 형태의 데이터(글과 그림)를 함께 다루는 모델에는 cross-attention이라는 특수한 어텐션이 있다. 한쪽 모달리티의 토큰(문장의 단어들)이 다른 쪽 모달리티의 위치(이미지의 패치들)를 얼마나 주목하는지를 계산하는 장치다. 이 어텐션을 시각화하면 이 단어를 만들어낼 때 혹은 처리할 때 이미지의 어느 부분에서 정보를 가져왔는지를 아주 구체적으로 답할 수 있다.</p>
+<p>같은 시퀀스 안에서 토큰끼리 주목하는 self-attention과 달리 cross-attention은 애초에 단어 집합과 이미지 패치 집합이라는 서로 다른 두 집합 사이의 정렬 행렬을 만들어낸다. 그래서 한 단어에 해당하는 행 하나를 꺼내 이미지의 격자 모양대로 다시 펼치기만 하면 곧바로 이미지 위에 겹쳐 볼 수 있는 히트맵이 나온다. 클래스 점수의 그래디언트로 지도를 만드는 Grad-CAM과 결과물은 비슷하지만 어텐션 가중치 자체에서 곧바로 얻는다는 점이 다르고 클래스 하나에 매이지 않고 함께 처리되는 어떤 단어에 대해서도 지도를 뽑을 수 있다.</p>`,
+    explanation: String.raw`<p>Stable Diffusion의 텍스트 조건부 U-Net이나 이미지 캡션 트랜스포머를 예로 들면 이미지는 패치들의 공간적 격자로, 텍스트는 토큰들의 시퀀스로 표현된다. cross-attention은 $\mathrm{softmax}(QK^\top/\sqrt{d})$를 계산하는데 이때 Q와 K가 서로 다른 모달리티에서 온다. 그 결과 각 텍스트 토큰마다 이미지 위치들에 대한 확률분포(행의 합이 1)를 얻는다.</p>
+<p>시각화할 때는 관심 있는 텍스트 토큰 하나의 행을 꺼내 원래 이미지 패치들의 격자 모양대로 다시 배열하고 히트맵으로 겹쳐 그린다. 캡션의 단어마다 이 작업을 반복하거나 diffusion 모델의 각 디노이징 단계마다 반복하면 예를 들어 개라는 단어가 실제로 개가 있는 픽셀들에 어텐션이 집중되는 모습을 확인할 수 있다.</p>
+<p>이런 모델은 보통 여러 층과 여러 헤드에 걸쳐 cross-attention을 여러 번 계산하므로 하나의 지도는 특정 층이나 헤드를 고르거나 여러 개를 평균 낸 것일 뿐 유일한 지도는 아니다. attention rollout에서와 같은 주의점이 여기도 적용된다. 어느 층을 고르느냐에 따라 그림이 달라질 수 있고 어텐션 가중치가 최종 출력에 대한 엄밀한 인과적 설명이라는 보장은 없다. 그럼에도 모델 내부의 정렬 신호를 직접 읽는다는 점에서 유용한 진단 도구다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="60" y="40" font-size="13" text-anchor="middle">텍스트 토큰</text>
+<rect x="20" y="55" width="80" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="75" font-size="12" text-anchor="middle">"a"</text>
+<rect x="20" y="95" width="80" height="30" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="60" y="115" font-size="12" text-anchor="middle">"dog"</text>
+<rect x="20" y="135" width="80" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="155" font-size="12" text-anchor="middle">"on"</text>
+<rect x="20" y="175" width="80" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="195" font-size="12" text-anchor="middle">"grass"</text>
+<text x="440" y="40" font-size="13" text-anchor="middle">이미지 패치</text>
+<rect x="360" y="55" width="160" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="360" y1="108" x2="520" y2="108" class="dg-line" stroke-width="1"/>
+<line x1="360" y1="162" x2="520" y2="162" class="dg-line" stroke-width="1"/>
+<line x1="413" y1="55" x2="413" y2="215" class="dg-line" stroke-width="1"/>
+<line x1="467" y1="55" x2="467" y2="215" class="dg-line" stroke-width="1"/>
+<rect x="413" y="55" width="54" height="53" class="dg-accent"/>
+<line x1="100" y1="110" x2="413" y2="80" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="100" y1="70" x2="440" y2="150" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="100" y1="190" x2="440" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="440" y="235" font-size="12" text-anchor="middle" class="dg-dim">"dog" 토큰의 어텐션이 개가 있는 패치에 집중</text>
+</svg>`,
+    diagramCaption: String.raw`텍스트 토큰 하나의 어텐션 행을 이미지 패치 격자 모양으로 펼쳐 겹쳐 보면 정렬 관계가 드러난다.`,
+    related: [{ label: "Attention Rollout", slug: "attention-rollout" }, { label: "Grad-CAM", slug: "grad-cam" }],
+    sections: []
+  },
+  "policy-attention-viz": {
+    title: String.raw`정책 어텐션 시각화: 의사결정이 주목한 곳`,
+    domain: "xai",
+    subLabel: String.raw`어텐션 기반`,
+    intuition: String.raw`<p>Decision Transformer처럼 트랜스포머 구조를 정책으로 쓰는 강화학습 에이전트나 주변 차량 여러 대 혹은 팀 동료 여러 명 중 지금 어디에 집중해야 할지를 정해야 하는 다중개체 상황에서는 언어나 이미지 모델의 어텐션 시각화 발상을 그대로 가져올 수 있다. 이 행동을 고를 때 과거의 어느 시점 상태 혹은 주변의 어느 개체에 가장 크게 주목했는지를 직접 물을 수 있다.</p>
+<p>이 방식이 특히 유용한 이유는 입력이 하나의 이미지가 아니라 개체나 시점 단위로 나뉜 시퀀스일 때가 많기 때문이다. Grad-CAM처럼 합성곱의 공간 격자를 전제로 하는 방법은 차량 몇 대나 사람 몇 명처럼 개수가 그때그때 달라지는 개체 집합에는 자연스럽게 들어맞지 않는다. 반면 어텐션은 애초에 개체 하나당 가중치 하나를 내놓으므로 이 결정에 어떤 차량 혹은 어떤 동료가 가장 크게 관여했는지를 곧바로 순위 매길 수 있다.</p>`,
+    explanation: String.raw`<p>트랜스포머 기반 정책 $\pi_\theta$에서 행동을 만들어내는 쿼리 토큰이 시퀀스의 각 개체 혹은 각 시점에 해당하는 키들을 얼마나 주목하는지 $\mathrm{softmax}(QK^\top/\sqrt d)$를 뽑아낸다. 특정 행동에 대해 이 가중치가 가장 큰 개체나 시점을 읽으면 그 결정에 가장 크게 관여한 요소를 짚어낼 수 있다.</p>
+<p>attention rollout과 마찬가지로 정책도 어텐션층을 여러 겹 쌓으므로 마지막 층의 가중치만 보면 한 단계만 확인하는 셈이다. 더 충실한 그림이 필요하면 층을 거쳐 누적하는 rollout 방식이나 Grad-CAM처럼 그래디언트로 가중치를 매기는 변형을 어텐션층에 적용한다.</p>
+<p>실무에서는 자율주행이나 다중에이전트 정책을 감사하는 데 이 방법을 쓴다. 감속이라는 행동을 고를 때 어텐션이 앞차에 꾸준히 집중된다면 안심할 수 있는 신호지만 학습 데이터에서 감속 상황과 우연히 상관관계가 있었을 뿐인 배경 요소에 어텐션이 몰려 있다면 정책 그래디언트 saliency에서와 같은 종류의 가짜 상관관계 위험 신호다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="140" width="80" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="164" font-size="12" text-anchor="middle">차량 1</text>
+<rect x="150" y="140" width="80" height="40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="190" y="164" font-size="12" text-anchor="middle">차량 2</text>
+<rect x="260" y="140" width="80" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="300" y="164" font-size="12" text-anchor="middle">차량 3</text>
+<rect x="370" y="140" width="80" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="410" y="164" font-size="12" text-anchor="middle">차량 4</text>
+<rect x="65" y="120" width="30" height="10" class="dg-dim"/>
+<rect x="175" y="70" width="30" height="60" class="dg-accent"/>
+<rect x="285" y="115" width="30" height="15" class="dg-dim"/>
+<rect x="395" y="125" width="30" height="5" class="dg-dim"/>
+<text x="190" y="60" font-size="11" text-anchor="middle" class="dg-dim">가장 높은 어텐션</text>
+<line x1="190" y1="180" x2="190" y2="210" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="185,205 190,217 195,205" class="dg-accent" stroke="none"/>
+<text x="290" y="215" font-size="13">행동: 감속</text>
+</svg>`,
+    diagramCaption: String.raw`개체별 어텐션 가중치 막대가 클수록 그 개체가 이 행동에 크게 관여했다.`,
+    related: [{ label: "Attention Rollout", slug: "attention-rollout" }, { label: "정책 그래디언트 saliency", slug: "policy-gradient-saliency" }, { label: "정책 네트워크 CAM", slug: "policy-network-cam" }],
+    sections: []
+  },
+  "explanation-stability": {
+    title: String.raw`설명 안정성: 비슷한 입력엔 비슷한 설명이 나와야 한다`,
+    domain: "xai",
+    subLabel: String.raw`안정성 검증`,
+    intuition: String.raw`<p>사람에게 이유를 물을 때도 마찬가지다. 같은 질문을 살짝 다르게 던졌는데 답이 완전히 달라지면 그 사람이 정말 이유를 알고 답한 게 아니라 즉흥적으로 답했다고 의심하게 된다. 모델의 설명도 똑같다. 사진에 눈에 안 보일 정도의 노이즈를 살짝 얹었을 뿐인데 saliency map이 전혀 다른 부위를 가리킨다면 그 설명은 모델이 실제로 본 근거라기보다 계산 과정의 우연한 산물에 가깝다.</p>
+<p>예측의 안정성과 설명의 안정성은 다른 문제다. 강아지 사진에 노이즈를 조금 얹어도 모델은 여전히 강아지로 분류할 수 있다. 하지만 그 판단을 설명하는 saliency map은 완전히 다른 픽셀을 가리킬 수 있다. 예측은 안정적인데 설명만 흔들리는 경우가 실제로 자주 나타나고 이런 설명을 근거로 의사결정을 내리는 건 위험하다.</p>`,
+    explanation: String.raw`<p>안정성을 재는 대표적인 방법은 국소 립시츠 상수다. 입력 $x$ 주변의 작은 이웃 $B(x,\epsilon)$ 안에서 가장 흔들림이 큰 이웃 $x'$을 찾아 설명 사이 거리를 입력 사이 거리로 나눈다.</p>
+<p>$$L(x) = \max_{x' \in B(x,\epsilon)} \frac{\lVert \phi(x) - \phi(x') \rVert}{\lVert x - x' \rVert}$$</p>
+<p>이 값이 크면 입력이 아주 조금만 움직여도 설명이 크게 흔들린다는 뜻이다. 입력 거리가 0.01인데 설명 벡터 거리가 0.6이라면 $L(x)$는 60에 가까워지고 실사용 기준으로 상당히 불안정한 축에 속한다.</p>
+<p>기울기 기반 설명은 ReLU를 쓰는 신경망에서 특히 흔들리기 쉽다. ReLU는 구간마다 기울기가 0 또는 상수로 뚝뚝 끊긴다. 입력이 활성 패턴의 경계를 살짝 넘는 순간 완전히 다른 뉴런 조합에서 기울기가 계산되어 값이 크게 바뀐다. SmoothGrad 같은 방법은 입력에 가우시안 노이즈를 여러 번 더해 나온 saliency map을 평균 내는 방식으로 이 흔들림을 줄인다.</p>
+<p>안정성 지표는 두 방향으로 쓰인다. 설명 기법끼리 비교할 때 그리고 배포 전 점검 항목으로 특정 모델과 설명 기법 조합이 실사용에 적합한지 확인할 때다. 같은 병변이 스캔마다 미세하게 다르게 찍히는 의료영상 진단에서는 안정성 검증이 사실상 필수다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="16" font-size="12">안정적인 경우: 비슷한 입력 → 비슷한 설명</text>
+<circle cx="50" cy="55" r="6" class="dg-stroke-ink" fill="none" stroke-width="2"/>
+<circle cx="50" cy="75" r="6" class="dg-stroke-ink" fill="none" stroke-width="2"/>
+<text x="64" y="59" font-size="12">x</text>
+<text x="64" y="79" font-size="12">x′</text>
+<line x1="56" y1="60" x2="180" y2="57" class="dg-line" stroke-width="1.5"/>
+<line x1="56" y1="72" x2="380" y2="57" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="30" width="54" height="54" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="198" y="48" width="18" height="18" class="dg-accent"/>
+<rect x="216" y="48" width="18" height="18" class="dg-accent"/>
+<text x="180" y="100" font-size="12">φ(x)</text>
+<rect x="380" y="30" width="54" height="54" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="398" y="48" width="18" height="18" class="dg-accent"/>
+<rect x="416" y="48" width="18" height="18" class="dg-accent"/>
+<text x="380" y="100" font-size="12">φ(x′)</text>
+<line x1="234" y1="57" x2="380" y2="57" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="260" y="50" font-size="12">거의 동일</text>
+<text x="20" y="146" font-size="12">불안정한 경우: 비슷한 입력 → 전혀 다른 설명</text>
+<circle cx="50" cy="185" r="6" class="dg-stroke-ink" fill="none" stroke-width="2"/>
+<circle cx="50" cy="205" r="6" class="dg-stroke-ink" fill="none" stroke-width="2"/>
+<text x="64" y="189" font-size="12">x</text>
+<text x="64" y="209" font-size="12">x′</text>
+<line x1="56" y1="190" x2="180" y2="187" class="dg-line" stroke-width="1.5"/>
+<line x1="56" y1="202" x2="380" y2="187" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="160" width="54" height="54" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="180" y="160" width="18" height="18" class="dg-accent"/>
+<text x="180" y="230" font-size="12">φ(x)</text>
+<rect x="380" y="160" width="54" height="54" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="416" y="196" width="18" height="18" class="dg-accent"/>
+<text x="380" y="230" font-size="12">φ(x′)</text>
+<line x1="234" y1="187" x2="380" y2="187" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="260" y="180" font-size="12">전혀 다름</text>
+</svg>`,
+    diagramCaption: String.raw`가까운 입력 두 개를 넣었을 때 설명이 여전히 비슷한지 완전히 달라지는지를 비교한다.`,
+    related: [{ label: "Sanity Check(Saliency)", slug: "sanity-check-saliency" }, { label: "설명 재현성", slug: "explanation-reproducibility" }, { label: "정책 설명 안정성", slug: "policy-explanation-stability" }],
+    sections: []
+  },
+  "sanity-check-saliency": {
+    title: String.raw`Sanity Check: 무작위 가중치로도 그럴듯한 saliency가 나온다면`,
+    domain: "xai",
+    subLabel: String.raw`안정성 검증`,
+    intuition: String.raw`<p>saliency map을 보면 꽤 그럴듯하다. 강아지 사진을 넣으면 강아지 윤곽 근처가 밝게 표시되니 모델이 강아지 모양을 보고 판단했다고 믿기 쉽다. 그런데 이 그림이 학습된 가중치가 아니라 이미지의 가장자리만 강조하는 필터 때문에 나온 것이라면 어떨까. 이 경우 saliency map은 모델이 무엇을 배웠는지와 무관하게 늘 비슷한 그림을 그린다.</p>
+<p>Sanity Check은 이 의심을 검증 가능한 절차로 바꾼다. 학습이 끝난 모델의 saliency map과 가중치를 완전히 무작위로 초기화한 같은 구조 모델의 saliency map을 나란히 놓고 비교한다. 둘이 거의 같다면 그 설명 기법은 모델의 학습 내용과 무관하게 항상 비슷한 그림을 그린다는 뜻이고 설명으로서 자격을 의심해야 한다.</p>`,
+    explanation: String.raw`<p>Adebayo 등이 2018년에 제안한 검사는 두 가지다. 모델 파라미터 무작위화 검사는 학습된 네트워크의 층을 출력층부터 입력층 방향으로 하나씩 무작위로 재초기화하면서 saliency map이 변하는지 관찰한다. 모델의 실제 근거를 반영하는 설명 기법이라면 가중치를 무작위화할수록 saliency map이 원래와 확연히 달라져야 한다. Gradient나 Grad-CAM은 이 검사에서 뚜렷한 변화를 보였지만 Guided Backprop과 Guided Grad-CAM 일부는 거의 변화가 없어 사실상 에지 검출기처럼 작동한다는 사실이 드러났다.</p>
+<p>변화 정도는 두 saliency map 사이 순위 상관으로 잰다.</p>
+<p>$$\rho = \mathrm{SpearmanCorr}\big(\phi_{\text{trained}}(x), \phi_{\text{random}}(x)\big)$$</p>
+<p>$\rho$가 1에 가까우면 검사에 실패한 것이다. 무작위화해도 설명이 거의 그대로라는 뜻이기 때문이다. $\rho$가 0에 가까울수록 설명이 가중치에 실제로 반응한다는 신호로 읽는다.</p>
+<p>데이터 무작위화 검사는 라벨을 뒤섞어 학습시킨 모델과 원래 모델의 saliency map을 비교한다. 라벨이 뒤섞인 모델은 진짜 패턴을 배우지 못하고 사실상 암기만 한 상태다. 이 경우에도 saliency가 원래 모델과 비슷하게 나온다면 그 설명은 데이터의 실제 라벨 구조와도 무관하다는 뜻이다.</p>
+<p>이 체크를 건너뛰면 실무자가 그럴듯해 보인다는 이유만으로 신뢰할 수 없는 설명 기법을 채택하는 사고가 생길 수 있다. 시각적으로 그럴듯한 saliency map은 사람 눈에 확신을 주기 쉬운 만큼 위험도 크다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="270" y="15" width="80" height="55" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="310" y="10" font-size="12" text-anchor="middle">원본 이미지</text>
+<line x1="300" y1="70" x2="150" y2="108" class="dg-line" stroke-width="1.5"/>
+<line x1="340" y1="70" x2="470" y2="108" class="dg-line" stroke-width="1.5"/>
+<rect x="80" y="108" width="140" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="150" y="132" font-size="12" text-anchor="middle">학습된 모델</text>
+<rect x="400" y="108" width="140" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="132" font-size="12" text-anchor="middle">무작위 가중치 모델</text>
+<line x1="150" y1="148" x2="150" y2="173" class="dg-line" stroke-width="1.5"/>
+<line x1="470" y1="148" x2="470" y2="173" class="dg-line" stroke-width="1.5"/>
+<rect x="120" y="173" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="138" y="191" width="18" height="18" class="dg-accent"/>
+<rect x="156" y="209" width="18" height="18" class="dg-accent"/>
+<text x="150" y="248" font-size="12" text-anchor="middle">saliency</text>
+<rect x="440" y="173" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="458" y="191" width="18" height="18" class="dg-accent"/>
+<rect x="476" y="209" width="18" height="18" class="dg-accent"/>
+<text x="470" y="248" font-size="12" text-anchor="middle">saliency</text>
+<line x1="180" y1="203" x2="440" y2="203" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="310" y="196" font-size="12" text-anchor="middle">패턴이 사실상 동일</text>
+</svg>`,
+    diagramCaption: String.raw`학습된 모델과 가중치를 무작위화한 모델의 saliency가 거의 같다면 그 설명 기법은 가중치와 무관하게 그림을 그린다는 뜻이다.`,
+    example: String.raw`<p>어떤 saliency 기법의 $\rho$ 값을 계산했더니 Gradient는 0.15 Guided Backprop은 0.92가 나왔다고 하자. Gradient는 가중치를 무작위화하자 설명이 크게 달라져 검사를 통과했고 Guided Backprop은 거의 그대로여서 검사에 실패한 셈이다. 그럴듯해 보이는 그림이라고 해서 모두 같은 근거를 담고 있는 건 아니다.</p>`,
+    related: [{ label: "설명 안정성", slug: "explanation-stability" }, { label: "설명 근사오차", slug: "local-approx-error" }],
+    sections: []
+  },
+  "explanation-reproducibility": {
+    title: String.raw`설명 재현성: 시드를 바꿔도 같은 설명이 나오는가`,
+    domain: "xai",
+    subLabel: String.raw`안정성 검증`,
+    intuition: String.raw`<p>같은 모델 같은 입력인데 설명을 계산할 때 쓰는 무작위 시드만 바꿔도 완전히 다른 근거가 나온다면 그 설명은 재현 가능한 사실이 아니라 우연에 가깝다. LIME이나 Kernel SHAP처럼 국소 샘플링에 무작위성이 들어가는 기법에서 특히 이런 문제가 생긴다.</p>
+<p>재현성은 안정성과 다른 축을 본다. 안정성은 입력을 바꿨을 때 설명이 얼마나 흔들리는지를 보고 재현성은 입력과 모델을 완전히 고정한 채 설명 기법 내부의 난수만 바꿔본다. 팀원 두 명이 각자 다른 시드로 계산한 SHAP 값이 서로 다른 특징을 1순위로 지목한다면 그 설명을 근거로 한 결정 자체가 흔들린다.</p>`,
+    explanation: String.raw`<p>LIME은 원본 입력 주변을 무작위로 교란한 샘플에 선형모델을 적합시켜 국소 설명을 만든다. 샘플 개수가 적거나 커널 폭이 부적절하면 시드마다 뽑히는 교란 샘플 집합이 달라지고 결과적으로 특징 중요도가 크게 요동친다. Kernel SHAP도 모든 특징 부분집합을 열거하는 대신 몬테카를로 샘플링으로 근사하기 때문에 같은 문제를 겪는다.</p>
+<p>같은 입력에 대해 시드를 $k$번 바꿔 설명 $\phi_1, \dots, \phi_k$를 얻은 뒤 쌍마다 유사도를 구해 평균 내면 재현성을 수치로 잴 수 있다.</p>
+<p>$$\text{Agreement} = \frac{1}{\binom{k}{2}}\sum_{i<j} \mathrm{sim}(\phi_i, \phi_j)$$</p>
+<p>이 값이 낮으면 그 설명은 시드에 크게 의존한다는 뜻이며 표본 수를 늘리거나 커널 폭을 조정해 안정화해야 한다. 샘플 수를 늘리는 방법이 가장 직접적이지만 계산 비용이 커진다. TreeSHAP처럼 모델 구조를 활용해 정확한 값을 결정론적으로 계산하는 기법을 쓸 수 있다면 애초에 재현성 문제 자체가 사라진다.</p>`,
+    example: String.raw`<p>세 특징 나이 소득 부채비율에 대해 시드 1로 계산한 LIME 계수가 (0.42, 0.35, 0.10)이고 시드 2로 계산한 계수가 (0.18, 0.44, 0.31)이라고 하자. 1순위 특징이 나이에서 소득으로 바뀐다. 두 벡터의 코사인 유사도는 약 0.83으로 그리 낮지 않아 보이지만 가장 중요한 특징이라는 실무적 결론은 완전히 달라진 셈이다.</p>`,
+    related: [{ label: "설명 안정성", slug: "explanation-stability" }, { label: "대리모델 충실도", slug: "surrogate-fidelity" }],
+    sections: []
+  },
+  "policy-explanation-stability": {
+    title: String.raw`정책 설명 안정성: 비슷한 상태엔 비슷한 근거가 나와야 한다`,
+    domain: "xai",
+    subLabel: String.raw`안정성 검증`,
+    intuition: String.raw`<p>강화학습 정책이 왜 그 행동을 골랐는지 설명할 때도 같은 문제가 반복된다. 화면 픽셀 몇 개만 다른 거의 동일한 상태인데 이전엔 적의 위치를 이번엔 배경 색을 근거로 든다면 그 설명은 정책의 실제 판단 근거라기보다 잡음에 가깝다.</p>
+<p>자율주행이나 로봇 제어처럼 안전이 걸린 정책에서는 이 문제가 특히 심각하다. 거의 같은 도로 상황인데 설명이 매번 다른 요인을 근거로 든다면 운영자는 그 설명을 정책 점검 기준으로 삼을 수 없다.</p>`,
+    explanation: String.raw`<p>정책 설명은 상태 $s$에서 행동 $a$를 고른 이유를 saliency map 특징 중요도 또는 판단에 영향을 준 과거 유사 사례의 형태로 제시한다. 안정성 검증은 상태공간에서 서로 가까운 두 상태 $s, s'$에 대해 얻은 설명 $\phi(s), \phi(s')$ 사이 거리를 상태 사이 거리로 나눈 값을 본다. 지도학습의 설명 안정성과 형식은 같지만 상태가 시간적으로 이어진 궤적 위에 있다는 점이 다르다. 한 에피소드 안에서 연속된 프레임끼리는 자연스럽게 유사 상태 쌍을 이루므로 인위적인 교란 없이도 안정성을 관찰할 수 있다.</p>
+<p>정책 신경망은 가치함수 추정의 노이즈와 탐험에 쓰인 확률적 요소 때문에 지도학습 모델보다 설명이 더 쉽게 흔들리는 경향이 있다. saliency 기반 설명 외에 반사실 행동설명이나 결정트리 대리모델로 설명을 대신하기도 하는데 어느 쪽이든 같은 안정성 문제를 겪는다.</p>
+<p>검증은 보통 실제 운영 로그에서 연속 프레임 쌍을 뽑아 설명 간 유사도 분포를 관찰하는 방식으로 이뤄진다. 유사도가 낮은 하위 몇 퍼센트에 해당하는 사례를 골라 사람이 직접 점검하면 어느 상황에서 설명이 특히 불안정한지 찾아낼 수 있다.</p>`,
+    related: [{ label: "설명 안정성", slug: "explanation-stability" }, { label: "반사실 행동설명", slug: "counterfactual-action-explanation" }, { label: "정책 대리설명 충실도", slug: "policy-surrogate-fidelity" }],
+    sections: []
+  },
+  "counterfactual-explanation": {
+    title: String.raw`Counterfactual 설명: 무엇이 바뀌어야 결과가 달라지는가`,
+    domain: "xai",
+    subLabel: String.raw`반사실 설명`,
+    intuition: String.raw`<p>왜 대출이 거절됐는지보다 더 쓸모 있는 답은 무엇을 바꾸면 승인됐을지다. 소득이 200만원만 더 높았다면 승인됐을 거라는 답은 이유를 설명하면서 동시에 다음에 무엇을 하면 되는지도 알려준다.</p>
+<p>Counterfactual 설명은 바로 이 질문에 답한다. 원래 입력에서 최소한만 바꿔 모델의 예측을 원하는 결과로 뒤집는 가상의 입력을 찾는다. 특징 중요도 순위를 나열하는 설명과 달리 사람이 실제로 취할 수 있는 행동에 훨씬 가까운 형태의 답을 준다.</p>`,
+    explanation: String.raw`<p>Wachter 등이 2017년에 정식화한 형태는 최적화 문제다. 원래 입력 $x$에서 시작해 목표 클래스로 예측을 뒤집으면서 원본과의 거리를 최소화하는 $x'$을 찾는다.</p>
+<p>$$x' = \arg\min_{x'} \ \lambda \cdot (f(x') - y_{\text{target}})^2 + d(x, x')$$</p>
+<p>$d$는 보통 특징별 스케일을 맞춘 $L_1$ 거리나 마할라노비스 거리를 쓰고 $\lambda$는 목표 예측을 얼마나 강하게 요구할지 조절한다.</p>
+<p>좋은 counterfactual이 갖춰야 할 조건은 네 가지로 정리된다. 근접성은 변경이 최소한이어야 한다는 조건이고 타당성은 실제로 존재할 법한 데이터 분포 안의 값이어야 한다는 조건이다. 나이를 음수로 만드는 제안은 타당성을 어긴다. 실행가능성은 사용자가 실제로 바꿀 수 있는 속성만 바꿔야 한다는 조건으로 인종이나 성별처럼 바꿀 수 없는 속성을 제안하면 안 된다. 다양성은 여러 개의 서로 다른 counterfactual을 제시해 선택지를 넓혀준다는 조건이다. DiCE 같은 라이브러리는 다양성 조건을 최적화 목표에 직접 넣는다.</p>
+<p>counterfactual 설명은 안정성 문제와도 맞닿아 있다. 거의 같은 두 입력에 대해 counterfactual을 구했는데 하나는 소득을 조금만 늘리라고 하고 다른 하나는 완전히 다른 특징 집합을 바꾸라고 한다면 그 생성 과정 자체가 불안정한 것이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<path d="M60,230 Q350,90 540,40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="90" y="205" font-size="13">거절 영역</text>
+<text x="410" y="70" font-size="13">승인 영역</text>
+<circle cx="150" cy="195" r="7" class="dg-stroke-ink" fill="none" stroke-width="2"/>
+<text x="90" y="222" font-size="12">원래 입력 x</text>
+<circle cx="250" cy="130" r="7" class="dg-accent"/>
+<text x="258" y="118" font-size="12">반사실 x′</text>
+<line x1="155" y1="190" x2="243" y2="136" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="243,136 233,138 239,126" class="dg-accent"/>
+<text x="130" y="250" font-size="12" class="dg-dim">최소한의 변경으로 결정경계를 넘김</text>
+</svg>`,
+    diagramCaption: String.raw`원래 입력에서 최소한만 이동해 결정경계 반대편으로 넘어가는 지점을 찾는다.`,
+    example: String.raw`<p>어떤 대출 신청자의 소득이 2400만원 부채비율이 0.42 신용점수가 620일 때 모델은 거절을 예측한다. 다른 값은 고정한 채 소득만 최적화로 조정했더니 소득이 2900만원일 때 예측이 승인으로 뒤집혔다. 이 신청자에게 실질적인 답은 부채비율이나 신용점수를 어떻게든 바꾸라는 게 아니라 소득을 500만원 늘리면 된다는 것이다.</p>`,
+    related: [{ label: "대조적 설명", slug: "contrastive-explanation" }, { label: "반사실 이미지 생성", slug: "counterfactual-image-generation" }],
+    sections: []
+  },
+  "contrastive-explanation": {
+    title: String.raw`대조적 설명: 왜 A이고 B가 아닌가`,
+    domain: "xai",
+    subLabel: String.raw`반사실 설명`,
+    intuition: String.raw`<p>왜 이 사진을 고양이로 분류했는지보다 더 유용한 질문은 왜 개가 아니라 고양이로 분류했는지다. 사람은 절대적인 이유보다 대안과 비교한 이유를 들을 때 더 잘 납득한다. 폐렴이라는 진단보다 폐렴이지 결핵은 아닌 이유가 이 소견 때문이라는 설명이 더 명확하게 와닿는 것과 같다.</p>
+<p>대조적 설명은 이 비교 구조를 명시적으로 만든다. 정답 클래스 A와 헷갈리기 쉬운 클래스 B를 놓고 A라고 판단하게 만든 근거 중 B에는 없는 부분이 무엇인지 짚어낸다. 단일 클래스에 대한 특징 중요도만 볼 때보다 두 클래스가 실제로 무엇으로 갈리는지가 훨씬 선명하게 드러난다.</p>`,
+    explanation: String.raw`<p>계산 방식은 크게 두 갈래다. 하나는 두 클래스에 대한 기여도를 각각 구한 뒤 차이를 취하는 방식이다.</p>
+<p>$$\Delta\phi = \phi_A(x) - \phi_B(x)$$</p>
+<p>이 차이가 큰 특징일수록 두 클래스를 가르는 데 결정적인 역할을 한다. 다른 하나는 A로 분류되는 데 반드시 있어야 하는 부분과 B로 분류되지 않으려면 없어야 하는 부분을 최적화로 직접 찾는 방식이다. Dhurandhar 등이 제안한 Contrastive Explanation Method가 이 방식을 쓴다.</p>
+<p>대조적 설명은 counterfactual 설명과 방향이 다르다. counterfactual은 무엇을 바꾸면 예측이 뒤집히는지를 입력 공간에서 찾는 데 초점을 두고 대조적 설명은 현재 입력이 왜 클래스 B가 아니라 A로 남아있는지를 두 클래스 근거의 차이로 설명한다. 두 방식은 상호보완적이다.</p>
+<p>사람의 설명 요구는 본질적으로 대조적이라는 지적이 인지과학 연구에서 꾸준히 나온다. 왜 P인가보다 왜 P이고 Q는 아닌가에 답할 때 사람이 더 만족한다는 것이다. 그래서 의료 진단이나 대출 심사처럼 사람이 최종 판단을 내리는 도메인의 설명 UI에서 대조적 설명이 특히 선호된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="20" font-size="13">클래스별 특징 기여도</text>
+<line x1="60" y1="200" x2="480" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="90" y="120" width="20" height="80" class="dg-accent"/>
+<rect x="115" y="168" width="20" height="32" class="dg-dim"/>
+<text x="112" y="215" font-size="12" text-anchor="middle">무늬</text>
+<rect x="250" y="144" width="20" height="56" class="dg-accent"/>
+<rect x="275" y="152" width="20" height="48" class="dg-dim"/>
+<text x="272" y="215" font-size="12" text-anchor="middle">귀 모양</text>
+<rect x="410" y="176" width="20" height="24" class="dg-accent"/>
+<rect x="435" y="120" width="20" height="80" class="dg-dim"/>
+<text x="432" y="215" font-size="12" text-anchor="middle">꼬리 길이</text>
+<rect x="470" y="24" width="14" height="14" class="dg-accent"/>
+<text x="490" y="35" font-size="12">고양이(A)</text>
+<rect x="470" y="44" width="14" height="14" class="dg-dim"/>
+<text x="490" y="55" font-size="12">개(B)</text>
+</svg>`,
+    diagramCaption: String.raw`같은 입력이라도 두 클래스에 대한 특징별 기여도를 나란히 비교하면 무엇이 판단을 갈랐는지 드러난다.`,
+    example: String.raw`<p>고양이(A)와 개(B)에 대한 기여도가 무늬 0.50 대 0.20 귀 모양 0.35 대 0.30 꼬리 길이 0.15 대 0.50이라고 하자. 무늬 쪽 차이가 0.30으로 가장 커서 고양이로 판단하는 데 가장 결정적인 근거가 되고 귀 모양은 차이가 0.05뿐이라 판단에 거의 기여하지 못한다. 꼬리 길이는 오히려 개 쪽이 0.35 더 높아 이 특징만 보면 개에 가깝다는 신호다.</p>`,
+    related: [{ label: "Counterfactual 설명", slug: "counterfactual-explanation" }],
+    sections: []
+  },
+  "counterfactual-image-generation": {
+    title: String.raw`반사실 이미지 생성: 속성을 바꾼 가상의 이미지 만들기`,
+    domain: "xai",
+    subLabel: String.raw`반사실 설명`,
+    intuition: String.raw`<p>표 데이터라면 나이를 3살 늘리면 예측이 바뀐다는 식으로 counterfactual을 숫자로 제시하면 충분하다. 이미지 분류기라면 이 픽셀 값을 이렇게 바꾸라고 말해봐야 사람이 이해할 수 없다. 이미지에서 counterfactual은 실제로 그럴듯하게 보이는 새로운 이미지를 만들어야 의미가 있다.</p>
+<p>반사실 이미지 생성은 GAN이나 diffusion 같은 생성모델의 잠재공간을 빌려 이 문제를 푼다. 안경을 씌우면 예측이 바뀌는지 확인하고 싶다면 실제로 안경을 씌운 그럴듯한 얼굴 이미지를 생성해 분류기에 통과시켜본다. 결과 이미지 자체가 설명이 된다.</p>`,
+    explanation: String.raw`<p>전형적인 절차는 이렇다. 먼저 오토인코더나 GAN으로 이미지를 잠재벡터 $z$로 인코딩한다. 그다음 분류기의 예측을 원하는 방향으로 바꾸면서 원본과 시각적으로 가까운 잠재벡터 $z'$를 최적화로 찾는다.</p>
+<p>$$z' = \arg\min_{z'} \ \lambda \cdot \mathcal{L}_{\text{class}}(g(z'), y_{\text{target}}) + \lVert z - z' \rVert^2$$</p>
+<p>$g$는 잠재벡터를 이미지로 복원하는 생성기다. 마지막으로 $g(z')$을 렌더링해 사람에게 보여준다. 생성기가 학습한 이미지 분포 안에서만 움직이기 때문에 표 데이터 counterfactual에서 문제가 됐던 존재할 법하지 않은 값 문제가 상당 부분 자동으로 해결된다.</p>
+<p>StyleGAN 계열은 잠재공간의 특정 방향이 안경 나이 표정 같은 해석 가능한 속성과 대략적으로 대응된다는 점이 알려져 있다. 이 방향으로 $z$를 이동시키면 안경을 씌운 것과 같은 효과를 낼 수 있어 속성 단위 counterfactual을 만들기 쉽다. 다만 생성기 자체가 학습 데이터의 편향을 그대로 물려받기 때문에 반사실 이미지가 인종이나 성별과 얽힌 다른 속성까지 같이 바꿔버리는 얽힘 문제가 실무에서 자주 발생한다.</p>
+<p>검증할 때는 생성된 반사실 이미지가 목표 속성 외에는 원본과 얼마나 비슷한지를 정체성 유사도로 확인하고 분류기가 실제로 예측을 뒤집었는지 별도로 확인한다.</p>`,
+    related: [{ label: "Counterfactual 설명", slug: "counterfactual-explanation" }, { label: "재구성 충실도", slug: "reconstruction-fidelity" }],
+    sections: []
+  },
+  "counterfactual-action-explanation": {
+    title: String.raw`반사실 행동설명: 다른 행동을 했다면 어떻게 됐을까`,
+    domain: "xai",
+    subLabel: String.raw`반사실 설명`,
+    intuition: String.raw`<p>자율주행차가 갑자기 브레이크를 밟았을 때 왜 브레이크를 밟았는지보다 더 구체적인 질문은 그때 핸들을 꺾었다면 무슨 일이 일어났을지다. 다른 행동을 했을 때의 결과를 비교해봐야 지금 선택한 행동이 정말 최선이었는지 판단할 수 있다.</p>
+<p>반사실 행동설명은 정책이 실제로 고른 행동이 아니라 그 순간 고를 수 있었던 다른 행동을 취했다면 어떤 결과로 이어졌을지를 추정해서 보여준다. 지도학습의 counterfactual 설명이 입력을 바꾸면 예측이 어떻게 바뀌는지를 묻는다면 이건 행동을 바꾸면 미래 궤적이 어떻게 바뀌는지를 묻는 시간적 확장판이다.</p>`,
+    explanation: String.raw`<p>같은 상태 $s_t$에서 실제로 고른 행동 $a_t$ 대신 다른 행동 $a_t'$를 골랐다면 이후 상태 궤적과 누적 보상이 어떻게 달라졌을지를 추정해야 한다. 환경 시뮬레이터가 있다면 상태를 되감아 $a_t'$로 다시 굴려보는 것으로 직접 답을 구할 수 있다. 시뮬레이터가 없거나 환경이 확률적이면 학습된 세계모델이나 가치함수로 반사실 궤적을 근사한다.</p>
+<p>$$\Delta Q = Q(s_t, a_t) - Q(s_t, a_t')$$</p>
+<p>이 차이가 크면 실제로 고른 행동이 대안보다 확실히 나았다는 뜻이다. 값이 0에 가까우면 둘 중 무엇을 골라도 결과가 비슷했다는 뜻이라 그 시점의 선택은 사실 중요하지 않았다는 것도 함께 드러난다. 브레이크의 $Q$값이 8.4이고 핸들을 꺾는 행동의 $Q$값이 8.1이었다면 $\Delta Q$는 0.3에 그쳐 그 순간엔 어느 쪽을 골라도 큰 차이가 없었다는 뜻이 된다. 이는 설명뿐 아니라 정책이 불필요하게 위험한 행동을 골랐는지 사후 감사하는 데도 쓰인다.</p>
+<p>오프라인 강화학습 환경에서는 실제로 다른 행동을 실행해볼 수 없어 반사실 추정에 분포 밖 외삽 오차가 섞이기 쉽다. 로그에 없는 $(s_t, a_t')$ 조합에 대한 $Q$ 값 추정은 신뢰구간이 넓어질 수밖에 없다. 반사실 행동설명을 제시할 때는 추정의 불확실성도 함께 보고하는 게 안전하다.</p>`,
+    related: [{ label: "정책 설명 안정성", slug: "policy-explanation-stability" }, { label: "정책 대리설명 충실도", slug: "policy-surrogate-fidelity" }],
+    sections: []
+  },
+  "surrogate-fidelity": {
+    title: String.raw`대리모델 충실도: 설명이 원래 모델과 정말 일치하는가`,
+    domain: "xai",
+    subLabel: String.raw`대리모델 신뢰도`,
+    intuition: String.raw`<p>LIME이나 결정트리 같은 단순한 대리모델로 복잡한 블랙박스를 설명할 때 가장 먼저 물어야 할 질문은 이 대리모델이 원래 모델을 얼마나 잘 흉내내고 있느냐다. 대리모델이 그럴듯한 설명을 내놓아도 실제로는 원래 모델과 전혀 다른 판단을 하고 있다면 그 설명은 원래 모델이 아니라 대리모델 자신에 대한 설명일 뿐이다.</p>
+<p>충실도는 이 간극을 재는 지표다. 같은 입력 집합에 대해 원래 모델의 예측과 대리모델의 예측이 얼마나 일치하는지를 측정해 대리모델을 설명으로 써도 되는지 판단하는 근거로 삼는다.</p>`,
+    explanation: String.raw`<p>가장 단순한 형태는 예측 일치율이다.</p>
+<p>$$\text{Fidelity} = \frac{1}{n}\sum_{i=1}^n \mathbf{1}[f(x_i) = g(x_i)]$$</p>
+<p>원래 모델 $f$와 대리모델 $g$가 같은 클래스를 고른 비율을 잰다. 회귀나 확률 출력이라면 두 출력 사이 결정계수 $R^2$나 평균제곱오차를 쓴다.</p>
+<p>전역 충실도와 국소 충실도는 구분해야 한다. 전역 충실도는 데이터 전체에서 두 모델이 얼마나 일치하는지를 재고 국소 충실도는 설명하려는 입력 주변의 좁은 영역에서만 일치도를 잰다. LIME처럼 애초에 국소 설명을 목표로 설계된 기법은 전역 충실도가 낮아도 문제가 아니다. 전역에서 원래 모델을 통째로 흉내낼 생각이 없기 때문이다. 반대로 국소 충실도가 낮다면 그 설명은 존재 목적을 달성하지 못한 것이라 훨씬 심각한 문제다.</p>
+<p>충실도가 낮아지는 이유는 대개 둘 중 하나다. 대리모델의 표현력 부족으로 결정경계가 복잡하게 휘어 있는 영역을 직선으로 근사하면 애초에 잘 맞을 수가 없다. 아니면 국소 영역을 너무 넓게 잡아 커널 폭이 너무 커서 먼 점들까지 적합에 끌어들이는 경우다. 충실도를 측정하지 않고 대리모델의 계수만 보고 설명을 신뢰하는 것은 근거 없는 확신에 가깝다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" font-size="13" text-anchor="middle">원래 모델(복잡한 경계)</text>
+<path d="M40,190 C90,110 150,210 200,120 C215,90 230,60 260,30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="70" cy="150" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="120" cy="160" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="160" cy="140" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="190" cy="100" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="230" cy="70" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="470" y="18" font-size="13" text-anchor="middle">대리모델(직선 근사)</text>
+<line x1="360" y1="190" x2="580" y2="60" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="390" cy="150" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="440" cy="160" r="6" class="dg-accent"/>
+<circle cx="480" cy="140" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="510" cy="100" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="550" cy="70" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="440" y="185" font-size="12" text-anchor="middle">불일치</text>
+<text x="310" y="250" font-size="12" text-anchor="middle" class="dg-dim">5개 중 4개 일치 → Fidelity 약 0.8</text>
+</svg>`,
+    diagramCaption: String.raw`같은 다섯 점을 놓고 원래 모델의 곡선 경계와 대리모델의 직선 근사가 어디서 갈리는지 비교한다.`,
+    example: String.raw`<p>대출 신청자 네 명에 대해 원래 모델의 예측이 승인 거절 승인 거절이고 국소 선형 대리모델의 예측이 승인 거절 거절 거절이라고 하자. 네 건 중 세 건이 일치하므로 Fidelity는 0.75다. 세 번째 신청자에서 대리모델이 틀렸다는 것은 그 사람 근처에서는 결정경계가 대리모델의 직선보다 더 휘어 있다는 뜻이고 그 신청자에게 준 설명은 특히 조심해서 봐야 한다.</p>`,
+    related: [{ label: "설명 근사오차", slug: "local-approx-error" }, { label: "정책 대리설명 충실도", slug: "policy-surrogate-fidelity" }],
+    sections: []
+  },
+  "local-approx-error": {
+    title: String.raw`설명 근사오차: 국소 근사가 놓치는 것`,
+    domain: "xai",
+    subLabel: String.raw`대리모델 신뢰도`,
+    intuition: String.raw`<p>산 중턱 한 지점의 기울기만 보고 이 방향으로 계속 가면 이만큼 높아지겠다고 예상하면 가까운 거리에서는 잘 맞지만 멀리 갈수록 실제 지형과 어긋난다. 산은 굽어 있는데 예측은 직선이기 때문이다. 국소 선형 설명도 정확히 같은 한계를 가진다.</p>
+<p>국소 근사오차는 이 어긋남을 구체적인 숫자로 드러낸다. 설명이 만든 단순한 근사 모델이 원래 모델의 실제 값과 근사 지점 근처와 조금 먼 곳에서 각각 얼마나 떨어져 있는지를 재서 이 설명을 어디까지 믿어도 되는지 범위를 알려준다.</p>`,
+    explanation: String.raw`<p>설명 지점 $x_0$에서 만든 국소 선형근사를 $\hat{f}(x) = f(x_0) + \nabla f(x_0)^\top (x - x_0)$라 하자. 실제 함수 $f$와 근사 $\hat f$ 사이 오차는 $\varepsilon(x) = |f(x) - \hat f(x)|$로 정의된다. 테일러 정리에 따르면 이 오차는 $x_0$에서 멀어질수록 대략 $\lVert x - x_0 \rVert^2$에 비례해 커진다. 조금만 벗어나도 근사가 급격히 무너지는 구간이 반드시 존재한다는 뜻이다.</p>
+<p>LIME처럼 표본을 뽑아 선형모델을 적합시키는 기법에서는 적합 과정에서 나오는 잔차의 크기로 이 오차를 근사 추정할 수 있다. 적합에 쓴 표본들에 대한 잔차제곱합이 크면 그 지점 근처는 원래 함수가 심하게 휘어 있어 선형근사가 잘 안 맞는다는 신호다. 이 잔차를 커널 폭 선택의 기준으로 삼아 폭을 줄이면 근사오차는 줄어들지만 표본이 적어져 안정성은 나빠지는 편향분산 트레이드오프가 생긴다.</p>
+<p>결정경계 바로 근처는 근사오차가 특히 크게 나타나는 위험지대다. 클래스가 갈리는 경계는 함수가 급격히 꺾이는 지점이라 선형근사가 가장 잘 틀리는 곳이기 때문이다. 설명하려는 입력이 결정경계에서 얼마나 떨어져 있는지를 함께 보고해 이 설명은 경계 근처라 근사오차가 클 수 있다는 경고를 붙이는 편이 안전하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 580 260" xmlns="http://www.w3.org/2000/svg">
+<path d="M60,200 L104,142.4 L148,97.6 L192,65.6 L236,46.4 L280,40 L324,46.4 L368,65.6 L412,97.6 L456,142.4 L500,200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="100" y1="119" x2="300" y2="3" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<circle cx="192" cy="66" r="6" class="dg-accent"/>
+<text x="192" y="86" font-size="12" text-anchor="middle">x₀</text>
+<circle cx="236" cy="46" r="5" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="236" cy="40" r="5" class="dg-dim"/>
+<line x1="236" y1="46" x2="236" y2="40" class="dg-stroke-accent" stroke-width="2"/>
+<text x="246" y="48" font-size="12">오차 작음</text>
+<circle cx="280" cy="40" r="5" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="280" cy="14" r="5" class="dg-dim"/>
+<line x1="280" y1="40" x2="280" y2="14" class="dg-stroke-accent" stroke-width="2"/>
+<text x="290" y="30" font-size="12">오차 큼</text>
+<text x="400" y="130" font-size="13">f(x) 원래 함수</text>
+<text x="70" y="115" font-size="13">f̂(x) 선형근사</text>
+</svg>`,
+    diagramCaption: String.raw`근사 기준점에서 멀어질수록 선형근사의 오차가 거리 제곱에 비례해 커진다.`,
+    example: String.raw`<p>$f(x)=x^2$이고 $x_0=1$에서 접선으로 근사하면 $\hat f(x) = 1 + 2(x-1)$이다. $x=1.1$에서는 실제값 1.21 근사값 1.2로 오차가 0.01이다. $x=1.5$에서는 실제값 2.25 근사값 2.0으로 오차가 0.25다. 거리가 5배 멀어졌을 뿐인데 오차는 25배로 늘었다. 거리의 제곱에 비례해 커진다는 사실이 그대로 드러난다.</p>`,
+    related: [{ label: "대리모델 충실도", slug: "surrogate-fidelity" }],
+    sections: []
+  },
+  "reconstruction-fidelity": {
+    title: String.raw`재구성 충실도: 설명대로 다시 만들면 똑같이 나오는가`,
+    domain: "xai",
+    subLabel: String.raw`대리모델 신뢰도`,
+    intuition: String.raw`<p>오토인코더나 잠재모델 기반 설명은 이 잠재 차원이 이 특징을 담당한다는 식으로 이름을 붙인다. 이 설명이 맞는지 확인하는 가장 직접적인 방법은 그 설명을 그대로 따라 재구성했을 때 원래 데이터가 다시 나오는지 보는 것이다. 설명대로 인코딩하고 디코딩했는데 전혀 다른 결과물이 나온다면 그 설명은 실제 모델의 동작을 반영하지 못한 것이다.</p>
+<p>재구성 충실도는 설명이 가리키는 메커니즘을 그대로 실행했을 때 실제 관찰과 일치하는지를 확인하는 일종의 왕복 검사다. 생성모델이나 오토인코더 기반 설명에서 특히 중요하다. 잠재공간에 사람이 붙인 이름표가 실제로 모델의 계산과 맞아떨어지는지 확인할 방법이 이것 말고는 마땅치 않기 때문이다.</p>`,
+    explanation: String.raw`<p>전형적인 오토인코더는 입력 $x$를 인코더로 잠재벡터 $z=e(x)$로 압축하고 디코더로 $\hat x=d(z)$를 복원한다. 잠재 차원 $k$가 속성 $A$를 담당한다는 설명이 붙었다면 이 설명이 맞는지는 $z$의 $k$번째 성분만 바꾼 뒤 디코딩한 결과 $d(z_{k\to v})$가 실제로 속성 $A$만 바뀐 그럴듯한 이미지로 나오는지 보면 확인된다.</p>
+<p>$$\text{Reconstruction Error} = \lVert x - \hat x \rVert^2$$</p>
+<p>기본 재구성오차 외에 설명이 걸린 속성에 대해서는 별도의 속성 예측기 $c$를 하나 더 붙여 $c(d(z_{k\to v}))$가 의도한 속성값 $v$와 얼마나 가까운지도 함께 잰다. 재구성오차는 작은데 속성 예측이 의도와 다르게 나온다면 이미지는 그럴듯하게 복원되지만 그 차원이 지목한 속성과는 무관하다는 뜻이라 설명 자체가 틀렸다고 봐야 한다.</p>
+<p>반사실 이미지 생성과 개념은 맞닿아 있지만 목적이 다르다. 반사실 이미지 생성은 예측을 뒤집는 새로운 이미지를 만드는 게 목표이고 재구성 충실도는 이미 나온 설명이 얼마나 정확한지 사후 검증하는 게 목표다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="70" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="64" font-size="12" text-anchor="middle">입력 x</text>
+<line x1="90" y1="100" x2="120" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="120" y="80" width="80" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="160" y="104" font-size="12" text-anchor="middle">인코더</text>
+<line x1="200" y1="100" x2="225" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="230" y="100" width="14" height="30" class="dg-dim"/>
+<rect x="248" y="90" width="14" height="40" class="dg-dim"/>
+<rect x="266" y="80" width="14" height="50" class="dg-accent"/>
+<rect x="284" y="105" width="14" height="25" class="dg-dim"/>
+<text x="257" y="150" font-size="12" text-anchor="middle">z</text>
+<text x="273" y="70" font-size="12" text-anchor="middle">차원 k</text>
+<line x1="310" y1="100" x2="335" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="335" y="80" width="80" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="375" y="104" font-size="12" text-anchor="middle">디코더</text>
+<line x1="415" y1="100" x2="445" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="450" y="70" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="480" y="64" font-size="12" text-anchor="middle">복원 x̂</text>
+<path d="M480,130 C 350,190 200,190 60,130" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="270" y="200" font-size="12" text-anchor="middle">재구성오차 비교</text>
+</svg>`,
+    diagramCaption: String.raw`잠재 차원을 바꿔 디코딩한 결과가 의도한 속성만 바뀐 그럴듯한 이미지로 나오는지 확인한다.`,
+    related: [{ label: "반사실 이미지 생성", slug: "counterfactual-image-generation" }, { label: "대리모델 충실도", slug: "surrogate-fidelity" }],
+    sections: []
+  },
+  "policy-surrogate-fidelity": {
+    title: String.raw`정책 대리설명 충실도: 결정트리가 정책을 얼마나 잘 흉내내는가`,
+    domain: "xai",
+    subLabel: String.raw`대리모델 신뢰도`,
+    intuition: String.raw`<p>딥러닝 정책 신경망이 어떤 상태에서 왜 그 행동을 골랐는지 사람이 읽을 수 있는 규칙으로 정리하고 싶을 때 흔히 결정트리 같은 단순한 모델로 정책을 흉내내게 만든다. 속도가 시속 60 이상이고 앞차와 거리가 20미터 미만이면 감속한다는 식의 규칙이 나오면 감사나 규제 대응에 훨씬 유리하다.</p>
+<p>문제는 이 결정트리가 원래 신경망 정책을 얼마나 잘 흉내내고 있느냐다. 트리가 몇몇 상태에서만 맞고 나머지 대부분에서는 다른 행동을 고른다면 그 규칙은 정책을 설명하는 게 아니라 완전히 다른 정책을 새로 만들어낸 것과 다름없다.</p>`,
+    explanation: String.raw`<p>정책 대리설명 충실도는 지도학습의 대리모델 충실도를 정책 문제에 그대로 옮긴 것이다. 상태 집합 $S$에 대해 원래 정책 $\pi$가 고르는 행동과 결정트리 $\hat\pi$가 고르는 행동이 얼마나 일치하는지를 잰다.</p>
+<p>$$\text{Policy Agreement} = \frac{1}{|S|}\sum_{s \in S} \mathbf{1}[\pi(s) = \hat\pi(s)]$$</p>
+<p>행동 일치도만으로는 부족할 때가 많다. 두 정책이 다른 행동을 골랐어도 그 결과로 얻는 누적 보상이 비슷하다면 실질적으로는 괜찮은 근사일 수 있다. 반대로 행동 일치도는 높은데 충돌 직전처럼 결정적인 소수 상태에서만 어긋난다면 그 어긋남이 훨씬 위험할 수 있다. 그래서 행동 단위 일치도와 별도로 결정트리 정책을 실제로 굴려봤을 때의 누적 보상을 원래 정책과 비교하는 방법도 함께 쓴다.</p>
+<p>트리 깊이는 해석가능성과 충실도 사이의 직접적인 트레이드오프다. 트리를 얕게 만들수록 사람이 규칙을 읽고 이해하기는 쉬워지지만 원래 신경망 정책의 복잡한 결정경계를 담아내지 못해 일치도가 떨어진다. 실무에서는 목표로 하는 최소 일치도를 먼저 정하고 그 조건을 만족하는 가장 얕은 트리를 찾는 식으로 두 요구를 절충한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" font-size="13" text-anchor="middle">신경망 정책</text>
+<path d="M40,190 C90,110 150,210 200,120 C215,90 230,60 260,30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="470" y="18" font-size="13" text-anchor="middle">결정트리 정책</text>
+<line x1="470" y1="30" x2="470" y2="230" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="340" y1="130" x2="470" y2="130" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="470" y1="90" x2="600" y2="90" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="440" y="150" width="40" height="40" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="460" y="145" font-size="12" text-anchor="middle">불일치</text>
+<text x="310" y="250" font-size="12" text-anchor="middle" class="dg-dim">직선 분할은 곡선 경계를 완전히 담아내지 못한다</text>
+</svg>`,
+    diagramCaption: String.raw`신경망 정책의 곡선 경계를 결정트리의 축 정렬 분할로 근사하면 일부 영역에서 어긋남이 생긴다.`,
+    example: String.raw`<p>같은 정책을 깊이 2인 트리로 근사하면 행동 일치도가 81퍼센트 실제로 굴렸을 때 누적 보상은 원래 정책의 92퍼센트 수준이 나온다고 하자. 깊이를 4로 늘리면 일치도는 94퍼센트 보상은 99퍼센트까지 올라간다. 규칙을 얼마나 단순하게 유지할지는 이 수치를 보고 정하는 게 안전하다.</p>`,
+    related: [{ label: "대리모델 충실도", slug: "surrogate-fidelity" }, { label: "정책 설명 안정성", slug: "policy-explanation-stability" }, { label: "반사실 행동설명", slug: "counterfactual-action-explanation" }],
+    sections: []
+  },
+  "lime-for-text": {
+    title: String.raw`LIME for Text: 단어를 지워보며 근거를 찾기`,
+    domain: "xai",
+    subLabel: String.raw`교란 기반 설명`,
+    intuition: String.raw`<p>어떤 리뷰를 모델이 부정으로 분류했다고 하자. 그 이유를 알고 싶다면 리뷰에서 단어를 하나씩 지워보면서 예측이 얼마나 흔들리는지 보면 된다. 어떤 단어를 지웠을 때 예측이 거의 안 바뀌면 그 단어는 별 상관이 없었다는 뜻이고 예측이 크게 바뀌면 그 단어가 결정적인 근거였다는 뜻이다.</p>
+<p>LIME for Text는 이 지우기를 무작위로 여러 번 반복한 다음 그 결과에 아주 단순한 선형모델을 맞춰서 단어별 중요도를 점수로 뽑아낸다. 원래 모델이 아무리 복잡해도 관심 있는 문장 하나 근처의 좁은 영역에서만큼은 간단한 선형 관계로도 근사할 수 있다는 발상이다.</p>`,
+    explanation: String.raw`<p>LIME은 입력 문장을 단어가 있는지 없는지를 나타내는 이진벡터 $z' \in \{0,1\}^d$로 바꾼다. 이 벡터를 무작위로 뒤섞어 일부 단어를 지운 교란 샘플 $z$를 여러 개 만들고 각각을 원래 블랙박스 모델에 넣어 예측값 $f(z)$를 얻는다. 그다음 원문장과 얼마나 비슷한 교란인지(지운 단어 수가 적을수록 더 가깝다)에 따라 가중치 $\pi_x(z)$를 매기고 이 가중치를 반영한 선형회귀로 대리모델 $g$를 학습한다.</p>
+<p>$\xi(x) = \arg\min_{g \in G} \sum_{z} \pi_x(z)\,\big(f(z) - g(z')\big)^2 + \Omega(g)$</p>
+<p>여기서 $\Omega(g)$는 대리모델을 너무 복잡하게 만들지 않도록 거는 규제항이다. 학습된 선형모델의 계수가 곧 각 단어의 기여도가 된다. 모델 전체를 하나의 해석 가능한 형태로 통째로 근사하려던 이전 방식들은 국소적인 결정 경계를 제대로 못 담아냈는데 LIME은 딱 관심 있는 지점 주변만 근사한다는 점에서 이 문제를 피한다.</p>
+<p>텍스트에서는 교란 공간이 연속적인 픽셀이나 특징값이 아니라 이산적인 단어 집합이라는 점이 이미지나 표 데이터와 다르다. 어떤 단어를 얼마나 자주 지울지, 교란 샘플을 몇 개나 뽑을지, 근접도 가중치를 어떻게 정의할지에 따라 같은 문장이라도 결과가 조금씩 달라질 수 있다는 한계가 있다. 이 불안정성은 이후 게임이론에 기반해 값이 유일하게 정해지는 SHAP 계열 방법들이 등장하는 배경이 된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="26" font-size="12">원문장</text>
+<text x="90" y="26" font-size="13">연기는</text>
+<text x="150" y="26" font-size="13">좋았지만</text>
+<text x="220" y="26" font-size="13">스토리가</text>
+<text x="290" y="26" font-size="13">지루했다</text>
+<text x="460" y="26" font-size="12">f(x) = 0.81 (부정)</text>
+<text x="20" y="62" font-size="12" class="dg-dim">교란 1</text>
+<text x="90" y="62" font-size="13" class="dg-dim">[지움]</text>
+<text x="150" y="62" font-size="13">좋았지만</text>
+<text x="220" y="62" font-size="13">스토리가</text>
+<text x="290" y="62" font-size="13">지루했다</text>
+<text x="460" y="62" font-size="12">f(z) = 0.78</text>
+<text x="20" y="98" font-size="12" class="dg-dim">교란 2</text>
+<text x="90" y="98" font-size="13">연기는</text>
+<text x="150" y="98" font-size="13">좋았지만</text>
+<text x="220" y="98" font-size="13" class="dg-dim">[지움]</text>
+<text x="290" y="98" font-size="13">지루했다</text>
+<text x="460" y="98" font-size="12">f(z) = 0.55</text>
+<text x="20" y="134" font-size="12" class="dg-dim">교란 3</text>
+<text x="90" y="134" font-size="13">연기는</text>
+<text x="150" y="134" font-size="13">좋았지만</text>
+<text x="220" y="134" font-size="13">스토리가</text>
+<text x="290" y="134" font-size="13" class="dg-dim">[지움]</text>
+<text x="460" y="134" font-size="12">f(z) = 0.21</text>
+<line x1="20" y1="150" x2="560" y2="150" class="dg-line" stroke-width="1.5"/>
+<text x="20" y="170" font-size="12" class="dg-dim">단어별 가중치(선형회귀 계수 근사)</text>
+<line x1="90" y1="264" x2="90" y2="182" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="90" y1="264" x2="560" y2="264" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="188" width="18" height="18" class="dg-dim"/>
+<text x="118" y="201" font-size="12">연기는 (0.03)</text>
+<rect x="90" y="212" width="156" height="18" class="dg-dim"/>
+<text x="256" y="225" font-size="12">스토리가 (0.26)</text>
+<rect x="90" y="236" width="360" height="18" class="dg-accent"/>
+<text x="460" y="249" font-size="12">지루했다 (0.60)</text>
+</svg>`,
+    diagramCaption: String.raw`단어를 하나씩 지워가며 예측 변화를 관찰하고 그 변화에 선형모델을 맞춰 단어별 가중치를 근사한다.`,
+    example: String.raw`<p>원문장 "연기는 좋았지만 스토리가 지루했다"의 부정 확률은 $f(x)=0.81$이다. 각 단어를 하나씩 지운 뒤 확률 변화를 보면 "연기는"을 지웠을 때는 $0.81 \to 0.78$로 거의 안 바뀌고 "스토리가"를 지웠을 때는 $0.81 \to 0.55$로 크게 떨어지고 "지루했다"를 지웠을 때는 $0.81 \to 0.21$로 가장 크게 떨어진다. 변화 폭이 클수록 그 단어에 실린 가중치가 크다는 뜻이므로 "지루했다"가 이 예측의 핵심 근거였다고 읽을 수 있다.</p>`,
+    related: [{ label: "Partition SHAP", slug: "partition-shap" }, { label: "Integrated Gradients(텍스트)", slug: "integrated-gradients-text" }],
+    sections: []
+  },
+  "partition-shap": {
+    title: String.raw`Partition SHAP: 문장을 계층적으로 쪼개 Shapley값 근사하기`,
+    domain: "xai",
+    subLabel: String.raw`교란 기반 설명`,
+    intuition: String.raw`<p>Shapley값은 이론적으로 가장 공정한 기여도 배분 방법이지만 계산하려면 단어들의 모든 조합의 조합을 다 따져야 해서 문장이 조금만 길어져도 계산량이 감당할 수 없이 커진다. Partition SHAP은 이 문제를 문장을 통째로 다루는 대신 절반씩 계속 쪼개는 방식으로 우회한다.</p>
+<p>문장을 구 단위로 나누고 그 구를 다시 단어 단위로 나누는 이진트리를 만든 다음 각 분기마다 왼쪽 그룹과 오른쪽 그룹이 예측에 기여한 몫을 나눈다. 나무를 타고 내려가며 이 분배를 반복하면 마지막에는 단어 하나하나의 기여도가 남는다.</p>`,
+    explanation: String.raw`<p>Shapley값은 원래 특징 $i$를 제외한 나머지 특징들의 모든 부분집합 $S$에 대해 $i$가 들어왔을 때와 안 들어왔을 때의 예측 차이를 조합 가짓수로 가중 평균한 값이다.</p>
+<p>$\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(|N|-|S|-1)!}{|N|!}\big[f(S \cup \{i\}) - f(S)\big]$</p>
+<p>특징이 $M$개면 이 합은 $2^{M}$에 가까운 항을 따져야 해서 문장 하나에도 감당하기 어렵다. Partition SHAP은 단어 전체를 계층적 클러스터링으로 이진트리로 묶어두고 이 트리 구조를 벗어나는 조합은 아예 따지지 않는다. 각 내부 노드에서는 그 노드가 가진 몫을 왼쪽 자식과 오른쪽 자식 두 그룹 사이에서만 나누는 두 참가자짜리 게임을 풀면 되고 이 계산을 자식 노드로 내려가며 재귀적으로 반복한다.</p>
+<p>이렇게 하면 평가해야 하는 모델 호출 수가 지수적으로 늘던 것에서 트리의 깊이와 노드 수에 비례하는 수준으로 크게 줄어든다. 대신 트리가 실제 언어 구조를 잘 반영하지 못하면(엉뚱한 곳에서 문장을 둘로 쪼개면) 근사값이 정확한 Shapley값에서 벗어날 수 있다는 대가를 치른다. 이미지에서 슈퍼픽셀을 영역별로 계층적으로 묶어 처리하는 것과 같은 발상을 텍스트의 단어와 구 구조에 적용한 방법이라고 볼 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="320" y="18" font-size="12" text-anchor="middle">이 영화는 정말 지루하고 별로였다</text>
+<line x1="300" y1="26" x2="180" y2="66" class="dg-line" stroke-width="1.5"/>
+<line x1="340" y1="26" x2="470" y2="66" class="dg-line" stroke-width="1.5"/>
+<text x="160" y="80" font-size="12" text-anchor="middle">이 영화는 정말</text>
+<text x="480" y="80" font-size="12" text-anchor="middle">지루하고 별로였다</text>
+<line x1="140" y1="86" x2="90" y2="126" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="86" x2="230" y2="126" class="dg-line" stroke-width="1.5"/>
+<line x1="460" y1="86" x2="410" y2="126" class="dg-line" stroke-width="1.5"/>
+<line x1="500" y1="86" x2="550" y2="126" class="dg-line" stroke-width="1.5"/>
+<circle cx="90" cy="122" r="4" class="dg-dim" stroke="none"/>
+<circle cx="230" cy="122" r="4" class="dg-dim" stroke="none"/>
+<circle cx="410" cy="122" r="4" class="dg-accent" stroke="none"/>
+<circle cx="550" cy="122" r="4" class="dg-accent" stroke="none"/>
+<text x="90" y="140" font-size="12" text-anchor="middle">이 영화는</text>
+<text x="230" y="140" font-size="12" text-anchor="middle">정말</text>
+<text x="410" y="140" font-size="12" text-anchor="middle">지루하고</text>
+<text x="550" y="140" font-size="12" text-anchor="middle">별로였다</text>
+<line x1="20" y1="170" x2="620" y2="170" class="dg-line" stroke-width="1"/>
+<text x="320" y="192" font-size="12" text-anchor="middle" class="dg-dim">리프(단어) 단위까지 내려가며 좌우 분배를 반복해 기여도를 확정한다</text>
+</svg>`,
+    diagramCaption: String.raw`문장을 절반씩 재귀적으로 쪼개며 각 분기에서 좌우 그룹의 기여도를 나누고 마지막에 단어 단위 값을 얻는다.`,
+    example: String.raw`<p>단어 8개짜리 문장의 정확한 Shapley값을 구하려면 대략 $2^8=256$가지 부분집합 조합을 따져야 한다. 이진트리로 절반씩 쪼개면 내부 노드는 $8-1=7$개가 되고 각 노드에서는 좌우 두 그룹의 조합 4가지(둘 다 없음, 왼쪽만, 오른쪽만, 둘 다)만 보면 되므로 대략 $7 \times 4=28$번의 모델 호출로 근사값을 얻을 수 있다. 정확도는 트리 구조가 실제 의미 단위를 얼마나 잘 반영하는지에 달려 있다.</p>`,
+    related: [{ label: "LIME for Text", slug: "lime-for-text" }, { label: "TreeSHAP", slug: "treeshap" }],
+    sections: []
+  },
+  "attention-explanation-limits": {
+    title: String.raw`Attention 설명의 한계: 어텐션은 정말 설명일까`,
+    domain: "xai",
+    subLabel: String.raw`어텐션 · 그래디언트 기반`,
+    intuition: String.raw`<p>트랜스포머 모델을 시각화하면 어떤 단어에 어텐션 가중치가 높게 실렸는지 바로 확인할 수 있다. 이걸 보고 "이 단어를 많이 봤으니 이 단어 때문에 이런 예측이 나왔구나"라고 해석하고 싶어진다. 하지만 어텐션은 애초에 사람에게 설명을 주려고 설계된 장치가 아니라 모델이 정보를 섞기 위해 내부적으로 쓰는 연산일 뿐이다.</p>
+<p>같은 예측을 내면서도 완전히 다른 어텐션 분포를 갖는 모델을 얼마든지 만들 수 있다는 사실이 이 가정을 흔든다. 어텐션 가중치가 정말 예측의 근거라면 그 가중치를 바꾸면 예측도 따라 바뀌어야 하는데 실제로는 그렇지 않은 경우가 많다.</p>`,
+    explanation: String.raw`<p>2019년 Jain과 Wallace의 연구는 두 가지를 보였다. 첫째 학습된 어텐션 가중치는 그래디언트 기반으로 측정한 특징 중요도와 상관관계가 약한 경우가 많았다. 둘째 원래 예측을 거의 그대로 유지하면서도 전혀 다른 단어에 가중치를 몰아주는 대안적인 어텐션 분포를 최적화로 쉽게 찾아낼 수 있었다. 예측 결과가 똑같이 나오는 서로 다른 어텐션 분포가 여러 개 존재한다면 그중 어느 것도 유일한 설명이라고 부를 근거가 없다는 논리다.</p>
+<p>이 논쟁은 설명이 갖춰야 할 두 가지 성질을 구분하게 만들었다. 그럴듯함(plausibility)은 사람이 보기에 납득이 가는지를 뜻하고 충실함(faithfulness)은 모델이 실제로 그 근거를 사용해서 예측했는지를 뜻한다. 어텐션 맵은 그럴듯해 보이는 경우가 많지만 충실한지는 별개의 문제다. 이를 검증하는 방법 중 하나가 지우기 실험(erasure test)인데 어텐션이 높은 토큰을 지웠을 때 예측이 크게 흔들려야 그 어텐션이 실제로 중요했다고 볼 수 있다. 그런데 실제로는 어텐션이 낮은 토큰을 지워도 예측이 비슷하게 흔들리는 경우가 자주 관찰됐다.</p>
+<p>이에 대한 반론도 있었다. Wiegreffe와 Pinter는 최적화로 억지로 찾아낸 적대적 어텐션 분포가 실제 학습 과정에서 자연스럽게 나올 법한 분포는 아니라는 점을 지적했고 어텐션이 유일한 결정 요인이 아니라고 해서 전혀 정보가 없는 것은 아니라고 반박했다. 잔차 연결과 이후의 완전연결층까지 거치는 트랜스포머 구조에서 어텐션 가중치 하나만으로 정보 흐름 전체를 설명할 수는 없다는 게 지금은 대체로 받아들여지는 결론이다. 어텐션은 보조적인 진단 신호로는 쓸모가 있지만 그 자체로 완결된 인과적 설명이라고 단정하기는 어렵다.</p>`,
+    related: [{ label: "Integrated Gradients(텍스트)", slug: "integrated-gradients-text" }, { label: "Rationale Extraction", slug: "rationale-extraction" }],
+    sections: []
+  },
+  "integrated-gradients-text": {
+    title: String.raw`Integrated Gradients(텍스트): 토큰 임베딩까지 경로적분 확장하기`,
+    domain: "xai",
+    subLabel: String.raw`어텐션 · 그래디언트 기반`,
+    intuition: String.raw`<p>그래디언트는 지금 이 지점에서 입력을 아주 살짝 바꿨을 때 출력이 얼마나 민감하게 반응하는지만 알려준다. 그런데 모델이 이미 확신에 찬 상태(포화 구간)에 들어가 있으면 그 단어가 사실 결정에 결정적이었는데도 그 지점의 그래디언트는 0에 가깝게 나올 수 있다. 이미 다 반영된 근거는 국소적으로는 더 바꿀 필요가 없어 보이기 때문이다.</p>
+<p>Integrated Gradients는 딱 한 지점의 그래디언트만 보는 대신 아무 정보도 없는 기준 상태에서 실제 입력까지 이어지는 경로를 따라가며 그래디언트를 계속 쌓아 올린다. 텍스트에서는 단어 자체가 이산적이라 경로를 단어 위에 그릴 수 없으므로 단어가 매핑되는 임베딩 벡터 위에 경로를 긋는다.</p>`,
+    explanation: String.raw`<p>기준 임베딩 $x'$(흔히 [PAD] 토큰의 임베딩이나 영벡터를 쓴다)에서 실제 임베딩 $x$까지 직선 경로를 따라가며 각 지점의 그래디언트를 적분한다.</p>
+<p>$IG_i(x) = (x_i - x_i') \displaystyle\int_{0}^{1} \frac{\partial f\big(x' + \alpha (x-x')\big)}{\partial x_i}\, d\alpha$</p>
+<p>실제 계산에서는 적분을 $m$단계의 리만 합으로 근사한다.</p>
+<p>$IG_i(x) \approx (x_i - x_i') \cdot \dfrac{1}{m}\displaystyle\sum_{k=1}^{m} \frac{\partial f\big(x' + \frac{k}{m}(x-x')\big)}{\partial x_i}$</p>
+<p>단일 지점의 그래디언트를 쓰는 Saliency Map은 계산이 가볍지만 포화 구간에서 중요한 특징을 놓치는 문제가 있었다. Integrated Gradients는 경로 전체의 그래디언트를 누적하기 때문에 중간에 포화 구간을 지나더라도 그 앞뒤 구간에서 쌓인 신호가 반영된다. 또한 모든 특징의 기여도 합이 $f(x)-f(x')$와 정확히 같아지는 완전성(completeness) 공리를 만족하는데 단순 그래디언트나 일부 다른 방법들은 이 성질을 보장하지 못한다.</p>
+<p>텍스트에 적용할 때 특유의 문제도 있다. 임베딩은 벡터라서 차원별 기여도를 다시 단어 하나의 점수로 합치는 과정(합산이나 노름을 취하는 방식)이 필요하고 기준 임베딩을 무엇으로 잡느냐에 따라 결과가 꽤 달라진다. [PAD] 임베딩을 쓸지 영벡터를 쓸지에 따라 같은 문장도 다른 기여도가 나올 수 있다는 점은 이 방법의 실무적인 약점으로 꼽힌다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="140" x2="560" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="60" cy="140" r="6" class="dg-dim" stroke="none"/>
+<text x="60" y="118" font-size="12" text-anchor="middle">x'(기준)</text>
+<text x="60" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0</text>
+<circle cx="185" cy="140" r="4" class="dg-dim" stroke="none"/>
+<text x="185" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0.25</text>
+<circle cx="310" cy="140" r="4" class="dg-dim" stroke="none"/>
+<text x="310" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0.5</text>
+<circle cx="435" cy="140" r="4" class="dg-dim" stroke="none"/>
+<text x="435" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0.75</text>
+<circle cx="560" cy="140" r="6" class="dg-accent" stroke="none"/>
+<text x="560" y="118" font-size="12" text-anchor="middle">x(실제)</text>
+<text x="560" y="164" font-size="11" text-anchor="middle">α=1</text>
+<rect x="179" y="114" width="12" height="16" class="dg-dim"/>
+<rect x="304" y="106" width="12" height="24" class="dg-dim"/>
+<rect x="429" y="98" width="12" height="32" class="dg-dim"/>
+<rect x="554" y="90" width="12" height="40" class="dg-accent"/>
+<text x="185" y="99" font-size="10" text-anchor="middle">0.10</text>
+<text x="310" y="91" font-size="10" text-anchor="middle">0.15</text>
+<text x="435" y="83" font-size="10" text-anchor="middle">0.20</text>
+<text x="560" y="75" font-size="10" text-anchor="middle">0.25</text>
+<rect x="140" y="180" width="360" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="320" y="200" font-size="12" text-anchor="middle">각 지점의 그래디언트를 적분해 토큰 기여도로 합산</text>
+</svg>`,
+    diagramCaption: String.raw`기준 임베딩부터 실제 임베딩까지 경로를 따라가며 그래디언트를 적분해 토큰 기여도를 계산한다.`,
+    example: String.raw`<p>토큰 "훌륭하다"의 임베딩 한 성분이 기준값 $x'_i=0$에서 실제값 $x_i=2.0$까지 이동한다고 하자. 경로를 4단계로 나눠 $\alpha=0.25,0.5,0.75,1$에서 그래디언트를 측정하면 각각 $0.10,0.15,0.20,0.25$가 나왔다. 평균 그래디언트는 $(0.10+0.15+0.20+0.25)/4=0.175$이므로 이 성분의 기여도는 $(2.0-0)\times 0.175=0.35$이다.</p>`,
+    related: [{ label: "Attention 설명의 한계", slug: "attention-explanation-limits" }, { label: "LIME for Text", slug: "lime-for-text" }],
+    sections: []
+  },
+  "counterfactual-text-generation": {
+    title: String.raw`반사실 텍스트 생성: 한두 단어만 바꿔 예측을 뒤집기`,
+    domain: "xai",
+    subLabel: String.raw`반사실 · 생성 기반`,
+    intuition: String.raw`<p>"이 리뷰가 왜 부정으로 분류됐지?"에 답하는 한 가지 방법은 그 리뷰를 최소한으로 고쳐서 모델이 긍정으로 예측을 뒤집을 때까지 바꿔보는 것이다. 몇 단어만 바꿨는데 예측이 뒤집혔다면 그 단어들이 원래 예측을 결정짓던 핵심 근거였다는 뜻이다. "지루했다"를 "즐거웠다"로 한 단어만 바꿨는데 부정에서 긍정으로 예측이 바뀐다면 그 단어가 결정적이었다는 신호다.</p>
+<p>다만 반사실 문장은 실제로 있을 법한 자연스러운 문장이어야 설명으로서 의미가 있다. 문법이 깨지거나 뜻이 이상해지는 방향으로 아무 글자나 바꿔서 예측을 뒤집는 건 쉽지만 그런 문장은 사람이 이해할 수 있는 설명으로 쓸 수 없다.</p>`,
+    explanation: String.raw`<p>반사실 텍스트 생성은 다음 조건을 만족하는 문장 $x'$을 찾는 문제로 정식화할 수 있다. $x' = \arg\min_{x'} d(x,x')$ 단 $\hat f(x') \neq \hat f(x)$ 를 만족해야 한다.</p>
+<p>여기서 $d$는 편집 거리나 임베딩 공간에서의 거리 같은 변화량이고 여기에 더해 언어모델 기준 문장이 자연스러운지를 따지는 유창성 제약이 함께 걸린다. 탐색 기반 방법은 후보 단어를 하나씩 바꿔보며 예측이 뒤집히는 최소 편집을 찾고 생성 기반 방법(예: Polyjuice, MICE)은 "반대 라벨로 바꿔라"는 조건을 붙여 미세조정한 언어모델이 자연스러운 반사실 문장을 직접 만들어내게 한다.</p>
+<p>이 방법이 필요한 이유는 LIME이나 SHAP, 그래디언트 기반 방법들이 단어별 중요도 점수만 줄 뿐 "정확히 무엇을 바꿔야 결과가 달라지는가"라는 실행 가능한 질문에는 답하지 못하기 때문이다. 반사실 설명은 채용 서류 심사나 콘텐츠 검토처럼 "이 문서가 어떻게 바뀌면 결과가 달라지는가"가 중요한 상황에서 바로 쓸 수 있는 구체적인 사례를 제시한다.</p>
+<p>적대적 예제와 헷갈리기 쉽지만 목적이 다르다. 적대적 공격은 의미를 훼손하거나 문법을 깨뜨려서라도 예측만 뒤집으면 성공이지만 반사실 설명은 뜻이 통하고 자연스러운 문장이어야 설명으로 인정된다. 그래서 반사실 텍스트 생성 방법들은 편집 최소화 못지않게 유창성과 의미 보존을 함께 최적화 목표에 넣는다.</p>`,
+    example: String.raw`<p>원문장 "연기는 좋았지만 스토리가 지루했다"의 부정 확률은 $0.81$이다. "지루했다"를 "탄탄했다"로 한 단어만 바꾼 "연기는 좋았지만 스토리가 탄탄했다"를 모델에 넣으면 부정 확률이 $0.32$로 떨어져 긍정 쪽으로 예측이 뒤집힌다. 문법과 의미가 그대로 유지되면서 단 한 단어의 교체만으로 결과가 바뀌었으므로 "지루했다"가 원래 예측의 핵심 근거였음을 확인할 수 있다.</p>`,
+    related: [{ label: "Rationale Extraction", slug: "rationale-extraction" }, { label: "LIME for Text", slug: "lime-for-text" }],
+    sections: []
+  },
+  "rationale-extraction": {
+    title: String.raw`Rationale Extraction: 예측을 정당화하는 최소 문장 찾기`,
+    domain: "xai",
+    subLabel: String.raw`반사실 · 생성 기반`,
+    intuition: String.raw`<p>모델이 리뷰를 부정으로 분류했을 때 "어느 단어가 중요했는지" 점수를 매기는 대신 아예 "이 부분만 봐도 부정이라고 판단하기에 충분하다"는 최소한의 문장 조각을 뽑아내는 방법이다. 그 부분만 따로 모델에 넣어도 원래와 같은 예측이 나와야 한다.</p>
+<p>"배우들의 연기는 훌륭했지만 각본이 형편없고 편집도 산만해서 시간이 아까웠다"라는 리뷰에서 "각본이 형편없고 편집도 산만해서"만 뽑아내도 모델이 여전히 부정으로 분류한다면 이 부분이 rationale이다. 나머지 문장은 없어도 결론에 영향을 주지 않는다.</p>`,
+    explanation: String.raw`<p>일반적인 구현은 선택기(selector)와 예측기(predictor) 두 부분을 함께 학습한다. 선택기는 문장에서 어떤 토큰을 남길지 나타내는 이진마스크 $z \in \{0,1\}^T$를 만들고 예측기는 마스크로 걸러진 토큰 $z \odot x$만 보고 원래와 같은 라벨을 맞혀야 한다. 마스크는 이산값이라 그대로는 미분할 수 없어서 강화학습이나 Gumbel-softmax 같은 연속 완화 기법으로 학습을 흘려보낸다.</p>
+<p>$\min_{\theta} \; \mathbb{E}\big[\mathcal{L}(y, \mathrm{pred}(z \odot x))\big] + \lambda_1 \|z\|_1 + \lambda_2 \sum_t |z_t - z_{t-1}|$</p>
+<p>손실은 세 가지를 동시에 추구한다. 예측기가 rationale만 보고도 정답을 맞히는 것, rationale이 너무 길어지지 않도록 하는 희소성 항, 그리고 토큰이 띄엄띄엄 흩어지지 않고 이어진 구간으로 뽑히도록 하는 연속성 항이다. 마지막 항이 있어야 "각본이", "산만해서"처럼 문맥 없이 튀는 단어 조합이 아니라 사람이 읽을 수 있는 하나의 구절이 뽑힌다.</p>
+<p>이 방법이 채우는 빈틈은 두 가지다. LIME이나 어텐션, 그래디언트 기반 방법은 중요도 점수를 주지만 그 점수가 높은 부분만 모델에 다시 넣었을 때 실제로 같은 예측이 나오는지는 보장하지 않는다. rationale extraction은 애초에 예측기가 rationale만 보고 학습되기 때문에 이 충분조건이 훈련 목표 안에 이미 들어가 있다. 사후에 근거를 추측하는 다른 방법들과 달리 rationale은 모델이 실제로 사용한 정보 그 자체이므로 원리적으로 더 충실한 설명이 된다.</p>`,
+    related: [{ label: "반사실 텍스트 생성", slug: "counterfactual-text-generation" }, { label: "Attention 설명의 한계", slug: "attention-explanation-limits" }],
+    sections: []
+  },
+  "pdp": {
+    title: String.raw`PDP: 특징 하나를 바꿔가며 평균 예측이 어떻게 변하는지 보기`,
+    domain: "xai",
+    subLabel: String.raw`의존도 시각화`,
+    intuition: String.raw`<p>공부시간이 늘어나면 예측 점수가 얼마나 오르는지 알고 싶다고 하자. 나머지 조건은 그대로 두고 공부시간만 1시간, 3시간, 5시간으로 바꿔가며 모델 예측이 평균적으로 어떻게 변하는지 관찰하면 된다. PDP는 이 과정을 데이터셋 전체에 대해 반복해서 하나의 곡선으로 그린 것이다.</p>
+<p>핵심은 "평균적인" 효과라는 점이다. 학생 한 명 한 명의 개별 패턴이 아니라 전체 데이터셋에서 그 특징이 평균적으로 예측에 미치는 영향을 요약해서 보여준다.</p>`,
+    explanation: String.raw`<p>관심 특징 $x_S$의 각 격자값에 대해 나머지 특징 $x_C$는 데이터셋에 있는 모든 샘플의 실제 값 그대로 두고 $x_S$만 그 격자값으로 바꿔치기한 뒤 모델 예측을 구해 평균을 낸다.</p>
+<p>$\hat f_S(x_S) = \dfrac{1}{n}\displaystyle\sum_{i=1}^{n} \hat f\big(x_S,\, x_C^{(i)}\big)$</p>
+<p>선형모델이라면 계수 하나만 봐도 특징의 영향을 알 수 있지만 트리 앙상블이나 신경망처럼 계수라는 게 존재하지 않는 블랙박스 모델에서는 "이 특징을 늘리면 예측이 어떻게 변하는가"라는 가장 기본적인 질문에 답할 방법이 마땅치 않았다. PDP는 모델 구조를 몰라도 예측값만 여러 번 뽑아보면 되는 방식으로 이 질문에 답하는 가장 단순한 전역 설명 방법이다.</p>
+<p>다만 여기에는 숨은 가정이 있다. $x_S$를 격자값으로 바꿔치기하면서 다른 특징은 그 샘플이 실제로 가진 값 그대로 둔 채 조합을 만드는데 두 특징이 서로 강하게 연관되어 있으면 현실에는 존재하지 않는 조합이 섞여 들어갈 수 있다. 예를 들어 집 평수와 방 개수가 강하게 연관되어 있다면 평수를 20평으로 낮췄는데 방은 6개인, 실제로는 거의 없는 조합에 대한 예측까지 평균에 끼어든다. 이 문제를 어떻게 피하는지는 ALE에서 다룬다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="60" y2="40" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="30" font-size="12">평균 예측 점수</text>
+<text x="500" y="245" font-size="12" text-anchor="middle">공부시간</text>
+<path d="M120,196 L300,148 L480,100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="120" cy="196" r="4" class="dg-accent" stroke="none"/>
+<circle cx="300" cy="148" r="4" class="dg-accent" stroke="none"/>
+<circle cx="480" cy="100" r="4" class="dg-accent" stroke="none"/>
+<text x="120" y="184" font-size="11" text-anchor="middle">56</text>
+<text x="300" y="136" font-size="11" text-anchor="middle">68</text>
+<text x="480" y="88" font-size="11" text-anchor="middle">80</text>
+<text x="120" y="238" font-size="12" text-anchor="middle">1시간</text>
+<text x="300" y="238" font-size="12" text-anchor="middle">3시간</text>
+<text x="480" y="238" font-size="12" text-anchor="middle">5시간</text>
+</svg>`,
+    diagramCaption: String.raw`공부시간을 격자값으로 바꿔가며 나머지 특징은 그대로 두고 예측을 평균 낸 곡선이다.`,
+    example: String.raw`<p>학생 A, B, C의 다른 조건에 따른 예측 점수를 간단히 "$50 + 6\times$공부시간$+$개인 기저값"으로 두고 개인 기저값을 각각 $0,-5,+5$라고 하자. 공부시간 1시간일 때 세 학생의 예측은 $56, 51, 61$이고 평균은 $(56+51+61)/3=56$이다. 3시간일 때는 $68,63,73$의 평균 $68$, 5시간일 때는 $80,75,85$의 평균 $80$이 된다. 이렇게 얻은 $(1,56),(3,68),(5,80)$ 세 점을 이은 곡선이 PDP다.</p>`,
+    related: [{ label: "ICE plot", slug: "ice-plot" }, { label: "ALE", slug: "ale" }],
+    sections: []
+  },
+  "ice-plot": {
+    title: String.raw`ICE plot: PDP를 샘플 단위로 쪼개보기`,
+    domain: "xai",
+    subLabel: String.raw`의존도 시각화`,
+    intuition: String.raw`<p>PDP는 데이터셋 전체를 평균 낸 곡선 하나만 보여준다. 그런데 평균 뒤에는 서로 다른 개별 패턴이 숨어 있을 수 있다. 어떤 학생은 공부시간이 늘수록 점수가 꾸준히 오르고 어떤 학생은 거의 안 오를 수도 있는데 이 둘을 평균 내면 두 효과가 뭉뚱그려져 하나의 매끈한 곡선처럼 보인다. ICE plot은 평균 내기 전에 샘플 하나하나에 대해 똑같은 곡선을 따로 그려서 이런 개별 차이를 그대로 드러낸다.</p>
+<p>PDP는 이 개별 ICE 곡선들을 세로로 평균 낸 것과 정확히 같다. 그래서 실무에서는 둘을 함께 그려서 ICE 곡선들이 서로 다른 방향으로 흩어져 있는지, 아니면 다 비슷한 모양으로 겹쳐 있어서 PDP 한 줄만으로도 대표성이 있는지를 함께 확인한다.</p>`,
+    explanation: String.raw`<p>샘플 $i$마다 나머지 특징 $x_C^{(i)}$는 그 샘플의 실제 값으로 고정한 채 관심 특징만 격자값을 바꿔가며 예측을 구하면 그 샘플만의 곡선이 나온다.</p>
+<p>$\hat f^{(i)}(x_S) = \hat f\big(x_S,\, x_C^{(i)}\big), \qquad \hat f_S(x_S) = \dfrac{1}{n}\displaystyle\sum_{i} \hat f^{(i)}(x_S)$</p>
+<p>PDP가 안고 있던 약점은 평균이라는 연산 자체가 이질적인 효과를 지워버릴 수 있다는 점이었다. 관심 특징의 효과가 다른 특징 값에 따라 달라지는 상호작용이 있으면 PDP는 그 상호작용을 뭉개서 밋밋한 하나의 선으로만 보여준다. ICE는 평균을 내기 전 단계에서 멈춰서 이 상호작용을 곡선들의 퍼짐 정도로 그대로 노출한다.</p>
+<p>곡선들이 시작 위치부터 서로 다른 기저 수준에 있으면 모양 차이보다 높낮이 차이가 눈에 먼저 들어와 비교가 어려울 수 있다. 이런 경우 모든 곡선을 가장 왼쪽 격자점 값 기준으로 0에서 시작하도록 평행이동한 centered ICE(c-ICE)를 쓰면 높낮이 차이는 지우고 기울기, 즉 특징에 대한 반응 패턴의 차이만 비교하기 쉬워진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="60" y2="40" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="30" font-size="12">예측 점수</text>
+<text x="500" y="245" font-size="12" text-anchor="middle">공부시간</text>
+<path d="M120,216 L300,168 L480,120" fill="none" class="dg-line" stroke-width="1.5"/>
+<path d="M120,176 L300,128 L480,80" fill="none" class="dg-line" stroke-width="1.5"/>
+<path d="M120,196 L300,148 L480,100" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="120" y="238" font-size="12" text-anchor="middle">1시간</text>
+<text x="300" y="238" font-size="12" text-anchor="middle">3시간</text>
+<text x="480" y="238" font-size="12" text-anchor="middle">5시간</text>
+<text x="420" y="84" font-size="11">학생 C</text>
+<text x="420" y="108" font-size="11">학생 A</text>
+<text x="420" y="122" font-size="11" class="dg-dim">= PDP(평균)</text>
+<text x="420" y="152" font-size="11">학생 B</text>
+</svg>`,
+    diagramCaption: String.raw`가는 선은 개별 학생의 ICE 곡선이고 굵은 선은 그 곡선들을 평균한 PDP다.`,
+    example: String.raw`<p>PDP 항목의 학생 A, B, C 예로 돌아가 보면 학생 A의 곡선은 $(1,56),(3,68),(5,80)$, 학생 B는 $(1,51),(3,63),(5,75)$, 학생 C는 $(1,61),(3,73),(5,85)$로 서로 다른 개별 곡선이다. 이 세 곡선을 각 격자점에서 평균하면 정확히 PDP의 $56,68,80$이 나온다. 다만 학생 A의 개인 기저값이 마침 세 학생 평균인 0과 같기 때문에 A의 곡선이 우연히 PDP와 겹쳐 보이는데 이는 A가 딱 평균적인 조건을 가진 학생이기 때문일 뿐이다.</p>`,
+    related: [{ label: "PDP", slug: "pdp" }, { label: "ALE", slug: "ale" }],
+    sections: []
+  },
+  "ale": {
+    title: String.raw`ALE: 상관관계 있는 특징에서도 안전하게 의존도 보기`,
+    domain: "xai",
+    subLabel: String.raw`의존도 시각화`,
+    intuition: String.raw`<p>PDP는 평수를 20평으로 바꿔치기할 때 다른 특징은 원래 값 그대로 둔 채 억지로 조합을 만든다. 평수와 방 개수가 서로 강하게 연관돼 있다면 이렇게 만들어진 조합 중에는 현실에 없는 조합도 섞여 들어간다. 20평인데 방이 6개인 집은 실제로 거의 없는데 PDP는 이런 조합에 대한 예측도 평균에 끼워 넣는다. ALE는 이 문제를 피하려고 각 구간 근처의 좁은 범위 안에서만, 그것도 실제로 그 구간에 속하는 진짜 데이터에 대해서만 예측 변화를 측정한다.</p>
+<p>그리고 ALE는 절대적인 예측값이 아니라 구간을 이동할 때 예측이 얼마나 변했는지 그 변화량만 하나씩 쌓아 올린다. 다른 특징의 값은 건드리지 않고 관심 특징만 살짝 움직였을 때의 순수한 효과에 더 가깝다.</p>`,
+    explanation: String.raw`<p>관심 특징의 범위를 여러 구간 $[z_{k-1}, z_k]$로 나눈다. 각 구간에서는 실제로 그 구간에 속하는 값을 가진 샘플들만 골라 그 샘플 각각에 대해 특징값을 구간의 아래끝과 위끝으로 바꿨을 때 예측이 얼마나 달라지는지를 구하고 평균한다.</p>
+<p>$\Delta_k = \dfrac{1}{n_k}\displaystyle\sum_{i:\, x_S^{(i)} \in [z_{k-1},z_k]} \Big[\hat f\big(z_k, x_C^{(i)}\big) - \hat f\big(z_{k-1}, x_C^{(i)}\big)\Big]$</p>
+<p>이 국소 차분들을 순서대로 누적하면 ALE 곡선이 된다.</p>
+<p>$ALE(z_m) = \displaystyle\sum_{k=1}^{m} \Delta_k$</p>
+<p>PDP와 다른 점은 두 가지다. 하나는 각 구간에서 실제로 그 구간에 속하는 샘플의 다른 특징값만 사용하므로 현실에 없는 조합을 만들지 않는다는 점이고 다른 하나는 절대 예측값이 아니라 구간을 넘어갈 때의 차이만 본다는 점이다. 상관된 특징이 있어도 국소 구간 안에서는 관심 특징의 변화가 다른 특징에 주는 간섭이 작다고 볼 수 있어서 차이값이 상관관계에 덜 흔들린다. 실제 구현에서는 곡선 전체를 데이터 분포 기준 평균이 0이 되도록 이동시켜서 절대적인 높이가 아니라 모양만 비교하도록 다듬는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="80" y1="40" x2="80" y2="220" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="220" y1="40" x2="220" y2="220" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="340" y1="40" x2="340" y2="220" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="460" y1="40" x2="460" y2="220" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="150" y="55" font-size="12" text-anchor="middle">Δ1=3.0</text>
+<text x="280" y="55" font-size="12" text-anchor="middle">Δ2=4.5</text>
+<text x="400" y="55" font-size="12" text-anchor="middle">Δ3=2.0</text>
+<line x1="60" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="60" y2="70" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="60" font-size="12">누적 ALE</text>
+<text x="500" y="242" font-size="12" text-anchor="middle">평수</text>
+<path d="M80,220 L220,178 L340,115 L460,87" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="80" cy="220" r="4" class="dg-accent" stroke="none"/>
+<circle cx="220" cy="178" r="4" class="dg-accent" stroke="none"/>
+<circle cx="340" cy="115" r="4" class="dg-accent" stroke="none"/>
+<circle cx="460" cy="87" r="4" class="dg-accent" stroke="none"/>
+<text x="80" y="235" font-size="11" text-anchor="middle">10평</text>
+<text x="220" y="235" font-size="11" text-anchor="middle">20평</text>
+<text x="340" y="235" font-size="11" text-anchor="middle">30평</text>
+<text x="460" y="235" font-size="11" text-anchor="middle">40평</text>
+</svg>`,
+    diagramCaption: String.raw`구간별로 실제 데이터에서 관찰된 예측 변화량(Δ)만 누적해 곡선을 만든다.`,
+    example: String.raw`<p>평수를 $[10,20)$, $[20,30)$, $[30,40)$ 세 구간으로 나누고 각 구간에 실제로 속하는 집들만 골라 구간의 아래끝과 위끝 사이 예측 차이를 평균 냈더니 $\Delta_1=3.0$, $\Delta_2=4.5$, $\Delta_3=2.0$(단위 천만원)이 나왔다고 하자. 누적하면 20평 지점에서 ALE는 $3.0$, 30평 지점에서는 $3.0+4.5=7.5$, 40평 지점에서는 $7.5+2.0=9.5$가 된다. 평수와 방 개수가 상관돼 있어도 각 구간의 차분은 그 구간에 실제로 존재하는 조합만 사용했으므로 왜곡이 적다.</p>`,
+    related: [{ label: "PDP", slug: "pdp" }, { label: "ICE plot", slug: "ice-plot" }],
+    sections: []
+  },
+  "anchors": {
+    title: String.raw`Anchors: 이 조건만 지키면 예측이 안 바뀐다는 보증`,
+    domain: "xai",
+    subLabel: String.raw`규칙 · 트리 특화`,
+    intuition: String.raw`<p>대출 심사 모델이 어떤 신청자를 거절로 예측했다고 하자. 특징 중요도 점수는 "소득이 중요했다" 정도만 알려주지만 신청자 입장에서 정말 궁금한 건 "정확히 어떤 조건을 만족하면 이 결정이 절대 안 바뀌는가"이다. Anchors는 "소득이 3000만원 미만이고 신용점수가 600점 미만이면 다른 조건이 뭐든 거의 항상 거절로 예측된다" 같은 if-then 규칙을 찾아준다.</p>
+<p>보험 약관에서 "이 조건들을 모두 만족하면 보장된다"고 못박아두는 것과 비슷하다. 이 조건(anchor)이 고정되어 있는 한 나머지가 무엇이든 예측은 거의 흔들리지 않는다는 확률적 보증이다.</p>`,
+    explanation: String.raw`<p>Anchors는 조건절(predicate)의 곱으로 이루어진 규칙 $A$를 찾는다. 이 규칙이 정한 조건은 고정하고 나머지 특징은 데이터 분포에서 무작위로 채워 넣은 가상 샘플들의 분포 $D(z \mid A)$를 만든 다음 그 샘플들에 대해 원래 예측과 같은 결과가 나오는 비율(정밀도)을 측정한다.</p>
+<p>$\mathrm{prec}(A) = \mathbb{E}_{D(z \mid A)}\big[\mathbb{1}(\hat f(z) = \hat f(x))\big] \ge \tau$</p>
+<p>정밀도가 미리 정한 임계값 $\tau$(흔히 0.95) 이상인 규칙을 anchor로 채택한다. 정밀도를 정확히 계산하려면 무한히 많은 샘플이 필요하므로 실제로는 후보 규칙마다 정밀도 추정치의 신뢰구간을 좁혀가는 다중슬롯머신 알고리즘(KL-LUCB)을 써서 효율적으로 탐색한다. 조건절 하나짜리 규칙부터 시작해 빔서치처럼 조건을 하나씩 추가하며 규칙을 넓혀간다. 정밀도 조건을 만족하는 규칙 중에서는 더 많은 다른 샘플에도 적용되는(커버리지가 넓은) 규칙을 우선한다.</p>
+<p>LIME 같은 국소 선형 근사는 그 근사가 어디까지 유효한지 경계를 알려주지 않는다는 한계가 있었다. 특징값을 조금만 더 멀리 움직여도 선형 근사가 맞는지 틀리는지 알 도리가 없다. Anchors는 아예 대리모델로 근사하는 대신 원래 블랙박스 모델의 실제 출력에 대해 직접 정밀도를 측정하기 때문에 "이 조건 안에서는 예측이 이 정도 확률로 보장된다"는 명시적이고 정량화된 신뢰 범위를 제공한다는 점이 근본적으로 다르다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="240" x2="520" y2="240" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="240" x2="60" y2="40" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="500" y="262" font-size="12" text-anchor="middle">소득</text>
+<text x="30" y="40" font-size="12">신용점수</text>
+<rect x="80" y="60" width="160" height="140" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="160" y="52" font-size="11" text-anchor="middle">소득 &lt; 3000만 &amp; 신용점수 &lt; 600</text>
+<circle cx="110" cy="90" r="6" class="dg-accent" stroke="none"/>
+<circle cx="150" cy="120" r="6" class="dg-accent" stroke="none"/>
+<circle cx="190" cy="80" r="6" class="dg-accent" stroke="none"/>
+<circle cx="130" cy="160" r="6" class="dg-accent" stroke="none"/>
+<circle cx="210" cy="150" r="6" class="dg-accent" stroke="none"/>
+<circle cx="170" cy="180" r="6" class="dg-dim" stroke="none"/>
+<circle cx="300" cy="100" r="6" class="dg-accent" stroke="none"/>
+<circle cx="350" cy="180" r="6" class="dg-dim" stroke="none"/>
+<circle cx="400" cy="90" r="6" class="dg-dim" stroke="none"/>
+<circle cx="450" cy="150" r="6" class="dg-accent" stroke="none"/>
+<circle cx="320" cy="210" r="6" class="dg-dim" stroke="none"/>
+<circle cx="330" cy="255" r="6" class="dg-accent" stroke="none"/>
+<text x="345" y="259" font-size="11" text-anchor="start">예측 = 거절</text>
+<circle cx="440" cy="255" r="6" class="dg-dim" stroke="none"/>
+<text x="455" y="259" font-size="11" text-anchor="start">예측 = 승인</text>
+</svg>`,
+    diagramCaption: String.raw`점선 상자 안 조건을 만족하면 다른 값이 무엇이든 예측이 높은 확률로 거절로 유지된다.`,
+    example: String.raw`<p>"소득 &lt; 3000만원이고 신용점수 &lt; 600점"이라는 anchor 후보를 이 조건에 맞춰 무작위로 채운 가상 신청자 50명에 대해 검증했더니 48명이 원래와 같은 거절 예측을 받았다. 정밀도는 $48/50=0.96$으로 목표 임계값 $\tau=0.95$를 넘기므로 이 규칙을 anchor로 채택할 수 있다.</p>`,
+    related: [{ label: "TreeSHAP", slug: "treeshap" }, { label: "LIME for Text", slug: "lime-for-text" }],
+    sections: []
+  },
+  "treeshap": {
+    title: String.raw`TreeSHAP: 트리 구조를 이용해 SHAP값을 빠르게 계산하기`,
+    domain: "xai",
+    subLabel: String.raw`규칙 · 트리 특화`,
+    intuition: String.raw`<p>SHAP값은 이론적으로 가장 공정한 기여도 배분이지만 계산하려면 특징들의 모든 부분집합 조합을 다 따져야 해서 특징이 조금만 많아져도 계산량이 폭발적으로 늘어난다. 그런데 결정트리나 랜덤포레스트, XGBoost 같은 트리 기반 모델은 구조 자체가 이미 특징을 순서대로 나누는 분기로 이루어져 있다.</p>
+<p>TreeSHAP은 이 트리 구조를 그대로 이용해서 모든 조합을 무작위로 훑는 대신 트리를 한 번 타고 내려가면서 정확한 SHAP값을 훨씬 빠르게 계산해낸다. 표본을 뽑아 근사하는 게 아니라 트리 구조를 활용해 정확한 값을 다항시간에 구한다는 점이 핵심이다.</p>`,
+    explanation: String.raw`<p>일반적인 모델에서 정확한 Shapley값을 구하려면 특징이 $M$개일 때 $2^M$에 가까운 부분집합 조합을 다 따져야 한다.</p>
+<p>$\phi_i = \displaystyle\sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(|N|-|S|-1)!}{|N|!}\big[f(S \cup \{i\}) - f(S)\big]$</p>
+<p>TreeSHAP은 트리의 각 리프에 대해 어떤 특징 부분집합이 그 리프까지 도달했을지를 노드마다 다항식 형태로 정리해서 추적한다. 트리를 한 번 순회하면서 이 정보를 누적하면 모든 특징에 대한 정확한 기여도를 한꺼번에 얻을 수 있다. 트리 개수를 $T$, 트리 하나의 최대 리프 수를 $L$, 최대 깊이를 $D$라 하면 이 계산은 $O(TLD^2)$ 시간에 끝나는데 이는 일반적인 모델에서 필요한 지수 시간과 비교하면 매우 빠르다.</p>
+<p>모든 모델에 다 쓸 수 있는 대신 표본을 뽑아 근사해야 하는 Kernel SHAP과 비교하면 이 차이가 뚜렷해진다. Kernel SHAP은 어떤 블랙박스 모델에도 적용할 수 있지만 근사값이라 표본 수가 적으면 오차가 크고 인스턴스마다 다시 계산하는 비용도 크다. TreeSHAP은 트리 기반 모델이라는 조건을 받아들이는 대신 근사가 아닌 정확한 값을 훨씬 짧은 시간에 계산해낸다.</p>
+<p>계산 방식에는 두 갈래가 있다. interventional TreeSHAP은 별도의 배경 데이터셋을 기준으로 특징을 실제로 다른 값으로 바꿔치기해서 원래 Shapley값의 정의에 더 가깝게 값을 구한다. tree path dependent TreeSHAP은 배경 데이터셋 없이 학습 데이터에서 각 분기를 따라간 샘플 비율로 값을 근사해 더 빠르지만 특징 간 상관관계가 결과에 섞여 들어갈 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="280" cy="30" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="34" font-size="11" text-anchor="middle">소득&lt;3000?</text>
+<line x1="265" y1="46" x2="160" y2="96" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="295" y1="46" x2="410" y2="96" class="dg-line" stroke-width="1.5"/>
+<text x="200" y="66" font-size="11">yes</text>
+<text x="370" y="66" font-size="11" class="dg-dim">no</text>
+<circle cx="150" cy="110" r="20" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="150" y="106" font-size="10" text-anchor="middle">신용점수</text>
+<text x="150" y="118" font-size="10" text-anchor="middle">&lt;600?</text>
+<rect x="380" y="92" width="80" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="420" y="114" font-size="11" text-anchor="middle">예측 0.20</text>
+<line x1="135" y1="126" x2="80" y2="176" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="165" y1="126" x2="220" y2="176" class="dg-line" stroke-width="1.5"/>
+<text x="90" y="152" font-size="11">yes</text>
+<text x="200" y="152" font-size="11" class="dg-dim">no</text>
+<rect x="45" y="178" width="80" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="85" y="200" font-size="11" text-anchor="middle">예측 0.85</text>
+<rect x="185" y="178" width="80" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="225" y="200" font-size="11" text-anchor="middle">예측 0.55</text>
+<text x="320" y="230" font-size="11" class="dg-dim">굵은 선: 샘플이 실제로 지나간 경로</text>
+</svg>`,
+    diagramCaption: String.raw`샘플이 실제로 지나간 트리 경로만 추적해 각 특징의 정확한 기여도를 다항시간에 계산한다.`,
+    example: String.raw`<p>특징 20개짜리 모델에서 정확한 Shapley값을 일반적인 방식으로 구하려면 대략 $2^{20} \approx 1{,}048{,}576$번의 모델 평가가 필요하다. 트리 100개, 트리당 최대 리프 32개, 최대 깊이 6인 모델에 TreeSHAP을 쓰면 계산량은 대략 $T L D^2 = 100 \times 32 \times 36 = 115{,}200$ 수준으로 열 배 가까이 줄어들면서도 근사가 아닌 정확한 값을 얻는다.</p>`,
+    related: [{ label: "Partition SHAP", slug: "partition-shap" }, { label: "Anchors", slug: "anchors" }],
+    sections: []
+  },
+  "disparate-impact": {
+    title: String.raw`그룹별 성능 격차: 보호집단마다 예측이 다르게 나오는가`,
+    domain: "xai",
+    subLabel: String.raw`격차 진단`,
+    intuition: String.raw`<p>어떤 모델이 대출을 승인하거나 채용 후보를 통과시킬 때 성별이나 인종 같은 보호집단마다 결과 비율이 크게 다르다면 그 자체로 문제 신호다. 모델이 보호속성을 직접 입력으로 쓰지 않아도 결과에서 격차가 드러날 수 있다. 그룹별 성능 격차 진단은 딱 이 질문 하나를 본다. 집단 A의 승인율과 집단 B의 승인율을 그냥 나눠보면 얼마나 차이 나는가.</p>
+<p>이 진단은 모델 내부를 들여다보지 않는다. 입력과 출력만 있으면 계산할 수 있다. 그래서 가장 먼저 돌려보는 체크리스트에 가깝다. 격차가 크게 나오면 그다음 왜 격차가 생겼는지 원인을 찾는 단계로 넘어간다.</p>`,
+    explanation: String.raw`<p>가장 널리 쓰이는 지표는 disparate impact ratio다. 보호집단의 긍정 예측 비율을 비교집단의 긍정 예측 비율로 나눈다.</p>
+$$\mathrm{DI} = \frac{P(\hat Y=1 \mid A=\text{보호집단})}{P(\hat Y=1 \mid A=\text{비교집단})}$$
+<p>미국 고용평등위원회가 관행적으로 쓰는 4/5 규칙은 이 비율이 $0.8$ 아래로 떨어지면 차별적 영향이 있다고 잠정 판단한다. 정확한 법적 기준이라기보다 조사를 시작할지 말지 정하는 실무적 문턱값이다.</p>
+<p>이 지표의 중요한 특징은 실제 정답 라벨 $Y$를 전혀 쓰지 않는다는 점이다. 오직 모델이 내놓은 예측 $\hat Y$의 분포만 본다. 그래서 계산은 쉽지만 해석은 조심해야 한다. 두 집단의 기저율 자체가 다르면 예측이 완벽하게 정확해도 DI가 1에서 멀어질 수 있다. DI가 낮다는 사실만으로 모델이 틀렸다고 단정할 수는 없고 왜 격차가 생기는지 살펴보는 출발점으로 써야 한다.</p>
+<p>disparate impact는 결과의 격차를 보는 지표이지 모델이 의도적으로 차별했는지를 보는 disparate treatment와는 다른 개념이다. 보호속성을 모델 입력에서 완전히 뺐어도 다른 특징이 보호속성과 강하게 상관되어 있으면 DI는 여전히 낮게 나올 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="500" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="120" y="80" width="70" height="120" class="dg-dim"/>
+<rect x="320" y="128" width="70" height="72" class="dg-accent"/>
+<text x="155" y="70" text-anchor="middle" font-size="13">60%</text>
+<text x="355" y="118" text-anchor="middle" font-size="13">36%</text>
+<text x="155" y="222" text-anchor="middle" font-size="12">집단 A</text>
+<text x="355" y="222" text-anchor="middle" font-size="12">집단 B (보호집단)</text>
+<text x="280" y="30" text-anchor="middle" font-size="13">대출 승인율 비교</text>
+<text x="280" y="50" text-anchor="middle" font-size="12" class="dg-dim">DI = 36/60 = 0.6, 기준 0.8 미달</text>
+</svg>`,
+    diagramCaption: String.raw`두 집단의 승인율을 그대로 나눈 값이 0.8 아래면 격차 조사를 시작한다.`,
+    example: String.raw`<p>대출 심사 모델에서 집단 A의 승인율이 $60\%$, 집단 B의 승인율이 $36\%$라고 하자.</p>
+$$\mathrm{DI} = \frac{0.36}{0.60} = 0.6$$
+<p>$0.6$은 4/5 규칙의 문턱값 $0.8$보다 낮다. 이 자체가 차별을 증명하지는 않지만 왜 이런 격차가 생기는지 다음 단계로 조사할 근거는 충분하다.</p>`,
+    related: [{ label: "Equalized Odds 점검", slug: "equalized-odds-check" }, { label: "반사실 공정성", slug: "counterfactual-fairness" }, { label: "SHAP 기반 편향 소스 추적", slug: "shap-bias-tracing" }],
+    sections: []
+  },
+  "equalized-odds-check": {
+    title: String.raw`Equalized Odds 점검: 집단마다 오류율이 같은가`,
+    domain: "xai",
+    subLabel: String.raw`격차 진단`,
+    intuition: String.raw`<p>승인율만 비교하면 놓치는 게 있다. 실제로 상환을 잘할 사람과 못할 사람이 두 집단에서 다른 비율로 섞여 있을 수도 있기 때문이다. Equalized Odds는 승인율 자체가 아니라 모델이 맞고 틀리는 방식이 집단마다 같은지를 본다. 실제로 갚을 사람을 갚을 거라고 맞히는 비율과 못 갚을 사람을 잘못 승인해버리는 비율이 두 집단에서 비슷한가를 따진다.</p>
+<p>정답 라벨이 있어야 계산할 수 있다는 점이 disparate impact와 다르다. 대출이면 실제 상환 여부, 채용이면 실제 업무 성과처럼 나중에 확인 가능한 결과가 있어야 오류율을 계산할 수 있다.</p>`,
+    explanation: String.raw`<p>참양성률과 위양성률을 집단별로 정의한다.</p>
+$$\mathrm{TPR}_a = P(\hat Y=1 \mid Y=1, A=a), \qquad \mathrm{FPR}_a = P(\hat Y=1 \mid Y=0, A=a)$$
+<p>Equalized Odds는 이 두 값이 모든 집단 $a$에서 같아야 한다는 조건이다. 실무에서는 완전히 같기를 기대하기 어려우므로 집단 간 차이를 갭으로 측정한다.</p>
+$$\Delta_{\mathrm{TPR}} = |\mathrm{TPR}_a - \mathrm{TPR}_b|, \qquad \Delta_{\mathrm{FPR}} = |\mathrm{FPR}_a - \mathrm{FPR}_b|$$
+<p>두 갭이 모두 작아야 통과다. TPR만 맞추면 위양성이 한쪽 집단에 몰려 있어도 드러나지 않고 FPR만 맞추면 그 반대가 생긴다.</p>
+<p>Equalized Odds와 disparate impact가 동시에 만족되기는 어렵다. 두 집단의 실제 기저율이 다르면 승인율을 맞추는 것과 오류율을 맞추는 것이 수학적으로 동시에 성립할 수 없다는 결과가 여러 공정성 지표 비교 연구에서 나왔다. 실무에서는 어떤 지표를 우선할지 문제 맥락에 따라 먼저 정해야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 580 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="220" x2="540" y2="220" class="dg-line" stroke-width="1.5"/>
+<rect x="90" y="97" width="50" height="123" class="dg-dim"/>
+<rect x="160" y="122.5" width="50" height="97.5" class="dg-accent"/>
+<text x="115" y="87" text-anchor="middle" font-size="12">0.82</text>
+<text x="185" y="112.5" text-anchor="middle" font-size="12">0.65</text>
+<text x="150" y="240" text-anchor="middle" font-size="12">참양성률(TPR)</text>
+<rect x="330" y="205" width="50" height="15" class="dg-dim"/>
+<rect x="400" y="187" width="50" height="33" class="dg-accent"/>
+<text x="355" y="198" text-anchor="middle" font-size="12">0.10</text>
+<text x="425" y="180" text-anchor="middle" font-size="12">0.22</text>
+<text x="390" y="240" text-anchor="middle" font-size="12">위양성률(FPR)</text>
+<text x="290" y="30" text-anchor="middle" font-size="13">회색 = 집단 A, 강조 = 집단 B</text>
+</svg>`,
+    diagramCaption: String.raw`TPR과 FPR 갭이 모두 작아야 두 집단의 오류율이 같다고 말할 수 있다.`,
+    example: String.raw`<p>집단 A는 $\mathrm{TPR}=0.82$, $\mathrm{FPR}=0.10$이고 집단 B는 $\mathrm{TPR}=0.65$, $\mathrm{FPR}=0.22$라고 하자.</p>
+$$\Delta_{\mathrm{TPR}} = |0.82-0.65| = 0.17, \qquad \Delta_{\mathrm{FPR}} = |0.10-0.22| = 0.12$$
+<p>승인율 자체는 얼추 비슷해 보여도 실제로 상환할 사람을 잘 잡아내는 비율과 상환 못 할 사람을 잘못 승인하는 비율 모두 집단 B에서 더 나쁘다. Disparate impact만 봤다면 놓쳤을 격차다.</p>`,
+    related: [{ label: "그룹별 성능 격차", slug: "disparate-impact" }, { label: "반사실 공정성", slug: "counterfactual-fairness" }, { label: "SHAP 기반 편향 소스 추적", slug: "shap-bias-tracing" }],
+    sections: []
+  },
+  "counterfactual-fairness": {
+    title: String.raw`반사실 공정성: 보호속성만 바꾸면 예측도 바뀌는가`,
+    domain: "xai",
+    subLabel: String.raw`반사실 · 소스 추적`,
+    intuition: String.raw`<p>한 사람을 그대로 복제하되 보호속성 하나만 바꿔본다고 생각해보자. 성별만 바뀐 쌍둥이, 인종만 바뀐 쌍둥이. 모델이 정말 공정하다면 이 가상의 쌍둥이에게도 원래 사람과 똑같은 예측을 내려야 한다. 반사실 공정성은 이 사고실험을 실제로 계산 가능한 조건으로 바꾼 것이다.</p>
+<p>까다로운 부분은 보호속성만 바꾸고 나머지는 그대로 둔다는 게 생각보다 단순하지 않다는 점이다. 우편번호나 출신 학교처럼 보호속성과 인과적으로 얽힌 특징들은 보호속성이 바뀌면 같이 바뀌어야 앞뒤가 맞는다.</p>`,
+    explanation: String.raw`<p>Kusner 등이 제시한 정의는 인과모델을 전제로 한다. 배경변수 $U$와 구조방정식 $F$로 이루어진 인과모델에서 보호속성 $A$를 개입으로 $a$에서 $a'$로 바꿨을 때 얻는 반사실 예측을 $\hat Y_{A \leftarrow a'}(U)$라 쓴다. 모델이 반사실적으로 공정하다는 것은 실제 관측된 $A=a, X=x$ 조건 아래에서 다음이 모든 $a'$에 대해 성립한다는 뜻이다.</p>
+$$P\big(\hat Y_{A \leftarrow a}(U) = y \mid X=x, A=a\big) = P\big(\hat Y_{A \leftarrow a'}(U) = y \mid X=x, A=a\big)$$
+<p>단순히 입력에서 보호속성을 빼는 방법은 이 조건을 만족시키지 못하는 경우가 많다. 우편번호처럼 보호속성의 인과적 결과물인 대리 특징이 남아 있으면 모델은 그 대리 특징을 통해 여전히 보호속성 정보를 간접적으로 쓰게 된다. 반사실 공정성을 확인하려면 어떤 특징이 보호속성의 결과인 대리 특징이고 어떤 특징이 보호속성과 무관하게 독립적으로 결정되는 특징인지 인과 그래프로 구분해야 한다.</p>
+<p>실무에서는 완전한 인과모델을 구하기 어려운 경우가 많아 근사적으로 접근한다. 보호속성의 후손이 아닌 특징만 모델 입력으로 쓰거나 대리 특징에서 보호속성이 설명하는 부분을 제거한 잔차만 남기는 식이다. 어느 쪽이든 상관관계만으로는 부족하고 어떤 특징이 왜 보호속성과 얽혀 있는지에 대한 도메인 지식이 필요하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="60" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="80" y="65" text-anchor="middle" font-size="12">A=여성</text>
+<line x1="106" y1="60" x2="190" y2="60" class="dg-line" stroke-width="1.5"/>
+<circle cx="220" cy="60" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="220" y="65" text-anchor="middle" font-size="12">우편번호</text>
+<line x1="246" y1="60" x2="330" y2="60" class="dg-line" stroke-width="1.5"/>
+<circle cx="360" cy="60" r="26" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="360" y="65" text-anchor="middle" font-size="12">Ŷ=승인</text>
+<text x="220" y="20" text-anchor="middle" font-size="13">관측된 개체</text>
+<circle cx="80" cy="180" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="80" y="185" text-anchor="middle" font-size="12">A=남성</text>
+<line x1="106" y1="180" x2="190" y2="180" class="dg-line" stroke-width="1.5"/>
+<circle cx="220" cy="180" r="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="220" y="185" text-anchor="middle" font-size="12">우편번호*</text>
+<line x1="246" y1="180" x2="330" y2="180" class="dg-line" stroke-width="1.5"/>
+<circle cx="360" cy="180" r="26" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="360" y="185" text-anchor="middle" font-size="12">Ŷ=?</text>
+<text x="220" y="220" text-anchor="middle" font-size="13">인과 구조대로 다시 계산한 반사실 개체</text>
+<text x="480" y="115" text-anchor="middle" font-size="12" class="dg-dim">두 Ŷ가 같아야</text>
+<text x="480" y="133" text-anchor="middle" font-size="12" class="dg-dim">반사실적으로 공정</text>
+</svg>`,
+    diagramCaption: String.raw`보호속성만 인과적으로 바꿔 다시 계산해도 예측이 같아야 반사실적으로 공정하다.`,
+    example: String.raw`<p>대출모델에서 성별을 입력에서 뺐지만 우편번호가 남아 있고 우편번호가 실제로는 성별과 상관된 거주지역을 반영한다고 하자. 성별만 바꾼 반사실 개체를 만들 때 우편번호를 그대로 두면 모델은 우편번호를 통해 원래 성별 정보를 여전히 참고하게 되어 두 예측이 달라질 수 있다. 우편번호까지 인과적으로 다시 계산해야 진짜 반사실 비교가 된다.</p>`,
+    related: [{ label: "그룹별 성능 격차", slug: "disparate-impact" }, { label: "Equalized Odds 점검", slug: "equalized-odds-check" }, { label: "SHAP 기반 편향 소스 추적", slug: "shap-bias-tracing" }],
+    sections: []
+  },
+  "shap-bias-tracing": {
+    title: String.raw`SHAP 기반 편향 소스 추적: 어떤 특징이 편향을 옮기고 있는가`,
+    domain: "xai",
+    subLabel: String.raw`반사실 · 소스 추적`,
+    intuition: String.raw`<p>보호속성을 모델 입력에서 뺐는데도 그룹별 격차가 여전히 남아 있다면 다음 질문은 어떤 특징이 그 격차를 옮기고 있는가다. SHAP 기반 편향 소스 추적은 그룹별 성능 격차를 개별 특징 단위로 쪼개서 어느 특징이 격차에 얼마나 기여하는지 찾아내는 방법이다.</p>
+<p>모든 특징이 똑같이 의심스러운 건 아니다. 소득이나 신용 이력처럼 그 자체로 타당한 근거가 되는 특징도 있고 우편번호나 이름처럼 보호속성과 우연히 강하게 얽혀 있을 뿐인 대리 특징도 있다. SHAP값을 이용하면 이 둘을 구분할 실마리를 얻을 수 있다.</p>`,
+    explanation: String.raw`<p>SHAP값은 가산성을 가진다. 개체 $i$의 예측값은 기준값에 각 특징의 기여도 $\phi_j^{(i)}$를 모두 더한 값과 같다. 이 성질 덕분에 두 집단 간 평균 예측 차이도 특징별 기여도 차이의 합으로 정확히 분해된다.</p>
+$$E[\hat Y \mid A=a] - E[\hat Y \mid A=b] = \sum_{j} \Big( E[\phi_j \mid A=a] - E[\phi_j \mid A=b] \Big)$$
+<p>그룹 간 전체 격차를 특징 하나하나가 얼마씩 만들어냈는지 항목별로 나눠볼 수 있다는 뜻이다. 이 분해에서 특정 특징의 기여도 차이가 유독 크게 나오면 그 특징이 편향을 옮기는 통로일 가능성이 높다.</p>
+<p>다만 이 방법도 상관관계 기반이라는 한계가 있다. 특징의 기여도 차이가 크다는 사실이 곧 그 특징이 부당한 대리변수라는 뜻은 아니다. 소득처럼 타당한 이유로 집단 간 차이가 나는 특징도 기여도 차이가 크게 나올 수 있다. SHAP 분해는 어디를 먼저 들여다볼지 우선순위를 정해줄 뿐이고 그 특징이 정말 대리 특징인지는 도메인 지식과 인과적 판단이 추가로 필요하다.</p>`,
+    example: String.raw`<p>두 집단의 평균 예측 차이가 $0.24$라고 하자. 특징별 기여도 차이를 분해했더니 우편번호가 $0.15$, 소득이 $0.06$, 나머지 특징들을 합쳐 $0.03$이 나왔다. 전체 격차의 절반 이상을 우편번호 하나가 만들고 있다는 뜻이므로 우편번호가 보호속성의 대리 특징인지부터 조사하는 것이 우선순위가 된다.</p>`,
+    related: [{ label: "그룹별 성능 격차", slug: "disparate-impact" }, { label: "Equalized Odds 점검", slug: "equalized-odds-check" }, { label: "Global SHAP 요약", slug: "global-shap-summary" }],
+    sections: []
+  },
+  "shap-library": {
+    title: String.raw`shap: SHAP값 계산의 사실상 표준 라이브러리`,
+    domain: "xai",
+    subLabel: String.raw`범용 설명 라이브러리`,
+    intuition: String.raw`<p>SHAP값을 논문에 나온 정의대로 매번 처음부터 계산하려면 특징 조합을 순회하는 조합론적 계산이 필요해 현실적으로 느리다. shap 라이브러리는 모델 종류에 맞춰 이미 최적화된 계산 방법을 골라 쓸 수 있게 해준다. 트리 모델이면 트리 구조를 활용한 빠르고 정확한 계산을, 어떤 모델이든 상관없이 쓰고 싶으면 느리지만 범용적인 근사 계산을 선택하면 된다.</p>
+<p>결과물도 값 하나로 끝나지 않는다. summary_plot이나 waterfall_plot처럼 개별 예측 하나를 보여주는 시각화부터 전체 데이터셋의 특징 중요도를 한 장에 요약하는 시각화까지 표준화된 그래프를 바로 뽑을 수 있다.</p>`,
+    explanation: String.raw`<p>TreeExplainer는 XGBoost, LightGBM, 랜덤포레스트 같은 트리 앙상블 전용이다. 트리 구조를 그대로 활용해 다항시간에 정확한 SHAP값을 계산하는 알고리즘을 쓰기 때문에 빠르고 근사 오차도 없다. KernelExplainer는 모델 종류를 가리지 않는 대신 배경 데이터셋을 기준으로 특징을 무작위로 가리고 예측을 반복 관찰해 가중 선형회귀로 SHAP값을 근사한다. 느리지만 예측 함수만 호출할 수 있으면 어떤 모델에도 적용된다. DeepExplainer와 GradientExplainer는 신경망 내부의 그래디언트를 이용해 DeepLIFT 계열 규칙으로 근사치를 빠르게 계산한다.</p>
+<p>사용 방식은 대체로 비슷하다. 학습된 모델과 배경 데이터셋으로 explainer 객체를 만들고 설명하려는 입력을 그 explainer에 통과시키면 각 샘플과 각 특징에 대한 기여도, 기준값, 원본 입력값을 담은 결과 객체가 나온다. 이 결과 객체 하나로 개별 예측의 waterfall plot부터 데이터셋 전체를 요약하는 beeswarm plot까지 바로 그릴 수 있다.</p>
+<p>다중 클래스 분류에서는 클래스마다 별도의 SHAP값 배열이 나오므로 결과 형태가 샘플 수 곱하기 특징 수 곱하기 클래스 수가 된다. 회귀나 이진 분류라면 클래스 차원이 없는 단순한 형태로 나온다.</p>`,
+    related: [{ label: "Global SHAP 요약", slug: "global-shap-summary" }, { label: "SHAP 기반 편향 소스 추적", slug: "shap-bias-tracing" }, { label: "Captum", slug: "captum" }],
+    sections: []
+  },
+  "interpretml": {
+    title: String.raw`InterpretML: 글래스박스와 블랙박스 설명을 함께`,
+    domain: "xai",
+    subLabel: String.raw`범용 설명 라이브러리`,
+    intuition: String.raw`<p>정확도가 높은 모델과 설명하기 쉬운 모델 중 하나를 골라야 하는 상황은 자주 온다. 복잡한 모델을 쓰고 별도 설명 도구를 붙이는 대신 처음부터 그 자체로 해석 가능하면서도 성능이 크게 떨어지지 않는 모델을 쓸 수 있다면 더 간단하다. InterpretML은 이런 유리상자(glassbox) 모델과 기존 블랙박스 모델을 위한 설명 도구를 한 패키지 안에 함께 제공한다.</p>
+<p>둘 중 하나만 강요하지 않는다는 점이 핵심이다. 처음부터 해석 가능한 모델을 쓸 수 있는 상황이면 그렇게 하고 이미 배포된 블랙박스 모델을 설명해야 하는 상황이면 같은 도구 안에서 SHAP이나 LIME 같은 사후 설명 기법도 붙일 수 있다.</p>`,
+    explanation: String.raw`<p>핵심 모델은 Explainable Boosting Machine(EBM)이다. 일반화가법모델(GAM)에 그래디언트 부스팅을 적용한 형태로 각 특징의 효과를 독립적인 함수로 학습하고 필요하면 특징 쌍 사이의 상호작용 항도 추가로 학습한다. 예측은 이 함수들의 합이므로 각 특징이 예측에 정확히 얼마나 기여했는지 근사 없이 바로 읽어낼 수 있다. 그래디언트 부스팅 트리 앙상블과 비슷한 수준의 정확도를 내면서도 사후 근사 설명이 아니라 모델 구조 자체가 설명이 되는 셈이다.</p>
+<p>sklearn과 비슷한 방식으로 ExplainableBoostingClassifier나 Regressor를 fit으로 학습시킨 뒤 explain_global 메서드로 전체 특징별 효과 곡선을, explain_local 메서드로 개별 예측의 기여도를 뽑을 수 있다. 이 결과는 인터랙티브 대시보드로 바로 시각화된다.</p>
+<p>블랙박스 모델을 위해서는 SHAP, LIME, Morris 민감도 분석, 부분의존도 플롯 같은 기존 기법들을 동일한 인터페이스로 감싸서 제공한다. 모델 종류나 설명 기법을 바꿔도 호출하는 코드 형태는 거의 그대로 유지된다.</p>`,
+    related: [{ label: "shap", slug: "shap-library" }, { label: "Alibi Explain", slug: "alibi-explain" }, { label: "Surrogate Model", slug: "surrogate-model" }],
+    sections: []
+  },
+  "alibi-explain": {
+    title: String.raw`Alibi Explain: 여러 설명 기법을 하나의 인터페이스로`,
+    domain: "xai",
+    subLabel: String.raw`범용 설명 라이브러리`,
+    intuition: String.raw`<p>Anchors, 반사실 설명, Integrated Gradients처럼 논문마다 따로 공개된 코드를 하나씩 가져다 쓰다 보면 입력 형식도 다르고 호출 방식도 제각각이라 기법을 바꿔볼 때마다 코드를 새로 짜야 한다. Alibi Explain은 여러 설명 기법을 fit과 explain이라는 같은 인터페이스 아래 모아둔 라이브러리다. 기법을 바꿔도 코드 구조는 거의 그대로 둘 수 있다.</p>
+<p>실제 서비스에 붙이는 배포 연동까지 염두에 두고 만들어졌다는 점도 특징이다. 같은 팀이 만든 모델 서빙 도구와 함께 쓰면 실시간 예측에 설명을 붙이는 파이프라인을 비교적 쉽게 구성할 수 있다.</p>`,
+    explanation: String.raw`<p>Anchors는 if-then 형태의 규칙을 찾는다. 예를 들어 소득이 얼마 이상이고 신용 이력이 특정 조건을 만족하면이라는 규칙이, 그 조건을 만족하는 한 예측이 거의 바뀌지 않는다는 높은 정밀도를 보장한다. AnchorTabular 같은 클래스를 학습 데이터로 fit시킨 뒤 explain 메서드에 설명하려는 샘플을 넣으면 규칙과 함께 정밀도, 커버리지 수치가 함께 나온다.</p>
+<p>반사실 설명 쪽은 CounterfactualProto 클래스가 대표적이다. 단순히 예측을 뒤집는 가장 가까운 점을 찾는 것을 넘어 실제 데이터 분포 안에 있을 법한 그럴듯한 반사실 샘플을 찾도록 오토인코더로 학습한 프로토타입 정보를 함께 사용한다.</p>
+<p>이 밖에도 Integrated Gradients, ALE(누적국소효과) 플롯, 예측 신뢰도를 정량화하는 trust score 같은 기법들도 같은 라이브러리 안에 들어 있다. 표 데이터, 이미지, 텍스트마다 지원하는 기법 목록이 다르므로 어떤 데이터 형식에 어떤 explainer가 준비되어 있는지 먼저 확인하고 골라 쓰는 방식이다.</p>`,
+    related: [{ label: "반사실 공정성", slug: "counterfactual-fairness" }, { label: "InterpretML", slug: "interpretml" }, { label: "shap", slug: "shap-library" }],
+    sections: []
+  },
+  "captum": {
+    title: String.raw`Captum: PyTorch 공식 설명가능성 라이브러리`,
+    domain: "xai",
+    subLabel: String.raw`딥러닝 특화 도구`,
+    intuition: String.raw`<p>그래디언트 기반 설명 기법들은 모델의 계산 그래프 내부, 즉 중간 층의 활성화값과 그래디언트에 접근해야 한다. PyTorch 모델에서 이걸 직접 구현하려면 훅(hook)을 여기저기 걸어야 해서 번거롭다. Captum은 PyTorch의 autograd와 바로 맞물리는 형태로 이런 기법들을 이미 구현해뒀다. Integrated Gradients 한 줄이면 훅을 직접 짤 필요 없이 결과를 얻는다.</p>
+<p>PyTorch를 만든 팀이 공식으로 유지보수하는 라이브러리라서 새로운 PyTorch 버전과의 호환성이나 표준 레이어들과의 연동이 상대적으로 안정적이다.</p>`,
+    explanation: String.raw`<p>Integrated Gradients, Saliency, DeepLift, GradientShap, Occlusion처럼 널리 쓰이는 어트리뷰션 기법들을 각각 별도 클래스로 제공한다. 사용 패턴은 대체로 비슷하다. 모델을 넣어 explainer 객체를 만들고 attribute 메서드에 입력 텐서와 설명할 대상 클래스, 필요하면 기준(baseline) 입력을 함께 넣으면 입력과 같은 형태의 텐서로 픽셀별 또는 특징별 기여도가 나온다.</p>
+<p>레이어 단위 기법도 따로 갖춰져 있다. LayerConductance나 LayerGradCam처럼 layer 인자에 원하는 중간 층을 지정하면 그 층의 활성화를 기준으로 기여도나 클래스별 활성화맵을 계산해준다. CNN의 특정 합성곱 층에서 Grad-CAM 스타일 시각화를 뽑을 때 이 방식을 쓴다.</p>
+<p>Captum Insights라는 대시보드도 함께 제공되어 여러 어트리뷰션 기법의 결과를 나란히 띄워 비교하거나 배치 단위로 훑어볼 수 있다. 표, 이미지, 텍스트 임베딩 등 입력 형태가 텐서로 표현되는 한 대부분의 PyTorch 모델에 적용 가능하다는 점이 강점이다.</p>`,
+    related: [{ label: "tf-explain", slug: "tf-explain" }, { label: "shap", slug: "shap-library" }, { label: "Alibi Explain", slug: "alibi-explain" }],
+    sections: []
+  },
+  "tf-explain": {
+    title: String.raw`tf-explain: TensorFlow/Keras를 위한 시각화 도구`,
+    domain: "xai",
+    subLabel: String.raw`딥러닝 특화 도구`,
+    intuition: String.raw`<p>Keras/TensorFlow로 이미지 분류 모델을 학습하면서 이 모델이 이미지의 어느 부분을 보고 판단하는지 빠르게 확인하고 싶을 때가 많다. tf-explain은 Grad-CAM 같은 시각화 기법을 몇 줄 코드로 바로 뽑아주는 도구다. Captum이 PyTorch 전반을 폭넓게 다루는 것과 달리 주로 CNN 이미지 모델의 시각화에 초점이 맞춰져 있다.</p>
+<p>학습 도중에도 쓸 수 있다는 점이 실용적이다. Keras 콜백으로 등록해두면 매 에폭마다 특정 이미지에 대한 설명 결과를 자동으로 저장하거나 TensorBoard에 띄워 학습이 진행되는 동안 모델이 주목하는 영역이 어떻게 바뀌는지 지켜볼 수 있다.</p>`,
+    explanation: String.raw`<p>Grad-CAM, Occlusion Sensitivity, Vanilla Gradients, Gradients*Inputs, SmoothGrad, Integrated Gradients, Activations Visualization 같은 기법들을 지원한다. 사용법은 원하는 기법의 explainer 클래스를 만들고 explain 메서드에 입력 이미지와 모델, 설명할 클래스 인덱스, Grad-CAM이라면 어느 합성곱 층을 기준으로 할지 층 이름을 넘기는 방식이다. 결과로 원본 이미지 위에 히트맵이 겹쳐진 배열이 나온다.</p>
+<p>Captum과 달리 Keras 콜백 클래스 형태로도 explainer들을 제공한다는 점이 특징이다. model.fit을 호출할 때 콜백 목록에 넣어두면 별도 코드 없이 학습 로그와 함께 설명 결과가 쌓인다. 다만 지원 범위는 이미지 기반 CNN 위주라 Captum만큼 다양한 모델 구조나 입력 형태를 폭넓게 다루지는 않는다.</p>`,
+    related: [{ label: "Captum", slug: "captum" }, { label: "shap", slug: "shap-library" }, { label: "Alibi Explain", slug: "alibi-explain" }],
+    sections: []
+  },
+  "global-explanation": {
+    title: String.raw`전역 설명: 모델 전체는 평균적으로 어떻게 행동하는가`,
+    domain: "xai",
+    subLabel: String.raw`범위 구분`,
+    intuition: String.raw`<p>전역 설명은 모델 한 대를 통째로 뜯어보는 질문이다. 이 모델은 평균적으로 소득이 늘어나면 예측을 어느 방향으로 움직이는가, 전체적으로 가장 중요하게 보는 특징은 무엇인가. 개별 사례 하나가 아니라 모델이 데이터셋 전체에 걸쳐 어떻게 행동하는지 요약한다.</p>
+<p>대신 개별 사례의 사정은 평균 속에 묻힌다. 전역적으로는 중요하지 않다고 나온 특징이 특정 부류의 사례에서는 결정적일 수도 있다. 전역 설명은 큰 그림을 보여주는 대신 예외를 놓치기 쉽다는 점을 함께 기억해야 한다.</p>`,
+    explanation: String.raw`<p>전역 설명을 얻는 방법은 크게 두 갈래다. 하나는 처음부터 전역적으로 해석 가능한 대리모델을 학습하는 방법이다. 선형회귀의 계수나 얕은 결정트리의 분기 규칙은 그 자체로 모델 전체의 행동을 설명한다. 다른 하나는 개별 사례마다 계산한 국소 설명을 많이 모아 통계적으로 집계하는 방법이다. 수천 개 샘플의 SHAP값을 평균 내면 전역 특징 중요도가 나오는 식이다.</p>
+<p>부분의존도 플롯(PDP)이나 순열 중요도(permutation importance)처럼 애초에 개별 샘플 단위 분해를 거치지 않고 데이터셋 전체를 대상으로 직접 계산하는 전역 기법도 있다. 이런 기법은 국소 설명을 집계할 필요 없이 곧바로 전역 그림을 만든다.</p>
+<p>전역과 국소는 이분법이라기보다 스펙트럼에 가깝다. 국소 설명을 집계하면 전역 설명이 되고 전역 설명을 특정 부분집합으로 좁히면 그 부분집합에 한정된 준전역 설명이 된다. 어느 수준에서 설명을 봐야 하는지는 질문의 성격에 달려 있다. 모델을 감사하거나 규제 대응 문서를 쓸 때는 전역 설명이 필요하고 이 사람에게 왜 이런 결정이 나왔는지 답해야 할 때는 국소 설명이 필요하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="160" x2="480" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="160" x2="40" y2="30" class="dg-line" stroke-width="1.5"/>
+<circle cx="90" cy="120" r="5" class="dg-dim"/>
+<circle cx="130" cy="100" r="5" class="dg-dim"/>
+<circle cx="170" cy="130" r="5" class="dg-dim"/>
+<circle cx="210" cy="90" r="5" class="dg-dim"/>
+<circle cx="250" cy="110" r="5" class="dg-dim"/>
+<circle cx="290" cy="70" r="5" class="dg-dim"/>
+<circle cx="330" cy="95" r="5" class="dg-dim"/>
+<circle cx="370" cy="60" r="5" class="dg-dim"/>
+<circle cx="410" cy="80" r="5" class="dg-dim"/>
+<path d="M80,125 C200,60 320,60 420,55" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="260" y="45" text-anchor="middle" font-size="13">전체 데이터에 대한 평균적 경향</text>
+<text x="260" y="185" text-anchor="middle" font-size="12" class="dg-dim">모든 예측을 아우르는 하나의 요약</text>
+</svg>`,
+    diagramCaption: String.raw`개별 점들이 아니라 전체 데이터에 걸친 평균적 경향 하나를 본다.`,
+    related: [{ label: "국소 설명", slug: "local-explanation" }, { label: "Surrogate Model", slug: "surrogate-model" }, { label: "Global SHAP 요약", slug: "global-shap-summary" }],
+    sections: []
+  },
+  "local-explanation": {
+    title: String.raw`국소 설명: 이 예측 하나는 왜 이렇게 나왔는가`,
+    domain: "xai",
+    subLabel: String.raw`범위 구분`,
+    intuition: String.raw`<p>국소 설명은 딱 하나의 예측만 상대한다. 이 사람의 대출이 왜 거절됐는가, 이 사진이 왜 고양이로 분류됐는가. 다른 사례들이 어떻게 되든 관심 없고 오직 지금 눈앞의 이 사례 하나를 설명하는 데만 집중한다.</p>
+<p>범위가 좁은 만큼 더 구체적이고 즉각적으로 쓸모가 있다. 실제로 결정 하나를 놓고 이의를 제기하거나 담당자가 결과를 설명해야 하는 상황에서는 전역 요약보다 국소 설명이 훨씬 더 직접적인 답을 준다.</p>`,
+    explanation: String.raw`<p>국소 설명의 대표적인 형태는 개별 샘플 $x_0$에 대한 SHAP값 벡터, $x_0$ 주변에서 학습한 LIME의 국소 선형모델, 이미지 한 장에 대한 saliency map이다. 공통점은 전부 $x_0$ 하나 혹은 그 근방을 기준으로 계산된다는 것이다. 다른 지점에서 다시 계산하면 값도 설명도 달라질 수 있다.</p>
+<p>이 국소성 때문에 신뢰성 문제가 따라온다. 아주 비슷한 두 입력을 넣었는데 국소 설명이 크게 다르게 나온다면 그 설명은 우연한 잡음을 반영하고 있을 가능성이 높다. 반대로 비슷한 입력에는 비슷한 설명이 나와야 국소 설명을 믿을 수 있다.</p>
+<p>국소 설명은 전역 설명과 대립하지 않는다. 오히려 많은 전역 설명 기법이 국소 설명을 원재료로 쓴다. 개별 샘플들의 SHAP값을 모아 평균 내면 전역 특징 중요도가 되고 여러 지점에서 만든 LIME 선형모델들의 계수 분포를 보면 그 특징이 전반적으로 어떤 방향으로 작용하는 경향이 있는지도 짐작할 수 있다. 국소 설명은 전역으로 가는 재료이자 그 자체로도 개별 사례에 대한 독립적인 답이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="160" x2="480" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="160" x2="40" y2="30" class="dg-line" stroke-width="1.5"/>
+<circle cx="90" cy="120" r="5" class="dg-dim"/>
+<circle cx="130" cy="100" r="5" class="dg-dim"/>
+<circle cx="170" cy="130" r="5" class="dg-dim"/>
+<circle cx="210" cy="90" r="5" class="dg-dim"/>
+<circle cx="330" cy="95" r="5" class="dg-dim"/>
+<circle cx="370" cy="60" r="5" class="dg-dim"/>
+<circle cx="410" cy="80" r="5" class="dg-dim"/>
+<circle cx="250" cy="110" r="9" class="dg-accent"/>
+<line x1="250" y1="110" x2="250" y2="45" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="250" y="35" text-anchor="middle" font-size="13">이 예측 하나</text>
+<text x="260" y="185" text-anchor="middle" font-size="12" class="dg-dim">주변 점들과 무관하게 이 개체만 설명</text>
+</svg>`,
+    diagramCaption: String.raw`주변 점들과 관계없이 강조된 이 예측 하나만 설명한다.`,
+    related: [{ label: "전역 설명", slug: "global-explanation" }, { label: "Global SHAP 요약", slug: "global-shap-summary" }],
+    sections: []
+  },
+  "surrogate-model": {
+    title: String.raw`Surrogate Model: 단순한 모델로 블랙박스 전체를 흉내내기`,
+    domain: "xai",
+    subLabel: String.raw`전역 근사`,
+    intuition: String.raw`<p>블랙박스 모델의 예측 함수 자체를 이해하기 어렵다면 그 예측을 흉내 내는 훨씬 단순한 모델을 따로 하나 학습시켜서 그 단순한 모델을 대신 들여다보는 방법이 있다. 이게 surrogate model, 대리모델이다. 원래 모델을 직접 열어보는 대신 그 모델의 입출력 관계만 베껴서 배운 선형회귀나 얕은 결정트리를 해석한다.</p>
+<p>당연히 근사이기 때문에 완벽하게 같지는 않다. 대리모델이 원래 모델을 얼마나 잘 따라 하는지, 즉 충실도가 낮다면 대리모델을 아무리 해석해봐야 원래 모델에 대한 설명으로는 믿을 수 없다.</p>`,
+    explanation: String.raw`<p>대리모델 $g$는 원래 모델 $f$의 입력 $x$에 대한 예측 $f(x)$를 타깃으로 학습한다. 실제 정답 라벨이 아니라 원래 모델이 내놓은 출력을 흉내 내도록 지도학습을 돌리는 셈이라 일종의 지식 증류(distillation)에 가깝다. 선형회귀, 얕은 결정트리, GAM처럼 계수나 분기 규칙을 사람이 바로 읽을 수 있는 모델을 $g$로 고른다.</p>
+<p>여기서 말하는 대리모델은 데이터 분포 전체에 걸쳐 학습하는 전역 대리모델이다. 이 점이 입력 하나 주변에서만 국소적으로 근사하는 LIME과 다르다. LIME의 국소 선형모델은 그 지점 근처에서만 믿을 만하지만 전역 대리모델은 데이터셋 전체를 대표하려고 시도한다. 그만큼 국소 근사보다 정확도를 맞추기가 더 어렵다.</p>
+<p>충실도는 보통 $g(x)$와 $f(x)$의 예측 일치율이나 결정계수로 측정한다. 충실도가 높은 영역에서는 대리모델의 설명을 믿을 수 있지만 원래 모델이 복잡한 비선형 결정을 내리는 영역에서는 단순한 대리모델이 그 굴곡을 못 따라가 설명이 어긋난다. 대리모델을 쓸 때는 전체 평균 충실도만이 아니라 어느 구간에서 특히 어긋나는지도 함께 봐야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="20" width="440" height="180" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M40,140 C120,60 180,180 260,90 C340,20 400,120 480,70" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="40" y1="120" x2="480" y2="90" class="dg-stroke-accent" stroke-width="2.5" stroke-dasharray="6,3"/>
+<text x="150" y="40" text-anchor="middle" font-size="12">블랙박스의 실제 결정경계</text>
+<text x="370" y="185" text-anchor="middle" font-size="12" class="dg-accent">대리모델의 단순 근사 경계</text>
+</svg>`,
+    diagramCaption: String.raw`복잡한 실제 경계를 단순한 경계 하나로 근사하면 어긋나는 구간이 생긴다.`,
+    related: [{ label: "전역 설명", slug: "global-explanation" }, { label: "InterpretML", slug: "interpretml" }, { label: "Global SHAP 요약", slug: "global-shap-summary" }],
+    sections: []
+  },
+  "global-shap-summary": {
+    title: String.raw`Global SHAP 요약: 로컬 기여도를 모아 전역 그림 만들기`,
+    domain: "xai",
+    subLabel: String.raw`전역 근사`,
+    intuition: String.raw`<p>개별 샘플 하나하나의 SHAP값은 국소 설명이다. 이 값들을 아주 많이 모아서 특징별로 평균을 내면 전역적으로 어떤 특징이 전반적으로 중요한지 알 수 있다. 개별 유권자 한 명 한 명의 의견을 다 모아 여론조사 결과를 만드는 것과 비슷하다.</p>
+<p>단순 평균이 아니라 절댓값의 평균을 쓴다는 점이 핵심이다. 어떤 특징은 어떤 샘플에서는 예측을 올리고 다른 샘플에서는 내리기 때문에 그냥 평균을 내면 서로 상쇄돼서 중요하지 않은 것처럼 보일 수 있다.</p>`,
+    explanation: String.raw`<p>$n$개의 샘플에 대해 계산한 특징 $j$의 SHAP값을 $\phi_j^{(i)}$라 하면 전역 중요도는 다음과 같이 정의한다.</p>
+$$I_j = \frac{1}{n} \sum_{i=1}^{n} \left| \phi_j^{(i)} \right|$$
+<p>이 값을 특징별로 나란히 정렬하면 흔히 보는 summary bar plot이 된다. 여기서 한 걸음 더 나아가 beeswarm plot은 각 점을 절댓값이 아니라 부호가 있는 원래 SHAP값으로 찍고 점의 색으로 그 샘플의 원래 특징값이 높았는지 낮았는지 표시한다. 그러면 특징이 중요하다는 사실뿐 아니라 그 특징값이 클 때 예측을 올리는지 내리는지 방향까지 한 그래프에서 읽을 수 있다. 순열 중요도 같은 다른 전역 기법은 보통 크기만 보여주고 방향은 알려주지 않는다.</p>
+<p>Surrogate model과는 전역 설명을 만드는 방향이 다르다. 전역 SHAP 요약은 이미 계산된 정확한 국소 기여도들을 아래에서부터 쌓아 올려 전역 그림을 만드는 상향식 방법이다. 반면 대리모델은 데이터셋 전체를 대상으로 완전히 별개의 단순한 모델을 처음부터 다시 학습하는 하향식 방법이다. 둘의 결과가 항상 같지는 않다. 대리모델이 특정 특징의 실제 비선형적 효과를 표현하지 못하면 그 특징의 대리모델 계수는 작게 나오는데도 SHAP 기반 전역 중요도는 크게 나올 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="24" font-size="12" class="dg-dim">개체 1</text>
+<rect x="90" y="14" width="70" height="14" class="dg-dim"/>
+<text x="20" y="54" font-size="12" class="dg-dim">개체 2</text>
+<rect x="90" y="44" width="30" height="14" class="dg-dim"/>
+<text x="20" y="84" font-size="12" class="dg-dim">개체 3</text>
+<rect x="90" y="74" width="50" height="14" class="dg-dim"/>
+<text x="90" y="105" font-size="11" class="dg-dim">특징 A의 |φ| (개체별)</text>
+<line x1="115" y1="115" x2="115" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="115" y="155" text-anchor="middle" font-size="12">절댓값 평균</text>
+<rect x="90" y="165" width="50" height="18" class="dg-accent"/>
+<text x="260" y="178" font-size="13">특징 A의 전역 중요도</text>
+</svg>`,
+    diagramCaption: String.raw`개체별 절댓값 기여도를 평균 내면 특징 하나의 전역 중요도가 된다.`,
+    example: String.raw`<p>세 개체의 특징 A에 대한 SHAP값이 각각 $+0.40$, $-0.20$, $+0.30$이라고 하자. 단순 평균은 $0.167$로 작아 보이지만 절댓값의 평균은 다음과 같다.</p>
+$$I_A = \frac{0.40+0.20+0.30}{3} = 0.30$$
+<p>부호가 있는 그대로 평균 냈다면 상쇄되어 작아 보였을 특징이 절댓값 평균으로는 뚜렷하게 중요한 특징으로 드러난다.</p>`,
+    related: [{ label: "shap", slug: "shap-library" }, { label: "Surrogate Model", slug: "surrogate-model" }, { label: "전역 설명", slug: "global-explanation" }],
+    sections: []
+  },
+  "alpha-algorithm": {
+    title: String.raw`Alpha Algorithm: 로그의 선후관계로 Petri Net 복원하기`,
+    domain: "pm",
+    subLabel: String.raw`발견 알고리즘`,
+    intuition: String.raw`<p>회사 시스템에는 어떤 일이 언제 일어났는지 기록이 남습니다. 이 기록만 보고 실제 업무가 어떤 순서로 진행되는지 거꾸로 추측하는 작업이 프로세스 발견입니다. Alpha Algorithm은 이 발견을 최초로 엄밀하게 정의한 방법입니다. 사람이 흐름도를 손으로 그리는 대신 로그 안에서 어떤 활동이 어떤 활동 바로 다음에 오는지만 세어서 그 순서관계로부터 프로세스 모델을 자동으로 만들어냅니다.</p>
+<p>핵심 질문은 단순합니다. 활동 A 다음에 항상 B가 오면 A가 B의 원인일 가능성이 큽니다. A 다음에 B가 오기도 하고 B 다음에 A가 오기도 하면 둘은 순서 상관없이 동시에 진행되는 병렬 관계일 수 있습니다. A와 B가 로그에서 한 번도 나란히 붙어 나온 적이 없다면 둘은 서로 다른 선택지일 수 있습니다. Alpha Algorithm은 이 세 가지 판단을 자동화해서 Petri Net을 만들어냅니다.</p>`,
+    explanation: String.raw`<p>먼저 로그 안 모든 활동 쌍에 대해 직접후행 관계 $a >_L b$를 정의합니다. 어떤 트레이스 안에서 $a$ 바로 다음 자리에 $b$가 나온 적이 있으면 $a >_L b$가 성립합니다. 이 관계 하나로부터 풋프린트라 부르는 세 가지 관계를 정의합니다. $a >_L b$이면서 $b >_L a$는 성립하지 않으면 인과관계 $a \to b$입니다. $a >_L b$와 $b >_L a$가 둘 다 성립하면 병렬관계 $a \| b$입니다. 둘 다 성립하지 않으면 선택관계 $a \# b$입니다.</p>
+<p>다음으로 모든 활동 쌍 $(A, B)$ 가운데 $A$ 안의 모든 활동이 $B$ 안의 모든 활동과 인과관계로 이어지고 $A$ 안에서는 서로 선택관계만 성립하고 $B$ 안에서도 서로 선택관계만 성립하는 최대 집합쌍을 찾습니다. 이런 집합쌍마다 플레이스를 하나씩 만들고 $A$의 활동들을 그 플레이스로 들어오는 트랜지션으로 $B$의 활동들을 그 플레이스에서 나가는 트랜지션으로 연결합니다. 여기에 로그의 시작 활동들과 이어지는 시작 플레이스 종료 활동들과 이어지는 종료 플레이스를 더하면 Petri Net이 완성됩니다.</p>
+<p>이 방식의 장점은 사람이 개입하지 않아도 로그의 순서 정보만으로 모델이 자동으로 나온다는 점입니다. 다만 풋프린트 관계는 로그에 실제로 나온 직접후행 쌍 하나하나를 그대로 믿습니다. 아주 드물게 한 번만 나온 예외적인 순서도 나머지 수천 개 정상 사례와 똑같은 무게로 인과관계나 병렬관계 판정에 반영됩니다. 노이즈가 조금만 섞여도 잘못된 관계가 만들어질 수 있고 길이 1이나 2짜리 짧은 반복도 풋프린트 관계만으로는 제대로 표현하기 어렵습니다. 빈도를 무시하고 있는지 없는지만 보는 이 한계가 다음에 나오는 Heuristic Miner가 풀어야 할 문제가 됩니다.</p>`,
+    example: String.raw`<p>로그가 세 트레이스 $\langle a,b,c,d \rangle$ $\langle a,c,b,d \rangle$ $\langle a,e,d \rangle$로 이루어져 있다고 하면 직접후행 관계는 $a{>}b$ $b{>}c$ $c{>}d$ $a{>}c$ $c{>}b$ $b{>}d$ $a{>}e$ $e{>}d$가 관찰됩니다.</p>
+<p>여기서 $b$와 $c$는 $b{>}c$와 $c{>}b$가 둘 다 성립하므로 병렬관계 $b \| c$입니다. $a$와 $b$는 $a{>}b$만 성립하므로 인과관계 $a \to b$이고 같은 방식으로 $a \to c$ $c \to d$ $b \to d$ $a \to e$ $e \to d$도 인과관계입니다. $b$와 $e$는 어느 순서로도 직접 이어진 적이 없으므로 선택관계 $b \# e$이고 $c$와 $e$도 마찬가지로 $c \# e$입니다. 이 관계표만으로 $a$ 다음에 $b, c$가 병렬로 진행되거나 $e$ 하나만 진행되는 두 갈래 구조를 그대로 복원할 수 있습니다.</p>`,
+    related: [{ label: "Heuristic Miner", slug: "heuristic-miner" }, { label: "Inductive Miner", slug: "inductive-miner" }, { label: "Petri Net", slug: "petri-net" }],
+    sections: []
+  },
+  "heuristic-miner": {
+    title: String.raw`Heuristic Miner: 빈도로 노이즈를 걸러내며 모델 찾기`,
+    domain: "pm",
+    subLabel: String.raw`발견 알고리즘`,
+    intuition: String.raw`<p>실제 이벤트 로그는 깨끗하지 않습니다. 담당자가 순서를 바꿔 처리했거나 시스템 오류로 기록이 꼬였거나 정말 드문 예외 상황이 섞여 있습니다. Alpha Algorithm처럼 로그에 한 번이라도 나온 순서를 전부 똑같이 믿는 방법은 이런 잡음 하나에도 엉뚱한 관계를 만들어낼 수 있습니다. Heuristic Miner는 여기서 빈도라는 무기를 씁니다. A 다음에 B가 만 번 나왔는데 B 다음에 A가 딱 한 번 나왔다면 그 한 번은 예외로 보고 무시하자는 생각입니다.</p>
+<p>즉 순서관계가 있었는지 없었는지가 아니라 얼마나 자주 있었는지를 봅니다. 자주 반복되는 순서만 진짜 인과관계로 인정하고 어쩌다 한 번 나온 순서는 잡음으로 걸러내기 때문에 실제 기업 로그처럼 지저분한 데이터에서도 훨씬 안정적인 모델을 뽑아낼 수 있습니다.</p>`,
+    explanation: String.raw`<p>$|a{>}b|$를 로그 전체에서 $a$ 바로 다음에 $b$가 나온 횟수라 하면 Heuristic Miner는 다음과 같은 의존도 지표를 계산합니다.</p>
+<p>$a \Rightarrow b = \dfrac{|a{>}b| - |b{>}a|}{|a{>}b| + |b{>}a| + 1}$</p>
+<p>이 값은 $a$ 다음에 $b$가 오는 경우만 압도적으로 많으면 1에 가까워지고 반대로 $b$ 다음에 $a$가 오는 경우가 더 많으면 마이너스 값으로 가며 둘 다 비슷한 빈도로 나오면 0에 가까워집니다. 임계값을 넘는 관계만 실제 인과관계로 인정하고 나머지는 버립니다. 자기 자신으로 돌아오는 길이 1짜리 반복은 $a \Rightarrow a = |a{>}a| / (|a{>}a|+1)$로 따로 계산하고 길이 2짜리 반복 패턴도 별도 지표로 잡아내는데 이는 풋프린트 관계만으로는 다루기 어려웠던 부분입니다.</p>
+<p>이렇게 걸러진 관계로 각 활동의 입력과 출력 연결을 정하고 나면 한 활동에서 나가는 길이 여러 개일 때 그것이 AND 분기인지 XOR 분기인지도 빈도 기반 지표로 판단합니다. 이 결과물을 Heuristics Net이라 부르고 필요하면 다시 Petri Net으로 옮길 수 있습니다. 핵심은 Alpha Algorithm이 관계의 존재 여부만 봤다면 Heuristic Miner는 관계의 강도를 재서 드문 잡음을 구조적으로 걸러낸다는 점입니다.</p>`,
+    example: String.raw`<p>$a$ 다음에 $b$가 온 경우가 980번 $b$ 다음에 $a$가 온 경우가 4번이라면 $a \Rightarrow b = (980-4)/(980+4+1) = 976/985 \approx 0.99$로 강한 인과관계로 인정됩니다.</p>
+<p>반대로 $c$ 다음에 $d$가 온 경우가 51번 $d$ 다음에 $c$가 온 경우가 49번이라면 $c \Rightarrow d = (51-49)/(51+49+1) = 2/101 \approx 0.02$로 0에 가까워 인과관계로 보지 않고 병렬이나 잡음으로 처리합니다.</p>`,
+    related: [{ label: "Alpha Algorithm", slug: "alpha-algorithm" }, { label: "Inductive Miner", slug: "inductive-miner" }],
+    sections: []
+  },
+  "inductive-miner": {
+    title: String.raw`Inductive Miner: 재귀적 분할로 항상 유효한 모델 보장하기`,
+    domain: "pm",
+    subLabel: String.raw`발견 알고리즘`,
+    intuition: String.raw`<p>Heuristic Miner로 잡음은 걸러낼 수 있지만 그렇게 완성한 모델이 항상 제대로 작동한다는 보장은 없습니다. 어떤 트레이스를 넣으면 중간에 막혀서 더 진행할 수 없거나 끝났는데 토큰이 이상한 자리에 남는 모델이 나올 수도 있습니다. Inductive Miner는 이 문제를 아예 구조로 막아버립니다. 로그에서 관계를 하나하나 찾아 이어붙이는 대신 로그 전체를 절반으로 쪼개고 그 절반을 다시 절반으로 쪼개는 식으로 재귀적으로 나눠가면서 모델을 짓습니다. 각 조각이 항상 올바르게 조립되도록 나누는 규칙 자체가 정해져 있기 때문에 결과물은 항상 끝까지 실행 가능한 모델이 됩니다.</p>`,
+    explanation: String.raw`<p>먼저 로그에서 활동 사이의 직접후행 빈도를 담은 그래프를 만듭니다. Inductive Miner는 이 그래프를 네 가지 컷 가운데 하나로 자를 수 있는지 확인합니다. 한쪽 그룹에서 다른 쪽 그룹으로만 화살표가 가면 순차 컷이고 두 그룹 사이에 화살표가 전혀 없으면 배타적 선택 컷이고 두 그룹 사이에 양방향 화살표가 모두 있으면 병렬 컷이고 한쪽은 항상 실행되는 본체이고 다른 쪽은 본체 끝에서 시작해 본체 앞으로 되돌아가는 구조면 반복 컷입니다.</p>
+<p>맞는 컷을 찾으면 로그를 그 그룹에 맞춰 두 개의 부분 로그로 쪼개고 각 부분 로그에 대해 똑같은 과정을 재귀적으로 반복합니다. 활동이 하나만 남으면 그 활동 자체가 나뭇잎이 되어 재귀가 끝납니다. 이렇게 쪼개고 다시 합치는 과정의 결과물이 프로세스 트리이고 나뭇잎은 활동 내부 노드는 방금 나온 네 가지 연산자 가운데 하나입니다.</p>
+<p>이 방식이 필요했던 이유는 어떤 로그를 넣어도 컷이 하나는 반드시 찾아진다는 데 있습니다. 정말 아무 규칙도 안 보이면 모든 활동을 자유롭게 반복하는 아주 느슨한 반복 구조로라도 자르면 되기 때문입니다. 그래서 Inductive Miner는 항상 끝까지 실행되고 끝나면 정확히 완료 상태에 도달하는 모델을 예외 없이 보장합니다. 대신 이렇게 항상 성립하는 안전한 컷을 찾다 보면 실제보다 더 많은 동작을 허용하는 느슨한 모델이 나올 수 있는데 이 정밀도 손실을 줄이려고 드문 엣지를 먼저 걸러내고 컷을 찾는 개선판도 널리 쓰입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<text x="70" y="24" font-size="13" text-anchor="middle">그룹 1</text>
+<circle cx="70" cy="70" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="70" y="75" font-size="13" text-anchor="middle">a</text>
+<circle cx="70" cy="150" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="70" y="155" font-size="13" text-anchor="middle">b</text>
+<line x1="70" y1="86" x2="70" y2="134" class="dg-line" stroke-width="1.5"/>
+<line x1="220" y1="14" x2="220" y2="206" class="dg-line" stroke-width="1.5" stroke-dasharray="5,4"/>
+<text x="400" y="24" font-size="13" text-anchor="middle">그룹 2</text>
+<circle cx="360" cy="50" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="360" y="55" font-size="13" text-anchor="middle">c</text>
+<circle cx="420" cy="110" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="420" y="115" font-size="13" text-anchor="middle">d</text>
+<circle cx="360" cy="170" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="360" y="175" font-size="13" text-anchor="middle">e</text>
+<line x1="374" y1="60" x2="406" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="406" y1="120" x2="374" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="85" y1="145" x2="345" y2="58" class="dg-stroke-accent" stroke-width="2"/>
+<text x="580" y="220" font-size="12" text-anchor="end" class="dg-dim">순차 컷: 그룹1 → 그룹2 방향으로만 화살표</text>
+</svg>`,
+    diagramCaption: String.raw`왼쪽 그룹에서 오른쪽 그룹으로만 화살표가 가면 순차 컷으로 잘라 두 부분 로그로 나눈다.`,
+    related: [{ label: "Alpha Algorithm", slug: "alpha-algorithm" }, { label: "Heuristic Miner", slug: "heuristic-miner" }, { label: "프로세스 트리", slug: "process-tree" }],
+    sections: []
+  },
+  "token-replay": {
+    title: String.raw`Token Replay: 로그를 모델 위에서 재생시켜 이탈 찾기`,
+    domain: "pm",
+    subLabel: String.raw`검사 기법`,
+    intuition: String.raw`<p>모델을 하나 발견했다고 해서 그 모델이 실제로 벌어진 일을 얼마나 잘 설명하는지는 따로 확인해야 합니다. Token Replay는 이 확인을 가장 직관적인 방법으로 합니다. 모델의 시작 지점에 토큰을 하나 놓고 로그에 적힌 활동 순서를 그대로 하나씩 모델 위에서 재생합니다. 다음 활동이 모델에서 정상적으로 진행 가능하면 그대로 진행시키고 모델이 그 활동을 받을 준비가 안 되어 있으면 억지로 토큰을 채워 넣어서라도 계속 재생합니다. 이 강제로 채운 횟수와 재생이 끝난 뒤 남는 찌꺼기를 세어서 얼마나 잘 맞았는지를 숫자로 냅니다.</p>`,
+    explanation: String.raw`<p>재생 도중 네 가지를 셉니다. 만들어진 토큰 수 $p$ 소비된 토큰 수 $c$ 트랜지션이 발화하고 싶은데 필요한 입력 플레이스가 비어 있어서 억지로 채워 넣은 토큰 수 $m$ 재생이 끝난 뒤에도 원래 있어야 할 종료 마킹이 아닌 자리에 남아 있는 토큰 수 $r$입니다. 이 네 숫자로 적합도를 계산합니다.</p>
+<p>$\mathrm{fitness} = \dfrac12\left(1 - \dfrac{m}{c}\right) + \dfrac12\left(1 - \dfrac{r}{p}\right)$</p>
+<p>앞항은 억지로 채워 넣은 토큰이 전체 소비량 대비 얼마나 되는지를 재고 뒷항은 다 쓰지 못하고 남은 토큰이 전체 생산량 대비 얼마나 되는지를 잽니다. $m=0$이고 $r=0$이면 fitness는 1이 되어 완벽하게 맞는 로그입니다.</p>
+<p>이 방법의 장점은 트레이스 하나를 처음부터 끝까지 한 번만 훑으면 되기 때문에 아주 빠르다는 점입니다. 반면 막히는 자리를 만나면 그 자리에서 최선의 설명을 찾는 게 아니라 일단 토큰부터 채워 넣고 넘어가는 탐욕적인 방식이라 병렬 구조가 많은 모델에서는 실제로는 더 그럴듯한 다른 경로가 있었는데도 놓칠 수 있습니다. 이 탐욕적 근사를 최적의 정답으로 바꾼 것이 다음에 나오는 Alignment 기반 적합성입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="24" font-size="13" class="dg-dim">로그 &lt;a, c&gt; 재생 (b 생략)</text>
+<circle cx="50" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="84" width="50" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="115" y="105" font-size="13" text-anchor="middle">a</text>
+<line x1="64" y1="100" x2="90" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="100" x2="180" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="180" cy="100" r="14" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="180" cy="100" r="5" class="dg-accent"/>
+<text x="180" y="140" font-size="12" text-anchor="middle" class="dg-dim">남은 토큰 r=1</text>
+<line x1="194" y1="94" x2="230" y2="88" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="230" y="84" width="50" height="32" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="255" y="105" font-size="13" text-anchor="middle" class="dg-dim">b</text>
+<line x1="280" y1="88" x2="330" y2="94" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="330" cy="100" r="14" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="330" y="140" font-size="12" text-anchor="middle" class="dg-dim">강제 삽입 m=1</text>
+<line x1="344" y1="100" x2="380" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="84" width="50" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="405" y="105" font-size="13" text-anchor="middle">c</text>
+<line x1="430" y1="100" x2="470" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="470" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="470" cy="100" r="5" class="dg-dim"/>
+<text x="470" y="140" font-size="12" text-anchor="middle" class="dg-dim">정상 종료 토큰</text>
+</svg>`,
+    diagramCaption: String.raw`b를 건너뛴 트레이스를 재생하면 p1에 토큰이 남고 p2에는 토큰을 억지로 채워 넣어야 한다.`,
+    example: String.raw`<p>시작 플레이스 $p_0$에서 $a$를 거쳐 $p_1$ $b$를 거쳐 $p_2$ $c$를 거쳐 $p_3$로 끝나는 순차 모델을 생각합니다. 트레이스 $\langle a, c \rangle$는 $b$를 건너뛰고 재생됩니다.</p>
+<p>초기 마킹의 토큰 1개를 생산 $p$에 포함하고 정상적으로 도달해야 할 종료 마킹의 토큰 1개도 소비 $c$에 포함하는 관례를 따르면 $a$가 발화하며 $p_0$의 토큰 1개를 소비하고 $p_1$에 토큰 1개를 생산합니다. 다음 이벤트 $c$는 $p_2$가 비어 있어 토큰 1개를 억지로 채워 넣은 뒤 소비하고 $p_3$에 토큰을 생산합니다. 재생이 끝나면 $p_1$의 토큰은 아무도 소비하지 않아 남고 $p_3$의 토큰은 종료 마킹과 일치해 정상 처리됩니다.</p>
+<p>총합은 $p=3$ $c=3$ $m=1$ $r=1$이 되어 $\mathrm{fitness} = \dfrac12(1-\tfrac13) + \dfrac12(1-\tfrac13) = \dfrac23 \approx 0.67$입니다.</p>`,
+    related: [{ label: "Alignment 기반 적합성", slug: "alignment-conformance" }, { label: "Petri Net", slug: "petri-net" }],
+    sections: []
+  },
+  "alignment-conformance": {
+    title: String.raw`Alignment 기반 적합성: 로그와 모델의 최소편집거리`,
+    domain: "pm",
+    subLabel: String.raw`검사 기법`,
+    intuition: String.raw`<p>Token Replay는 막히는 순간 일단 토큰을 채워 넣고 넘어갑니다. 빠르지만 그 자리에서 정말 최선의 설명이었는지는 확인하지 않습니다. Alignment 기반 적합성은 다른 질문을 던집니다. 이 로그 트레이스와 가장 가까운 모델의 정상 실행 경로는 무엇인가를 직접 찾습니다. 마치 두 문장을 나란히 놓고 어디를 지우고 어디를 끼워 넣어야 서로 같아지는지 최소 횟수로 맞춰보는 것과 같습니다. 그렇게 맞춰 놓은 결과가 로그가 모델에서 얼마나 벗어났는지를 보여주는 지도가 됩니다.</p>`,
+    explanation: String.raw`<p>정렬은 로그의 각 단계와 모델의 각 단계를 짝지은 이동의 나열입니다. 로그 이벤트와 모델 트랜지션이 같은 활동으로 동시에 맞아떨어지면 동기이동이라 부르고 비용이 없습니다. 로그에는 있는데 그 시점 모델로는 설명할 수 없는 이벤트를 그대로 진행시키면 로그이동이고 비용이 붙습니다. 반대로 모델은 최종 상태에 도달하려면 어떤 트랜지션이 발화해야 하는데 로그에 대응하는 이벤트가 없으면 모델이동이고 역시 비용이 붙습니다.</p>
+<p>가능한 정렬은 무수히 많지만 비용의 합이 가장 작은 정렬 하나를 찾는 최적화 문제로 풉니다. 실제로는 로그와 모델을 곱한 탐색공간 위에서 최단경로를 찾는 방식으로 계산합니다. 동기이동 비용을 0으로 로그이동과 모델이동 비용을 1로 두는 것이 가장 흔한 설정입니다.</p>
+<p>이렇게 구한 최소비용을 정규화하면 적합도가 됩니다. 로그 전체를 건너뛰고 모델을 처음부터 새로 완주하는 최악의 정렬 비용을 기준으로 삼아 $\mathrm{fitness} = 1 - (\text{최소비용}/\text{최악비용})$로 계산하는 방식이 실무에서 흔히 쓰입니다. Token Replay와 다른 점은 이 값이 근사가 아니라 그 트레이스와 그 모델 사이에서 나올 수 있는 진짜 최선의 점수라는 데 있습니다. 대신 탐색 비용이 훨씬 크기 때문에 로그 전체를 매번 Alignment로 검사하기보다는 Token Replay로 먼저 걸러내고 의심스러운 트레이스만 Alignment로 깊게 들여다보는 방식이 흔히 쓰입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 210" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="60" font-size="13" class="dg-dim">로그</text>
+<text x="10" y="140" font-size="13" class="dg-dim">모델</text>
+<rect x="100" y="40" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="61" font-size="13" text-anchor="middle">a</text>
+<rect x="100" y="120" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="141" font-size="13" text-anchor="middle">a</text>
+<line x1="130" y1="72" x2="130" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="130" y="180" font-size="11" text-anchor="middle" class="dg-dim">동기이동 · 비용 0</text>
+<rect x="220" y="40" width="60" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="250" y="61" font-size="13" text-anchor="middle">c</text>
+<rect x="220" y="120" width="60" height="32" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="250" y="141" font-size="13" text-anchor="middle" class="dg-dim">»</text>
+<text x="250" y="180" font-size="11" text-anchor="middle" class="dg-dim">로그이동 · 비용 1</text>
+<rect x="340" y="40" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="370" y="61" font-size="13" text-anchor="middle">b</text>
+<rect x="340" y="120" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="370" y="141" font-size="13" text-anchor="middle">b</text>
+<line x1="370" y1="72" x2="370" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="370" y="180" font-size="11" text-anchor="middle" class="dg-dim">동기이동 · 비용 0</text>
+<rect x="460" y="40" width="60" height="32" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="490" y="61" font-size="13" text-anchor="middle" class="dg-dim">»</text>
+<rect x="460" y="120" width="60" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="490" y="141" font-size="13" text-anchor="middle">c</text>
+<text x="490" y="180" font-size="11" text-anchor="middle" class="dg-dim">모델이동 · 비용 1</text>
+</svg>`,
+    diagramCaption: String.raw`로그 <a,c,b>를 모델 a→b→c에 맞추면 c가 로그이동, b 다음의 c가 모델이동으로 배정된다.`,
+    example: String.raw`<p>모델은 $a$ 다음 $b$ 다음 $c$가 순서대로 진행되어야 하는데 로그 트레이스는 $\langle a, c, b \rangle$로 $c$와 $b$의 순서가 뒤바뀌어 있습니다. 최소비용 정렬은 동기이동 $(a,a)$ 로그이동 $(c, \text{»})$ 동기이동 $(b,b)$ 모델이동 $(\text{»}, c)$로 구성되고 비용은 로그이동과 모델이동 각각 1씩 더해 총 2입니다.</p>
+<p>로그 전체를 건너뛰고 모델 3단계를 처음부터 완주하는 최악의 비용은 $3+3=6$이므로 $\mathrm{fitness} = 1 - 2/6 \approx 0.67$입니다.</p>`,
+    related: [{ label: "Token Replay", slug: "token-replay" }, { label: "Petri Net", slug: "petri-net" }],
+    sections: []
+  },
+  "bottleneck-analysis": {
+    title: String.raw`병목구간 분석: 어디서 가장 오래 기다리는가`,
+    domain: "pm",
+    subLabel: String.raw`분석 · 예측`,
+    intuition: String.raw`<p>모델을 발견하고 적합성까지 확인했다면 이제 실무에서 가장 궁금한 질문이 남습니다. 실제로 어디서 시간이 가장 많이 새고 있는가입니다. 병목구간 분석은 이벤트에 찍힌 시각 정보를 이용해 케이스들이 어느 구간에서 가장 오래 기다렸는지를 찾아냅니다. 활동 자체를 처리하는 시간보다 한 활동이 끝나고 다음 활동이 시작되기까지 대기하는 시간이 병목의 주범인 경우가 훨씬 많습니다.</p>`,
+    explanation: String.raw`<p>활동 $a$가 끝난 시각과 다음 활동 $b$가 시작된 시각의 차이를 모든 케이스에 대해 모으면 그 구간의 대기시간 분포가 나옵니다. 평균 대기시간은 $\overline{\Delta t}_{a \to b} = \frac1n \sum_k \left( \mathrm{start}(b)_k - \mathrm{complete}(a)_k \right)$로 구하지만 평균만 보면 가끔 며칠씩 걸리는 극단적인 케이스가 묻힐 수 있어 상위 퍼센타일도 함께 확인합니다.</p>
+<p>이렇게 구간별 통계를 낸 뒤 발견된 모델이나 직접후행 그래프 위에 대기시간을 색이나 굵기로 입혀서 시각화합니다. 실무자는 가장 두껍거나 진하게 표시된 구간을 그대로 병목으로 지목합니다.</p>
+<p>같은 구간이라도 특정 팀 담당자가 여러 프로세스의 요청을 동시에 처리하느라 밀리는 자원 경합 때문인지 외부 승인처럼 원래 구조적으로 오래 걸리는 대기인지는 따로 구분해야 합니다. 자원 경합이면 인력을 늘리는 쪽이 답이고 구조적 대기라면 프로세스 자체를 다시 설계해야 하므로 원인 구분이 곧 해결책의 방향을 정합니다. 이 분석의 정확도는 앞선 발견과 적합성 검사 단계가 실제 흐름을 얼마나 잘 반영했는지에 그대로 의존합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="90" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="95" font-size="12" text-anchor="middle">접수</text>
+<circle cx="230" cy="90" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="230" y="95" font-size="12" text-anchor="middle">승인</text>
+<circle cx="400" cy="90" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="400" y="95" font-size="12" text-anchor="middle">처리</text>
+<circle cx="560" cy="90" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="560" y="95" font-size="12" text-anchor="middle">완료</text>
+<line x1="78" y1="90" x2="212" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="145" y="75" font-size="12" text-anchor="middle" class="dg-dim">0.4일</text>
+<line x1="248" y1="90" x2="382" y2="90" class="dg-stroke-accent" stroke-width="6"/>
+<text x="315" y="70" font-size="13" text-anchor="middle">평균 대기 4.2일</text>
+<line x1="418" y1="90" x2="542" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="480" y="75" font-size="12" text-anchor="middle" class="dg-dim">0.3일</text>
+</svg>`,
+    diagramCaption: String.raw`승인에서 처리로 넘어가는 구간의 평균 대기시간이 다른 구간보다 훨씬 길다.`,
+    example: String.raw`<p>접수부터 승인까지 평균 대기시간이 0.4일 승인부터 처리까지가 4.2일 처리부터 완료까지가 0.3일이라면 승인과 처리 사이 구간이 전체 소요시간 4.9일 가운데 대부분을 차지하는 병목입니다.</p>`,
+    related: [{ label: "예측 모니터링", slug: "predictive-monitoring" }, { label: "Token Replay", slug: "token-replay" }],
+    sections: []
+  },
+  "predictive-monitoring": {
+    title: String.raw`예측 모니터링: 진행중인 케이스가 어떻게 끝날지 미리 보기`,
+    domain: "pm",
+    subLabel: String.raw`분석 · 예측`,
+    intuition: String.raw`<p>병목구간 분석은 이미 끝난 케이스들을 돌아보며 어디서 지연이 생겼는지를 봅니다. 예측 모니터링은 반대로 지금 이 순간 진행 중인 케이스를 봅니다. 아직 배송 대기 단계에 있는 주문 하나가 있다면 이 주문이 앞으로 얼마나 더 걸릴지 정상적으로 끝날지 아니면 문제가 생길지를 그 케이스가 끝나기 전에 미리 알고 싶은 것입니다.</p>`,
+    explanation: String.raw`<p>지금 보고 있는 케이스는 아직 끝나지 않았으므로 지금까지 일어난 이벤트만 담은 부분 트레이스입니다. 이 부분 트레이스로 미래를 맞히려면 과거에 완료된 트레이스들을 학습 데이터로 씁니다. 완료된 트레이스를 여러 길이로 잘라 각 조각 뒤에 실제로 무슨 일이 일어났는지 얼마나 더 걸렸는지 어떻게 끝났는지를 정답으로 붙여둡니다.</p>
+<p>초기 방법은 로그로부터 만든 상태전이 모델의 각 상태에 과거 통계를 미리 붙여두고 지금 케이스가 어느 상태에 해당하는지 찾아 그 통계를 그대로 답으로 내놓는 방식이었습니다. 최근에는 순서를 직접 학습하는 시퀀스 모델이나 부분 트레이스에서 뽑은 특징으로 학습한 모델을 써서 비슷한 상태가 로그에 몇 번 없어도 안정적으로 예측하는 방식이 많이 쓰입니다.</p>
+<p>예측 대상은 크게 다음 활동이 무엇일지 종료까지 남은 시간이 얼마일지 최종적으로 정상 종료될지 이탈할지 세 가지입니다. 평가할 때는 반드시 시간 순서를 지켜야 합니다. 나중에 끝난 케이스의 정보가 그보다 먼저 진행 중이던 케이스의 예측에 섞여 들어가면 실전에서는 있을 수 없는 정보 누수가 됩니다. 부분 트레이스가 길수록 예측은 정확해지지만 이미 개입할 시점이 지나 있을 수 있어서 정확도만큼이나 얼마나 이른 시점에 경고할 수 있는지가 실무에서는 더 중요합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="110" x2="300" y2="110" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="90" cy="110" r="5" class="dg-dim"/>
+<circle cx="170" cy="110" r="5" class="dg-dim"/>
+<circle cx="260" cy="110" r="5" class="dg-dim"/>
+<line x1="300" y1="55" x2="300" y2="165" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="300" y="45" font-size="12" text-anchor="middle">현재</text>
+<line x1="300" y1="110" x2="520" y2="60" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,4"/>
+<circle cx="520" cy="60" r="6" class="dg-accent"/>
+<text x="530" y="55" font-size="12">정상 종료 72%</text>
+<line x1="300" y1="110" x2="520" y2="160" class="dg-line" stroke-width="1.5" stroke-dasharray="5,4"/>
+<circle cx="520" cy="160" r="6" class="dg-dim"/>
+<text x="530" y="165" font-size="12" class="dg-dim">이탈 28%</text>
+</svg>`,
+    diagramCaption: String.raw`지금까지 관측된 이벤트 뒤로 남은 경로를 두 가지 결과로 나눠 예측한다.`,
+    related: [{ label: "병목구간 분석", slug: "bottleneck-analysis" }],
+    sections: []
+  },
+  "petri-net": {
+    title: String.raw`Petri Net: 플레이스와 트랜지션으로 동시성을 표현하기`,
+    domain: "pm",
+    subLabel: String.raw`표현 형식`,
+    intuition: String.raw`<p>Alpha Algorithm, Heuristic Miner, Inductive Miner가 로그에서 무엇을 발견하든 결국 만들어내는 결과물은 같은 종류의 그림입니다. 어떤 상태를 나타내는 동그라미와 어떤 활동을 나타내는 네모 그리고 그 사이를 오가는 토큰입니다. Petri Net은 바로 이 공통된 표현 형식입니다. 토큰이 어디에 있고 어떤 네모가 지금 실행될 수 있는지가 규칙 하나로 정확히 정해져 있어서 두 가지 일이 정말로 동시에 진행되는 상황도 억지로 순서를 정하지 않고 그대로 표현할 수 있습니다.</p>`,
+    explanation: String.raw`<p>Petri Net은 튜플 $N=(P,T,F)$로 정의됩니다. $P$는 플레이스의 집합 $T$는 트랜지션의 집합이고 $P$와 $T$는 겹치지 않습니다. $F$는 플레이스에서 트랜지션으로 또는 트랜지션에서 플레이스로만 이어지는 화살표의 집합입니다. 마킹 $M$은 각 플레이스에 토큰을 몇 개씩 놓을지 정하는 함수로 지금 이 순간의 상태를 나타냅니다.</p>
+<p>트랜지션 $t$로 들어오는 화살표가 시작되는 플레이스들의 모임을 전제집합 $\bullet t$라 부릅니다. $\bullet t$ 안 모든 플레이스에 토큰이 하나 이상 있어야 $t$가 발화할 수 있습니다. 발화하면 전제집합의 각 플레이스에서 토큰을 하나씩 소비하고 후제집합 $t\bullet$의 각 플레이스에 토큰을 하나씩 생산합니다.</p>
+<p>이 발화 규칙 하나만으로 병렬과 선택이 모두 자연스럽게 나옵니다. 두 트랜지션이 서로 다른 플레이스에서 토큰을 가져오면 둘 다 동시에 발화할 수 있어 병렬이 되고 두 트랜지션이 같은 플레이스의 토큰을 두고 경쟁하면 하나가 먼저 가져가는 순간 다른 하나는 발화할 수 없게 되어 선택이 됩니다. 이렇게 상태와 발화 규칙만으로 모든 게 정해지기 때문에 어떤 모델이 항상 끝까지 실행되고 끝나면 정확히 완료 상태에만 도달하는지 즉 건전성을 수학적으로 판정할 수 있습니다. 시작 플레이스 하나와 종료 플레이스 하나만 두고 나머지 모든 노드가 그 사이 경로 위에 있는 제한된 형태를 워크플로우넷이라 부르고 발견 알고리즘들이 만들어내는 결과 대부분이 이 형태를 따릅니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="130" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="50" cy="130" r="5" class="dg-accent"/>
+<rect x="90" y="114" width="54" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="117" y="135" font-size="12" text-anchor="middle">접수</text>
+<line x1="64" y1="130" x2="90" y2="130" class="dg-line" stroke-width="1.5"/>
+<circle cx="190" cy="130" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="144" y1="130" x2="176" y2="130" class="dg-line" stroke-width="1.5"/>
+<rect x="230" y="114" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="260" y="135" font-size="12" text-anchor="middle">승인</text>
+<line x1="204" y1="130" x2="230" y2="130" class="dg-line" stroke-width="1.5"/>
+<circle cx="340" cy="60" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="340" cy="200" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="286" y1="120" x2="330" y2="70" class="dg-line" stroke-width="1.5"/>
+<line x1="286" y1="140" x2="330" y2="192" class="dg-line" stroke-width="1.5"/>
+<rect x="390" y="44" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="420" y="65" font-size="12" text-anchor="middle">결제</text>
+<rect x="390" y="184" width="70" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="425" y="205" font-size="12" text-anchor="middle">배송준비</text>
+<line x1="354" y1="60" x2="390" y2="60" class="dg-line" stroke-width="1.5"/>
+<line x1="354" y1="200" x2="390" y2="200" class="dg-line" stroke-width="1.5"/>
+<circle cx="500" cy="60" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="500" cy="200" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="450" y1="60" x2="486" y2="60" class="dg-line" stroke-width="1.5"/>
+<line x1="460" y1="200" x2="486" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="560" y="114" width="54" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="587" y="135" font-size="12" text-anchor="middle">완료</text>
+<line x1="500" y1="74" x2="575" y2="114" class="dg-line" stroke-width="1.5"/>
+<line x1="500" y1="186" x2="575" y2="146" class="dg-line" stroke-width="1.5"/>
+<circle cx="630" cy="130" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="614" y1="130" x2="616" y2="130" class="dg-line" stroke-width="1.5"/>
+<text x="50" y="165" font-size="11" text-anchor="middle" class="dg-dim">시작</text>
+<text x="630" y="165" font-size="11" text-anchor="middle" class="dg-dim">종료</text>
+</svg>`,
+    diagramCaption: String.raw`승인 이후 결제와 배송준비가 동시에 진행되고 둘 다 끝나야 완료 트랜지션이 발화한다.`,
+    example: String.raw`<p>승인 트랜지션이 발화하면 결제 대기 플레이스와 배송준비 대기 플레이스 두 곳에 토큰이 하나씩 동시에 생깁니다. 결제와 배송준비는 서로 다른 플레이스에서 토큰을 가져오므로 어느 순서로 끝나도 상관없이 각자 진행됩니다. 완료 트랜지션은 결제 완료 플레이스와 배송준비 완료 플레이스 둘 다에 토큰이 있어야만 발화할 수 있으므로 둘 중 하나라도 끝나지 않았다면 절대 먼저 완료 처리가 되지 않습니다.</p>`,
+    related: [{ label: "Token Replay", slug: "token-replay" }, { label: "프로세스 트리", slug: "process-tree" }, { label: "Alpha Algorithm", slug: "alpha-algorithm" }],
+    sections: []
+  },
+  "bpmn": {
+    title: String.raw`BPMN: 실무에서 가장 널리 쓰는 프로세스 표기법`,
+    domain: "pm",
+    subLabel: String.raw`표현 형식`,
+    intuition: String.raw`<p>Petri Net은 정확하지만 동그라미와 네모만 보고 업무 담당자가 바로 이해하기는 어렵습니다. 회사에서 흐름도를 그릴 때 실제로 가장 많이 쓰는 표기법은 BPMN입니다. 시작과 끝을 동그라미로 할 일을 둥근 네모로 갈림길을 마름모로 그리는 표기법이라 처음 보는 사람도 어느 정도 읽어낼 수 있습니다.</p>`,
+    explanation: String.raw`<p>기본 요소는 세 가지입니다. 이벤트는 동그라미로 시작과 종료 타이머나 메시지 같은 중간 이벤트를 나타냅니다. 태스크는 둥근 네모로 실제 업무 단위를 나타내고 안에 또 다른 흐름을 담은 하위 프로세스가 될 수도 있습니다. 게이트웨이는 마름모로 흐름이 갈라지고 합쳐지는 지점을 나타내는데 X 표시는 하나의 경로만 선택되는 배타적 게이트웨이 + 표시는 모든 경로가 동시에 진행되는 병렬 게이트웨이 O 표시는 조건에 따라 하나 이상의 경로가 선택되는 포괄 게이트웨이입니다.</p>
+<p>BPMN은 표현력이 넓고 담당 부서를 나타내는 풀과 레인까지 갖추고 있지만 몇몇 게이트웨이 조합과 이벤트 서브프로세스 조합에는 모두가 동의하는 단 하나의 실행 의미가 정해져 있지 않습니다. 반면 Petri Net의 발화 규칙은 항상 단 하나로 정해집니다. 그래서 프로세스 마이닝 도구들은 보통 Petri Net이나 프로세스 트리처럼 건전성을 확실히 검증할 수 있는 형태로 먼저 모델을 만들고 사람이 보기 편하도록 마지막 단계에서만 BPMN으로 옮겨 그립니다.</p>
+<p>풀과 레인은 Petri Net에 기본으로 없는 조직 정보를 채워줍니다. 어떤 태스크는 물류팀이 처리하고 어떤 태스크는 재무팀이 처리하는지를 로그의 담당자 정보와 함께 공간적으로 배치해 보여줄 수 있어서 자원 관점의 분석 결과를 사람에게 설명할 때 특히 자주 쓰입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="120" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="54" y1="120" x2="80" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="80" y="104" width="90" height="32" rx="10" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="125" y="125" font-size="12" text-anchor="middle">주문접수</text>
+<line x1="170" y1="120" x2="210" y2="120" class="dg-line" stroke-width="1.5"/>
+<polygon points="230,98 252,120 230,142 208,120" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="230" y="125" font-size="13" text-anchor="middle">X</text>
+<line x1="240" y1="105" x2="300" y2="66" class="dg-line" stroke-width="1.5"/>
+<text x="255" y="80" font-size="11" class="dg-dim">재고 있음</text>
+<rect x="300" y="50" width="90" height="32" rx="10" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="345" y="71" font-size="12" text-anchor="middle">출고</text>
+<line x1="240" y1="135" x2="300" y2="174" class="dg-line" stroke-width="1.5"/>
+<text x="255" y="165" font-size="11" class="dg-dim">재고 없음</text>
+<rect x="300" y="158" width="90" height="32" rx="10" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="345" y="179" font-size="12" text-anchor="middle">발주</text>
+<line x1="390" y1="66" x2="440" y2="112" class="dg-line" stroke-width="1.5"/>
+<line x1="390" y1="174" x2="440" y2="128" class="dg-line" stroke-width="1.5"/>
+<polygon points="460,98 482,120 460,142 438,120" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="460" y="125" font-size="13" text-anchor="middle">X</text>
+<line x1="482" y1="120" x2="520" y2="120" class="dg-line" stroke-width="1.5"/>
+<circle cx="536" cy="120" r="15" fill="none" class="dg-stroke-ink" stroke-width="3"/>
+</svg>`,
+    diagramCaption: String.raw`재고 여부에 따라 배타적 게이트웨이가 출고와 발주 두 경로 중 하나만 선택한다.`,
+    related: [{ label: "Petri Net", slug: "petri-net" }, { label: "프로세스 트리", slug: "process-tree" }],
+    sections: []
+  },
+  "process-tree": {
+    title: String.raw`프로세스 트리: 재귀적 연산자로 블록을 쌓은 모델`,
+    domain: "pm",
+    subLabel: String.raw`표현 형식`,
+    intuition: String.raw`<p>$(a+b)\times c$처럼 괄호를 쓰면 계산 순서가 헷갈릴 일이 없습니다. 프로세스 트리는 프로세스를 이런 식으로 적는 방법입니다. 그래프에 동그라미와 화살표를 잔뜩 그리는 대신 활동을 나뭇잎으로 두고 그 활동들을 어떤 규칙으로 묶을지를 나무의 마디로 표현합니다. 마디 하나하나가 항상 올바르게 조립되는 블록이기 때문에 나무를 아무리 깊게 쌓아도 결과물은 항상 끝까지 실행 가능한 프로세스가 됩니다.</p>`,
+    explanation: String.raw`<p>나뭇잎은 활동이거나 아무 흔적도 남기지 않는 침묵 활동 $\tau$입니다. 내부 마디는 네 가지 연산자 가운데 하나입니다. 순차 $\to$는 자식들이 적힌 순서 그대로 진행됩니다. 배타적 선택 $\times$는 자식 가운데 딱 하나만 진행되고 나머지는 건너뜁니다. 병렬 $\wedge$는 자식 전부가 동시에 진행되되 서로 어떤 순서로 끼어들어도 상관없습니다. 반복 $\circlearrowleft$는 첫째 자식이 본체로 최소 한 번은 반드시 실행되고 둘째 자식이 재실행 경로로 선택되면 다시 본체로 돌아가며 본체를 마친 직후에만 전체가 끝날 수 있습니다.</p>
+<p>이 네 연산자의 의미는 재귀적으로 정의됩니다. 나무 전체가 허용하는 실행 순서는 각 자식이 허용하는 실행 순서들을 부모 연산자의 규칙대로 조합한 것과 정확히 같습니다. 이렇게 정의되기 때문에 프로세스 트리를 Petri Net으로 옮기는 절차는 각 마디를 정해진 블록 모양으로 기계적으로 바꾸는 작업이 되고 그 결과물은 항상 건전성을 만족합니다. Inductive Miner가 발견의 결과물로 Petri Net을 직접 짜맞추지 않고 프로세스 트리를 먼저 만드는 이유가 여기 있습니다. 나중에 따로 건전성을 검증할 필요 없이 트리 구조 자체가 건전성을 보장해 주기 때문입니다.</p>
+<p>다만 모든 동작이 이 네 가지 깔끔한 블록으로만 나뉘는 것은 아닙니다. 로그에 이 블록 구조로는 설명이 안 되는 행동이 남아 있으면 Inductive Miner는 남은 활동들을 통째로 아무렇게나 반복해도 되는 아주 느슨한 반복 마디로 감싸버립니다. 건전성은 지키되 실제보다 더 많은 동작을 허용하게 되는 대가를 치르는 것입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="300" cy="40" r="20" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="46" font-size="14" text-anchor="middle">→</text>
+<line x1="300" y1="60" x2="110" y2="120" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="60" x2="300" y2="120" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="60" x2="490" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="70" y="120" width="80" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="110" y="142" font-size="12" text-anchor="middle">접수</text>
+<circle cx="300" cy="140" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="300" y="146" font-size="14" text-anchor="middle">×</text>
+<rect x="450" y="120" width="80" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="490" y="142" font-size="12" text-anchor="middle">배송</text>
+<line x1="300" y1="160" x2="220" y2="210" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="160" x2="380" y2="210" class="dg-line" stroke-width="1.5"/>
+<rect x="170" y="210" width="100" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="232" font-size="12" text-anchor="middle">카드결제</text>
+<rect x="330" y="210" width="100" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="380" y="232" font-size="12" text-anchor="middle">현금결제</text>
+</svg>`,
+    diagramCaption: String.raw`접수와 배송 사이에서 카드결제와 현금결제 중 하나만 배타적으로 선택된다.`,
+    related: [{ label: "Inductive Miner", slug: "inductive-miner" }, { label: "Petri Net", slug: "petri-net" }, { label: "BPMN", slug: "bpmn" }],
+    sections: []
+  },
+  "and-split-join": {
+    title: String.raw`AND-split/AND-join: 여러 흐름이 동시에 갈라지고 합쳐지기`,
+    domain: "pm",
+    subLabel: String.raw`동시성 · 검증`,
+    intuition: String.raw`<p>온라인 쇼핑몰에서 결제가 끝나면 두 가지 일이 동시에 일어납니다. 주문 확인 이메일을 보내는 일과 재고를 차감하는 일입니다. 어느 하나만 골라서 하는 게 아니라 둘 다 반드시 일어나야 하고 둘 사이에 순서도 정해져 있지 않습니다. 이렇게 한 지점에서 여러 흐름이 동시에 갈라져 나가는 걸 AND-split이라 부릅니다. 갈라진 흐름들이 각자 할 일을 마치면 다음 단계로 넘어가기 전에 다시 하나로 모이는 지점이 필요한데 이를 AND-join이라 부릅니다.</p>
+<p>여기서 헷갈리기 쉬운 짝이 XOR 분기입니다. XOR은 여러 흐름 중 하나만 선택되는 갈림길이고 AND는 여러 흐름이 다 함께 실행되는 갈림길입니다. 일반배송과 당일배송 중 하나를 고르는 건 XOR이고 이메일 발송과 재고차감을 동시에 처리하는 건 AND입니다.</p>`,
+    explanation: String.raw`<p>페트리넷에서 트랜지션 $t$가 AND-split이라는 것은 $t$의 출력 자리(place) 집합 $t^\bullet$의 원소가 두 개 이상이라는 뜻입니다. $t$가 발화하면 $t^\bullet$에 속한 모든 자리에 동시에 토큰이 하나씩 놓이고 이후 두 흐름은 서로 다른 트랜지션들을 거치며 독립적으로 진행됩니다. AND-join은 반대로 입력 자리 집합 $^\bullet t$의 원소가 두 개 이상인 트랜지션입니다. $t$는 $^\bullet t$에 속한 모든 자리에 토큰이 있어야만 발화 가능(enabled) 상태가 되므로 먼저 도착한 흐름은 다른 흐름이 따라올 때까지 대기하게 됩니다.</p>
+<p>BPMN 표기에서는 같은 개념을 병렬 게이트웨이(parallel gateway)라 부르는데 페트리넷의 AND-split/AND-join과 정확히 대응합니다. 실제 이벤트 로그에서 AND 구조를 확인하려면 두 활동이 서로 다른 순서로 나타나는 트레이스가 둘 다 관찰돼야 합니다. 이메일발송 다음 재고차감이 나오는 케이스와 재고차감 다음 이메일발송이 나오는 케이스가 둘 다 로그에 있으면 두 활동 사이에는 고정된 선후관계가 없다는 뜻이고 이는 병렬로 실행 가능한 구조라는 신호입니다. Alpha Algorithm 같은 발견 알고리즘은 이 병행 관계(concurrency relation)를 로그에서 감지해 AND-split/AND-join 게이트웨이를 모델에 삽입합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="120" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="140" y="104" width="18" height="32" class="dg-accent"/>
+<circle cx="300" cy="60" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="180" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="420" y="104" width="18" height="32" class="dg-accent"/>
+<circle cx="580" cy="120" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="76" y1="120" x2="140" y2="120" class="dg-line" stroke-width="1.5"/>
+<line x1="158" y1="108" x2="290" y2="62" class="dg-line" stroke-width="1.5"/>
+<line x1="158" y1="132" x2="290" y2="178" class="dg-line" stroke-width="1.5"/>
+<line x1="316" y1="62" x2="420" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="316" y1="178" x2="420" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="438" y1="120" x2="564" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="60" y="155" text-anchor="middle" font-size="12">결제 완료</text>
+<text x="149" y="94" text-anchor="middle" font-size="12">AND-split</text>
+<text x="429" y="94" text-anchor="middle" font-size="12">AND-join</text>
+<text x="300" y="40" text-anchor="middle" font-size="12">이메일 발송</text>
+<text x="300" y="205" text-anchor="middle" font-size="12">재고 차감</text>
+<text x="300" y="120" text-anchor="middle" font-size="12" class="dg-dim">두 흐름 동시 진행</text>
+</svg>`,
+    diagramCaption: String.raw`결제 완료 트랜지션이 두 흐름으로 동시에 갈라졌다가 둘 다 끝나야 다음 단계로 합쳐진다.`,
+    related: [{ label: "XOR 분기", slug: "xor-branch" }, { label: "데드락 · 라이브락 검증", slug: "deadlock-livelock-verification" }],
+    sections: []
+  },
+  "xor-branch": {
+    title: String.raw`XOR 분기: 여러 흐름 중 딱 하나만 선택되기`,
+    domain: "pm",
+    subLabel: String.raw`동시성 · 검증`,
+    intuition: String.raw`<p>배송방법을 고를 때 일반배송과 당일배송 중 하나만 선택합니다. 두 갈래가 모두 준비돼 있지만 실제로 한 케이스에서는 둘 중 하나만 일어나고 나머지는 아예 일어나지 않습니다. 이렇게 여러 갈래 중 정확히 하나만 배타적으로 선택되는 갈림길을 XOR 분기라 부릅니다.</p>
+<p>AND-split과 헷갈리기 쉬운데 AND는 갈라진 흐름이 전부 실행되고 XOR은 갈라진 흐름 중 오직 하나만 실행됩니다. 이메일발송과 재고차감처럼 둘 다 반드시 일어나야 하면 AND, 일반배송과 당일배송처럼 하나를 고르면 나머지는 없던 일이 되면 XOR입니다.</p>`,
+    explanation: String.raw`<p>페트리넷에서 XOR 분기는 보통 자리 하나에 트랜지션 여러 개가 매달린 구조로 표현됩니다. 자리 $p$에서 나가는 트랜지션이 $t_1, \dots, t_k$로 여러 개일 때 $p$에 토큰이 하나 들어오면 그중 하나만 그 토큰을 소비해 발화할 수 있고 나머지는 발화할 기회를 잃습니다. 같은 토큰을 두고 여러 트랜지션이 경쟁하는 이 관계를 페트리넷 이론에서는 충돌(conflict)이라 부르며 AND-split이 만드는 병행(concurrency) 관계와 정확히 대비됩니다. 어떤 분기가 선택될지는 모델 자체가 아니라 데이터 조건이나 외부 이벤트가 결정하며 페트리넷은 그 선택이 배타적으로 일어난다는 구조만 표현합니다.</p>
+<p>BPMN에서는 이 구조를 배타적 게이트웨이(exclusive gateway)라 부릅니다. 이벤트 로그에서 XOR 구조를 확인하려면 두 활동이 같은 트레이스 안에서 절대 함께 나타나지 않아야 합니다. 일반배송과 당일배송이 한 케이스 안에 동시에 등장하는 일이 없다면 이는 두 활동이 서로 배타적 선택 관계라는 뜻이고 Inductive Miner 같은 발견 알고리즘은 이런 배타적 로그 분할을 재귀적으로 찾아 XOR 게이트웨이로 모델링합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="110" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="220" y="50" width="70" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="220" y="140" width="70" height="32" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="400" cy="66" r="14" class="dg-accent"/>
+<circle cx="400" cy="156" r="14" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<line x1="76" y1="104" x2="220" y2="66" class="dg-line" stroke-width="1.5"/>
+<line x1="76" y1="118" x2="220" y2="156" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="290" y1="66" x2="386" y2="66" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="290" y1="156" x2="386" y2="156" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="255" y="42" text-anchor="middle" font-size="12">일반배송 선택</text>
+<text x="255" y="188" text-anchor="middle" font-size="12" class="dg-dim">당일배송(미실행)</text>
+<text x="60" y="140" text-anchor="middle" font-size="12">결제 완료</text>
+</svg>`,
+    diagramCaption: String.raw`같은 갈림길에서 한 케이스는 오직 한 갈래만 실제로 실행된다.`,
+    related: [{ label: "AND-split/AND-join", slug: "and-split-join" }, { label: "데드락 · 라이브락 검증", slug: "deadlock-livelock-verification" }],
+    sections: []
+  },
+  "deadlock-livelock-verification": {
+    title: String.raw`데드락 · 라이브락 검증: 멈추거나 영원히 도는 상태 찾아내기`,
+    domain: "pm",
+    subLabel: String.raw`동시성 · 검증`,
+    intuition: String.raw`<p>프로세스 모델을 설계하다 보면 실수로 막다른 길을 만들 수 있습니다. 어떤 상태에 도달했는데 그다음 어떤 활동도 실행할 수 없고 그렇다고 프로세스가 정상적으로 끝난 것도 아닌 경우입니다. 이런 멈춘 상태를 데드락이라 부릅니다. 반대로 몇몇 활동을 계속 반복하기만 하고 끝나는 지점에는 절대 도달하지 못하는 경우도 있는데 이를 라이브락이라 부릅니다. 데드락은 아예 움직임이 멈추고 라이브락은 움직이긴 하는데 제자리를 맴돈다는 차이가 있습니다.</p>
+<p>둘 다 실제 로그를 보기 전에 모델만 보고도 찾아낼 수 있는 결함입니다. 모델이 가질 수 있는 모든 상태를 하나씩 나열해서 확인하는 검증 절차를 거쳐 잡아냅니다.</p>`,
+    explanation: String.raw`<p>페트리넷의 상태는 마킹(marking)이라 부르는 자리들의 토큰 분포로 표현됩니다. 초기 마킹 $m_0$에서 트랜지션을 하나씩 발화시키며 도달할 수 있는 모든 마킹을 모으면 도달가능성 그래프(reachability graph)가 만들어집니다. 어떤 마킹 $m$에서 발화 가능한 트랜지션이 하나도 없는데 $m$이 정해둔 최종 마킹 $m_f$도 아니라면 그 $m$은 데드락입니다. 워크플로우넷에서는 보통 최종 마킹을 종료 자리에 토큰이 하나만 있는 상태로 정의하므로 데드락은 종료 자리에 도달하지 못한 채 모든 흐름이 막힌 상태를 뜻합니다.</p>
+<p>라이브락은 도달가능성 그래프 위의 순환 구조로 나타납니다. $m_0$에서 출발한 발화열이 몇 개의 마킹을 계속 오가기만 하고 $m_f$를 포함하지 않는 강연결요소(strongly connected component)에 갇혀버리면 그 흐름은 영원히 종료되지 않습니다. 트랜지션 자체는 계속 발화되므로 데드락처럼 완전히 멈춘 상태는 아니지만 결과적으로 종료라는 목적지에는 도달하지 못한다는 점에서 데드락과 같은 결함군으로 묶입니다.</p>
+<p>van der Aalst가 정의한 사운드니스(soundness)는 워크플로우넷이 이런 결함에서 자유로운지를 검증하는 표준 기준입니다. 도달가능한 모든 마킹에서 $m_f$로 가는 경로가 존재한다는 완료가능성(option to complete), $m_f$에 도달했을 때 다른 자리에는 토큰이 남아있지 않다는 적절한 종료(proper completion), 어떤 트랜지션도 영원히 발화 기회를 얻지 못하지는 않는다는 조건을 모두 만족해야 사운드하다고 인정됩니다. ProM이나 PM4Py 같은 도구는 발견한 모델의 도달가능성 그래프를 직접 계산해 이 조건을 자동으로 점검하는 기능을 제공합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="130" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="164" text-anchor="middle" font-size="12">m0</text>
+<circle cx="230" cy="60" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="420" cy="60" r="16" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="420" cy="60" r="10" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="420" y="34" text-anchor="middle" font-size="12">정상 종료 mf</text>
+<circle cx="230" cy="130" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="420" cy="130" r="14" fill="none" class="dg-dim" stroke-width="1.5"/>
+<text x="420" y="160" text-anchor="middle" font-size="12" class="dg-dim">데드락(진행 불가)</text>
+<circle cx="230" cy="210" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="420" cy="210" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="325" y="244" text-anchor="middle" font-size="12">라이브락(무한 순환)</text>
+<line x1="74" y1="122" x2="216" y2="66" class="dg-line" stroke-width="1.5"/>
+<line x1="244" y1="60" x2="404" y2="60" class="dg-line" stroke-width="1.5"/>
+<line x1="76" y1="130" x2="216" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="244" y1="130" x2="406" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="72" y1="144" x2="220" y2="204" class="dg-line" stroke-width="1.5"/>
+<line x1="244" y1="210" x2="406" y2="210" class="dg-stroke-accent" stroke-width="1.5"/>
+<path d="M420,196 C 350,165 300,165 232,196" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+</svg>`,
+    diagramCaption: String.raw`도달가능성 그래프에서 데드락은 더 나아갈 곳이 없는 상태, 라이브락은 종료 상태로 가지 못하고 맴도는 순환이다.`,
+    related: [{ label: "AND-split/AND-join", slug: "and-split-join" }, { label: "XOR 분기", slug: "xor-branch" }],
+    sections: []
+  },
+  "pm4py": {
+    title: String.raw`PM4Py: 파이썬으로 하는 프로세스 마이닝`,
+    domain: "pm",
+    subLabel: String.raw`대표 도구`,
+    intuition: String.raw`<p>프로세스 마이닝 결과를 노트북에서 바로 확인하고 다른 파이썬 코드와 이어붙이고 싶을 때 쓰는 라이브러리가 PM4Py입니다. CSV나 XES 형식의 이벤트 로그를 데이터프레임처럼 불러온 다음 몇 줄의 코드로 프로세스 모델을 발견하고 적합성을 검사하고 그림으로 그려볼 수 있습니다. 별도의 프로그램을 설치해서 마우스로 클릭하는 대신 스크립트로 전체 분석 파이프라인을 짜고 자동화하고 싶은 사람에게 맞는 도구입니다.</p>`,
+    explanation: String.raw`<p>PM4Py는 Fraunhofer FIT에서 처음 개발되었고 지금은 그 스핀오프인 Process Intelligence Solutions가 이어받아 관리하는 오픈소스 파이썬 라이브러리입니다. 이벤트 로그를 읽어들이는 입출력 모듈, Alpha Algorithm이나 Heuristic Miner나 Inductive Miner 같은 발견 알고리즘, 토큰 리플레이와 정렬(alignment) 기반 적합성 검사, 페트리넷·BPMN·프로세스 트리 사이의 변환과 시각화까지 프로세스 마이닝 파이프라인의 표준 단계를 모듈 단위로 제공합니다.</p>
+<p>전형적인 사용 흐름은 xes나 csv 로그를 읽어들이는 함수로 불러와 케이스ID, 활동명, 타임스탬프 컬럼을 지정한 다음 발견 함수로 모델을 얻고 적합성 검사 함수로 로그와 모델의 차이를 계산하는 식입니다. 데이터프레임 기반 API를 제공해서 이미 파이썬 데이터 분석 생태계에 익숙한 사람이 배우기 쉽고 결과를 곧바로 다른 머신러닝 파이프라인의 입력으로 넘길 수 있다는 점이 강점입니다.</p>`,
+    related: [{ label: "ProM", slug: "prom" }, { label: "Celonis", slug: "celonis" }],
+    sections: []
+  },
+  "prom": {
+    title: String.raw`ProM: 대표적인 오픈소스 프로세스 마이닝 툴킷`,
+    domain: "pm",
+    subLabel: String.raw`대표 도구`,
+    intuition: String.raw`<p>대학과 연구 현장에서 새로운 프로세스 마이닝 알고리즘이 나오면 가장 먼저 구현되는 곳이 ProM입니다. 그래픽 인터페이스로 로그를 불러오고 여러 발견 알고리즘과 분석 기법을 마우스 클릭만으로 조합해볼 수 있는 툴킷입니다. 특정 회사 제품이 아니라 누구나 새 알고리즘을 플러그인 형태로 얹을 수 있는 오픈 생태계라서 논문에 나온 최신 기법을 가장 빨리 써볼 수 있는 곳이기도 합니다.</p>`,
+    explanation: String.raw`<p>ProM은 아인트호벤 공과대학교(TU/e) 프로세스 마이닝 그룹이 주도해 만든 오픈소스 자바 기반 프레임워크입니다. 프로세스 마이닝이라는 분야 자체가 이 그룹의 연구에서 크게 발전했기 때문에 ProM은 사실상 학계 알고리즘의 레퍼런스 구현체 역할을 합니다. 코어는 플러그인 아키텍처로 이루어져 있어 발견, 적합성 검사, 조직 마이닝, 예측 모니터링 같은 기능이 각각 독립된 플러그인으로 존재하고 연구자가 새 논문의 알고리즘을 플러그인으로 등록하면 바로 ProM 안에서 다른 기법들과 조합해 쓸 수 있습니다.</p>
+<p>사용자는 워크플로우를 화면에서 조립하듯 구성합니다. 로그를 불러오는 플러그인의 출력을 발견 알고리즘 플러그인의 입력으로 연결하고 그 결과를 다시 적합성 검사 플러그인에 넘기는 식으로 파이프라인을 그래픽으로 이어붙입니다. PM4Py 같은 코드 기반 라이브러리보다 자동화나 배포에는 덜 적합하지만 다양한 알고리즘을 빠르게 실험하고 비교하는 연구 목적에는 여전히 가장 폭넓은 선택지를 제공합니다.</p>`,
+    related: [{ label: "PM4Py", slug: "pm4py" }, { label: "Celonis", slug: "celonis" }],
+    sections: []
+  },
+  "celonis": {
+    title: String.raw`Celonis: 상용 프로세스 마이닝 플랫폼`,
+    domain: "pm",
+    subLabel: String.raw`대표 도구`,
+    intuition: String.raw`<p>회사가 프로세스 마이닝을 도입할 때 데이터 엔지니어 없이도 현업 부서가 직접 대시보드를 보고 싶어 하는 경우가 많습니다. Celonis는 이런 요구에 맞춘 상용 플랫폼입니다. ERP 시스템에서 이벤트 로그를 자동으로 뽑아오는 커넥터, 클릭만으로 병목구간과 이탈 케이스를 찾아주는 대시보드, 발견한 문제를 담당자에게 바로 알려주는 실행 기능까지 하나의 제품 안에 묶여 있습니다.</p>`,
+    explanation: String.raw`<p>Celonis는 SAP 같은 ERP 시스템, CRM, 티켓 시스템 등 여러 기업 시스템에서 이벤트 데이터를 자동으로 추출해 표준화된 이벤트 로그 스키마로 변환하는 데이터 커넥터 계층에서 출발합니다. 이 위에 자체 발견 알고리즘으로 프로세스 모델을 자동 생성하고 병목구간, 재작업, SLA 위반 같은 패턴을 시각적으로 탐지하는 분석 계층이 놓입니다. 학술 도구인 ProM이나 라이브러리인 PM4Py가 분석 자체에 집중한다면 Celonis는 분석 결과를 실제 업무 시스템에 다시 연결해 담당자에게 작업을 자동 배정하거나 시스템에 직접 개입하는 실행 관리(execution management) 기능까지 포함한다는 점이 가장 큰 차이입니다.</p>
+<p>내부적으로는 자체 질의 언어로 이벤트 데이터를 다루며 대시보드와 지표를 이 질의 위에서 구성합니다. 대규모 조직에서 여러 부서가 같은 이벤트 데이터를 각자의 관점으로 반복 조회해야 하는 상황에 맞춰 설계된 상용 플랫폼이라 라이선스 비용이 들지만 그만큼 데이터 연동부터 대시보드 배포까지의 운영 부담을 크게 줄여줍니다.</p>`,
+    related: [{ label: "PM4Py", slug: "pm4py" }, { label: "ProM", slug: "prom" }],
+    sections: []
+  },
+  "next-activity-prediction": {
+    title: String.raw`Next Activity Prediction: 다음에 무슨 일이 일어날까`,
+    domain: "pm",
+    subLabel: String.raw`예측 기법`,
+    intuition: String.raw`<p>고객센터 상담이 진행 중일 때 다음에 어떤 조치가 취해질지 미리 알 수 있다면 필요한 인력이나 시스템을 미리 준비해둘 수 있습니다. Next Activity Prediction은 아직 끝나지 않은 케이스가 지금까지 밟아온 흐름을 보고 바로 다음에 어떤 활동이 일어날지 예측하는 기법입니다.</p>`,
+    explanation: String.raw`<p>예측 대상은 지금까지 관찰된 부분 트레이스(trace prefix) $\langle a_1, \dots, a_k \rangle$이고 출력은 다음에 올 활동 $a_{k+1}$이 무엇일지에 대한 확률분포입니다. 활동 종류가 유한한 집합이므로 이 문제는 다음 활동을 클래스로 보는 다중분류 문제로 프레이밍됩니다. 케이스가 이미 끝났다는 것도 하나의 클래스로 포함시켜 프로세스 종료 시점까지 함께 예측하는 경우가 많습니다.</p>
+<p>학습 데이터는 과거에 완료된 트레이스들을 여러 길이의 접두사로 잘라서 만듭니다. 길이가 5인 트레이스가 있으면 길이 1부터 4까지의 접두사 각각에 실제 다음 활동을 정답으로 붙여 학습 샘플로 씁니다. 초기에는 은닉마르코프모델이나 n-그램 방식이 쓰였지만 지금은 활동을 임베딩으로 바꾼 뒤 LSTM이나 트랜스포머 인코더로 시퀀스를 인코딩해 다음 활동을 예측하는 방식이 널리 쓰입니다. 활동명뿐 아니라 자원(누가 처리했는지)이나 케이스 속성을 함께 인코딩하면 예측 정확도가 더 올라가는 경우가 많습니다.</p>`,
+    related: [{ label: "Remaining Time Prediction", slug: "remaining-time-prediction" }, { label: "이상 케이스 조기 경고", slug: "anomaly-early-warning" }],
+    sections: []
+  },
+  "remaining-time-prediction": {
+    title: String.raw`Remaining Time Prediction: 이 케이스는 언제 끝날까`,
+    domain: "pm",
+    subLabel: String.raw`예측 기법`,
+    intuition: String.raw`<p>택배가 지금 어느 단계에 있는지 보고 도착까지 얼마나 남았는지 알려주는 것과 같은 문제입니다. Remaining Time Prediction은 아직 끝나지 않은 케이스가 지금까지 걸린 흐름과 시간을 보고 남은 시간이 얼마나 될지 예측합니다.</p>`,
+    explanation: String.raw`<p>Next Activity Prediction과 데이터를 만드는 방식은 비슷합니다. 완료된 트레이스를 여러 길이의 접두사로 잘라내되 이번에는 정답을 다음 활동이 아니라 그 시점부터 케이스가 끝날 때까지 남은 시간 $y = t_{\mathrm{end}} - t_k$로 붙입니다. 출력이 연속값이므로 분류가 아니라 회귀 문제로 프레이밍됩니다.</p>
+<p>입력 특징은 지금까지 밟은 활동 시퀀스뿐 아니라 케이스 시작부터 지금까지 경과한 시간, 마지막 활동 이후 경과한 시간, 활동이 실행된 요일이나 시간대, 지금까지 같은 활동이 반복된 횟수 같은 시간 관련 파생 변수를 함께 넣는 경우가 많습니다. 활동 시퀀스는 LSTM이나 트랜스포머로 인코딩하고 여기에 시간 특징을 이어붙인 뒤 회귀층 하나를 얹어 남은 시간을 직접 출력하는 구조가 흔합니다. 예측이 어긋나는 폭은 케이스마다 크게 다를 수 있어 평균절대오차를 케이스 진행률 구간별로 나눠 따로 평가하는 방식을 많이 씁니다.</p>`,
+    example: String.raw`<p>대출심사 케이스가 접수 후 지금까지 3일이 지났고 서류검토와 신용조회 두 단계를 마쳤다고 합시다. 과거에 같은 두 단계까지 마친 케이스들의 평균 잔여시간이 4.2일이었다면 모델은 이 케이스도 지금부터 약 4.2일 뒤에 끝날 것으로 예측합니다. 만약 서류검토 단계에서 이례적으로 오래 머물렀다면 모델은 이 경과시간 특징을 반영해 잔여시간 예측치를 더 늘려 잡습니다.</p>`,
+    related: [{ label: "Next Activity Prediction", slug: "next-activity-prediction" }, { label: "이상 케이스 조기 경고", slug: "anomaly-early-warning" }],
+    sections: []
+  },
+  "anomaly-early-warning": {
+    title: String.raw`이상 케이스 조기 경고: 정상 패턴에서 벗어나는 걸 미리 잡아내기`,
+    domain: "pm",
+    subLabel: String.raw`예측 기법`,
+    intuition: String.raw`<p>진행 중인 케이스가 정상적인 흐름에서 벗어나기 시작했다면 케이스가 끝나기 전에 미리 알아채고 싶습니다. 이상 케이스 조기 경고는 아직 진행 중인 케이스의 지금까지 흐름을 정상 패턴과 비교해서 벗어난 정도가 크면 미리 경고를 보내는 기법입니다.</p>`,
+    explanation: String.raw`<p>접근은 크게 두 갈래입니다. 첫째는 적합성 검사를 접두사에 그대로 적용하는 방식으로 정상 트레이스들로 발견한 참조 모델 위에 지금까지의 부분 트레이스를 정렬(alignment)시켜 어긋난 비용이 얼마나 쌓였는지를 실시간으로 계산합니다. 비용이 미리 정한 임계값을 넘으면 경고를 띄웁니다. 둘째는 데이터 기반 방식으로 정상 트레이스만으로 다음 활동 예측 모델이나 오토인코더를 학습시켜 두고 실제로 관찰된 다음 활동이 모델이 예상한 확률에서 얼마나 벗어나는지 또는 재구성 오차가 얼마나 큰지를 이상 점수로 씁니다.</p>
+<p>완료된 트레이스에 대한 일반적인 적합성 검사와 다른 점은 판단 시점입니다. 케이스가 끝난 뒤에 전체 흐름을 보고 정상인지 판단하는 게 아니라 케이스가 아직 진행 중인 시점마다 반복해서 판단을 갱신해야 하므로 계산이 빨라야 하고 접두사가 짧을 때는 정보가 부족해 오탐이 늘어나는 문제를 감안해서 설계해야 합니다. 흔히 쓰는 절충안은 최소 몇 단계 이상 진행된 케이스에만 경고 로직을 적용하고 접두사가 길어질수록 임계값을 점점 엄격하게 조이는 방식입니다.</p>`,
+    related: [{ label: "Next Activity Prediction", slug: "next-activity-prediction" }, { label: "Remaining Time Prediction", slug: "remaining-time-prediction" }],
+    sections: []
+  },
+  "event-log-essentials": {
+    title: String.raw`이벤트 로그의 필수 3요소: 케이스ID, 활동명, 타임스탬프`,
+    domain: "pm",
+    subLabel: String.raw`로그 구조 · 품질 이슈`,
+    intuition: String.raw`<p>프로세스 마이닝은 결국 이벤트 로그라는 데이터에서 출발합니다. 로그에 아무리 많은 컬럼이 있어도 최소한 세 가지는 반드시 있어야 분석이 가능합니다. 이 사건이 어느 케이스에 속하는지, 어떤 활동이 일어났는지, 언제 일어났는지입니다. 이 세 가지만 있으면 케이스별로 사건을 시간순으로 묶어 하나의 흐름(트레이스)으로 재구성할 수 있고 여기서부터 발견이든 적합성 검사든 모든 분석이 시작됩니다.</p>`,
+    explanation: String.raw`<p>케이스ID(case id)는 같은 프로세스 인스턴스에 속한 이벤트들을 묶는 열쇠입니다. 주문 하나, 대출심사 하나, 고객상담 하나가 각각 케이스가 되고 그 케이스 안에서 일어난 여러 이벤트가 같은 케이스ID를 공유합니다. 활동명(activity)은 그 이벤트에서 실제로 무슨 일이 일어났는지를 나타내는 라벨입니다. 접수, 심사, 승인처럼 사람이 읽을 수 있는 업무 단위여야 하고 지나치게 세분화되면 트레이스가 너무 길고 다양해져서 패턴을 찾기 어려워집니다. 타임스탬프(timestamp)는 이벤트가 일어난 시각으로 케이스ID로 묶인 이벤트들을 시간순으로 정렬해 실제 실행 순서를 복원하는 데 씁니다.</p>
+<p>이 세 컬럼을 갖춘 로그는 흔히 CSV나 XES(eXtensible Event Stream) 형식으로 저장됩니다. XES는 IEEE 표준으로 케이스와 이벤트를 XML 구조로 표현하며 케이스ID, 활동명, 타임스탬프 외에도 자원(resource, 누가 처리했는지)이나 비용 같은 추가 속성을 표준화된 방식으로 함께 담을 수 있습니다. 활동 하나가 시작과 끝을 모두 기록하는 로그라면 타임스탬프도 시작시각과 종료시각 두 개로 나뉘는데 이 경우 대기시간과 처리시간을 구분해서 볼 수 있어 병목구간 분석의 정밀도가 크게 올라갑니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="330" height="30" class="dg-dim" stroke="none"/>
+<rect x="20" y="20" width="330" height="120" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="130" y1="20" x2="130" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="240" y1="20" x2="240" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="20" y1="50" x2="350" y2="50" class="dg-line" stroke-width="1"/>
+<line x1="20" y1="80" x2="350" y2="80" class="dg-line" stroke-width="1"/>
+<line x1="20" y1="110" x2="350" y2="110" class="dg-line" stroke-width="1"/>
+<text x="75" y="39" text-anchor="middle" font-size="12">케이스ID</text>
+<text x="185" y="39" text-anchor="middle" font-size="12">활동명</text>
+<text x="295" y="39" text-anchor="middle" font-size="12">타임스탬프</text>
+<text x="75" y="69" text-anchor="middle" font-size="12">C-1001</text>
+<text x="185" y="69" text-anchor="middle" font-size="12">접수</text>
+<text x="295" y="69" text-anchor="middle" font-size="12">09:02</text>
+<text x="75" y="99" text-anchor="middle" font-size="12">C-1002</text>
+<text x="185" y="99" text-anchor="middle" font-size="12">접수</text>
+<text x="295" y="99" text-anchor="middle" font-size="12">09:05</text>
+<text x="75" y="129" text-anchor="middle" font-size="12">C-1001</text>
+<text x="185" y="129" text-anchor="middle" font-size="12">심사</text>
+<text x="295" y="129" text-anchor="middle" font-size="12">09:40</text>
+<rect x="24" y="53" width="322" height="24" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="24" y="113" width="322" height="24" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="450" y="90" text-anchor="middle" font-size="12">같은 케이스ID를</text>
+<text x="450" y="106" text-anchor="middle" font-size="12">시간순으로 묶으면</text>
+<text x="450" y="122" text-anchor="middle" font-size="12">하나의 트레이스</text>
+</svg>`,
+    diagramCaption: String.raw`같은 케이스ID를 가진 행들을 타임스탬프 순으로 묶으면 하나의 트레이스가 된다.`,
+    related: [{ label: "로그 불완전성", slug: "log-incompleteness" }, { label: "노이즈 필터링", slug: "noise-filtering" }],
+    sections: []
+  },
+  "log-incompleteness": {
+    title: String.raw`로그 불완전성: 기록되지 않은 이벤트가 흐름을 왜곡한다`,
+    domain: "pm",
+    subLabel: String.raw`로그 구조 · 품질 이슈`,
+    intuition: String.raw`<p>이벤트 로그는 실제 업무 시스템이 기록한 흔적일 뿐이라서 실제로 일어난 모든 일이 로그에 다 담긴다는 보장이 없습니다. 시스템에 남지 않는 전화 통화나 오프라인 대면 처리는 아예 로그에 기록되지 않습니다. 로그 불완전성은 이렇게 실제로는 일어났지만 로그에는 기록되지 않은 이벤트가 있어서 로그만 보고 재구성한 흐름이 실제 흐름과 어긋나는 문제를 말합니다.</p>`,
+    explanation: String.raw`<p>불완전성은 몇 가지 형태로 나타납니다. 특정 활동 전체가 시스템화되지 않아 로그에 아예 등장하지 않는 경우, 시스템 로그와 수기 기록이 섞여 있어 일부 케이스만 부분적으로 누락되는 경우, 시스템 간 시간 동기화가 어긋나 이벤트 순서 자체가 잘못 기록되는 경우입니다. 활동 하나가 통째로 빠지면 발견 알고리즘은 실제로는 두 활동 사이에 있던 활동을 모르고 두 활동이 바로 이어진다고 착각해서 존재하지 않는 직접 순서관계를 모델에 새겨 넣습니다.</p>
+<p>이 문제는 적합성 검사 단계에서 특히 두드러집니다. 실제로는 규정을 지켰는데 중간 승인 이벤트가 로그에 기록되지 않아서 마치 규정을 어긴 것처럼 보이는 거짓 이탈(false deviation)이 발생할 수 있습니다. 반대로 실제 문제가 있었는데 그 문제를 드러내는 이벤트 자체가 로그에 없어서 적합성 검사가 문제를 놓치는 거짓 음성도 생깁니다. 실무에서는 이벤트 발생 시점과 로그 기록 시점 사이의 지연을 시스템별로 점검하고 특정 활동의 발생 빈도가 업무량 대비 지나치게 낮다면 그 활동이 부분적으로만 시스템화됐는지를 의심하는 식으로 불완전성을 사전에 점검합니다.</p>`,
+    related: [{ label: "필수 3요소", slug: "event-log-essentials" }, { label: "노이즈 필터링", slug: "noise-filtering" }],
+    sections: []
+  },
+  "noise-filtering": {
+    title: String.raw`노이즈 필터링: 드물게 일어나는 이상경로 걸러내기`,
+    domain: "pm",
+    subLabel: String.raw`로그 구조 · 품질 이슈`,
+    intuition: String.raw`<p>수천 건의 정상적인 주문 처리 흐름 속에 아주 가끔 시스템 오류로 같은 단계가 두 번 찍히거나 순서가 뒤바뀐 채 기록된 케이스가 섞여 있을 수 있습니다. 이런 드문 이상 경로를 걸러내지 않고 그대로 발견 알고리즘에 넣으면 모델이 그 드문 경로까지 다 표현하려다가 지나치게 복잡해지고 정작 중요한 주된 흐름은 알아보기 어려워집니다. 노이즈 필터링은 이렇게 드물게만 나타나는 경로를 미리 걸러내서 모델이 실제로 자주 일어나는 흐름에 집중하게 만드는 전처리입니다.</p>`,
+    explanation: String.raw`<p>가장 흔한 방식은 빈도 기반 임계값입니다. 특정 두 활동 사이의 직접적인 순서관계나 특정 트레이스 변형(variant)이 전체 로그에서 나타나는 비율을 계산해 그 비율이 정해둔 임계값보다 낮으면 노이즈로 간주하고 제외합니다. Heuristic Miner가 대표적으로 이 방식을 쓰는데 두 활동 $a$, $b$ 사이의 의존도 점수를 $a$ 다음 $b$가 나온 횟수와 $b$ 다음 $a$가 나온 횟수의 비율로 계산해서 이 점수가 낮으면 그 순서관계를 모델에서 제거합니다.</p>
+<p>트레이스 단위로도 필터링할 수 있습니다. 로그를 트레이스 변형별로 묶고 등장 빈도가 높은 상위 변형들만 남기는 방식인데 흔히 전체 케이스의 80에서 90퍼센트를 차지하는 상위 변형만 남기고 나머지 긴 꼬리를 잘라냅니다. 다만 임계값을 너무 높게 잡으면 실제로는 드물지만 정상적인 예외 경로까지 지워버릴 수 있고 너무 낮게 잡으면 노이즈가 그대로 남아 모델이 복잡해지는 트레이드오프가 있어서 임계값은 도메인 지식과 함께 조정하는 경우가 많습니다.</p>`,
+    example: String.raw`<p>결제 다음 활동으로 배송준비가 950건, 환불처리가 40건, 시스템재시도가 10건 나타났다고 합시다. 전체 1000건 중 시스템재시도는 1퍼센트에 불과합니다. 임계값을 2퍼센트로 잡으면 배송준비와 환불처리는 정상 경로로 남고 시스템재시도는 노이즈로 걸러져 모델에서 빠집니다.</p>`,
+    related: [{ label: "필수 3요소", slug: "event-log-essentials" }, { label: "로그 불완전성", slug: "log-incompleteness" }],
+    sections: []
+  },
 };
