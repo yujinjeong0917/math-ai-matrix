@@ -190,6 +190,9 @@
   }
   .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
   .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+  a.chip-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-card:hover, a.chip-card:focus-visible { border-color: var(--chip-c, var(--ink-faint)); }
+  a.chip-card:hover .name, a.chip-card:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
@@ -242,13 +245,13 @@
     <div class="sub-block">
       <p class="sub-title">YOLO 진화 이정표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-a)"><p class="name">YOLOv1</p><p class="formula">단일 CNN으로 그리드별 박스 · 클래스 동시예측</p></div><div class="chip-card" style="--chip-c:var(--c-ar-a)"><p class="name">YOLOv3</p><p class="formula">멀티스케일 예측 + Anchor box 도입</p></div><div class="chip-card" style="--chip-c:var(--c-ar-a)"><p class="name">YOLOX/v8</p><p class="formula">Anchor-free 전환, Decoupled head</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=yolov1" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-a)"><p class="name">YOLOv1</p><p class="formula">단일 CNN으로 그리드별 박스 · 클래스 동시예측</p></a><a class="chip-card" href="../concepts/index.html?c=yolov3" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-a)"><p class="name">YOLOv3</p><p class="formula">멀티스케일 예측 + Anchor box 도입</p></a><a class="chip-card" href="../concepts/index.html?c=yolo-x-v8" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-a)"><p class="name">YOLOX/v8</p><p class="formula">Anchor-free 전환, Decoupled head</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">핵심 연산</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-a)"><p class="name">IoU · NMS</p><p class="formula">겹치는 박스 제거 기준</p></div><div class="chip-card" style="--chip-c:var(--c-ar-a)"><p class="name">Focal Loss</p><p class="formula">클래스 불균형 보정 손실함수</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=iou-nms" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-a)"><p class="name">IoU · NMS</p><p class="formula">겹치는 박스 제거 기준</p></a><a class="chip-card" href="../concepts/index.html?c=focal-loss" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-a)"><p class="name">Focal Loss</p><p class="formula">클래스 불균형 보정 손실함수</p></a>
       </div>
     </div>
   </div>
@@ -259,13 +262,13 @@
     <div class="sub-block">
       <p class="sub-title">아키텍처 계보</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-b)"><p class="name">Transformer(2017)</p><p class="formula">Self-Attention + Position-wise FFN</p></div><div class="chip-card" style="--chip-c:var(--c-ar-b)"><p class="name">ViT</p><p class="formula">이미지를 패치 시퀀스로 변환해 Transformer 적용</p></div><div class="chip-card" style="--chip-c:var(--c-ar-b)"><p class="name">GPT 계열</p><p class="formula">디코더 전용, 다음 토큰 예측</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=transformer-2017" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-b)"><p class="name">Transformer(2017)</p><p class="formula">Self-Attention + Position-wise FFN</p></a><a class="chip-card" href="../concepts/index.html?c=vit" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-b)"><p class="name">ViT</p><p class="formula">이미지를 패치 시퀀스로 변환해 Transformer 적용</p></a><a class="chip-card" href="../concepts/index.html?c=gpt-family" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-b)"><p class="name">GPT 계열</p><p class="formula">디코더 전용, 다음 토큰 예측</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">스케일링 · KV 캐시 (실전 매트릭스와 연결)</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-b)"><p class="name">KV Cache</p><p class="formula">이전 토큰 Key/Value 재사용</p></div><div class="chip-card" style="--chip-c:var(--c-ar-b)"><p class="name">스케일링 법칙</p><p class="formula">모델 · 데이터 · 연산량의 관계식</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=kv-cache" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-b)"><p class="name">KV Cache</p><p class="formula">이전 토큰 Key/Value 재사용</p></a><a class="chip-card" href="../concepts/index.html?c=scaling-laws" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-b)"><p class="name">스케일링 법칙</p><p class="formula">모델 · 데이터 · 연산량의 관계식</p></a>
       </div>
     </div>
   </div>
@@ -276,7 +279,7 @@
     <div class="sub-block">
       <p class="sub-title">표현 방식</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-c)"><p class="name">PointNet</p><p class="formula">순서 불변 집합함수로 포인트클라우드 처리</p></div><div class="chip-card" style="--chip-c:var(--c-ar-c)"><p class="name">복셀 기반 3D CNN</p><p class="formula">공간을 격자로 나눠 3D 컨볼루션</p></div><div class="chip-card" style="--chip-c:var(--c-ar-c)"><p class="name">NeRF</p><p class="formula">장면을 연속 함수로 표현해 새 시점 렌더링</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=pointnet" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-c)"><p class="name">PointNet</p><p class="formula">순서 불변 집합함수로 포인트클라우드 처리</p></a><a class="chip-card" href="../concepts/index.html?c=voxel-cnn" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-c)"><p class="name">복셀 기반 3D CNN</p><p class="formula">공간을 격자로 나눠 3D 컨볼루션</p></a><a class="chip-card" href="../concepts/index.html?c=nerf" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-c)"><p class="name">NeRF</p><p class="formula">장면을 연속 함수로 표현해 새 시점 렌더링</p></a>
       </div>
     </div>
   </div>
@@ -287,7 +290,7 @@
     <div class="sub-block">
       <p class="sub-title">고전 · 신경망 계열</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-d)"><p class="name">LSTM/GRU</p><p class="formula">게이트로 장기의존성 제어</p></div><div class="chip-card" style="--chip-c:var(--c-ar-d)"><p class="name">TCN</p><p class="formula">인과적 팽창 컨볼루션으로 시계열 처리</p></div><div class="chip-card" style="--chip-c:var(--c-ar-d)"><p class="name">시계열 Transformer</p><p class="formula">장기 시퀀스 예측에 어텐션 적용</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=lstm-gru" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-d)"><p class="name">LSTM/GRU</p><p class="formula">게이트로 장기의존성 제어</p></a><a class="chip-card" href="../concepts/index.html?c=tcn" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-d)"><p class="name">TCN</p><p class="formula">인과적 팽창 컨볼루션으로 시계열 처리</p></a><a class="chip-card" href="../concepts/index.html?c=time-series-transformer" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-d)"><p class="name">시계열 Transformer</p><p class="formula">장기 시퀀스 예측에 어텐션 적용</p></a>
       </div>
     </div>
   </div>
@@ -298,7 +301,7 @@
     <div class="sub-block">
       <p class="sub-title">백본 진화 이정표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-e)"><p class="name">LeNet/AlexNet</p><p class="formula">초기 CNN 구조, 합성곱과 풀링을 쌓아 이미지 특징 추출</p></div><div class="chip-card" style="--chip-c:var(--c-ar-e)"><p class="name">ResNet</p><p class="formula">residual connection으로 매우 깊은 네트워크 학습 가능하게 함</p></div><div class="chip-card" style="--chip-c:var(--c-ar-e)"><p class="name">EfficientNet</p><p class="formula">깊이 · 너비 · 해상도를 동시에 스케일링하는 compound scaling</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=lenet-alexnet" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-e)"><p class="name">LeNet/AlexNet</p><p class="formula">초기 CNN 구조, 합성곱과 풀링을 쌓아 이미지 특징 추출</p></a><a class="chip-card" href="../concepts/index.html?c=resnet" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-e)"><p class="name">ResNet</p><p class="formula">residual connection으로 매우 깊은 네트워크 학습 가능하게 함</p></a><a class="chip-card" href="../concepts/index.html?c=efficientnet" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-e)"><p class="name">EfficientNet</p><p class="formula">깊이 · 너비 · 해상도를 동시에 스케일링하는 compound scaling</p></a>
       </div>
     </div>
   </div>
@@ -309,7 +312,7 @@
     <div class="sub-block">
       <p class="sub-title">핵심 구성요소</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-f)"><p class="name">U-Net</p><p class="formula">인코더-디코더 + skip connection, 노이즈 예측 네트워크의 표준 백본</p></div><div class="chip-card" style="--chip-c:var(--c-ar-f)"><p class="name">Latent Diffusion</p><p class="formula">픽셀이 아닌 압축된 잠재공간에서 확산을 수행</p></div><div class="chip-card" style="--chip-c:var(--c-ar-f)"><p class="name">텍스트 조건화</p><p class="formula">cross-attention으로 텍스트 임베딩을 U-Net에 주입</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=unet-diffusion" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-f)"><p class="name">U-Net</p><p class="formula">인코더-디코더 + skip connection, 노이즈 예측 네트워크의 표준 백본</p></a><a class="chip-card" href="../concepts/index.html?c=latent-diffusion" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-f)"><p class="name">Latent Diffusion</p><p class="formula">픽셀이 아닌 압축된 잠재공간에서 확산을 수행</p></a><a class="chip-card" href="../concepts/index.html?c=text-conditioning" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-f)"><p class="name">텍스트 조건화</p><p class="formula">cross-attention으로 텍스트 임베딩을 U-Net에 주입</p></a>
       </div>
     </div>
   </div>
@@ -320,7 +323,7 @@
     <div class="sub-block">
       <p class="sub-title">핵심 아키텍처</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-g)"><p class="name">Mamba</p><p class="formula">선택적 상태공간모델, 시퀀스 길이에 선형적인 연산량</p></div><div class="chip-card" style="--chip-c:var(--c-ar-g)"><p class="name">S4</p><p class="formula">구조화된 상태공간, HiPPO 초기화로 장기의존성 포착</p></div><div class="chip-card" style="--chip-c:var(--c-ar-g)"><p class="name">추론 특성</p><p class="formula">Transformer 대비 KV 캐시 없이 상수 메모리로 추론 가능</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=mamba" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-g)"><p class="name">Mamba</p><p class="formula">선택적 상태공간모델, 시퀀스 길이에 선형적인 연산량</p></a><a class="chip-card" href="../concepts/index.html?c=s4-model" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-g)"><p class="name">S4</p><p class="formula">구조화된 상태공간, HiPPO 초기화로 장기의존성 포착</p></a><a class="chip-card" href="../concepts/index.html?c=ssm-inference-characteristics" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-g)"><p class="name">추론 특성</p><p class="formula">Transformer 대비 KV 캐시 없이 상수 메모리로 추론 가능</p></a>
       </div>
     </div>
   </div>
@@ -331,7 +334,7 @@
     <div class="sub-block">
       <p class="sub-title">정렬 · 융합 방식</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ar-h)"><p class="name">CLIP</p><p class="formula">이미지-텍스트를 같은 임베딩 공간에 대조학습으로 정렬</p></div><div class="chip-card" style="--chip-c:var(--c-ar-h)"><p class="name">VLM 이미지 토큰화</p><p class="formula">이미지를 패치 임베딩으로 잘라 언어모델 입력 토큰처럼 사용</p></div><div class="chip-card" style="--chip-c:var(--c-ar-h)"><p class="name">크로스모달 어텐션</p><p class="formula">서로 다른 모달리티 표현을 어텐션으로 융합</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=clip-model" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-h)"><p class="name">CLIP</p><p class="formula">이미지-텍스트를 같은 임베딩 공간에 대조학습으로 정렬</p></a><a class="chip-card" href="../concepts/index.html?c=vlm-tokenization" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-h)"><p class="name">VLM 이미지 토큰화</p><p class="formula">이미지를 패치 임베딩으로 잘라 언어모델 입력 토큰처럼 사용</p></a><a class="chip-card" href="../concepts/index.html?c=cross-modal-attention" target="_blank" rel="noopener" style="--chip-c:var(--c-ar-h)"><p class="name">크로스모달 어텐션</p><p class="formula">서로 다른 모달리티 표현을 어텐션으로 융합</p></a>
       </div>
     </div>
   </div>

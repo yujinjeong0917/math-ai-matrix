@@ -202,6 +202,9 @@
   }
   .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
   .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+  a.chip-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-card:hover, a.chip-card:focus-visible { border-color: var(--chip-c, var(--ink-faint)); }
+  a.chip-card:hover .name, a.chip-card:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
@@ -326,19 +329,19 @@
     <div class="sub-block">
       <p class="sub-title">컴퓨트</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">EC2</p><p class="formula">필요한 만큼 골라 쓰는 가상 서버, GPU 인스턴스로 학습 · 서빙</p></div><div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">Auto Scaling</p><p class="formula">트래픽에 따라 인스턴스 수를 자동으로 늘리고 줄임</p></div><div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">Lambda</p><p class="formula">서버 관리 없이 요청 단위로만 실행되는 함수</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=aws-ec2" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">EC2</p><p class="formula">필요한 만큼 골라 쓰는 가상 서버, GPU 인스턴스로 학습 · 서빙</p></a><a class="chip-card" href="../concepts/index.html?c=aws-auto-scaling" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">Auto Scaling</p><p class="formula">트래픽에 따라 인스턴스 수를 자동으로 늘리고 줄임</p></a><a class="chip-card" href="../concepts/index.html?c=aws-lambda" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">Lambda</p><p class="formula">서버 관리 없이 요청 단위로만 실행되는 함수</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">네트워크 · 스토리지</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">VPC</p><p class="formula">계정 안에 격리된 가상 네트워크 구성</p></div><div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">S3</p><p class="formula">학습 데이터 · 모델 아티팩트를 저장하는 객체 스토리지</p></div><div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">ELB</p><p class="formula">여러 인스턴스로 요청을 고르게 분산하는 로드밸런서</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=aws-vpc" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">VPC</p><p class="formula">계정 안에 격리된 가상 네트워크 구성</p></a><a class="chip-card" href="../concepts/index.html?c=aws-s3" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">S3</p><p class="formula">학습 데이터 · 모델 아티팩트를 저장하는 객체 스토리지</p></a><a class="chip-card" href="../concepts/index.html?c=aws-elb" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">ELB</p><p class="formula">여러 인스턴스로 요청을 고르게 분산하는 로드밸런서</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">ML 특화 서비스</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">SageMaker</p><p class="formula">학습 · 튜닝 · 배포를 한 번에 관리하는 완전관리형 ML 플랫폼</p></div><div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">ECS / EKS</p><p class="formula">컨테이너로 패키징한 서빙 서버를 오케스트레이션</p></div><div class="chip-card" style="--chip-c:var(--c-ml-e)"><p class="name">CloudWatch</p><p class="formula">지표 · 로그를 모아 위에서 본 모니터링 층을 실제로 구현</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=aws-sagemaker" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">SageMaker</p><p class="formula">학습 · 튜닝 · 배포를 한 번에 관리하는 완전관리형 ML 플랫폼</p></a><a class="chip-card" href="../concepts/index.html?c=aws-ecs-eks" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">ECS / EKS</p><p class="formula">컨테이너로 패키징한 서빙 서버를 오케스트레이션</p></a><a class="chip-card" href="../concepts/index.html?c=aws-cloudwatch" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-e)"><p class="name">CloudWatch</p><p class="formula">지표 · 로그를 모아 위에서 본 모니터링 층을 실제로 구현</p></a>
       </div>
     </div>
   </div>

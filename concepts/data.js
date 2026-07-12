@@ -2909,5 +2909,782 @@ $$F(\theta)^{-1}\nabla J(\theta)=\begin{pmatrix}1/4&0\\0&1\end{pmatrix}\begin{pm
         blanks: [{ id: "다", latex: String.raw`\frac{1}{\lambda}F(\theta)^{-1}\nabla J(\theta)`, why: String.raw`$\lambda F(\theta)d\theta^*=\nabla J(\theta)$의 양변 왼쪽에 $F(\theta)^{-1}$을 곱하고 $\lambda$로 나누면 나오는 식이다. $\lambda$는 걸음의 전체 크기를 정할 뿐 방향에는 영향을 주지 않는다.` }] },
       { id: "s5", text: String.raw`그러니 $d\theta^*$의 방향은 양의 스칼라 $1/\lambda$를 무시하면 $F(\theta)^{-1}\nabla J(\theta)$와 같다. 이 방향이 바로 자연정책경사다. 원래 그래디언트 $\nabla J(\theta)$를 파라미터공간의 곡률이 아니라 피셔정보행렬이 재는 분포공간의 곡률로 보정한 방향이라는 뜻이다. TRPO는 이 방향을 따라가되 신뢰영역 제약을 매 스텝 다시 강제해서 안정성까지 챙긴 알고리즘이다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
-  }
+  },
+  "yolov1": {
+    title: String.raw`YOLOv1: 그리드 기반 단일 CNN 객체탐지`,
+    domain: "arch",
+    subLabel: String.raw`객체탐지`,
+    intuition: String.raw`<p>사진 안에서 물체를 찾으려면 어디에 있는지와 무엇인지를 동시에 알아야 한다. YOLO 이전 방법들은 먼저 물체가 있을 법한 후보 영역을 수천 개 뽑아낸 다음 후보 하나하나를 따로 분류하는 두 단계 과정을 거쳤다. 후보가 많을수록 느려질 수밖에 없는 구조였다.</p>
+<p>YOLO는 발상을 완전히 바꾼다. 사진을 격자로 쪼갠 다음 각 칸에게 묻는다. 네 칸 안에 물체 중심이 있다면 그 박스와 종류를 한 번에 말해봐. 이미지 전체를 CNN 한 번에 훑으면서 모든 칸이 동시에 답을 내놓는다. You Only Look Once라는 이름이 여기서 나온다.</p>`,
+    explanation: String.raw`<p>입력 이미지를 $S \times S$ 격자로 나눈다(논문 기준 $S=7$). 물체의 중심 좌표가 속한 칸이 그 물체를 책임진다. 각 칸은 $B$개의 바운딩박스 후보를 예측하는데 박스마다 중심 좌표 $(x,y)$, 크기 $(w,h)$, 신뢰도 점수를 출력한다. 신뢰도는 $\mathrm{Pr(Object)} \times \mathrm{IoU}(\mathrm{pred}, \mathrm{truth})$로 정의되어 칸에 물체가 있을 확률과 예측 박스가 실제와 얼마나 겹치는지를 함께 담는다. 여기에 칸마다 클래스 확률 분포 $C$개를 더해 전체 출력은 $S \times S \times (B \times 5 + C)$ 텐서 하나로 압축된다.</p>
+<p>이전 세대인 R-CNN 계열은 셀렉티브서치 같은 별도 알고리즘으로 후보 영역을 뽑고 그 각각을 CNN에 다시 통과시켰다. 후보가 수천 개면 CNN도 수천 번 돈다. YOLOv1은 후보 생성 단계를 아예 없애고 탐지를 하나의 회귀 문제로 재정의했다. 이미지 한 장에 CNN 한 번, 그게 전부다. 속도는 크게 얻었지만 한 칸이 박스를 최대 $B$개까지만 책임지기 때문에 한 칸 안에 여러 작은 물체가 몰려 있으면 놓치기 쉽다는 한계가 있었다.</p>
+<p>손실함수는 좌표 오차, 신뢰도 오차, 클래스 오차를 모두 제곱합 오차로 더하되 가중치를 다르게 준다. 물체가 있는 칸의 좌표 오차에는 $\lambda_{\mathrm{coord}}=5$로 가중치를 키우고 물체가 없는 칸의 신뢰도 오차에는 $\lambda_{\mathrm{noobj}}=0.5$로 낮춘다. 배경 칸이 압도적으로 많은 이미지에서 학습 신호가 배경 쪽으로만 쏠리는 걸 막기 위한 장치다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="20" width="220" height="220" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="95" y1="20" x2="95" y2="240" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="20" x2="150" y2="240" class="dg-line" stroke-width="1.5"/>
+<line x1="205" y1="20" x2="205" y2="240" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="75" x2="260" y2="75" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="130" x2="260" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="185" x2="260" y2="185" class="dg-line" stroke-width="1.5"/>
+<rect x="150" y="130" width="55" height="55" class="dg-accent"/>
+<rect x="128" y="108" width="98" height="92" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="40" y="14" font-size="12">입력 이미지를 S×S 격자로 분할</text>
+<text x="330" y="100" font-size="13">해당 칸의 출력</text>
+<text x="330" y="124" font-size="12" class="dg-dim">(x, y, w, h, 신뢰도) × B</text>
+<text x="330" y="146" font-size="12" class="dg-dim">+ 클래스 확률 C개</text>
+<text x="330" y="176" font-size="12">신뢰도 = Pr(Object)·IoU</text>
+</svg>`,
+    diagramCaption: String.raw`물체 중심이 속한 칸이 그 물체의 박스와 클래스를 예측한다.`,
+    related: [{ label: "YOLOv3", slug: "yolov3" }, { label: "IoU와 NMS", slug: "iou-nms" }, { label: "Focal Loss", slug: "focal-loss" }],
+    sections: []
+  },
+  "yolov3": {
+    title: String.raw`YOLOv3: 멀티스케일 예측과 앵커박스`,
+    domain: "arch",
+    subLabel: String.raw`객체탐지`,
+    intuition: String.raw`<p>물체는 화면에 아주 크게 나올 수도 있고 손톱만큼 작게 나올 수도 있다. YOLOv1처럼 하나의 격자 해상도로만 보면 작은 물체는 성긴 격자 안에 묻혀 버리기 쉽다. YOLOv3는 서로 다른 세 가지 해상도에서 동시에 탐지를 수행해서 이 문제를 푼다.</p>
+<p>또 하나, 박스 크기를 처음부터 완전히 새로 추측하게 하는 대신 미리 자주 나오는 박스 모양 몇 개(앵커)를 준비해두고 거기서부터 살짝 보정하는 방식을 쓴다. 백지에서 그림을 그리는 것보다 밑그림을 살짝 고치는 쪽이 더 쉬운 것과 같은 이치다.</p>`,
+    explanation: String.raw`<p>YOLOv3는 백본으로 Darknet-53을 쓴다. 잔차연결을 갖춘 53층짜리 CNN으로 YOLOv1의 단순한 CNN보다 훨씬 깊고 표현력이 크다. 이 백본에서 뽑은 특징을 얕은 층 특징과 업샘플링으로 다시 합쳐서 13×13, 26×26, 52×52 세 해상도의 특징맵을 만든다. 입력이 416×416이라면 13×13은 큰 물체, 52×52는 작은 물체를 담당한다.</p>
+<p>각 격자 칸은 이제 좌표를 통째로 예측하지 않고 미리 정해둔 앵커박스 대비 얼마나 어긋나야 하는지만 예측한다. 앵커는 학습 데이터의 박스들을 k-평균으로 군집화해서 자주 나오는 가로세로 비율 9개를 미리 뽑아둔 것이다(스케일마다 3개씩). 중심 좌표는 시그모이드로 격자 칸 안쪽으로 제한하고 폭과 높이는 앵커 크기에 지수함수로 곱해지는 보정값으로 예측한다.</p>
+<p>분류 부분도 바뀌었다. YOLOv1은 소프트맥스로 클래스 하나를 고르게 했지만 YOLOv3는 클래스마다 독립된 로지스틱 분류기를 둔다. 사람과 여성처럼 겹칠 수 있는 라벨을 동시에 예측해야 하는 다중 라벨 상황에 더 잘 맞는다. 결과적으로 YOLOv3는 다양한 크기의 물체를 한 번의 순전파 안에서 동시에 잡아내는 탐지기가 되었다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="40" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="90" y1="40" x2="90" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="30" y1="100" x2="150" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="220" y="40" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="260" y1="40" x2="260" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="40" x2="300" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="220" y1="80" x2="340" y2="80" class="dg-line" stroke-width="1.5"/>
+<line x1="220" y1="120" x2="340" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="410" y="40" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="440" y1="40" x2="440" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="470" y1="40" x2="470" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="500" y1="40" x2="500" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="410" y1="70" x2="530" y2="70" class="dg-line" stroke-width="1"/>
+<line x1="410" y1="100" x2="530" y2="100" class="dg-line" stroke-width="1"/>
+<line x1="410" y1="130" x2="530" y2="130" class="dg-line" stroke-width="1"/>
+<circle cx="90" cy="100" r="14" class="dg-accent"/>
+<circle cx="280" cy="100" r="8" class="dg-accent"/>
+<circle cx="470" cy="100" r="4" class="dg-accent"/>
+<text x="90" y="185" font-size="12" text-anchor="middle">13×13 (큰 물체)</text>
+<text x="280" y="185" font-size="12" text-anchor="middle">26×26 (중간 물체)</text>
+<text x="470" y="185" font-size="12" text-anchor="middle">52×52 (작은 물체)</text>
+</svg>`,
+    diagramCaption: String.raw`세 해상도의 특징맵이 각각 크기가 다른 물체를 담당한다.`,
+    related: [{ label: "YOLOv1", slug: "yolov1" }, { label: "YOLOX/v8", slug: "yolo-x-v8" }, { label: "IoU와 NMS", slug: "iou-nms" }],
+    sections: []
+  },
+  "yolo-x-v8": {
+    title: String.raw`YOLOX/v8: 앵커프리와 디커플드 헤드`,
+    domain: "arch",
+    subLabel: String.raw`객체탐지`,
+    intuition: String.raw`<p>앵커박스는 미리 크기를 정해둬야 해서 데이터셋마다 새로 튜닝해야 하고 종횡비가 특이한 물체는 애초에 어떤 앵커로도 잘 안 맞을 수 있다. 앵커프리 방식은 이 사전 설계를 버리고 각 위치가 물체 경계까지의 거리를 직접 예측하게 한다.</p>
+<p>또 하나 바뀐 점은 헤드 구조다. 같은 특징맵에서 분류와 박스 회귀를 한 브랜치로 같이 뽑던 기존 방식은 사실 두 작업이 원하는 특징이 서로 다르다는 문제가 있었다. 분류와 회귀를 아예 다른 branch로 쪼개서 각자 최적화하게 한 것이 디커플드 헤드다.</p>`,
+    explanation: String.raw`<p>YOLOv3까지는 미리 정한 앵커박스와의 오프셋을 예측하는 앵커기반 방식이었다. YOLOX는 각 격자 위치를 물체 중심 후보로 직접 취급하고 그 위치에서 물체 경계까지의 네 방향 거리(좌, 상, 우, 하)를 바로 회귀한다. 앵커 하이퍼파라미터를 데이터셋마다 다시 클러스터링할 필요가 없어지고 앵커 개수만큼 늘어나던 예측 수도 줄어든다.</p>
+<p>헤드 구조도 갈라졌다. YOLOv3까지는 하나의 conv 브랜치가 박스 좌표, 신뢰도, 클래스 점수를 한꺼번에 뽑았다. 그런데 분류는 칸 안의 텍스처나 패턴에 민감하고 회귀는 경계의 정확한 위치에 민감해서 두 작업의 최적점이 서로 어긋난다. 디커플드 헤드는 같은 특징맵을 받은 뒤 분류용 conv 브랜치와 회귀용 conv 브랜치를 완전히 분리해서 각자 학습하게 한다. YOLOX는 여기에 SimOTA라는 동적 라벨 할당까지 더해 학습 중 각 물체에 어떤 위치들을 양성 샘플로 배정할지를 예측 품질에 따라 유동적으로 정한다.</p>
+<p>YOLOv8은 이 앵커프리와 디커플드 헤드 흐름을 이어받으면서 백본을 C2f 블록으로 교체하고 학습 전반의 증강과 손실 구성을 다듬었다. 버전마다 이름은 바뀌었지만 앵커 설계를 없애고 태스크별로 헤드를 분리한다는 두 방향은 YOLOX 이후 계속 유지되고 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<text x="140" y="20" font-size="13" text-anchor="middle">기존: 커플드 헤드</text>
+<rect x="60" y="36" width="160" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="59" font-size="12" text-anchor="middle">특징맵</text>
+<line x1="140" y1="72" x2="140" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="100" width="160" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="140" y="123" font-size="12" text-anchor="middle">conv (분류+회귀 동시)</text>
+<line x1="140" y1="136" x2="105" y2="168" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="136" x2="175" y2="168" class="dg-line" stroke-width="1.5"/>
+<text x="105" y="182" font-size="11" text-anchor="middle">클래스</text>
+<text x="175" y="182" font-size="11" text-anchor="middle">박스</text>
+<text x="460" y="20" font-size="13" text-anchor="middle">YOLOX/v8: 디커플드 헤드</text>
+<rect x="380" y="36" width="160" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="460" y="59" font-size="12" text-anchor="middle">특징맵</text>
+<line x1="415" y1="72" x2="415" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="505" y1="72" x2="505" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="100" width="70" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="415" y="123" font-size="11" text-anchor="middle">분류 branch</text>
+<rect x="470" y="100" width="70" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="505" y="123" font-size="11" text-anchor="middle">회귀 branch</text>
+<line x1="415" y1="136" x2="415" y2="168" class="dg-line" stroke-width="1.5"/>
+<line x1="505" y1="136" x2="505" y2="168" class="dg-line" stroke-width="1.5"/>
+<text x="415" y="182" font-size="11" text-anchor="middle">클래스</text>
+<text x="505" y="182" font-size="11" text-anchor="middle">박스</text>
+</svg>`,
+    diagramCaption: String.raw`분류와 회귀를 하나의 브랜치로 묶던 구조가 두 개로 분리되었다.`,
+    related: [{ label: "YOLOv3", slug: "yolov3" }, { label: "IoU와 NMS", slug: "iou-nms" }, { label: "Focal Loss", slug: "focal-loss" }],
+    sections: []
+  },
+  "iou-nms": {
+    title: String.raw`IoU와 NMS: 박스 겹침과 중복 제거`,
+    domain: "arch",
+    subLabel: String.raw`객체탐지`,
+    intuition: String.raw`<p>탐지기 하나가 같은 물체 주변에 박스를 여러 개 쏟아내는 일은 흔하다. 이 중 어떤 박스가 진짜 정답에 가까운지, 겹치는 박스 중 뭘 지워야 할지를 정하려면 먼저 두 박스가 얼마나 겹치는지를 숫자 하나로 재는 방법이 필요하다.</p>
+<p>IoU는 그 겹침 정도를 재는 자다. NMS는 그 자를 이용해서 같은 물체를 가리키는 중복 박스들 중 가장 확신이 큰 것 하나만 남기고 나머지를 지우는 절차다.</p>`,
+    explanation: String.raw`<p>IoU(Intersection over Union)는 두 박스 $A$, $B$에 대해 $\mathrm{IoU}(A,B) = \dfrac{|A \cap B|}{|A \cup B|}$로 정의된다. 두 박스가 완전히 겹치면 1, 전혀 안 겹치면 0이다. 탐지 모델을 평가할 때는 예측 박스와 정답 박스의 IoU가 특정 임계값(흔히 0.5)을 넘으면 맞힌 것으로 친다. 학습 중 신뢰도 라벨을 만들 때도, 어떤 격자 칸이 어떤 물체를 책임질지 앵커를 배정할 때도 이 값이 기준이 된다.</p>
+<p>NMS(Non-Maximum Suppression)는 한 이미지 안에서 같은 물체에 대해 여러 개 나온 박스를 정리하는 후처리 알고리즘이다. 먼저 모든 예측 박스를 신뢰도 점수 순으로 정렬한다. 점수가 가장 높은 박스를 하나 뽑아 남기고, 이 박스와 IoU가 임계값(흔히 0.45에서 0.5)을 넘는 나머지 박스들은 같은 물체를 가리킨다고 보고 모두 지운다. 남은 박스들 중에서 다시 가장 높은 점수를 골라 같은 과정을 반복하고, 더 지울 박스가 없을 때까지 이어간다.</p>
+<p>탐지기가 IoU와 NMS 없이 신뢰도만으로 박스를 걸러내면 같은 물체 주변에 살짝 어긋난 박스 수십 개가 그대로 남는다. NMS는 겹침이라는 기하학적 단서를 이용해 이 중복을 정리하는 가장 단순하면서도 표준적인 방법이다. 최근에는 학습 가능한 방식으로 NMS 없이 겹치는 예측을 억제하는 시도(DETR류의 집합 예측 등)도 나오지만 YOLO 계열은 여전히 IoU 기반 NMS를 표준 후처리로 쓴다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="40" width="160" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="140" y="90" width="160" height="140" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="140" y="90" width="80" height="90" class="dg-accent"/>
+<text x="60" y="30" font-size="12">박스 A</text>
+<text x="240" y="245" font-size="12">박스 B</text>
+<text x="360" y="130" font-size="13">교집합(겹친 부분)</text>
+<text x="360" y="155" font-size="12" class="dg-dim">IoU = 교집합 넓이 ÷ 합집합 넓이</text>
+</svg>`,
+    diagramCaption: String.raw`교집합 넓이를 합집합 넓이로 나눈 값이 IoU다.`,
+    example: String.raw`<p>박스 $A$의 좌표가 $(0,0)$에서 $(40,40)$이고 박스 $B$의 좌표가 $(20,20)$에서 $(60,60)$이라 하자. 두 박스는 각각 넓이 1600을 갖는 정사각형이다. 겹치는 영역은 $x$가 20에서 40, $y$가 20에서 40인 정사각형이라 넓이는 400이다.</p>
+$$\mathrm{IoU} = \frac{400}{1600+1600-400} = \frac{400}{2800} \approx 0.143$$
+<p>임계값을 0.5로 잡는 흔한 기준으로 보면 이 두 박스는 같은 물체로 묶이지 않는다. NMS 단계에서 겹침 임계값을 0.45 정도로 잡았다면 이 정도 겹침으로는 둘 다 살아남는다.</p>`,
+    related: [{ label: "YOLOv1", slug: "yolov1" }, { label: "Focal Loss", slug: "focal-loss" }],
+    sections: []
+  },
+  "focal-loss": {
+    title: String.raw`Focal Loss: 클래스 불균형 완화`,
+    domain: "arch",
+    subLabel: String.raw`객체탐지`,
+    intuition: String.raw`<p>사진 한 장에서 실제 물체가 있는 자리는 몇 곳 안 되지만 탐지기가 검사하는 격자 위치나 앵커는 수만 개에 이른다. 그러니 학습 신호 대부분이 이미 배경이라고 쉽게 맞힐 수 있는 위치에서 나온다. 문제는 이 쉬운 배경 예측들이 낱개로는 손실이 작아도 개수가 워낙 많아서 합치면 학습을 지배해버린다는 것이다.</p>
+<p>Focal Loss는 이미 잘 맞히고 있는 예측의 손실을 확 깎아서 목소리를 줄이고 아직 헷갈리는 어려운 예측에 학습이 집중되도록 손실함수 자체를 바꾼 것이다.</p>`,
+    explanation: String.raw`<p>표준 이진 크로스엔트로피는 $\mathrm{CE}(p_t) = -\log(p_t)$로 정의된다. 여기서 $p_t$는 정답 클래스에 대한 모델의 예측 확률이다(정답이 양성이면 $p_t=p$, 음성이면 $p_t=1-p$). 이미 확신을 갖고 맞히는 쉬운 샘플도 $p_t$가 1보다 조금 작기만 하면 여전히 0이 아닌 손실을 남긴다. 이런 샘플이 수만 개 쌓이면 소수의 어려운 샘플이 주는 신호를 압도해버린다.</p>
+<p>Focal Loss는 여기에 조절 계수 $(1-p_t)^\gamma$를 곱한다. $\mathrm{FL}(p_t) = -\alpha_t(1-p_t)^\gamma \log(p_t)$이다. $p_t$가 1에 가까운 쉬운 샘플은 $(1-p_t)^\gamma$가 0에 가까워지면서 손실이 크게 줄어들고, $p_t$가 작은 어려운 샘플은 이 계수가 1에 가까워서 손실이 거의 그대로 남는다. $\gamma$는 이 감쇠의 세기를 정하는 하이퍼파라미터로 논문에서는 $\gamma=2$를 표준으로 쓴다. $\alpha_t$는 양성과 음성 클래스 사이의 비율을 별도로 보정하는 가중치다.</p>
+<p>이 손실은 RetinaNet 논문에서 제안되었는데, 그 이전까지 단일 단계 탐지기(YOLO, SSD류)가 2단계 탐지기(Faster R-CNN류)보다 정확도가 낮았던 핵심 원인으로 극단적인 전경 배경 불균형을 지목했다. 2단계 탐지기는 첫 단계에서 후보 영역을 미리 걸러내 배경 후보 수를 줄이지만, 단일 단계 탐지기는 이미지 전체 위치를 한 번에 훑기 때문에 배경 위치가 압도적으로 많다. Focal Loss는 후보를 미리 거르는 대신 손실함수 자체가 쉬운 배경의 기여도를 낮추게 만들어서 이 격차를 줄였다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="20" x2="40" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="200" x2="300" y2="200" class="dg-line" stroke-width="1.5"/>
+<path d="M66,46.3 L118,119.7 L170,153.8 L222,176.2 L274,193" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M66,75.7 L118,160.7 L170,188.5 L222,197.9 L274,200" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="8" y="30" font-size="11">손실</text>
+<text x="255" y="216" font-size="11">p_t → 1</text>
+<text x="215" y="60" font-size="12">표준 CE</text>
+<text x="180" y="192" font-size="12">focal loss</text>
+</svg>`,
+    diagramCaption: String.raw`예측 확률이 높을수록 focal loss는 표준 교차엔트로피보다 훨씬 빠르게 줄어든다.`,
+    example: String.raw`<p>$\gamma=2$, $\alpha_t=1$로 두고 쉬운 예측 $p_t=0.9$와 어려운 예측 $p_t=0.1$을 비교한다.</p>
+$$\mathrm{CE}(0.9) = -\log(0.9) \approx 0.105, \quad \mathrm{FL}(0.9) = (0.1)^2 \times 0.105 \approx 0.00105$$
+$$\mathrm{CE}(0.1) = -\log(0.1) \approx 2.303, \quad \mathrm{FL}(0.1) = (0.9)^2 \times 2.303 \approx 1.865$$
+<p>쉬운 예측의 손실은 표준 CE 대비 약 100분의 1로 줄어드는 반면, 어려운 예측의 손실은 약 19퍼센트만 줄어든다. 같은 배율로 깎이는 게 아니라 쉬운 샘플일수록 훨씬 많이 깎여서 학습 신호가 어려운 샘플 쪽으로 자연스럽게 쏠린다.</p>`,
+    related: [{ label: "YOLOv1", slug: "yolov1" }, { label: "IoU와 NMS", slug: "iou-nms" }],
+    sections: []
+  },
+  "transformer-2017": {
+    title: String.raw`Transformer(2017): Attention Is All You Need`,
+    domain: "arch",
+    subLabel: String.raw`Transformer 계열`,
+    intuition: String.raw`<p>문장을 이해하려면 한 단어가 문장 속 다른 단어들과 어떤 관계인지를 알아야 한다. RNN은 이걸 왼쪽에서 오른쪽으로 한 단어씩 순서대로 처리하며 정보를 넘겨받는 방식으로 풀었는데, 문장이 길어지면 앞쪽 정보가 흐려지고 무엇보다 순서대로만 계산할 수 있어 병렬화가 안 됐다.</p>
+<p>Transformer는 순서대로 읽는 과정을 아예 없애고 모든 단어가 문장 속 다른 모든 단어를 한 번에 직접 들여다보게 한다. 이 들여다보는 연산이 어텐션이고, 순환이나 합성곱 없이 어텐션만으로 시퀀스를 처리한다는 것이 논문 제목의 의미다.</p>`,
+    explanation: String.raw`<p>핵심 연산은 셀프어텐션이다. 입력 시퀀스의 각 토큰 임베딩을 세 개의 벡터, 쿼리 $Q$, 키 $K$, 값 $V$로 선형변환한 뒤 $\mathrm{Attention}(Q,K,V) = \mathrm{softmax}\left(\dfrac{QK^T}{\sqrt{d_k}}\right)V$를 계산한다. $QK^T$는 모든 토큰 쌍의 유사도를 한 번에 담은 행렬이고, 소프트맥스로 정규화한 뒤 $V$에 곱하면 각 토큰이 다른 토큰들의 값을 유사도만큼 가중평균해서 가져온 결과가 된다. $\sqrt{d_k}$로 나누는 건 내적 값이 차원이 커질수록 커져서 소프트맥스가 한쪽으로 쏠리는 걸 막기 위한 스케일 보정이다.</p>
+<p>이 어텐션을 한 번만 쓰지 않고 서로 다른 선형변환을 가진 여러 헤드로 병렬 계산한 뒤 이어붙이는 것이 멀티헤드 어텐션이다. 헤드마다 서로 다른 관점의 관계(문법적 관계, 의미적 관계 등)를 따로 포착할 여지를 준다. 여기에 위치별로 독립 적용되는 2층 완전연결 네트워크인 position-wise FFN이 각 토큰 표현을 한 번 더 변환한다. 인코더와 디코더 모두 이 두 서브레이어(어텐션, FFN)를 residual connection과 레이어정규화로 감싸 여러 층 쌓은 구조다.</p>
+<p>순환이 없다는 것은 각 토큰이 계산되는 순서에 아무 정보가 없다는 뜻이기도 하다. 그래서 위치 정보를 따로 주입해야 하는데, Transformer는 학습 파라미터 없이 사인 코사인 함수로 만든 위치인코딩을 토큰 임베딩에 더해서 이를 해결한다. 디코더는 여기에 더해 미래 토큰을 못 보게 막는 마스킹된 어텐션과 인코더 출력을 들여다보는 인코더디코더 어텐션을 추가로 갖는다. 순서대로 처리해야 했던 RNN과 달리 모든 토큰의 어텐션을 행렬곱 한 번으로 동시에 계산할 수 있어 GPU 병렬화가 훨씬 잘 되고, 이것이 이후 대규모 언어모델 확장의 토대가 되었다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="70" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="43" font-size="13" text-anchor="middle">Q</text>
+<rect x="20" y="80" width="70" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="103" font-size="13" text-anchor="middle">K</text>
+<rect x="20" y="140" width="70" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="163" font-size="13" text-anchor="middle">V</text>
+<line x1="90" y1="38" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<line x1="90" y1="98" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="52" width="120" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="240" y="75" font-size="12" text-anchor="middle">softmax(QKᵀ/√d)</text>
+<line x1="90" y1="158" x2="380" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="52" width="70" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="415" y="75" font-size="12" text-anchor="middle">× V</text>
+<line x1="300" y1="70" x2="380" y2="70" class="dg-line" stroke-width="1.5"/>
+<line x1="450" y1="70" x2="510" y2="70" class="dg-line" stroke-width="1.5"/>
+<text x="530" y="75" font-size="12">출력</text>
+</svg>`,
+    diagramCaption: String.raw`쿼리와 키의 유사도로 값을 가중평균하는 것이 셀프어텐션의 전부다.`,
+    related: [{ label: "ViT", slug: "vit" }, { label: "GPT 계열", slug: "gpt-family" }, { label: "KV Cache", slug: "kv-cache" }],
+    sections: []
+  },
+  "vit": {
+    title: String.raw`ViT: 이미지를 패치 시퀀스로 보는 트랜스포머`,
+    domain: "arch",
+    subLabel: String.raw`Transformer 계열`,
+    intuition: String.raw`<p>Transformer는 원래 토큰들의 시퀀스를 다루도록 설계됐다. 이미지는 토큰이 아니라 픽셀들의 격자인데 이걸 어떻게 시퀀스로 바꿀 수 있을까. ViT의 답은 간단하다. 이미지를 작은 정사각형 조각(패치)으로 잘라서 조각 하나하나를 마치 단어 토큰처럼 취급하는 것이다.</p>
+<p>사진 한 장을 16×16 크기의 타일 여러 개로 자른 다음 그 타일들을 일렬로 늘어놓으면 문장과 똑같은 모양의 시퀀스가 된다. 그다음부터는 원래 Transformer 인코더를 그대로 쓰면 된다.</p>`,
+    explanation: String.raw`<p>입력 이미지를 겹치지 않는 $P\times P$ 패치들로 나눈다(논문 기준 $P=16$). 각 패치를 펼쳐서 벡터로 만든 뒤 선형변환 하나로 $D$차원 임베딩으로 사영한다. 여기에 분류 작업을 위한 학습 가능한 [CLS] 토큰을 맨 앞에 붙이고, 순서 정보가 없는 어텐션에 위치 정보를 주기 위해 위치임베딩을 더한다. 이렇게 만들어진 토큰 시퀀스를 표준 Transformer 인코더에 그대로 통과시키고, 마지막 층에서 [CLS] 토큰의 출력을 분류 헤드에 넣어 클래스를 예측한다.</p>
+<p>CNN은 합성곱 커널 자체가 이웃 픽셀만 보고 어디서나 같은 필터를 쓰는 지역성과 이동불변성이라는 가정을 구조에 내장하고 있다. ViT의 어텐션은 이런 가정이 전혀 없어서 모든 패치 쌍의 관계를 자유롭게 배울 수 있는 대신 그 지역성을 데이터에서 직접 학습해야 한다. 그래서 ImageNet 정도의 데이터로 처음부터 학습하면 같은 크기의 CNN보다 성능이 떨어지지만, JFT-300M처럼 훨씬 큰 데이터셋으로 사전학습한 뒤 옮기면 CNN을 능가한다는 것이 원 논문의 핵심 발견이다.</p>
+<p>결과적으로 ViT는 이미지 인식에서도 텍스트와 동일한 Transformer 인코더 아키텍처를 그대로 재사용할 수 있음을 보였고, 이후 이미지와 텍스트를 같은 방식으로 다루는 멀티모달 모델들의 토대가 되었다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="140" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="65" y1="30" x2="65" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="100" y1="30" x2="100" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="135" y1="30" x2="135" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="30" y1="65" x2="170" y2="65" class="dg-line" stroke-width="1"/>
+<line x1="30" y1="100" x2="170" y2="100" class="dg-line" stroke-width="1"/>
+<line x1="30" y1="135" x2="170" y2="135" class="dg-line" stroke-width="1"/>
+<text x="30" y="22" font-size="12">이미지를 패치로 분할</text>
+<line x1="170" y1="100" x2="230" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="230" y="85" width="26" height="26" class="dg-accent"/>
+<text x="243" y="103" font-size="10" text-anchor="middle">CLS</text>
+<rect x="262" y="85" width="26" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="294" y="85" width="26" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="326" y="85" width="26" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="290" y="130" font-size="11">패치 토큰 시퀀스 + 위치임베딩</text>
+<line x1="360" y1="100" x2="410" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="410" y="60" width="120" height="80" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="470" y="105" font-size="12" text-anchor="middle">Transformer Encoder</text>
+</svg>`,
+    diagramCaption: String.raw`이미지를 패치로 잘라 CLS 토큰과 함께 시퀀스로 넣는다.`,
+    related: [{ label: "Transformer(2017)", slug: "transformer-2017" }, { label: "GPT 계열", slug: "gpt-family" }],
+    sections: []
+  },
+  "gpt-family": {
+    title: String.raw`GPT 계열: 디코더 전용 자기회귀 언어모델`,
+    domain: "arch",
+    subLabel: String.raw`Transformer 계열`,
+    intuition: String.raw`<p>다음에 올 단어를 맞히는 게임을 아주 많이 시키면 언어의 문법과 세상 지식을 상당 부분 배울 수 있다. GPT 계열의 기본 아이디어는 이것 하나다. 지금까지 나온 단어들을 보고 다음 단어를 예측하는 훈련을 인터넷 규모의 텍스트로 반복한다.</p>
+<p>이 예측을 하려면 모델이 미래 단어를 몰래 훔쳐봐서는 안 된다. 그래서 Transformer의 인코더디코더 구조 중 디코더 부분만, 그것도 미래를 가리는 장치와 함께 사용한다.</p>`,
+    explanation: String.raw`<p>Transformer 원 논문은 인코더가 전체 입력을 양방향으로 보고 디코더가 그 결과를 참고해 출력을 순차 생성하는 인코더디코더 구조였다. GPT 계열은 인코더를 버리고 디코더 스택만 남긴 디코더 전용 구조를 쓴다. 각 층의 셀프어텐션에 인과적 마스크(causal mask)를 씌워서 위치 $i$의 토큰이 자기 자신과 그 이전 위치 $1,\dots,i$만 들여다보고 이후 위치는 보지 못하게 막는다.</p>
+<p>학습 목표는 다음 토큰 예측이다. 토큰 시퀀스 $x_1,\dots,x_n$이 주어졌을 때 $\prod_{i=1}^n P(x_i \mid x_1,\dots,x_{i-1})$을 최대화하도록 학습한다. 정답 라벨을 따로 만들 필요 없이 텍스트 자체를 한 칸씩 밀어 라벨로 쓸 수 있어서(자기지도학습) 사람이 손으로 라벨링한 데이터 없이도 웹 규모 텍스트로 사전학습이 가능하다.</p>
+<p>GPT-1은 사전학습 뒤 과제별로 미세조정하는 방식이었고, GPT-2는 모델과 데이터를 키우면서 미세조정 없이도 프롬프트만으로 여러 과제를 어느 정도 풀 수 있음을 보였다. GPT-3는 이를 훨씬 큰 규모로 확장해 few-shot 프롬프팅만으로 다양한 과제에 대응하는 능력을 보였고, 이후 InstructGPT/ChatGPT 계열은 여기에 사람 피드백 기반 강화학습(RLHF)을 더해 지시를 따르는 대화형 모델로 다듬었다. 구조 자체는 디코더 전용 Transformer로 거의 그대로 유지되었고 성능 향상은 대부분 데이터와 파라미터 규모, 후처리 학습 방식에서 왔다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="30" width="200" height="200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="60,30 60,230 260,230" class="dg-accent"/>
+<line x1="60" y1="30" x2="260" y2="230" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="22" font-size="12">키 위치 (이전 → 이후)</text>
+<text x="8" y="130" font-size="12">쿼리</text>
+<text x="8" y="145" font-size="12">위치</text>
+<text x="90" y="200" font-size="12">허용된 어텐션</text>
+<text x="170" y="60" font-size="12">마스킹됨</text>
+</svg>`,
+    diagramCaption: String.raw`각 토큰은 자기 이전 토큰까지만 참조할 수 있다.`,
+    related: [{ label: "Transformer(2017)", slug: "transformer-2017" }, { label: "KV Cache", slug: "kv-cache" }, { label: "스케일링 법칙", slug: "scaling-laws" }],
+    sections: []
+  },
+  "kv-cache": {
+    title: String.raw`KV Cache: 자기회귀 생성의 재계산 제거`,
+    domain: "arch",
+    subLabel: String.raw`Transformer 계열`,
+    intuition: String.raw`<p>GPT 같은 모델은 문장을 한 토큰씩 만든다. 그런데 다음 토큰을 만들 때마다 지금까지 나온 문장 전체를 처음부터 다시 어텐션 계산에 통과시킨다면, 100번째 토큰을 만들 때 앞의 99개 토큰에 대한 계산을 또 반복하는 셈이다. 이미 계산해둔 값을 매번 새로 구하는 건 명백한 낭비다.</p>
+<p>KV Cache는 이 낭비를 없앤다. 어텐션에서 각 토큰이 만들어내는 키(K)와 값(V) 벡터는 그 토큰이 이후에 다시 나타나도 바뀌지 않으므로, 한 번 계산한 K, V를 저장해두고 새 토큰이 생길 때마다 그 토큰의 K, V만 새로 계산해서 캐시에 이어붙이면 된다.</p>`,
+    explanation: String.raw`<p>셀프어텐션에서 매 스텝 새로 계산해야 하는 건 사실 새로 생성된 토큰의 쿼리뿐이다. 인과적 마스크 때문에 이 쿼리는 자기 자신을 포함해 이전의 모든 K, V와 어텐션을 계산해야 하는데, 이전 토큰들의 K, V는 이전 스텝에서 이미 구한 값과 정확히 같다. 캐시가 없다면 매 스텝마다 시퀀스 전체 길이만큼의 K, V를 처음부터 다시 계산해야 해서 $n$번째 토큰까지 생성하는 데 드는 전체 연산량이 $O(n^2)$로 늘어난다. 캐시를 쓰면 매 스텝 새 토큰 하나의 K, V만 계산하면 되므로 스텝당 연산량이 시퀀스 길이에 거의 비례하지 않는다.</p>
+<p>다만 공짜는 아니다. 캐시는 레이어마다, 헤드마다, 지금까지 생성된 모든 토큰 위치마다 K와 V 벡터를 계속 들고 있어야 하므로 시퀀스가 길어질수록 메모리 사용량이 선형으로 늘어난다. 대략적인 크기는 $2 \times L \times d_{\mathrm{model}} \times n \times b \times s$로 잡을 수 있다. $L$은 레이어 수, $d_{\mathrm{model}}$은 모델 차원, $n$은 시퀀스 길이, $b$는 배치 크기, $s$는 값 하나당 바이트 수, 앞의 2는 K와 V 두 벡터를 뜻한다. 긴 문맥을 다루는 서빙에서 KV 캐시 메모리가 GPU 메모리의 병목이 되는 경우가 흔한 이유가 여기 있다.</p>
+<p>그래서 이후 연구들은 이 메모리 비용을 줄이는 방향으로 발전했다. 여러 쿼리 헤드가 K, V 헤드를 공유하는 멀티쿼리/그룹쿼리 어텐션(MQA/GQA)이 대표적이다. 캐시 하나를 유지하는 대신 헤드 수를 줄여서 캐시 크기 자체를 줄이는 접근이다. KV 캐시는 연산과 메모리를 맞바꾼 것이고, 자기회귀 생성을 실제 서비스 속도로 돌리기 위한 사실상 표준 기법이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="30" font-size="12">캐시된 K, V</text>
+<rect x="20" y="50" width="60" height="50" class="dg-dim"/>
+<rect x="90" y="50" width="60" height="50" class="dg-dim"/>
+<rect x="160" y="50" width="60" height="50" class="dg-dim"/>
+<rect x="230" y="50" width="60" height="50" class="dg-dim"/>
+<text x="50" y="80" font-size="11" text-anchor="middle">t1</text>
+<text x="120" y="80" font-size="11" text-anchor="middle">t2</text>
+<text x="190" y="80" font-size="11" text-anchor="middle">t3</text>
+<text x="260" y="80" font-size="11" text-anchor="middle">t4</text>
+<line x1="310" y1="75" x2="350" y2="75" class="dg-line" stroke-width="1.5"/>
+<rect x="360" y="50" width="60" height="50" class="dg-accent"/>
+<text x="390" y="80" font-size="11" text-anchor="middle">t5</text>
+<text x="360" y="130" font-size="12">새 토큰의 K, V만 계산해 이어붙인다</text>
+</svg>`,
+    diagramCaption: String.raw`이전 토큰의 K, V는 캐시에 남기고 새 토큰의 K, V만 새로 계산한다.`,
+    example: String.raw`<p>레이어 32개, 모델 차원 4096, 시퀀스 길이 2048, 배치 1, FP16(값 하나당 2바이트)인 모델의 KV 캐시 크기를 계산해본다.</p>
+$$2 \times 32 \times 4096 \times 2048 \times 1 \times 2 = 1073741824 \text{ bytes}$$
+<p>정확히 1,073,741,824바이트, 즉 1GiB다. 문맥 길이가 두 배로 늘거나 배치가 두 배로 늘면 이 값도 그만큼 그대로 두 배로 커진다.</p>`,
+    related: [{ label: "GPT 계열", slug: "gpt-family" }, { label: "Transformer(2017)", slug: "transformer-2017" }],
+    sections: []
+  },
+  "scaling-laws": {
+    title: String.raw`스케일링 법칙: 모델·데이터·연산량의 거듭제곱 관계`,
+    domain: "arch",
+    subLabel: String.raw`Transformer 계열`,
+    intuition: String.raw`<p>모델을 두 배로 키우면 성능이 얼마나 좋아질까. 데이터를 열 배로 늘리면 어떨까. 이런 질문에 감으로 답하는 대신, 실제로 모델 크기나 데이터 양을 바꿔가며 손실이 어떻게 변하는지 찍어보면 놀랍도록 매끈한 패턴이 나온다. 로그 축 그래프에 찍으면 거의 직선이 되는, 즉 거듭제곱 법칙을 따르는 패턴이다.</p>
+<p>이 패턴을 미리 알아두면 작은 모델 몇 개를 돌려본 결과만으로 훨씬 큰 모델의 손실을 상당히 정확하게 미리 짐작할 수 있다. 거대 모델을 실제로 학습시키기 전에 얼마나 좋아질지, 자원을 모델을 키우는 데 더 쓸지 데이터를 더 모으는 데 더 쓸지를 미리 가늠하는 도구가 된다.</p>`,
+    explanation: String.raw`<p>Kaplan 등(2020)의 관찰에 따르면 다른 자원이 병목이 아닐 때 테스트 손실 $L$은 모델 파라미터 수 $N$, 데이터 토큰 수 $D$, 학습 연산량 $C$ 각각에 대해 거듭제곱 법칙 형태를 따른다. 예를 들어 데이터와 연산이 충분할 때 $L(N) \approx \left(\dfrac{N_c}{N}\right)^{\alpha_N}$ 꼴이며, $D$나 $C$에 대해서도 비슷한 형태의 지수가 관찰된다. 로그를 취하면 $\log L$이 $\log N$에 대해 거의 직선이 되므로, 작은 규모에서 몇 개 점을 찍어 직선을 피팅하면 훨씬 큰 $N$에서의 손실을 외삽으로 예측할 수 있다.</p>
+<p>처음 이 관찰이 나왔을 때는 주로 모델 크기 $N$을 키우는 쪽에 자원을 몰아주는 게 유리하다는 해석으로 이어졌다. 그런데 Hoffmann 등(2022)의 Chinchilla 연구는 여기에 중요한 수정을 더했다. 같은 학습 연산량 예산 $C$ 안에서 손실을 최소화하려면 모델 크기 $N$과 데이터 토큰 수 $D$를 거의 같은 비율로 함께 키워야 한다는 것이다. 실제로 Chinchilla는 그 이전 세대의 큰 모델(GPT-3 등)보다 작은 700억 개 파라미터 모델을 1.4조 토큰으로 학습시켜, 같은 연산량으로 더 낮은 손실을 얻어냈다. 그 이전 세대의 큰 모델들은 이 기준에서 보면 모델 크기에 비해 데이터가 부족한 상태로 학습되어 있었던 셈이다.</p>
+<p>스케일링 법칙이 유용한 이유는 사전에 계획을 세울 수 있게 해준다는 데 있다. 막대한 연산 자원을 들여 하나의 초대형 모델을 학습시키기 전에, 그보다 훨씬 작은 여러 모델을 다양한 크기로 학습시켜 손실 곡선을 관찰하고 그 추세선을 외삽해 최종 모델의 성능과 최적의 모델 데이터 배분 비율을 미리 추정하는 식으로 실제 사전학습 프로젝트에 쓰인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="20" x2="50" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="50" y1="200" x2="320" y2="200" class="dg-line" stroke-width="1.5"/>
+<path d="M60,40 L320,180" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="90" cy="70" r="4" class="dg-accent"/>
+<circle cx="170" cy="110" r="4" class="dg-accent"/>
+<circle cx="250" cy="150" r="4" class="dg-accent"/>
+<text x="8" y="30" font-size="11">log 손실</text>
+<text x="240" y="216" font-size="11">log 모델 크기 N</text>
+</svg>`,
+    diagramCaption: String.raw`로그 축에서 손실은 모델 크기에 대해 거의 직선으로 감소한다.`,
+    related: [{ label: "GPT 계열", slug: "gpt-family" }, { label: "KV Cache", slug: "kv-cache" }],
+    sections: []
+  },
+  "pointnet": {
+    title: String.raw`PointNet: 순서 없는 점군을 다루는 대칭함수`,
+    domain: "arch",
+    subLabel: String.raw`3D · 포인트클라우드`,
+    intuition: String.raw`<p>라이다나 3D 스캐너가 만들어내는 점군은 그냥 좌표 값들의 목록이다. 같은 물체를 스캔해도 점이 저장되는 순서는 매번 달라질 수 있다. 그런데 사진처럼 픽셀 위치가 고정된 격자를 다루던 CNN을 그대로 쓰면, 점의 순서를 바꿔서 입력했을 뿐인데 같은 물체를 다르게 인식해버리는 문제가 생긴다.</p>
+<p>PointNet은 이 문제를 아주 영리하게 우회한다. 각 점을 독립적으로 같은 함수에 통과시킨 다음, 그 결과들을 순서에 상관없는 방식으로(가령 그중 최댓값만 뽑아서) 하나로 합친다. 최댓값을 고르는 연산은 숫자들을 어떤 순서로 늘어놓아도 결과가 똑같다. 이 성질 하나로 점의 순서가 바뀌어도 출력이 바뀌지 않는 모델을 만들 수 있다.</p>`,
+    explanation: String.raw`<p>점군은 $n$개의 점 $\{p_1,\dots,p_n\}$의 집합이고 원칙적으로 순서가 없는 자료구조다. 어떤 함수 $f$가 점군을 처리해서 하나의 벡터를 내놓는다고 할 때, 입력 순서를 어떻게 뒤섞어도 $f$의 출력이 그대로 유지되어야 한다는 성질을 순열불변성이라 한다. PointNet은 이 성질을 만족하는 함수를 $f(\{p_1,\dots,p_n\}) \approx \gamma\left(\max_{i=1,\dots,n} h(p_i)\right)$ 형태로 구성한다. $h$는 점 하나하나에 독립적으로 적용되는 공유 MLP이고 $\max$는 각 채널별로 모든 점에 걸쳐 최댓값을 취하는 대칭함수, $\gamma$는 그 뒤에 이어지는 또 다른 MLP다. 점마다 같은 $h$를 적용하고(파라미터 공유) 그 결과를 대칭함수로 모으기 때문에 점 순서가 어떻게 바뀌어도 같은 값이 나온다.</p>
+<p>$h$가 각 점을 고차원 특징으로 변환하고 나면 max pooling이 채널마다 가장 강하게 반응한 점 하나씩을 골라 전역특징 벡터로 요약한다. 이 벡터 하나가 점군 전체를 대표하는 표현이 되어 분류 헤드로 넘어간다. 점별 분할(세그멘테이션)을 하려면 이 전역특징을 각 점의 지역특징과 다시 이어붙여서 점마다 예측을 내놓는다.</p>
+<p>여기에 더해 PointNet은 점군이 회전하거나 이동해도 같은 결과를 내도록 돕는 T-Net이라는 작은 서브네트워크를 둔다. 입력 점군과 중간 특징에 각각 학습된 아핀변환 행렬을 곱해서 정렬을 맞추는 역할이다. CNN이 격자 구조의 지역성과 이동불변성을 전제로 설계된 것과 달리 PointNet은 점군이라는 비정형 자료구조에 맞춰 순열불변성을 구조적으로 보장하는 방식을 택했고, 이후 3D 점군을 다루는 딥러닝 모델들의 기본 틀이 되었다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="40" r="4" class="dg-accent"/>
+<circle cx="60" cy="90" r="4" class="dg-accent"/>
+<circle cx="35" cy="140" r="4" class="dg-accent"/>
+<circle cx="80" cy="60" r="4" class="dg-accent"/>
+<circle cx="70" cy="130" r="4" class="dg-accent"/>
+<text x="15" y="20" font-size="12">순서 없는 점들</text>
+<line x1="90" y1="90" x2="150" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="150" y="60" width="110" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="205" y="95" font-size="12" text-anchor="middle">공유 MLP h(p)</text>
+<line x1="260" y1="90" x2="320" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="320" y="60" width="90" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="365" y="95" font-size="12" text-anchor="middle">max pool</text>
+<line x1="410" y1="90" x2="470" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="480" y="95" font-size="12">전역특징</text>
+</svg>`,
+    diagramCaption: String.raw`점마다 같은 MLP를 적용한 뒤 최댓값으로 모으면 순서에 무관한 표현이 된다.`,
+    related: [{ label: "복셀 기반 3D CNN", slug: "voxel-cnn" }, { label: "NeRF", slug: "nerf" }],
+    sections: []
+  },
+  "voxel-cnn": {
+    title: String.raw`복셀 기반 3D CNN: 점군을 격자로 양자화`,
+    domain: "arch",
+    subLabel: String.raw`3D · 포인트클라우드`,
+    intuition: String.raw`<p>2D CNN이 이미지 격자 위에서 잘 작동한다면 3D 공간도 작은 정육면체 칸(복셀)들의 격자로 잘라내면 똑같은 방식의 합성곱을 그대로 확장해서 쓸 수 있지 않을까. 복셀 기반 3D CNN은 정확히 이 발상에서 출발한다. 순서 없는 점들을 규칙적인 격자에 채워 넣어서 CNN이 원래 잘하던 일을 3D로 그대로 옮긴다.</p>
+<p>다만 이 변환에는 대가가 따른다. 3D 공간을 촘촘한 격자로 나누면 칸 수가 해상도의 세제곱으로 늘어나고, 물체가 있는 표면 근처를 제외한 대부분의 칸은 빈 공간이라 계산과 메모리를 낭비하게 된다.</p>`,
+    explanation: String.raw`<p>점군을 규칙적인 3D 격자로 양자화하는 과정을 복셀화라 한다. 공간을 $V \times V \times V$ 크기의 정육면체 칸들로 나누고, 각 칸 안에 점이 하나라도 있으면 그 칸을 점유(occupied)로 표시하거나 칸 안 점들의 통계(개수, 평균 특징 등)를 채워 넣는다. 이렇게 만든 3D 텐서에 표준 3D 합성곱을 그대로 적용할 수 있다. 커널이 가로세로에 더해 깊이 축으로도 슬라이딩하는 것 말고는 2D CNN과 원리가 같다.</p>
+<p>문제는 해상도다. 격자 한 변의 칸 수를 $V$로 두면 전체 칸 수는 $V^3$으로 늘어난다. 해상도를 2배로 올리면 메모리와 연산량은 8배로 뛴다. 게다가 실제 물체 표면은 3D 공간의 얇은 껍질에 불과해서 대부분의 복셀은 아무 점도 담지 않은 빈 칸이다. 조밀한 격자 전체에 컨볼루션을 돌리는 건 이 빈 칸들까지 전부 계산하는 셈이라 낭비가 크다.</p>
+<p>이 낭비를 줄이기 위해 이후 연구들은 점유된 복셀만 골라 계산하는 희소 컨볼루션(sparse convolution)이나, 옥트리처럼 표면 근처만 세밀하게 나누고 빈 공간은 성기게 남기는 적응적 자료구조를 도입했다. 그럼에도 복셀화는 3D 데이터를 CNN이라는 검증된 도구로 다룰 수 있게 해주는 가장 직접적인 다리이며, 자율주행 라이다 처리 파이프라인 등에서 여전히 널리 쓰인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="30" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="140" y="30" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="80" width="50" height="50" class="dg-accent"/>
+<rect x="90" y="80" width="50" height="50" class="dg-accent"/>
+<rect x="140" y="80" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="130" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="130" width="50" height="50" class="dg-accent"/>
+<rect x="140" y="130" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="60" font-size="12">점유된 복셀 (표면 근처)</text>
+<text x="220" y="85" font-size="12" class="dg-dim">→ 3D 컨볼루션 적용</text>
+<text x="220" y="140" font-size="12">빈 복셀은 대부분 계산 낭비</text>
+</svg>`,
+    diagramCaption: String.raw`점을 담은 칸만 점유되고 나머지는 대부분 빈 칸으로 남는다.`,
+    related: [{ label: "PointNet", slug: "pointnet" }, { label: "NeRF", slug: "nerf" }],
+    sections: []
+  },
+  "nerf": {
+    title: String.raw`NeRF: 장면을 신경망 하나로 표현하기`,
+    domain: "arch",
+    subLabel: String.raw`3D · 포인트클라우드`,
+    intuition: String.raw`<p>어떤 장면을 여러 각도에서 찍은 사진 몇 장만 있을 때, 한 번도 찍지 않은 새로운 각도에서는 어떤 모습일지 만들어낼 수 있을까. NeRF의 답은 장면 자체를 통째로 하나의 작은 신경망에 욱여넣는 것이다. 3D 공간의 한 점과 바라보는 방향을 넣으면 그 점의 색깔과 그 자리에 뭔가 존재할 밀도를 뱉어내는 함수를 학습시킨다.</p>
+<p>이 함수 하나만 있으면 카메라 광선을 그 함수에 쭉 통과시켜가며 색을 쌓아 올리는 방식으로 어떤 각도에서 본 장면이든 새로 그려낼 수 있다. 메시나 복셀 같은 명시적인 3D 모델을 저장하는 대신 신경망의 가중치 자체가 장면을 표현하는 셈이다.</p>`,
+    explanation: String.raw`<p>NeRF는 위치 $(x,y,z)$와 시선 방향 $(\theta,\phi)$를 입력받아 색상 $c=(r,g,b)$와 부피밀도 $\sigma$를 출력하는 작은 MLP $F_\Theta: (x,d) \to (c,\sigma)$로 장면을 표현한다. 밀도 $\sigma$는 시선 방향과 무관하게 그 점에 물질이 있을 정도만 나타내고, 색상은 방향에 따라 달라질 수 있게 해서 반사나 광택 같은 시점 의존적 효과까지 담아낸다.</p>
+<p>새로운 시점의 이미지를 만들려면 그 카메라의 각 픽셀에서 광선 $r(t) = o + td$를 쏘고, 광선을 따라 여러 지점을 샘플링해 $F_\Theta$에 통과시킨 뒤 볼륨렌더링 적분으로 픽셀 색을 합성한다.</p>
+$$C(r) = \int_{t_n}^{t_f} T(t)\,\sigma(r(t))\,c(r(t),d)\,dt$$
+$$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
+<p>$T(t)$는 광선이 $t_n$부터 $t$까지 오는 동안 아무것도 만나지 않고 투과할 확률이다. 실제 계산에서는 이 적분을 이산 샘플들에 대한 합 $\hat C(r) = \sum_i T_i(1-\exp(-\sigma_i\delta_i))c_i$로 근사한다. $\delta_i$는 인접 샘플 사이 거리, $T_i = \exp(-\sum_{j<i}\sigma_j\delta_j)$다.</p>
+<p>학습은 실제 촬영된 사진들의 픽셀 색과 이렇게 렌더링한 색의 차이를 손실로 삼아 MLP 가중치를 역전파로 최적화하는 것뿐이다. 명시적인 3D 형상을 따로 만들지 않고 사진들과 카메라 위치 정보만으로 장면을 재구성한다는 점이 이전의 메시나 포인트클라우드 기반 3D 재구성과 가장 다른 지점이다. 다만 장면 하나마다 새로 학습해야 하고 광선마다 수백 번씩 MLP를 호출해야 해서 원래 방식은 렌더링이 느렸고, 이후 연구들은 격자 기반 특징이나 해시 인코딩(Instant-NGP)으로 이 속도를 크게 끌어올렸다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="110" r="6" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="10" y="90" font-size="11">카메라</text>
+<line x1="46" y1="110" x2="300" y2="110" class="dg-line" stroke-width="1.5"/>
+<circle cx="120" cy="110" r="4" class="dg-accent"/>
+<circle cx="170" cy="110" r="4" class="dg-accent"/>
+<circle cx="220" cy="110" r="4" class="dg-accent"/>
+<circle cx="270" cy="110" r="4" class="dg-accent"/>
+<text x="140" y="90" font-size="11">샘플 점들</text>
+<line x1="300" y1="110" x2="350" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="350" y="80" width="80" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="390" y="115" font-size="12" text-anchor="middle">MLP</text>
+<line x1="430" y1="110" x2="480" y2="110" class="dg-line" stroke-width="1.5"/>
+<text x="484" y="95" font-size="11">색 c, 밀도 σ</text>
+<text x="470" y="130" font-size="11">→ 픽셀 색 합성</text>
+</svg>`,
+    diagramCaption: String.raw`카메라 광선을 따라 샘플링한 점들을 신경망에 넣고 색을 쌓아 픽셀 값을 만든다.`,
+    related: [{ label: "PointNet", slug: "pointnet" }, { label: "복셀 기반 3D CNN", slug: "voxel-cnn" }],
+    sections: []
+  },
+  "lstm-gru": {
+    title: String.raw`LSTM/GRU: 게이트로 장기의존성을 다루는 순환망`,
+    domain: "arch",
+    subLabel: String.raw`시계열`,
+    intuition: String.raw`<p>RNN 계열 모델은 문장이나 시계열처럼 순서가 있는 데이터를 한 스텝씩 읽으면서 이전까지의 정보를 하나의 요약 벡터에 담아 다음 스텝으로 넘긴다. 문제는 이 요약 벡터가 스텝을 거칠수록 계속 같은 방식으로 곱해지면서 오래된 정보가 점점 희미해진다는 점이다. 열 스텝 앞의 단서가 지금 예측에 중요한데도 그 흔적이 거의 사라져버리는 식이다.</p><p>LSTM과 GRU는 이 문제를 게이트라는 작은 장치로 푼다. 게이트는 정보를 얼마나 통과시키고 얼마나 막을지를 0에서 1 사이 값으로 스스로 학습해서 결정하는 밸브다. 중요한 정보는 오래 남기고 필요 없는 정보는 지워버리도록 모델이 직접 조절하게 만든 것이다.</p>`,
+    explanation: String.raw`<p>기본 순환신경망은 은닉상태를 매 스텝 같은 가중치행렬로 반복해서 곱한다. 이 반복곱셈이 스텝 수만큼 쌓이면 기울기가 지수적으로 작아지거나 커지는 기울기 소실 및 폭주 문제가 생긴다. 그래서 수십 스텝만 지나도 먼 과거의 정보가 학습에 거의 반영되지 못한다.</p><p>LSTM은 은닉상태와 별도로 셀상태 $C_t$라는 통로를 하나 더 둔다. 이 통로는 곱셈이 아니라 덧셈으로 갱신되기 때문에 기울기가 스텝을 거슬러 올라가도 크게 줄어들지 않는다. 갱신식은 $C_t = f_t \odot C_{t-1} + i_t \odot \tilde C_t$이고 여기서 $f_t=\sigma(W_f[h_{t-1},x_t]+b_f)$는 과거를 얼마나 지울지 정하는 망각게이트, $i_t=\sigma(W_i[h_{t-1},x_t]+b_i)$는 새 정보를 얼마나 받아들일지 정하는 입력게이트, $\tilde C_t=\tanh(W_C[h_{t-1},x_t]+b_C)$는 새로 제안되는 후보값이다. 출력은 출력게이트 $o_t=\sigma(W_o[h_{t-1},x_t]+b_o)$를 거쳐 $h_t=o_t\odot\tanh(C_t)$로 만들어진다.</p><p>GRU는 셀상태와 은닉상태를 하나로 합쳐 구조를 더 가볍게 만든 변형이다. 업데이트게이트 $z_t$와 리셋게이트 $r_t$만으로 $h_t=(1-z_t)\odot h_{t-1}+z_t\odot\tilde h_t$처럼 이전 상태와 새 후보 $\tilde h_t=\tanh(W[r_t\odot h_{t-1},x_t])$를 섞는다. 파라미터 수가 LSTM보다 적어 계산은 가볍지만 표현력은 대체로 비슷하다는 평가를 받는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="50" x2="580" y2="50" class="dg-stroke-accent" stroke-width="2.5" />
+      <text x="15" y="45">C(t-1)</text>
+      <text x="530" y="45">C(t)</text>
+      <circle cx="220" cy="50" r="15" fill="none" class="dg-stroke-ink" stroke-width="2" />
+      <text x="213" y="55" font-size="14">×</text>
+      <circle cx="400" cy="50" r="15" fill="none" class="dg-stroke-ink" stroke-width="2" />
+      <text x="393" y="55" font-size="14">+</text>
+      <line x1="220" y1="110" x2="220" y2="65" class="dg-line" stroke-width="1.5" />
+      <line x1="400" y1="110" x2="400" y2="65" class="dg-line" stroke-width="1.5" />
+      <rect x="150" y="110" width="340" height="55" rx="10" fill="none" class="dg-line" stroke-width="1.5" />
+      <text x="185" y="142" font-size="12">게이트: f(t) 망각 · i(t) 입력 · o(t) 출력</text>
+      <line x1="220" y1="200" x2="220" y2="165" class="dg-line" stroke-width="1.5" />
+      <line x1="400" y1="200" x2="400" y2="165" class="dg-line" stroke-width="1.5" />
+      <text x="170" y="215" class="dg-dim">입력 x(t), h(t-1)</text>
+      <line x1="580" y1="50" x2="580" y2="140" class="dg-line" stroke-width="1.5" />
+      <line x1="580" y1="140" x2="500" y2="140" class="dg-line" stroke-width="1.5" />
+      <rect x="500" y="120" width="90" height="40" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="518" y="145">h(t)</text>
+    </svg>`,
+    diagramCaption: String.raw`셀상태가 곱셈이 아닌 덧셈으로만 갱신되어 정보가 오래 남는 통로를 보여줍니다.`,
+    related: [{ label: "TCN", slug: "tcn" }, { label: "시계열 Transformer", slug: "time-series-transformer" }],
+    sections: []
+  },
+  "tcn": {
+    title: String.raw`TCN: 인과적 팽창합성곱으로 시퀀스를 다루기`,
+    domain: "arch",
+    subLabel: String.raw`시계열`,
+    intuition: String.raw`<p>시계열이나 텍스트처럼 순서가 있는 데이터를 다룰 때 합성곱 신경망을 쓰면 이미지에서처럼 병렬로 빠르게 계산할 수 있다는 장점이 있다. 다만 그대로 쓰면 미래 시점의 값을 보고 현재를 예측하는 반칙이 생길 수 있고 먼 과거까지 보려면 층을 아주 많이 쌓아야 한다는 문제가 있다.</p><p>TCN은 두 가지 장치로 이 문제를 해결한다. 인과적 합성곱으로 항상 현재와 과거만 보게 강제하고 팽창합성곱으로 필터 사이의 간격을 층마다 넓혀서 층을 조금만 쌓아도 아주 먼 과거까지 한 번에 볼 수 있게 만든다.</p>`,
+    explanation: String.raw`<p>인과적 합성곱은 시점 $t$의 출력이 $t$ 이전 시점의 입력에만 의존하도록 필터를 왼쪽으로만 펼치는 합성곱이다. 이렇게 하면 학습과 추론에서 미래 정보가 새어 들어가는 일이 없다. 다만 보통의 합성곱처럼 인접한 시점만 본다면 먼 과거를 보기 위해 층을 매우 깊게 쌓아야 한다.</p><p>팽창합성곱은 필터가 입력을 훑을 때 연속된 칸이 아니라 팽창계수 $d$만큼 간격을 벌려서 훑는다. 층 $l$의 팽창계수를 $d_l=2^l$처럼 지수적으로 키우면 커널 크기가 $k$일 때 층을 $L$개 쌓은 뒤의 수용영역은 대략 $1+(k-1)\sum_{l=0}^{L-1}d_l = 1+(k-1)(2^L-1)$로 층 수에 대해 지수적으로 늘어난다. 층 몇 개만 쌓아도 수천 스텝 전의 정보까지 닿을 수 있다는 뜻이다.</p><p>각 팽창합성곱 블록에는 잔차연결도 함께 들어간다. 입력을 그대로 더해주는 경로 덕분에 층을 깊게 쌓아도 학습이 불안정해지지 않는다. 이렇게 만든 TCN은 전체 시퀀스를 한 번에 병렬로 처리할 수 있어서 한 스텝씩 순차적으로 계산해야 하는 LSTM보다 학습 속도가 훨씬 빠르면서도 장기 패턴을 잘 잡는다는 평가를 받는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+      <line x1="50" y1="190" x2="510" y2="190" class="dg-line" stroke-width="1.5" />
+      <text x="40" y="210">과거</text>
+      <text x="470" y="210">현재 t</text>
+      <line x1="150" y1="190" x2="480" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="4 3" />
+      <text x="330" y="145">층1 d=1</text>
+      <line x1="90" y1="190" x2="480" y2="105" class="dg-line" stroke-width="1.5" stroke-dasharray="4 3" />
+      <text x="300" y="100">층2 d=2</text>
+      <line x1="50" y1="190" x2="480" y2="60" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4 3" />
+      <text x="280" y="55">층3 d=4</text>
+      <circle cx="480" cy="40" r="7" class="dg-accent" />
+      <text x="440" y="30">출력 y(t)</text>
+    </svg>`,
+    diagramCaption: String.raw`팽창계수가 층마다 두 배씩 커지면서 적은 층으로도 먼 과거까지 닿는 구조입니다.`,
+    example: String.raw`<p>커널 크기 $k=2$, 층 수 $L=3$, 팽창계수를 $1, 2, 4$로 두면 수용영역은 $1+(k-1)(2^L-1)=1+1\times(8-1)=8$이다.</p><p>같은 크기의 수용영역을 팽창 없는 보통의 합성곱으로 얻으려면 층을 7개 쌓아야 한다. TCN은 층 3개로 같은 범위를 본다.</p>`,
+    related: [{ label: "LSTM/GRU", slug: "lstm-gru" }, { label: "시계열 Transformer", slug: "time-series-transformer" }],
+    sections: []
+  },
+  "time-series-transformer": {
+    title: String.raw`시계열 Transformer: 순서를 잃지 않는 어텐션`,
+    domain: "arch",
+    subLabel: String.raw`시계열`,
+    intuition: String.raw`<p>Transformer는 문장 속 모든 단어 쌍의 관계를 어텐션으로 한 번에 계산하기 때문에 순서 정보가 구조 안에 자동으로 들어있지 않다. 단어를 아무렇게나 섞어 넣어도 어텐션 계산 자체는 똑같이 돌아간다. 문장에서는 이게 위치인코딩으로 해결되는데 시계열에서도 똑같은 문제가 생긴다.</p><p>시계열에 Transformer를 쓰려면 각 시점이 몇 번째인지, 하루 중 몇 시인지나 요일 같은 주기적 정보까지 모델에 직접 알려줘야 한다. 그래야 어텐션이 모든 과거 시점을 한 번에 보면서도 시간 순서와 주기성을 놓치지 않는다.</p>`,
+    explanation: String.raw`<p>RNN 계열은 한 스텝씩 순서대로 처리하기 때문에 순서 정보가 계산 구조 자체에 들어있다. 반면 셀프어텐션은 시퀀스의 모든 시점 쌍 사이의 관련도를 병렬로 한 번에 계산하는 집합 연산에 가깝다. 그래서 입력에 위치정보를 별도로 더해주지 않으면 시점의 순서를 전혀 구분하지 못한다.</p><p>시계열 Transformer는 사인 코사인 함수로 만든 고정 위치인코딩이나 학습되는 위치임베딩을 입력에 더해서 이 문제를 해결한다. 여기에 더해 요일이나 시간대처럼 주기적으로 반복되는 달력 정보를 별도의 임베딩으로 추가하는 경우도 많다. 이렇게 만든 입력을 셀프어텐션에 넣으면 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d_k})V$ 계산을 통해 과거의 모든 시점을 한 번에 참고하면서 예측에 중요한 시점에 더 큰 가중치를 준다.</p><p>순수한 셀프어텐션은 시퀀스 길이 $n$에 대해 $O(n^2)$의 연산량과 메모리가 필요해서 아주 긴 시계열에는 그대로 쓰기 어렵다. Informer나 Autoformer 같은 후속 모델들은 어텐션 계산을 희소하게 줄이거나 시계열의 추세와 계절성을 먼저 분해한 뒤 어텐션을 적용하는 식으로 이 문제를 완화한다.</p>`,
+    related: [{ label: "TCN", slug: "tcn" }, { label: "LSTM/GRU", slug: "lstm-gru" }],
+    sections: []
+  },
+  "lenet-alexnet": {
+    title: String.raw`LeNet/AlexNet: 합성곱 신경망의 출발점`,
+    domain: "arch",
+    subLabel: String.raw`CNN 백본 계보`,
+    intuition: String.raw`<p>이미지를 그대로 완전연결층에 넣으면 픽셀 수만큼 파라미터가 폭발적으로 늘어나고 물체가 조금만 움직여도 완전히 다른 입력으로 취급된다. 합성곱 신경망은 작은 필터를 이미지 전체에 반복해서 적용해서 이 문제를 해결한다. 같은 필터가 어디서든 같은 모양을 찾아내기 때문에 파라미터도 적게 쓰고 물체의 위치가 조금 바뀌어도 잘 인식한다.</p><p>LeNet과 AlexNet은 이 아이디어를 실제로 작동하는 신경망으로 처음 증명한 모델들이다. LeNet은 손글씨 숫자를 읽는 작은 문제에서, AlexNet은 수백만 장의 실제 사진을 분류하는 훨씬 큰 문제에서 합성곱 구조가 통한다는 걸 보여줬다.</p>`,
+    explanation: String.raw`<p>LeNet-5는 1998년 얀 르쿤이 우편번호 숫자 인식을 위해 설계한 구조다. 합성곱층과 풀링층을 번갈아 쌓고 마지막에 완전연결층을 붙이는 지금도 익숙한 골격을 처음 제시했다. 활성함수로는 시그모이드나 tanh를 썼고 층 수도 몇 개 되지 않는 작은 네트워크였다.</p><p>AlexNet은 2012년 이미지넷 대회에서 기존의 손으로 설계한 특징 추출 방식을 큰 차이로 이기면서 딥러닝이 컴퓨터비전의 주류가 되는 계기를 만들었다. LeNet과 기본 골격은 비슷하지만 층을 훨씬 깊고 넓게 쌓았고 시그모이드 대신 학습이 훨씬 빠른 ReLU 활성함수를 썼다. 또 과적합을 막기 위해 드롭아웃을 도입했고 GPU 두 대를 병렬로 써서 그 정도 규모의 네트워크를 현실적인 시간 안에 학습시켰다.</p><p>두 모델이 공통으로 보여준 교훈은 이미지를 다루는 데는 필터를 지역적으로 공유하는 구조가 유리하다는 것과 데이터와 연산량이 충분히 커지면 신경망이 사람이 손으로 설계한 특징보다 더 나은 특징을 스스로 찾아낸다는 것이다. 이 두 교훈이 이후 이어지는 모든 CNN 백본 설계의 출발점이 됐다.</p>`,
+    related: [{ label: "ResNet", slug: "resnet" }, { label: "EfficientNet", slug: "efficientnet" }],
+    sections: []
+  },
+  "resnet": {
+    title: String.raw`ResNet: 잔차연결로 깊이의 한계를 넘다`,
+    domain: "arch",
+    subLabel: String.raw`CNN 백본 계보`,
+    intuition: String.raw`<p>신경망은 층을 깊게 쌓을수록 더 복잡한 패턴을 배울 수 있을 것 같지만 실제로는 어느 순간부터 층을 더 쌓을수록 오히려 성능이 나빠지는 현상이 나타났다. 이는 단순히 과적합 때문이 아니라 학습 자체가 잘 되지 않기 때문이었다. 깊은 층을 거치는 동안 신호와 그 신호에 대한 기울기가 점점 옅어져서 원하는 값을 학습하기가 구조적으로 어려워진 것이다.</p><p>ResNet의 해법은 각 층이 완전히 새로운 값을 처음부터 만들어내게 하는 대신 입력에 더할 차이만 학습하게 하는 것이다. 층이 아무것도 배우지 못해도 최소한 입력을 그대로 통과시키는 지름길이 항상 열려있기 때문에 층을 아무리 깊이 쌓아도 성능이 얕은 네트워크보다 나빠질 이유가 없어진다.</p>`,
+    explanation: String.raw`<p>일반적인 층은 입력 $x$를 받아 원하는 목표 함수 $H(x)$를 곧바로 근사하도록 학습된다. ResNet은 대신 층이 잔차 $F(x)=H(x)-x$만 학습하도록 설계하고 출력을 $y=F(x)+x$로 만든다. 이 덧셈 경로를 지름길연결이라 부른다.</p><p>이 구조가 강력한 이유는 역전파 과정에서 드러난다. $y=F(x)+x$를 $x$로 미분하면 $\partial y/\partial x = \partial F/\partial x + 1$이 되는데 뒤의 $1$항 덕분에 $F$ 쪽 경로의 기울기가 아무리 작아지더라도 지름길을 타고 흐르는 기울기는 절대 사라지지 않는다. 그 결과 수십 층에서 수백 층까지 쌓아도 학습이 안정적으로 진행된다.</p><p>극단적으로 어떤 층이 항등함수 $F(x)=0$을 배우는 것조차 일반 신경망에서는 여러 개의 비선형 층으로 정확히 흉내내기 어려운 목표지만 ResNet에서는 그냥 $F$의 가중치를 0에 가깝게만 두면 저절로 얻어진다. 이 덕분에 층을 늘리는 것이 최악의 경우에도 성능을 해치지 않는 안전한 선택이 되고 실제로는 더 깊은 표현력을 활용해 성능이 꾸준히 좋아진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="42">x</text>
+      <line x1="35" y1="37" x2="160" y2="37" class="dg-line" stroke-width="1.5" />
+      <line x1="35" y1="37" x2="35" y2="150" class="dg-line" stroke-width="1.5" />
+      <rect x="160" y="20" width="120" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="180" y="42" font-size="12">가중치층</text>
+      <line x1="280" y1="37" x2="360" y2="37" class="dg-line" stroke-width="1.5" />
+      <rect x="360" y="20" width="130" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="375" y="42" font-size="12">가중치층 F(x)</text>
+      <line x1="490" y1="37" x2="520" y2="37" class="dg-line" stroke-width="1.5" />
+      <line x1="520" y1="37" x2="520" y2="120" class="dg-line" stroke-width="1.5" />
+      <line x1="35" y1="150" x2="504" y2="150" class="dg-stroke-accent" stroke-width="2" />
+      <text x="150" y="170" class="dg-dim" font-size="12">지름길연결 (identity)</text>
+      <circle cx="520" cy="150" r="16" fill="none" class="dg-stroke-ink" stroke-width="2" />
+      <text x="513" y="155" font-size="14">+</text>
+      <line x1="520" y1="166" x2="520" y2="185" class="dg-line" stroke-width="1.5" />
+      <text x="470" y="198" font-size="12">y = F(x) + x</text>
+    </svg>`,
+    diagramCaption: String.raw`입력이 층을 건너뛰어 그대로 더해지는 지름길연결을 보여줍니다.`,
+    related: [{ label: "LeNet/AlexNet", slug: "lenet-alexnet" }, { label: "EfficientNet", slug: "efficientnet" }],
+    sections: []
+  },
+  "efficientnet": {
+    title: String.raw`EfficientNet: 깊이·너비·해상도의 동시 스케일링`,
+    domain: "arch",
+    subLabel: String.raw`CNN 백본 계보`,
+    intuition: String.raw`<p>신경망을 더 좋은 성능으로 키우고 싶을 때 흔히 층을 더 깊게 쌓거나 채널을 더 넓히거나 입력 이미지 해상도를 더 키우는 세 가지 방법 중 하나를 쓴다. 문제는 이 셋 중 하나만 계속 키우면 금방 성능 향상이 둔해지고 계산량만 낭비하게 된다는 점이다.</p><p>EfficientNet은 셋 중 하나만 고르는 대신 세 가지를 정해진 비율로 함께 키운다. 사진을 확대할 때 가로와 세로를 같은 비율로 늘려야 비율이 깨지지 않듯이 깊이 너비 해상도를 균형 잡힌 비율로 동시에 늘리면 같은 연산량으로 훨씬 더 좋은 성능을 얻을 수 있다는 것을 보여준 모델이다.</p>`,
+    explanation: String.raw`<p>신경망의 용량을 키우는 세 축은 층 수를 늘리는 깊이, 채널 수를 늘리는 너비, 입력 이미지 크기를 키우는 해상도다. 기존 연구들은 대개 이 중 한 축만 키우면서 나머지는 그대로 두는 식으로 스케일업을 했다.</p><p>EfficientNet은 이 세 축을 하나의 계수 $\phi$로 함께 조절하는 복합 스케일링을 제안한다. 깊이는 $d=\alpha^\phi$, 너비는 $w=\beta^\phi$, 해상도는 $r=\gamma^\phi$로 늘리고 이때 $\alpha\cdot\beta^2\cdot\gamma^2\approx2$이며 $\alpha,\beta,\gamma\ge1$이라는 제약을 둔다. 너비와 해상도에 제곱이 붙는 이유는 너비를 늘리면 채널 방향으로, 해상도를 늘리면 가로세로 두 방향으로 연산량이 늘어나기 때문에 전체 연산량이 대략 $2^\phi$배가 되도록 맞춘 것이다.</p><p>먼저 작은 기준 모델에서 그리드서치로 $\alpha,\beta,\gamma$의 최적 비율을 한 번 찾아두면 이후에는 $\phi$ 값만 바꿔서 EfficientNet B0부터 B7까지 크기가 다른 모델들을 일관된 비율로 만들어낼 수 있다. 그 결과 비슷한 연산량 대비 정확도가 당시 다른 CNN들보다 크게 앞섰다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="60" y="120" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="45" y="200" font-size="12">기본 모델</text>
+      <line x1="130" y1="150" x2="220" y2="150" class="dg-line" stroke-width="1.5" />
+      <text x="150" y="140" class="dg-dim" font-size="12">φ</text>
+      <rect x="230" y="40" width="220" height="150" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <line x1="230" y1="90" x2="450" y2="90" class="dg-line" stroke-width="1" />
+      <line x1="230" y1="140" x2="450" y2="140" class="dg-line" stroke-width="1" />
+      <line x1="300" y1="40" x2="300" y2="190" class="dg-line" stroke-width="1" />
+      <line x1="370" y1="40" x2="370" y2="190" class="dg-line" stroke-width="1" />
+      <text x="250" y="28" font-size="12">너비 w=β^φ</text>
+      <text x="455" y="120" font-size="12">깊이 d=α^φ</text>
+      <text x="230" y="207" font-size="12">해상도 r=γ^φ</text>
+    </svg>`,
+    diagramCaption: String.raw`세 축을 정해진 비율로 함께 키우는 복합 스케일링을 도식화했습니다.`,
+    example: String.raw`<p>$\alpha=1.2$, $\beta=1.1$, $\gamma=1.15$인 기준 비율에서 $\phi=1$을 쓰면 깊이는 $1.2$배, 너비는 $1.1$배, 해상도는 $1.15$배로 함께 늘어난다.</p><p>이때 연산량 배수는 $\alpha\cdot\beta^2\cdot\gamma^2 \approx 1.2\times1.21\times1.32 \approx 1.92$로 목표한 $2$배 근처에 맞춰진다. $\phi$를 2, 3으로 올리면 세 값이 함께 지수적으로 커지면서 더 큰 모델이 같은 비율로 만들어진다.</p>`,
+    related: [{ label: "ResNet", slug: "resnet" }, { label: "LeNet/AlexNet", slug: "lenet-alexnet" }],
+    sections: []
+  },
+  "unet-diffusion": {
+    title: String.raw`U-Net: 노이즈를 예측하는 인코더-디코더`,
+    domain: "arch",
+    subLabel: String.raw`Diffusion 아키텍처`,
+    intuition: String.raw`<p>디퓨전 모델은 완전히 노이즈뿐인 이미지에서 출발해서 조금씩 노이즈를 걷어내며 진짜 이미지를 만들어낸다. 이때 각 단계마다 지금 이미지에 정확히 어떤 노이즈가 섞여 있는지를 추측하는 신경망이 필요한데 이 추측을 맡는 표준 구조가 U-Net이다.</p><p>U-Net은 이미지를 점점 작게 압축해가며 전체적인 맥락을 파악하는 인코더와 다시 원래 크기로 키워가며 세부를 복원하는 디코더로 이루어진다. 압축 과정에서 사라지는 세밀한 정보를 보완하기 위해 인코더의 각 단계에서 디코더의 같은 크기 단계로 정보를 직접 건네주는 지름길도 함께 둔다.</p>`,
+    explanation: String.raw`<p>U-Net은 원래 의료영상을 픽셀 단위로 분할하기 위해 고안된 구조다. 입력을 여러 단계에 걸쳐 다운샘플링하면서 채널 수는 늘리고 공간 크기는 줄여 넓은 범위의 맥락정보를 압축해서 담는다. 이어서 같은 단계 수만큼 업샘플링하면서 원래의 공간 해상도를 되찾는다.</p><p>다운샘플링 과정에서는 세밀한 위치 정보가 필연적으로 손실된다. U-Net은 이를 보완하기 위해 인코더의 각 단계 출력을 디코더의 대응하는 단계로 직접 이어붙이는 스킵연결을 둔다. 덕분에 디코더는 전체 맥락과 세부 위치 정보를 동시에 활용해서 출력을 만들 수 있다.</p><p>디퓨전 모델에서 이 구조는 노이즈가 섞인 이미지 $x_t$와 현재 타임스텝 $t$를 입력으로 받아 그 안에 섞인 노이즈 $\epsilon_\theta(x_t,t)$를 예측하는 역할을 맡는다. 타임스텝 정보는 보통 사인 코사인로 만든 임베딩을 각 블록에 더해주는 방식으로 주입된다. 예측한 노이즈를 이용해 $x_t$에서 노이즈를 조금 덜어내면 $x_{t-1}$을 얻고 이 과정을 반복하면 순수한 노이즈가 점점 이미지로 바뀐다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="90" height="30" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="45" y="50" font-size="11">인코더1</text>
+      <rect x="140" y="75" width="80" height="28" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="150" y="94" font-size="11">인코더2</text>
+      <rect x="245" y="120" width="70" height="28" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="255" y="139" font-size="11">병목</text>
+      <rect x="360" y="75" width="80" height="28" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="368" y="94" font-size="11">디코더2</text>
+      <rect x="480" y="30" width="90" height="30" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="493" y="50" font-size="11">디코더1</text>
+      <line x1="75" y1="60" x2="150" y2="80" class="dg-line" stroke-width="1.5" />
+      <line x1="180" y1="103" x2="255" y2="122" class="dg-line" stroke-width="1.5" />
+      <line x1="315" y1="132" x2="380" y2="108" class="dg-line" stroke-width="1.5" />
+      <line x1="410" y1="80" x2="500" y2="55" class="dg-line" stroke-width="1.5" />
+      <line x1="120" y1="45" x2="480" y2="45" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5 4" />
+      <line x1="220" y1="89" x2="360" y2="89" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x="170" y="190" class="dg-dim" font-size="12">스킵연결이 인코더의 세부정보를 디코더로 직접 전달</text>
+      <text x="500" y="20" font-size="12">ε(x_t, t)</text>
+    </svg>`,
+    diagramCaption: String.raw`인코더에서 압축한 정보를 스킵연결로 디코더에 그대로 건네주는 구조입니다.`,
+    related: [{ label: "Latent Diffusion", slug: "latent-diffusion" }, { label: "텍스트 조건화", slug: "text-conditioning" }],
+    sections: []
+  },
+  "latent-diffusion": {
+    title: String.raw`Latent Diffusion: 압축된 잠재공간에서 확산하기`,
+    domain: "arch",
+    subLabel: String.raw`Diffusion 아키텍처`,
+    intuition: String.raw`<p>디퓨전 모델을 원본 이미지 픽셀 위에서 그대로 돌리면 512×512 같은 큰 해상도의 이미지 전체에 대해 노이즈를 예측하는 계산을 수백 번 반복해야 해서 비용이 매우 크다. 픽셀 하나하나에는 사람 눈에 중요하지 않은 미세한 정보도 많이 섞여 있는데 그런 정보까지 매번 다 처리하는 셈이다.</p><p>latent diffusion은 이미지를 먼저 훨씬 작은 잠재공간으로 압축한 뒤 그 압축된 표현 위에서만 노이즈를 넣고 제거하는 과정을 반복한다. 다 끝난 뒤에 압축을 푸는 디코더로 마지막에 한 번만 원래 크기의 이미지로 되돌린다. 같은 작업을 훨씬 작은 표현 위에서 하기 때문에 계산량이 크게 줄어든다.</p>`,
+    explanation: String.raw`<p>latent diffusion은 먼저 오토인코더 계열의 인코더 $E$와 디코더 $D$를 학습시켜 이미지 $x$를 훨씬 낮은 차원의 잠재표현 $z=E(x)$로 압축하고 $D(z)\approx x$가 되도록 만든다. 예를 들어 512×512×3 크기의 이미지를 64×64×4 정도의 잠재표현으로 압축하면 공간 차원이 8분의 1로 줄어든다.</p><p>확산과 역확산 과정은 원본 픽셀 $x$가 아니라 이 잠재표현 $z$ 위에서 진행된다. U-Net 기반의 노이즈 예측 네트워크도 압축된 $z_t$를 입력으로 받아 그 안의 노이즈 $\epsilon_\theta(z_t,t)$를 예측한다. 노이즈 제거를 반복해서 얻은 최종 잠재표현 $z_0$은 마지막에 디코더 $D$를 한 번 통과해 실제 이미지로 복원된다.</p><p>이 구조 덕분에 반복적으로 노이즈를 예측해야 하는 무거운 연산이 전부 작은 잠재공간에서 이루어지고 큰 해상도로의 변환은 인코딩과 디코딩 각각 한 번씩만 필요하다. Stable Diffusion을 비롯한 널리 쓰이는 텍스트투이미지 모델들이 대부분 이 구조를 기본 골격으로 삼고 있다.</p>`,
+    related: [{ label: "U-Net", slug: "unet-diffusion" }, { label: "텍스트 조건화", slug: "text-conditioning" }],
+    sections: []
+  },
+  "text-conditioning": {
+    title: String.raw`텍스트 조건화: 크로스어텐션으로 프롬프트 주입하기`,
+    domain: "arch",
+    subLabel: String.raw`Diffusion 아키텍처`,
+    intuition: String.raw`<p>디퓨전 모델이 그냥 노이즈에서 아무 이미지나 만들어내는 게 아니라 사용자가 입력한 프롬프트에 맞는 이미지를 만들게 하려면 텍스트의 의미를 이미지를 생성하는 네트워크 내부로 계속 흘려보내야 한다. 텍스트 임베딩 하나를 처음에 한 번 더해주는 정도로는 복잡한 문장의 세부 내용을 이미지 구석구석까지 반영하기 어렵다.</p><p>크로스어텐션은 이미지 쪽의 각 위치가 프롬프트 속 단어들 중 지금 자신에게 관련 있는 단어를 스스로 찾아서 참고하도록 만드는 장치다. 이미지의 서로 다른 영역이 문장 속 서로 다른 단어에 집중할 수 있어서 프롬프트의 세부 내용이 이미지 곳곳에 정확히 반영된다.</p>`,
+    explanation: String.raw`<p>텍스트 조건화는 U-Net의 각 블록 사이에 크로스어텐션 층을 끼워 넣는 방식으로 구현된다. 이때 질의 $Q$는 현재 이미지 특징에서, 키 $K$와 값 $V$는 텍스트 인코더가 만든 단어별 임베딩 $\tau(y)$에서 만들어진다. 즉 $Q=W_Q\phi(z_t)$, $K=W_K\tau(y)$, $V=W_V\tau(y)$이고 어텐션은 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d})V$로 계산된다.</p><p>이 계산의 결과로 이미지 특징의 각 위치가 자신과 가장 관련 있는 단어들의 값 벡터를 가중합해서 가져온다. 그림 왼쪽 위 영역은 프롬프트 속 특정 물체를 가리키는 단어에, 배경에 해당하는 영역은 배경을 묘사하는 단어에 더 큰 가중치를 주는 식으로 자연스럽게 역할이 나뉜다.</p><p>텍스트 인코더로는 CLIP의 텍스트 인코더나 T5 같은 대형 언어모델이 흔히 쓰인다. 크로스어텐션 층은 U-Net의 여러 해상도 단계에 반복해서 삽입되기 때문에 거친 구조부터 세밀한 디테일까지 여러 수준에서 텍스트 조건을 반영할 수 있다.</p>`,
+    related: [{ label: "U-Net", slug: "unet-diffusion" }, { label: "크로스모달 어텐션", slug: "cross-modal-attention" }],
+    sections: []
+  },
+  "mamba": {
+    title: String.raw`Mamba: 선택적 상태공간모델`,
+    domain: "arch",
+    subLabel: String.raw`State-Space 모델`,
+    intuition: String.raw`<p>Transformer는 문장이 길어질수록 모든 단어 쌍의 관계를 전부 계산하기 때문에 길이가 늘어나는 만큼 연산량이 제곱으로 늘어난다. 상태공간모델은 이 문제를 RNN처럼 한 스텝씩 정보를 압축된 상태 하나에 담아 흘려보내는 방식으로 우회한다. 다만 기존의 상태공간모델은 상태를 갱신하는 규칙이 입력이 무엇이든 항상 똑같아서 지금 들어온 정보가 중요한지 아닌지를 구분하지 못한다는 한계가 있었다.</p><p>Mamba는 이 갱신 규칙 자체를 지금 들어온 입력에 따라 매번 다르게 만든다. 중요한 정보가 들어오면 상태에 강하게 반영하고 중요하지 않은 정보가 들어오면 거의 무시하도록 모델이 스스로 판단한다. 어텐션이 관련 있는 단어를 골라서 보는 것과 비슷한 선택적 집중을 순환 구조 안에서 구현한 셈이다.</p>`,
+    explanation: String.raw`<p>기존의 선형 시불변 상태공간모델은 $h_t=\bar A h_{t-1}+\bar B x_t$, $y_t=Ch_t$처럼 상태전이행렬 $\bar A$와 입력행렬 $\bar B$가 시간에 따라 고정되어 있다. 이 고정성 덕분에 학습 시에는 전체 계산을 하나의 합성곱으로 바꿔서 병렬로 처리할 수 있지만 동시에 어떤 입력이 오든 정보를 담고 버리는 규칙이 항상 똑같다는 한계를 갖는다.</p><p>Mamba는 이산화 스텝 $\Delta_t$와 입력행렬 $B_t$, 출력행렬 $C_t$를 고정된 파라미터가 아니라 현재 입력 $x_t$의 선형함수로 만든다. 그 결과 상태 갱신이 $h_t=\bar A_t h_{t-1}+\bar B_t x_t$처럼 매 스텝 입력에 따라 달라지는 선택적 상태공간모델이 된다. 의미상 중요한 단어가 들어오면 $\Delta_t$가 커지면서 그 정보가 상태에 강하게 반영되고 불필요한 단어가 들어오면 상태가 거의 갱신되지 않고 이전 값을 유지한다.</p><p>문제는 이렇게 시간에 따라 파라미터가 바뀌면 더는 하나의 합성곱으로 병렬화할 수 없다는 점이다. Mamba는 이를 하드웨어를 고려한 병렬 스캔 알고리즘으로 해결해서 GPU에서도 여전히 효율적으로 학습한다. 추론할 때는 RNN처럼 상태 하나만 유지하며 한 스텝씩 계산하기 때문에 시퀀스 길이에 대해 선형적인 연산량과 일정한 메모리로 동작한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+      <text x="30" y="65">h(t-1)</text>
+      <line x1="80" y1="60" x2="130" y2="60" class="dg-line" stroke-width="1.5" />
+      <rect x="130" y="35" width="220" height="60" rx="8" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="150" y="58" font-size="12">선택적 SSM</text>
+      <text x="150" y="78" class="dg-dim" font-size="11">Δ(t), B(t), C(t) = f(x(t))</text>
+      <line x1="350" y1="60" x2="400" y2="60" class="dg-line" stroke-width="1.5" />
+      <text x="405" y="65">h(t)</text>
+      <line x1="240" y1="150" x2="240" y2="95" class="dg-line" stroke-width="1.5" />
+      <text x="210" y="168">x(t)</text>
+      <line x1="460" y1="60" x2="510" y2="60" class="dg-line" stroke-width="1.5" />
+      <circle cx="480" cy="60" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="471" y="65" font-size="11">C(t)</text>
+      <text x="520" y="65">y(t)</text>
+    </svg>`,
+    diagramCaption: String.raw`입력마다 Δ, B, C가 달라지는 선택적 상태 갱신을 보여줍니다.`,
+    related: [{ label: "S4", slug: "s4-model" }, { label: "SSM 추론 특성", slug: "ssm-inference-characteristics" }],
+    sections: []
+  },
+  "s4-model": {
+    title: String.raw`S4: 구조화된 상태공간과 HiPPO 초기화`,
+    domain: "arch",
+    subLabel: String.raw`State-Space 모델`,
+    intuition: String.raw`<p>아주 오래된 신호까지 기억하면서도 계산은 가볍게 하고 싶다면 어떻게 해야 할까. 상태공간모델은 원래 제어이론에서 쓰이던 아이디어로 시스템의 현재 상태 하나만 유지하면서 입력이 들어올 때마다 그 상태를 갱신하고 상태로부터 출력을 읽어내는 방식이다. 문제는 이 상태를 아무렇게나 갱신하면 먼 과거의 정보가 금방 사라져버린다는 점이다.</p><p>S4는 상태를 갱신하는 행렬을 아무렇게나 두지 않고 과거 입력의 이력을 수학적으로 가장 잘 압축하도록 미리 계산된 특별한 값으로 초기화한다. 이 초기화 방법을 HiPPO라 부른다. 이렇게 시작하면 상태 벡터 하나만으로도 아주 먼 과거의 정보까지 효율적으로 담아낼 수 있다.</p>`,
+    explanation: String.raw`<p>상태공간모델은 연속시간에서 $h'(t)=Ah(t)+Bx(t)$, $y(t)=Ch(t)$라는 선형 미분방정식으로 시스템을 정의한다. 실제 데이터는 이산적인 시퀀스이므로 스텝 간격 $\Delta$를 두고 이를 이산화해서 $\bar A=\exp(\Delta A)$, $\bar B=(\Delta A)^{-1}(\exp(\Delta A)-I)\Delta B$로 바꾸고 $h_t=\bar A h_{t-1}+\bar B x_t$, $y_t=Ch_t$라는 이산 순환식으로 계산한다.</p><p>이 틀에서 성능을 좌우하는 것은 행렬 $A$를 어떻게 고르느냐다. HiPPO 이론은 과거 입력을 특정 직교다항식 기저로 사영했을 때 그 계수를 최적으로 유지하도록 만드는 $A$의 닫힌 형태를 제시한다. 이 행렬로 상태를 초기화하면 상태 벡터가 오래된 정보를 급격히 잊어버리지 않고 효율적으로 압축해서 들고 있을 수 있다.</p><p>S4는 여기에 더해 $A$를 대각행렬과 저계수행렬의 합으로 구조화해서 이산 순환식을 시퀀스 전체에 대한 하나의 합성곱 커널로 다시 쓸 수 있게 만든다. 이 커널은 코시커널과 FFT를 이용해 빠르게 계산할 수 있어서 순환식을 한 스텝씩 도는 대신 시퀀스 전체를 한 번에 병렬로 처리하면서도 매우 긴 의존성까지 포착한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 180" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="60" width="150" height="55" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="30" y="82" font-size="11">연속시간</text>
+      <text x="30" y="100" class="dg-dim" font-size="11">h'(t)=Ah(t)+Bx(t)</text>
+      <line x1="170" y1="87" x2="230" y2="87" class="dg-line" stroke-width="1.5" />
+      <text x="172" y="76" class="dg-dim" font-size="11">이산화 Δ</text>
+      <rect x="230" y="60" width="180" height="55" rx="8" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="240" y="82" font-size="11">이산 순환식</text>
+      <text x="240" y="100" class="dg-dim" font-size="11">h(t)=Āh(t-1)+B̄x(t)</text>
+      <line x1="410" y1="87" x2="470" y2="87" class="dg-line" stroke-width="1.5" />
+      <rect x="470" y="60" width="130" height="55" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="490" y="82" font-size="11">출력</text>
+      <text x="480" y="100" class="dg-dim" font-size="11">y(t)=Ch(t)</text>
+    </svg>`,
+    diagramCaption: String.raw`연속시간 시스템을 이산화해서 순환식으로 계산하는 흐름입니다.`,
+    example: String.raw`<p>$A=-1$, $B=1$, 스텝 간격 $\Delta=1$인 스칼라 경우를 생각해보자.</p><p>이산화하면 $\bar A=e^{\Delta A}=e^{-1}\approx0.368$이고 $\bar B=\dfrac{e^{\Delta A}-1}{A}B\approx0.632$이다. 순환식은 $h_t\approx0.368h_{t-1}+0.632x_t$가 되어 매 스텝 이전 상태를 37퍼센트 남기고 새 입력을 63퍼센트 반영하는 지수평활과 같은 모양이 된다.</p>`,
+    related: [{ label: "Mamba", slug: "mamba" }, { label: "SSM 추론 특성", slug: "ssm-inference-characteristics" }],
+    sections: []
+  },
+  "ssm-inference-characteristics": {
+    title: String.raw`SSM의 추론 특성: KV 캐시 없는 상수 메모리`,
+    domain: "arch",
+    subLabel: String.raw`State-Space 모델`,
+    intuition: String.raw`<p>챗봇이 긴 대화를 이어갈 때 Transformer 기반 모델은 지금까지 나온 모든 단어의 정보를 계속 저장해두고 새 단어를 만들 때마다 그 저장된 정보 전체를 다시 훑어본다. 대화가 길어질수록 저장해야 할 양도 계속 늘어나고 매번 훑어봐야 할 양도 늘어난다.</p><p>상태공간모델 계열은 이런 식으로 과거 전체를 따로 쌓아두지 않는다. 지금까지의 정보를 크기가 고정된 상태 벡터 하나에 압축해서 들고 다니다가 새 입력이 오면 그 상태 하나만 갱신한다. 그래서 대화가 아무리 길어져도 한 단어를 처리하는 데 드는 메모리와 시간이 거의 일정하게 유지된다.</p>`,
+    explanation: String.raw`<p>Transformer 기반 모델이 추론할 때는 지금까지 나온 모든 토큰의 키와 값 벡터를 KV 캐시라는 형태로 저장해두고 매 스텝 새 토큰의 질의를 이 캐시 전체와 비교한다. 시퀀스 길이가 $n$이면 캐시에 저장해야 하는 양이 $n$에 비례해서 늘어나고 한 토큰을 생성하는 데 드는 연산량도 캐시 전체를 훑어야 하므로 $n$에 비례해서 늘어난다. 전체 시퀀스를 처리하는 데 드는 연산량을 합치면 $O(n^2)$이 된다.</p><p>상태공간모델은 구조상 순환식 $h_t=\bar A h_{t-1}+\bar B x_t$로 상태를 갱신한다. 이 상태 벡터의 크기는 시퀀스 길이와 무관하게 미리 정해진 고정된 차원이다. 그래서 추론 중에 저장해야 하는 메모리는 시퀀스가 아무리 길어져도 상태 벡터 하나만큼으로 일정하고 한 스텝을 처리하는 연산량도 상수시간이다.</p><p>다만 이 상수 메모리에는 대가가 있다. 상태 벡터의 크기가 고정되어 있다는 것은 과거 정보를 그 고정된 용량 안에 압축해서 담아야 한다는 뜻이다. Transformer는 필요하면 아주 오래된 토큰까지 정확히 다시 꺼내볼 수 있지만 상태공간모델은 압축 과정에서 세부 정보가 흐려질 수 있다. 그래서 정확한 장거리 참조가 중요한 과제에서는 Transformer가, 아주 긴 시퀀스를 빠르고 가볍게 처리해야 하는 상황에서는 상태공간모델 계열이 유리하다는 트레이드오프가 있다.</p>`,
+    related: [{ label: "Mamba", slug: "mamba" }, { label: "S4", slug: "s4-model" }],
+    sections: []
+  },
+  "clip-model": {
+    title: String.raw`CLIP: 이미지와 텍스트를 한 공간에 정렬하기`,
+    domain: "arch",
+    subLabel: String.raw`멀티모달 아키텍처`,
+    intuition: String.raw`<p>컴퓨터가 사진과 그 사진을 설명하는 문장이 서로 관련 있다는 걸 알게 하려면 이미지와 텍스트를 같은 잣대로 비교할 수 있어야 한다. 그런데 이미지는 픽셀 값들의 배열이고 문장은 단어들의 나열이라 원래 형태로는 서로 비교할 방법이 없다.</p><p>CLIP은 이미지를 위한 인코더와 텍스트를 위한 인코더를 따로 두되 둘 다 같은 차원의 벡터공간으로 결과를 내보내게 학습시킨다. 짝이 맞는 이미지와 문장은 그 공간에서 가까운 위치에, 짝이 아닌 조합은 먼 위치에 놓이도록 수백만 쌍의 이미지와 캡션으로 훈련한다. 학습이 끝나면 어떤 문장이든 어떤 이미지든 같은 공간의 좌표로 바꿔서 서로 얼마나 관련 있는지를 벡터 사이 거리로 잴 수 있게 된다.</p>`,
+    explanation: String.raw`<p>CLIP은 이미지 인코더 $f_I$와 텍스트 인코더 $f_T$를 동시에 학습시킨다. 이미지 인코더는 ResNet이나 ViT를, 텍스트 인코더는 Transformer를 쓰고 각각의 출력을 정규화해서 $I_e=f_I(\text{image})/\|f_I(\text{image})\|$, $T_e=f_T(\text{text})/\|f_T(\text{text})\|$로 만든다. 정규화 덕분에 벡터의 방향만 의미를 갖고 두 벡터 사이의 코사인유사도로 관련도를 잴 수 있다.</p><p>학습에는 배치 안의 $N$개 이미지 텍스트 쌍을 이용한 대조학습 손실을 쓴다. 같은 인덱스의 이미지와 텍스트는 정답 쌍이고 나머지 조합은 전부 오답으로 취급해서 $L=-\dfrac1N\sum_i\log\dfrac{\exp(I_e^i\cdot T_e^i/\tau)}{\sum_j\exp(I_e^i\cdot T_e^j/\tau)}$ 형태의 손실을 이미지에서 텍스트로 보는 방향과 텍스트에서 이미지로 보는 방향 양쪽으로 계산해서 평균한다. $\tau$는 유사도의 뾰족한 정도를 조절하는 학습되는 온도 파라미터다.</p><p>이렇게 학습된 CLIP은 정답 라벨을 미리 정해두지 않은 채로도 어떤 이미지가 주어진 여러 문장 후보 중 어느 것과 가장 잘 맞는지를 바로 판단할 수 있다. 그래서 별도의 미세조정 없이 다양한 분류 문제에 그대로 적용하는 제로샷 분류가 가능해졌고 이후 텍스트투이미지 생성 모델의 텍스트 조건화나 여러 VLM의 이미지 인코더로도 널리 재사용된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="150" height="50" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="35" y="50" font-size="12">이미지 인코더</text>
+      <rect x="20" y="140" width="150" height="50" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="35" y="170" font-size="12">텍스트 인코더</text>
+      <line x1="170" y1="45" x2="270" y2="95" class="dg-line" stroke-width="1.5" />
+      <line x1="170" y1="165" x2="270" y2="115" class="dg-line" stroke-width="1.5" />
+      <rect x="270" y="70" width="260" height="80" rx="8" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="285" y="90" class="dg-dim" font-size="11">공유 임베딩 공간</text>
+      <line x1="300" y1="100" x2="500" y2="130" class="dg-stroke-accent" stroke-width="2" />
+      <circle cx="300" cy="100" r="5" class="dg-accent" />
+      <circle cx="500" cy="130" r="5" class="dg-accent" />
+      <text x="380" y="145" class="dg-dim" font-size="11">유사도 최대화</text>
+    </svg>`,
+    diagramCaption: String.raw`이미지와 텍스트 인코더가 같은 공간으로 사영되어 정답 쌍끼리만 유사도가 높아지는 구조입니다.`,
+    example: String.raw`<p>이미지 임베딩과 두 문장 후보 임베딩이 있다고 하자. 정답 문장과의 코사인유사도는 $0.31$, 오답 문장과의 코사인유사도는 $0.05$다.</p><p>온도 $\tau=0.07$을 적용해 소프트맥스를 취하면 $\exp(0.31/0.07)\approx83.8$, $\exp(0.05/0.07)\approx2.04$가 되어 정답 문장이 거의 $\dfrac{83.8}{83.8+2.04}\approx97.6\%$의 확률을 가져간다. 유사도의 작은 차이가 온도로 나누어 지수함수를 거치면서 크게 벌어지는 것을 볼 수 있다.</p>`,
+    related: [{ label: "VLM 이미지 토큰화", slug: "vlm-tokenization" }, { label: "크로스모달 어텐션", slug: "cross-modal-attention" }],
+    sections: []
+  },
+  "vlm-tokenization": {
+    title: String.raw`VLM 이미지 토큰화: 픽셀을 언어모델의 입력으로`,
+    domain: "arch",
+    subLabel: String.raw`멀티모달 아키텍처`,
+    intuition: String.raw`<p>언어모델은 원래 텍스트를 토큰이라는 작은 단위로 잘라서 각 토큰을 벡터로 바꾼 다음 그 벡터들의 시퀀스를 입력으로 받는다. 이미지를 언어모델에 이해시키려면 이미지도 결국 이 언어모델이 받아들일 수 있는 벡터들의 시퀀스 형태로 바꿔줘야 한다.</p><p>VLM은 이미지를 작은 사각형 패치들로 자른 뒤 각 패치를 하나의 벡터로 바꾸고 이 벡터들을 마치 문장 속 단어 토큰처럼 취급해서 텍스트 토큰들과 나란히 언어모델에 넣는다. 언어모델 입장에서는 몇 개의 입력이 이미지에서 왔는지 텍스트에서 왔는지 신경 쓰지 않고 하나로 이어진 토큰 시퀀스를 처리하는 셈이다.</p>`,
+    explanation: String.raw`<p>이미지 토큰화의 첫 단계는 대개 사전학습된 비전 인코더다. ViT 계열 인코더는 이미지를 14×14나 16×16 크기의 겹치지 않는 패치로 나눈 뒤 각 패치를 선형변환해서 패치임베딩으로 만들고 셀프어텐션을 거쳐 각 패치 위치의 특징벡터를 얻는다. CLIP의 이미지 인코더가 이 역할로 자주 재사용된다.</p><p>비전 인코더가 만든 패치별 특징벡터는 차원이나 개수가 언어모델의 토큰 임베딩과 다른 경우가 많다. 그래서 그 사이에 프로젝션층이라는 변환 모듈을 하나 더 둔다. 간단하게는 MLP 하나로 차원만 맞추기도 하고 Q포머나 리샘플러처럼 학습 가능한 소수의 질의 벡터로 패치 특징을 요약해서 언어모델에 넣을 토큰 개수 자체를 줄이는 방식도 널리 쓰인다.</p><p>이렇게 만들어진 이미지 토큰들은 텍스트 토큰 임베딩과 같은 차원을 갖게 되어 문장 속 단어 토큰들과 나란히 이어 붙여진다. 언어모델은 이 둘을 구분하지 않고 하나의 시퀀스로 취급해서 셀프어텐션을 적용하기 때문에 이미지 속 내용과 텍스트 속 내용을 같은 방식으로 서로 참고하며 답을 생성할 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="90" height="90" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <line x1="20" y1="50" x2="110" y2="50" class="dg-line" stroke-width="1" />
+      <line x1="20" y1="80" x2="110" y2="80" class="dg-line" stroke-width="1" />
+      <line x1="50" y1="20" x2="50" y2="110" class="dg-line" stroke-width="1" />
+      <line x1="80" y1="20" x2="80" y2="110" class="dg-line" stroke-width="1" />
+      <text x="15" y="128" font-size="11">이미지 패치</text>
+      <line x1="110" y1="65" x2="170" y2="65" class="dg-line" stroke-width="1.5" />
+      <rect x="170" y="45" width="100" height="40" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="178" y="70" font-size="11">패치 임베딩</text>
+      <line x1="270" y1="65" x2="330" y2="65" class="dg-line" stroke-width="1.5" />
+      <rect x="330" y="45" width="90" height="40" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="340" y="70" font-size="11">프로젝션</text>
+      <line x1="420" y1="65" x2="470" y2="65" class="dg-line" stroke-width="1.5" />
+      <line x1="470" y1="65" x2="470" y2="150" class="dg-line" stroke-width="1.5" />
+      <rect x="20" y="150" width="560" height="40" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="35" y="175" font-size="11">이미지 토큰 · · · 텍스트 토큰 시퀀스 → 언어모델</text>
+    </svg>`,
+    diagramCaption: String.raw`이미지 패치가 임베딩과 프로젝션을 거쳐 텍스트 토큰과 나란히 언어모델에 들어가는 흐름입니다.`,
+    related: [{ label: "CLIP", slug: "clip-model" }, { label: "크로스모달 어텐션", slug: "cross-modal-attention" }],
+    sections: []
+  },
+  "cross-modal-attention": {
+    title: String.raw`크로스모달 어텐션: 서로 다른 모달리티를 잇는 다리`,
+    domain: "arch",
+    subLabel: String.raw`멀티모달 아키텍처`,
+    intuition: String.raw`<p>셀프어텐션은 같은 문장 안의 단어끼리 서로 참고하게 만드는 장치다. 크로스모달 어텐션은 이 아이디어를 그대로 가져오되 참고하는 대상을 다른 모달리티로 바꾼다. 이미지 속 한 영역이 문장 속 어떤 단어를 참고하게 만드는 식이다.</p><p>질의를 어디서 가져오고 키와 값을 어디서 가져오는지만 바뀔 뿐 계산 방식 자체는 셀프어텐션과 똑같다. 이 단순한 아이디어 하나로 이미지와 텍스트, 음성과 텍스트처럼 형태가 전혀 다른 데이터들을 같은 어텐션 연산 안에서 서로 주고받게 만들 수 있다.</p>`,
+    explanation: String.raw`<p>셀프어텐션에서는 질의 $Q$, 키 $K$, 값 $V$가 모두 같은 시퀀스에서 나온다. 크로스모달 어텐션은 이 셋 중 질의는 한 모달리티에서, 키와 값은 다른 모달리티에서 가져온다. 계산 자체는 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d_k})V$로 셀프어텐션과 동일하다.</p><p>이 구조는 이미 여러 곳에서 쓰이고 있다. 디퓨전 모델의 텍스트 조건화에서는 이미지 특징이 질의를, 텍스트 임베딩이 키와 값을 맡는다. Flamingo 같은 VLM에서는 텍스트 토큰이 질의가 되어 이미지 특징을 키와 값으로 참고하는 게이트가 달린 크로스어텐션층을 언어모델 블록 사이사이에 끼워 넣는다.</p><p>크로스모달 어텐션이 유용한 이유는 두 모달리티의 시퀀스 길이나 내부 구조가 서로 달라도 상관없다는 점이다. 이미지 패치가 몇 개든 문장의 단어가 몇 개든 어텐션 가중치 행렬의 크기만 그에 맞게 정해지면 되기 때문에 모달리티마다 자연스러운 표현 형태를 그대로 유지하면서도 서로 정보를 주고받을 수 있다.</p>`,
+    related: [{ label: "CLIP", slug: "clip-model" }, { label: "텍스트 조건화", slug: "text-conditioning" }],
+    sections: []
+  },
+  "aws-ec2": {
+    title: String.raw`EC2: 필요한 만큼 빌려 쓰는 가상 서버`,
+    domain: "mlops",
+    subLabel: String.raw`컴퓨트`,
+    intuition: String.raw`<p>회사가 서버를 직접 사서 두려면 컴퓨터를 사고 전기와 냉각을 준비해야 합니다. 고장이 나면 직접 고쳐야 하고 필요한 대수를 미리 정확히 예측하기도 어렵습니다. EC2는 이 과정을 없애고 컴퓨터 한 대를 빌려 쓰는 개념으로 바꿔줍니다. 몇 분 안에 서버가 생기고 다 쓰면 바로 반납하면 됩니다.</p><p>ML 팀은 GPU가 필요할 때만 GPU 인스턴스를 켜고 학습이 끝나면 끕니다. 회사가 GPU 서버를 직접 사서 관리할 필요가 사라집니다.</p>`,
+    explanation: String.raw`<p>EC2는 인스턴스 타입이라는 단위로 컴퓨팅 자원을 판매합니다. CPU 코어 수와 메모리 용량과 GPU 유무와 네트워크 대역폭이 타입마다 정해져 있습니다. ML 학습에는 GPU가 달린 인스턴스 계열을 고르고 가벼운 전처리나 추론에는 CPU 중심 인스턴스를 고르는 식으로 워크로드에 맞춰 선택합니다.</p><p>가격 모델도 워크로드 성격에 따라 나뉩니다. 온디맨드는 쓴 만큼 표준 요금을 내는 기본형입니다. 예약 인스턴스는 1년에서 3년 사용을 약속하는 대신 단가를 크게 낮춥니다. 스팟 인스턴스는 AWS가 남는 용량을 훨씬 싸게 파는 대신 언제든 회수될 수 있습니다. 상시 서빙 서버는 예약형으로 비용을 고정하고 중단돼도 재시작만 하면 되는 배치 학습 작업은 스팟으로 돌려 비용을 크게 아끼는 조합이 흔합니다.</p><p>인스턴스 하나는 결국 가상 서버 한 대일 뿐이라 그 위에 무엇을 얹을지는 팀의 몫입니다. 학습 코드와 라이브러리를 직접 설치하거나 미리 구성된 딥러닝 이미지를 얹어서 씁니다. 인스턴스를 여러 대 굴리거나 쓰지 않을 때 끄는 판단도 팀이 직접 관리해야 하는데 이 부담을 자동화한 것이 뒤에 나올 Auto Scaling과 SageMaker입니다.</p>`,
+    example: String.raw`<p>학습 작업이 GPU 인스턴스로 10시간 걸린다고 하면 온디맨드 시간당 단가를 $p$라 할 때 총 비용은 $10p$입니다. 같은 인스턴스를 스팟으로 쓰면 단가가 대략 30에서 70퍼센트 낮아지는 경우가 많아 총 비용도 그만큼 줄어듭니다. 다만 스팟은 중간에 회수될 위험이 있어 체크포인트를 자주 저장해두는 습관이 필요합니다.</p>`,
+    related: [{ label: "Auto Scaling", slug: "aws-auto-scaling" }, { label: "Lambda", slug: "aws-lambda" }, { label: "SageMaker", slug: "aws-sagemaker" }],
+    sections: []
+  },
+  "aws-auto-scaling": {
+    title: String.raw`Auto Scaling: 트래픽에 맞춰 인스턴스를 늘리고 줄이기`,
+    domain: "mlops",
+    subLabel: String.raw`컴퓨트`,
+    intuition: String.raw`<p>서버 대수를 사람이 손으로 계속 맞추기는 힘듭니다. 트래픽이 몰리는 시간에는 서버가 부족해서 응답이 느려지고 한산한 시간에는 서버가 남아 돈만 나갑니다. Auto Scaling은 이 조절을 자동으로 해주는 장치입니다. 지표를 지켜보다가 부하가 오르면 서버를 더 띄우고 부하가 내리면 서버를 줄입니다.</p><p>ML 서빙 서버는 트래픽 변동이 특히 큽니다. 사용자가 몰리는 시간에만 인스턴스를 늘려 응답 속도를 지키고 나머지 시간에는 최소한만 켜둡니다.</p>`,
+    explanation: String.raw`<p>Auto Scaling은 Auto Scaling Group(ASG)이라는 단위로 인스턴스 묶음을 관리합니다. ASG에는 최소, 원하는, 최대 인스턴스 수가 정해져 있고 실제 인스턴스 수는 항상 그 범위 안에서 움직입니다. 인스턴스 하나가 죽으면 ASG가 자동으로 새 인스턴스를 띄워 원하는 수를 맞춥니다.</p><p>정책 방식은 여러 가지지만 ML 서빙에서 가장 흔한 것은 목표 추적(target tracking)입니다. CPU 사용률 같은 지표 하나에 목표값을 정해두면 나머지는 자동으로 계산됩니다. 목표 사용률이 $T$이고 현재 사용률이 $C$이며 현재 인스턴스 수가 $N$이면 필요한 인스턴스 수는 대략 이렇게 추정됩니다.</p>$$N' \approx N \cdot \frac{C}{T}$$<p>사용률이 목표보다 높으면 인스턴스를 늘리고 낮으면 줄이는 방향으로 서서히 조정됩니다.</p><p>새 인스턴스는 뜨자마자 바로 트래픽을 받지 못합니다. 모델을 메모리에 올리고 초기화하는 예열(warm-up) 시간이 필요하기 때문입니다. 스케일 아웃은 빠르게 스케일 인은 느리게 하는 비대칭 설정도 흔합니다. 트래픽이 실제로 줄었는지 확실해질 때까지 서버를 성급히 줄이지 않기 위해서입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg"><line x1="40" y1="210" x2="600" y2="210" class="dg-line" stroke-width="1.5"/><path d="M70,190 Q200,60 320,60 Q440,60 570,190" class="dg-stroke-accent" fill="none" stroke-width="2"/><text x="320" y="45" text-anchor="middle" font-size="12">요청량</text><rect x="100" y="170" width="40" height="40" class="dg-dim" stroke="none"/><rect x="100" y="170" width="40" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="120" y="228" text-anchor="middle" font-size="12">2대</text><rect x="300" y="110" width="40" height="100" class="dg-dim" stroke="none"/><rect x="300" y="110" width="40" height="100" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="320" y="228" text-anchor="middle" font-size="12">4대</text><rect x="500" y="170" width="40" height="40" class="dg-dim" stroke="none"/><rect x="500" y="170" width="40" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="520" y="228" text-anchor="middle" font-size="12">2대</text><text x="210" y="135" text-anchor="middle" font-size="12">스케일 아웃</text><text x="420" y="135" text-anchor="middle" font-size="12">스케일 인</text></svg>`,
+    diagramCaption: String.raw`요청량이 늘면 인스턴스를 먼저 빠르게 늘리고 줄어들 때는 천천히 줄입니다.`,
+    example: String.raw`<p>목표 CPU 사용률을 50퍼센트로 정해두고 현재 인스턴스 3대에서 평균 사용률이 80퍼센트로 올랐다고 하면 필요한 인스턴스 수는 대략 $3 \times 80/50 = 4.8$이므로 5대까지 늘어납니다. 반대로 사용률이 20퍼센트로 떨어지면 $3 \times 20/50 = 1.2$가 되어 2대 이하로 줄어듭니다.</p>`,
+    related: [{ label: "EC2", slug: "aws-ec2" }, { label: "ELB", slug: "aws-elb" }, { label: "CloudWatch", slug: "aws-cloudwatch" }],
+    sections: []
+  },
+  "aws-lambda": {
+    title: String.raw`Lambda: 서버 없이 요청 단위로 실행되는 함수`,
+    domain: "mlops",
+    subLabel: String.raw`컴퓨트`,
+    intuition: String.raw`<p>작은 작업 하나를 처리하려고 서버를 하루 종일 켜두는 것은 낭비입니다. 요청이 올 때만 코드가 실행되고 끝나면 바로 꺼지면 훨씬 효율적입니다. Lambda는 이런 방식으로 동작합니다. 서버를 미리 켜둘 필요 없이 함수 코드만 올려두면 요청이 들어올 때마다 AWS가 알아서 실행 환경을 만들어 코드를 실행하고 끝나면 정리합니다.</p><p>ML 쪽에서는 가벼운 전처리나 이미지 크기 변환이나 작은 모델의 추론처럼 짧고 간헐적으로 호출되는 작업에 Lambda를 많이 씁니다. 호출이 뜸한데도 서버를 계속 띄워두는 비용을 없앨 수 있습니다.</p>`,
+    explanation: String.raw`<p>Lambda 함수는 요청이 들어올 때마다 실행 환경을 얻어 코드를 실행합니다. 이 환경이 이미 준비돼 있으면 바로 실행되는데 이를 웜 스타트라 부릅니다. 한동안 호출이 없어서 환경이 회수된 상태라면 새 환경을 만드는 데 시간이 걸리는데 이를 콜드 스타트라 부릅니다. 딥러닝 모델처럼 무거운 라이브러리를 불러오는 함수는 콜드 스타트가 눈에 띄게 느려질 수 있어 지연 시간에 민감한 서빙에는 주의가 필요합니다.</p><p>동시 요청이 여러 개 들어오면 Lambda는 환경을 여러 개 병렬로 띄워 각각 처리합니다. 계정이나 함수마다 동시 실행 개수에 상한이 걸려 있어 트래픽이 그 상한을 넘으면 요청이 지연되거나 실패할 수 있습니다. 트래픽이 큰 함수는 미리 프로비저닝된 동시성을 설정해 콜드 스타트 자체를 없애기도 합니다.</p><p>과금은 실제 실행 시간과 할당한 메모리 양을 곱한 값을 기준으로 합니다. 늘 켜 있는 EC2 인스턴스와 달리 호출되지 않는 동안은 비용이 전혀 들지 않습니다. 호출 빈도가 낮고 각 실행이 짧은 워크로드에서는 EC2보다 훨씬 저렴하지만 호출이 아주 잦고 오래 걸리는 워크로드에서는 오히려 EC2나 컨테이너 기반 서빙이 더 저렴해지는 지점이 생깁니다.</p>`,
+    example: String.raw`<p>한 번 호출에 200ms가 걸리고 메모리를 1GB 할당한 함수가 하루 10만 번 호출된다고 하면 총 실행 시간은 $100000 \times 0.2 = 20000$초입니다. 과금은 이 실행 시간과 메모리 할당량의 곱에 비례하므로 호출 수나 처리 시간이 늘수록 비용도 선형으로 늘어납니다. 반대로 상시 대기하는 EC2 인스턴스라면 호출이 없는 시간에도 동일한 비용이 계속 발생합니다.</p>`,
+    related: [{ label: "EC2", slug: "aws-ec2" }, { label: "CloudWatch", slug: "aws-cloudwatch" }],
+    sections: []
+  },
+  "aws-vpc": {
+    title: String.raw`VPC: 계정 안에 격리된 가상 네트워크`,
+    domain: "mlops",
+    subLabel: String.raw`네트워크 · 스토리지`,
+    intuition: String.raw`<p>클라우드에 서버를 여러 대 띄우면 그 서버들이 서로 어떻게 통신하고 외부와 어떻게 연결될지를 누군가는 정해야 합니다. 아무 제한 없이 다 열어두면 학습 데이터가 담긴 서버가 인터넷 어디서나 접근 가능한 상태가 될 수도 있습니다. VPC는 계정 안에 울타리를 친 나만의 네트워크 구역을 만들어줍니다. 어떤 서버가 외부와 통신할 수 있는지 안쪽 서버끼리는 어떻게 통신하는지를 직접 설계할 수 있습니다.</p><p>ML 인프라에서는 외부에 노출돼야 하는 서빙 서버나 로드밸런서는 바깥과 통하는 구역에 두고 학습 데이터나 모델이 올라가는 인스턴스는 외부에서 직접 접근할 수 없는 안쪽 구역에 둡니다. 데이터 유출 위험을 구조적으로 줄이는 방법입니다.</p>`,
+    explanation: String.raw`<p>VPC 안은 서브넷이라는 더 작은 구역으로 나뉩니다. 퍼블릭 서브넷은 인터넷 게이트웨이를 통해 외부와 직접 통신할 수 있습니다. 프라이빗 서브넷은 외부에서 직접 들어오는 연결이 차단돼 있습니다. 프라이빗 서브넷의 인스턴스가 패키지 다운로드처럼 바깥으로 나가는 연결만 필요할 때는 NAT 게이트웨이를 거쳐 나가되 바깥에서 안으로 들어오는 연결은 여전히 막혀 있습니다.</p><p>트래픽을 걸러내는 장치는 두 가지입니다. 보안 그룹은 인스턴스 단위로 붙는 방화벽으로 어떤 포트로 어디서 오는 연결을 허용할지 정합니다. 네트워크 ACL은 서브넷 단위로 붙는 좀 더 성긴 필터입니다. 학습용 GPU 인스턴스라면 보안 그룹에서 사내 네트워크나 특정 관리 서버에서만 접속을 허용하고 나머지는 기본적으로 막아두는 식으로 씁니다.</p><p>SageMaker의 학습 작업이나 엔드포인트도 VPC 안에 붙일 수 있습니다. 이렇게 하면 학습 데이터가 인터넷을 거치지 않고 VPC 내부 네트워크만으로 S3나 다른 내부 서비스에 접근하게 만들 수 있습니다. 규제가 엄격한 데이터를 다루는 팀이 자주 선택하는 구성입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="40" width="600" height="220" fill="none" class="dg-stroke-ink" stroke-width="2"/><text x="32" y="58" font-size="12">VPC</text><circle cx="170" cy="20" r="12" class="dg-dim" stroke="none"/><line x1="170" y1="32" x2="170" y2="90" class="dg-line" stroke-width="1.5"/><text x="170" y="14" text-anchor="middle" font-size="12">인터넷</text><rect x="50" y="90" width="250" height="150" class="dg-dim" stroke="none"/><rect x="50" y="90" width="250" height="150" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="62" y="108" font-size="12">퍼블릭 서브넷</text><rect x="70" y="120" width="90" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/><text x="115" y="141" text-anchor="middle" font-size="12">ELB</text><rect x="180" y="120" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="230" y="141" text-anchor="middle" font-size="12">EC2 서빙</text><rect x="70" y="175" width="120" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="130" y="196" text-anchor="middle" font-size="12">NAT 게이트웨이</text><rect x="330" y="90" width="260" height="150" class="dg-dim" stroke="none"/><rect x="330" y="90" width="260" height="150" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="340" y="108" font-size="12">프라이빗 서브넷</text><rect x="350" y="150" width="150" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="425" y="174" text-anchor="middle" font-size="12">학습 인스턴스</text><line x1="190" y1="192" x2="350" y2="168" class="dg-stroke-accent" stroke-width="1.5"/><text x="255" y="178" text-anchor="middle" font-size="12">아웃바운드만</text></svg>`,
+    diagramCaption: String.raw`퍼블릭 서브넷은 외부와 연결되고 프라이빗 서브넷은 NAT를 통해서만 나갈 수 있습니다.`,
+    related: [{ label: "ELB", slug: "aws-elb" }, { label: "EC2", slug: "aws-ec2" }, { label: "SageMaker", slug: "aws-sagemaker" }],
+    sections: []
+  },
+  "aws-s3": {
+    title: String.raw`S3: 학습 데이터와 모델을 담는 객체 스토리지`,
+    domain: "mlops",
+    subLabel: String.raw`네트워크 · 스토리지`,
+    intuition: String.raw`<p>학습 데이터셋이나 학습이 끝난 모델 파일을 어딘가에 안전하게 보관해야 합니다. 서버 디스크에 두면 그 서버가 사라질 때 파일도 같이 사라질 위험이 있습니다. S3는 파일을 서버가 아니라 독립된 저장 공간에 객체 형태로 저장해두는 서비스입니다. 어떤 인스턴스에서든 필요할 때 그 파일을 읽고 쓸 수 있고 서버를 껐다 켜도 파일은 그대로 남아 있습니다.</p><p>ML 파이프라인에서는 원본 데이터셋과 전처리된 학습 데이터와 학습이 끝난 모델 가중치와 로그 파일까지 대부분 S3에 쌓입니다. 학습 인스턴스는 S3에서 데이터를 내려받아 학습하고 끝나면 결과물을 다시 S3에 올립니다.</p>`,
+    explanation: String.raw`<p>S3는 폴더 구조를 가진 것처럼 보이지만 실제로는 버킷 안에 키와 값으로 이루어진 객체를 저장하는 구조입니다. 폴더처럼 보이는 경로는 사실 키 이름의 일부일 뿐입니다. 하나의 객체는 같은 리전 안 여러 시설에 자동으로 복제되어 저장되기 때문에 흔히 내구성을 $99.999999999\%$(11개의 9)로 설명합니다. 이는 특정 기간 동안 객체 하나가 유실될 확률이 극히 낮다는 뜻이지 서비스가 항상 응답 가능하다는 뜻은 아닙니다.</p><p>스토리지 클래스는 접근 빈도에 따라 나뉩니다. 자주 읽고 쓰는 데이터는 표준 클래스에 두고 한동안 접근하지 않을 데이터는 저빈도 접근 클래스나 아카이브 클래스로 옮겨서 저장 비용을 낮춥니다. 대신 아카이브 클래스는 꺼내는 데 시간이 걸리거나 꺼낼 때마다 별도 비용이 붙습니다. 오래된 학습 데이터셋이나 실험 로그처럼 다시 볼 일이 드문 데이터를 아카이브로 옮기는 라이프사이클 규칙을 걸어두면 자동으로 비용이 줄어듭니다.</p><p>버전 관리 기능을 켜두면 같은 키에 새 객체를 덮어써도 이전 버전이 남아 있습니다. 실수로 모델 파일을 잘못 덮어썼을 때 이전 버전으로 되돌릴 수 있습니다. 접근 권한은 버킷 정책과 IAM 정책으로 세밀하게 통제할 수 있어 학습 데이터 버킷은 특정 역할을 가진 인스턴스에서만 읽도록 제한하는 식으로 구성합니다.</p>`,
+    example: String.raw`<p>저장 용량이 1TB인 오래된 실험 로그가 있고 표준 클래스 단가가 GB당 $u$이고 아카이브 클래스 단가가 대략 그 5분의 1 수준이라고 하면 표준 클래스에서는 한 달에 $1000u$가 나갑니다. 아카이브로 옮기면 대략 $1000u/5$로 줄어듭니다. 다만 아카이브에서 데이터를 다시 꺼낼 때는 추가 비용과 시간이 든다는 점을 감안해야 합니다.</p>`,
+    related: [{ label: "SageMaker", slug: "aws-sagemaker" }, { label: "VPC", slug: "aws-vpc" }, { label: "CloudWatch", slug: "aws-cloudwatch" }],
+    sections: []
+  },
+  "aws-elb": {
+    title: String.raw`ELB: 여러 서버로 요청을 고르게 나누는 로드밸런서`,
+    domain: "mlops",
+    subLabel: String.raw`네트워크 · 스토리지`,
+    intuition: String.raw`<p>서빙 서버를 한 대만 두면 그 서버가 감당할 수 있는 요청량에 전체 서비스가 묶입니다. 서버를 여러 대로 늘려도 사용자가 어떤 서버로 요청을 보낼지 직접 고를 수는 없습니다. ELB는 사용자 요청을 받아 여러 서버 중 하나로 자동으로 나눠주는 중간 지점입니다. 사용자는 서버가 몇 대인지 몰라도 되고 서버 대수가 늘거나 줄어도 사용자가 보는 주소는 그대로입니다.</p><p>ML 서빙에서는 모델을 올린 인스턴스 여러 대 앞에 ELB를 두어 추론 요청을 분산시킵니다. 어느 한 인스턴스에 장애가 생겨도 ELB가 그 서버를 빼고 나머지로만 요청을 보내기 때문에 서비스 전체가 멈추지 않습니다.</p>`,
+    explanation: String.raw`<p>ELB는 주기적으로 각 대상 서버에 상태 확인(health check) 요청을 보냅니다. 정상 응답이 오지 않는 서버는 자동으로 대상 목록에서 빠지고 다시 정상으로 돌아오면 목록에 재등록됩니다. 무거운 모델을 올린 인스턴스가 요청 처리 도중 응답 불가 상태에 빠지더라도 그 서버로는 새 요청이 가지 않게 막아줍니다.</p><p>분산 방식은 순서대로 돌리는 라운드로빈 방식도 있고 각 서버의 현재 연결 수나 응답 시간을 참고해 더 여유 있는 서버로 보내는 방식도 있습니다. 추론 요청마다 처리 시간 편차가 큰 모델 서빙에서는 단순 순서 배분보다 부하 기반 배분이 응답 지연을 고르게 만드는 데 유리합니다.</p><p>Auto Scaling과 결합하면 ELB가 새로 추가된 인스턴스를 자동으로 대상 목록에 편입시키고 줄어든 인스턴스를 자동으로 제외시킵니다. 트래픽에 따라 서버 대수가 실시간으로 바뀌어도 ELB 하나의 주소만 바라보면 되는 구조가 만들어집니다. 여러 모델 버전을 동시에 띄워 트래픽 일부만 새 버전으로 보내는 카나리 배포도 ELB의 라우팅 규칙으로 구현하는 경우가 많습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 270" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="120" r="18" class="dg-dim" stroke="none"/><text x="60" y="160" text-anchor="middle" font-size="12">클라이언트</text><line x1="78" y1="120" x2="160" y2="115" class="dg-line" stroke-width="1.5"/><rect x="160" y="90" width="110" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="215" y="120" text-anchor="middle" font-size="13">ELB</text><line x1="270" y1="105" x2="380" y2="65" class="dg-line" stroke-width="1.5"/><rect x="380" y="40" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="455" y="62" text-anchor="middle" font-size="12">서버 A</text><text x="455" y="80" text-anchor="middle" font-size="12">정상</text><line x1="270" y1="115" x2="380" y2="145" class="dg-line" stroke-width="1.5"/><rect x="380" y="120" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="455" y="142" text-anchor="middle" font-size="12">서버 B</text><text x="455" y="160" text-anchor="middle" font-size="12">정상</text><rect x="380" y="200" width="150" height="50" class="dg-dim" stroke="none"/><rect x="380" y="200" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="455" y="222" text-anchor="middle" font-size="12">서버 C</text><text x="455" y="240" text-anchor="middle" font-size="12">응답없음, 제외됨</text></svg>`,
+    diagramCaption: String.raw`상태 확인을 통과한 서버로만 요청이 분산됩니다.`,
+    related: [{ label: "Auto Scaling", slug: "aws-auto-scaling" }, { label: "EC2", slug: "aws-ec2" }, { label: "VPC", slug: "aws-vpc" }],
+    sections: []
+  },
+  "aws-sagemaker": {
+    title: String.raw`SageMaker: 학습부터 배포까지 관리하는 ML 플랫폼`,
+    domain: "mlops",
+    subLabel: String.raw`ML 특화 서비스`,
+    intuition: String.raw`<p>모델 하나를 학습하고 서비스로 내보내려면 학습 서버를 준비하고 데이터를 옮기고 학습이 끝나면 그 서버를 정리하고 다시 서빙용 서버를 준비하는 과정이 반복됩니다. 이 과정을 EC2로 하나하나 직접 구성하려면 신경 쓸 일이 많습니다. SageMaker는 학습과 배포 과정을 하나의 플랫폼 안에서 관리해주는 서비스입니다. 학습 코드와 데이터 위치만 알려주면 필요한 만큼 컴퓨팅 자원을 알아서 빌리고 끝나면 반납합니다.</p><p>직접 EC2를 하나하나 관리하는 대신 SageMaker에게 학습 작업 하나를 맡기면 그 작업에 필요한 서버를 자동으로 준비했다가 끝나면 정리해주는 식이라고 생각하면 됩니다.</p>`,
+    explanation: String.raw`<p>SageMaker의 핵심은 학습과 호스팅을 분리된 두 단계로 다룬다는 점입니다. 학습 작업(training job)을 실행하면 SageMaker가 지정한 인스턴스만큼 컴퓨팅 자원을 임시로 띄우고 S3에서 학습 데이터를 내려받아 학습 코드를 실행한 뒤 결과 모델 아티팩트를 다시 S3에 올리고 인스턴스를 종료합니다. 학습이 끝나는 순간 컴퓨팅 비용도 함께 끝나는 구조입니다.</p><p>학습이 끝난 모델은 엔드포인트(endpoint)로 배포해 실시간 추론 서비스를 만들 수 있습니다. 엔드포인트는 뒤에서 지정한 인스턴스를 상시 띄워두고 요청이 오면 즉시 응답하는 형태로 EC2와 ELB를 SageMaker가 대신 구성해주는 셈입니다. 실시간 응답이 필요 없는 대량의 데이터는 배치 변환(batch transform)으로 한 번에 처리하고 끝나면 자원을 반납해 비용을 아낍니다.</p><p>하이퍼파라미터 튜닝 기능은 여러 학습 작업을 동시에 여러 조합으로 돌려 가장 좋은 조합을 자동으로 찾아줍니다. 사람이 값을 하나씩 바꿔가며 실험을 반복하는 대신 탐색 범위만 정해주면 여러 학습 작업이 병렬로 실행되고 결과가 비교됩니다. 결국 SageMaker는 EC2와 S3와 ELB와 Auto Scaling처럼 앞서 나온 요소들을 학습과 서빙이라는 ML 워크플로우에 맞춰 미리 조립해둔 상위 계층 서비스입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="85" width="110" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="75" y="115" text-anchor="middle" font-size="12">S3 (데이터)</text><line x1="130" y1="110" x2="180" y2="110" class="dg-line" stroke-width="1.5"/><rect x="180" y="65" width="140" height="90" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="250" y="105" text-anchor="middle" font-size="12">학습 작업</text><text x="250" y="122" text-anchor="middle" font-size="12">임시 인스턴스</text><line x1="320" y1="110" x2="370" y2="110" class="dg-line" stroke-width="1.5"/><rect x="370" y="85" width="110" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="425" y="115" text-anchor="middle" font-size="12">S3 (모델)</text><line x1="480" y1="110" x2="530" y2="110" class="dg-line" stroke-width="1.5"/><text x="505" y="98" text-anchor="middle" font-size="12">배포</text><rect x="530" y="65" width="130" height="90" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="595" y="100" text-anchor="middle" font-size="12">엔드포인트</text><text x="595" y="118" text-anchor="middle" font-size="12">상시 서빙</text><text x="595" y="45" text-anchor="middle" font-size="12">실시간 추론 요청</text><line x1="595" y1="52" x2="595" y2="65" class="dg-line" stroke-width="1.5"/></svg>`,
+    diagramCaption: String.raw`학습 데이터부터 실시간 엔드포인트까지 한 흐름으로 이어집니다.`,
+    example: String.raw`<p>학습 작업에 인스턴스 4대를 3시간 동안 쓰면 컴퓨팅 사용량은 $4 \times 3 = 12$ 인스턴스시간입니다. 학습이 끝나자마자 인스턴스가 반납되므로 실제 비용도 이 12시간에 해당하는 만큼만 발생하고 그 이후에는 추가 비용이 없습니다.</p>`,
+    related: [{ label: "S3", slug: "aws-s3" }, { label: "EC2", slug: "aws-ec2" }, { label: "CloudWatch", slug: "aws-cloudwatch" }],
+    sections: []
+  },
+  "aws-ecs-eks": {
+    title: String.raw`ECS/EKS: 컨테이너로 서빙 서버를 오케스트레이션하기`,
+    domain: "mlops",
+    subLabel: String.raw`ML 특화 서비스`,
+    intuition: String.raw`<p>모델 서빙 서버 하나를 EC2 인스턴스 위에 직접 올리면 그 서버가 죽었을 때 누군가 알아채고 새로 띄워야 합니다. 여러 대를 운영하면 어떤 서버에 어떤 버전이 올라가 있는지도 사람이 일일이 챙겨야 합니다. 컨테이너는 애플리케이션과 그 실행 환경을 통째로 하나의 상자에 담아 어디서든 똑같이 실행되게 만든 기술입니다. ECS와 EKS는 이 컨테이너 상자들을 여러 서버에 걸쳐 자동으로 배치하고 죽으면 다시 띄우고 트래픽에 맞춰 개수를 조절해주는 관리자 역할을 합니다.</p><p>왜 이런 관리자가 필요한가 하면 모델 서빙 컨테이너가 열 개 스무 개로 늘어나면 어떤 서버에 몇 개가 떠 있는지 사람이 손으로 관리하는 것이 곧 불가능해지기 때문입니다. ECS나 EKS는 원하는 상태만 적어두면 그 상태를 자동으로 유지해줍니다.</p>`,
+    explanation: String.raw`<p>ECS는 AWS가 만든 컨테이너 오케스트레이션 서비스입니다. 태스크 정의(task definition)라는 문서에 어떤 컨테이너 이미지를 얼마만큼의 CPU와 메모리로 몇 개 띄울지 적어두면 ECS가 그 상태를 유지합니다. 실행 위치는 직접 관리하는 EC2 인스턴스 위일 수도 있고 서버 관리 자체를 없앤 Fargate 위일 수도 있습니다.</p><p>EKS는 오픈소스 표준인 쿠버네티스를 AWS가 관리형으로 제공하는 서비스입니다. 쿠버네티스에서는 컨테이너 묶음을 파드(pod)라 부릅니다. 파드가 몇 개 떠 있어야 하는지 어떤 조건에서 늘리고 줄일지도 선언적으로 정의합니다. ECS보다 설정이 복잡하지만 쿠버네티스 생태계의 다양한 도구를 그대로 쓸 수 있고 AWS 외 다른 클라우드에서도 같은 방식으로 운영할 수 있다는 이식성이 장점입니다.</p><p>모델 서빙 관점에서 ECS나 EKS는 모델 버전마다 컨테이너 이미지를 따로 만들어두고 트래픽 비율을 조절하며 새 버전을 서서히 투입하는 배포에 잘 맞습니다. 컨테이너 하나가 죽으면 즉시 새 컨테이너로 교체됩니다. CPU나 GPU 사용률에 따라 컨테이너 개수 자체를 자동으로 늘리고 줄이는 설정도 걸 수 있어 Auto Scaling이 EC2 대수를 조절하듯 컨테이너 개수를 조절하는 셈입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg"><rect x="200" y="20" width="240" height="40" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="320" y="45" text-anchor="middle" font-size="12">오케스트레이터 (ECS / EKS)</text><line x1="260" y1="60" x2="170" y2="110" class="dg-line" stroke-width="1.5"/><line x1="380" y1="60" x2="470" y2="110" class="dg-line" stroke-width="1.5"/><rect x="60" y="110" width="220" height="150" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="170" y="128" text-anchor="middle" font-size="12">노드 1</text><rect x="80" y="145" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="115" y="169" text-anchor="middle" font-size="12">컨테이너</text><rect x="170" y="145" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="205" y="169" text-anchor="middle" font-size="12">컨테이너</text><rect x="360" y="110" width="220" height="150" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="470" y="128" text-anchor="middle" font-size="12">노드 2</text><rect x="380" y="145" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="415" y="169" text-anchor="middle" font-size="12">컨테이너</text><rect x="470" y="145" width="70" height="40" class="dg-dim" stroke="none"/><rect x="470" y="145" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="505" y="169" text-anchor="middle" font-size="12">실패</text><path d="M540,185 C 600,195 600,220 505,225" class="dg-stroke-accent" fill="none" stroke-width="1.5"/><rect x="440" y="225" width="70" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/><text x="475" y="246" text-anchor="middle" font-size="12">재시작</text></svg>`,
+    diagramCaption: String.raw`컨테이너 하나가 죽으면 오케스트레이터가 원하는 개수를 유지하도록 새 컨테이너로 교체합니다.`,
+    related: [{ label: "EC2", slug: "aws-ec2" }, { label: "Auto Scaling", slug: "aws-auto-scaling" }, { label: "CloudWatch", slug: "aws-cloudwatch" }],
+    sections: []
+  },
+  "aws-cloudwatch": {
+    title: String.raw`CloudWatch: 지표와 로그를 모아보는 관측 서비스`,
+    domain: "mlops",
+    subLabel: String.raw`ML 특화 서비스`,
+    intuition: String.raw`<p>서버가 몇 대나 떠 있고 CPU가 얼마나 바쁘고 요청이 얼마나 실패하고 있는지는 직접 들여다보지 않으면 알 수 없습니다. 서비스가 커질수록 서버와 함수와 모델 엔드포인트가 동시에 여러 개 돌아가기 때문에 사람이 하나하나 접속해서 상태를 확인하는 것은 현실적이지 않습니다. CloudWatch는 여러 서비스가 내보내는 지표와 로그를 한곳에 모아 지금 무슨 일이 일어나고 있는지 보여주고 문제가 생기면 자동으로 알려주는 관측 서비스입니다.</p><p>ML 서빙에서는 요청 지연 시간과 초당 요청 수와 오류율 같은 지표를 CloudWatch로 지켜봅니다. 갑자기 지연이 늘거나 오류가 늘면 바로 알아채야 서비스 장애로 번지기 전에 대응할 수 있습니다.</p>`,
+    explanation: String.raw`<p>CloudWatch는 크게 지표(metrics)와 로그(logs)와 알람(alarms) 세 가지로 이루어집니다. 지표는 CPU 사용률이나 요청 수처럼 시간에 따라 값이 바뀌는 숫자 데이터고 EC2와 Lambda와 SageMaker 엔드포인트 같은 서비스가 자동으로 내보냅니다. 로그는 애플리케이션이 실행 중에 남기는 텍스트 기록으로 오류 메시지나 요청 상세 내용을 담습니다. 지표는 추세를 보는 데 쓰이고 로그는 정확히 무슨 일이 있었는지 파고드는 데 쓰입니다.</p><p>알람은 지표가 정한 기준을 넘을 때 자동으로 반응하는 규칙입니다. SageMaker 엔드포인트의 평균 지연 시간이 일정 시간 동안 기준치를 넘으면 알람이 울리도록 설정할 수 있습니다. 알람은 단순히 사람에게 알리는 것을 넘어 Auto Scaling 정책을 직접 트리거해서 인스턴스나 컨테이너 개수를 조절하게 만들 수도 있습니다. Auto Scaling의 목표 추적 정책 뒤에서 그 판단 근거가 되는 지표를 공급하는 것이 바로 CloudWatch입니다.</p><p>대시보드는 여러 지표를 한 화면에 모아 보여주는 시각화 도구입니다. 학습 작업의 GPU 사용률과 서빙 엔드포인트의 지연 시간과 오류율을 나란히 배치해두면 전체 파이프라인 상태를 한눈에 파악할 수 있습니다. 결국 CloudWatch는 EC2와 Lambda와 SageMaker와 ECS/EKS처럼 앞서 다룬 모든 서비스가 지금 잘 돌아가고 있는지 확인하는 공통 관측 창구입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="70" width="150" height="90" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="105" y="100" text-anchor="middle" font-size="12">EC2</text><text x="105" y="120" text-anchor="middle" font-size="12">Lambda</text><text x="105" y="140" text-anchor="middle" font-size="12">SageMaker</text><line x1="180" y1="115" x2="250" y2="115" class="dg-line" stroke-width="1.5"/><rect x="250" y="80" width="150" height="70" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="325" y="110" text-anchor="middle" font-size="12">CloudWatch</text><text x="325" y="130" text-anchor="middle" font-size="12">지표 · 로그</text><line x1="400" y1="115" x2="460" y2="115" class="dg-line" stroke-width="1.5"/><rect x="460" y="80" width="140" height="70" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="530" y="110" text-anchor="middle" font-size="12">알람</text><text x="530" y="130" text-anchor="middle" font-size="12">임계값 초과</text><line x1="500" y1="150" x2="450" y2="195" class="dg-line" stroke-width="1.5"/><rect x="390" y="195" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="450" y="219" text-anchor="middle" font-size="12">Auto Scaling</text><line x1="560" y1="150" x2="580" y2="195" class="dg-line" stroke-width="1.5"/><rect x="530" y="195" width="100" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="580" y="219" text-anchor="middle" font-size="12">알림 전송</text></svg>`,
+    diagramCaption: String.raw`여러 서비스의 지표와 로그가 모여 알람과 자동 대응으로 이어집니다.`,
+    example: String.raw`<p>평균 지연 시간이 5분 동안 300ms를 넘으면 알람이 울리도록 설정했다고 하면 실제 지연 시간이 250ms에서 350ms로 오른 시점부터 5분이 지나야 알람이 발생합니다. 짧은 순간적인 튐에는 반응하지 않고 지속되는 문제만 잡아내려는 설계입니다.</p>`,
+    related: [{ label: "Auto Scaling", slug: "aws-auto-scaling" }, { label: "SageMaker", slug: "aws-sagemaker" }, { label: "ELB", slug: "aws-elb" }],
+    sections: []
+  },
 };
