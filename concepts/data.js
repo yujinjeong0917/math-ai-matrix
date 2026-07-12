@@ -7601,4 +7601,1327 @@ $$J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^{T}\gamma^t r_t\right]$$
     related: [{ label: "스팟 인스턴스 활용", slug: "spot-instance-usage" }, { label: "오토스케일링과 비용의 트레이드오프", slug: "autoscaling-cost-tradeoff" }],
     sections: []
   },
+  "sample-size-calculation": {
+    title: String.raw`표본크기 산정: 검정력이 보장되는 최소 표본 구하기`,
+    domain: "product",
+    subLabel: String.raw`A/B 테스트`,
+    intuition: String.raw`<p>실험군에 100명만 넣고 결과를 보면 우연히 몇 명 더 산 것뿐인지 진짜 효과인지 구분할 수 없다. 반대로 몇백만 명을 몇 달씩 돌리면 확실하게 알 수는 있지만 그동안 나쁜 버전을 그만큼 많은 사용자에게 계속 보여준 셈이 되고 의사결정도 그만큼 늦어진다. 표본크기 산정은 이 둘 사이에서 원하는 크기의 효과를 원하는 확률로 잡아낼 수 있는 가장 작은 표본을 실험을 시작하기 전에 미리 계산하는 작업이다.</p>
+<p>핵심 재료는 세 가지다. 얼마나 작은 차이까지 감지하고 싶은지, 실제로는 차이가 없는데 있다고 잘못 판단할 위험을 얼마나 허용할지, 실제로 차이가 있을 때 그걸 놓치지 않을 확률을 얼마로 보장하고 싶은지. 이 세 값을 정하고 나면 필요한 최소 인원 수가 공식으로 딱 떨어진다.</p>`,
+    explanation: String.raw`<p>가장 흔한 전환율 실험을 기준으로 보면 대조군 전환율 $p_1$과 목표로 하는 실험군 전환율 $p_2$의 차이를 검출하는 데 필요한 그룹당 표본크기는 다음과 같이 정해진다.</p>
+$$n = \frac{(z_{\alpha/2} + z_\beta)^2 \left[p_1(1-p_1) + p_2(1-p_2)\right]}{(p_2 - p_1)^2}$$
+<p>여기서 $z_{\alpha/2}$는 유의수준 $\alpha$에서 나오는 임계값이고 $z_\beta$는 목표 검정력 $1-\beta$에서 나오는 임계값이다. 분모의 $(p_2-p_1)^2$가 최소감지효과이므로 잡고 싶은 효과가 작을수록 분모가 작아져서 필요한 표본이 급격히 커진다. 절대 차이가 절반으로 줄면 필요한 표본은 네 배로 늘어난다.</p>
+<p>이 계산이 없던 시절에는 흔히 그냥 며칠 돌려보고 유의한지 확인하는 식이었다. 문제는 정해진 표본크기 없이 결과를 보고 실험을 계속할지 멈출지 정하면 우연히 유의해 보이는 순간에 멈추는 함정에 빠지기 쉽다는 점이다. 사전에 표본크기를 못박아두면 그 표본에 도달하기 전까지는 결과를 봐도 판단을 유보하게 되어 이런 함정을 원천적으로 막는다. 다만 이 공식 자체는 딱 한 번, 정해진 시점에 검정한다는 가정 위에 서 있다. 실험 도중 결과를 반복해서 들여다보고 싶다면 순차검정처럼 별도로 설계된 방법이 필요하다.</p>
+<p>표본이 부족하면 실제로 존재하는 효과도 유의하지 않다고 나오는 위양성 아닌 위음성 문제가 생긴다. 언더파워드 실험에서 우연히 큰 차이가 관측되어 유의하게 나온 결과는 진짜 효과 크기보다 부풀려져 있을 가능성이 높다는 점도 실무에서 자주 놓치는 부분이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="70" y1="20" x2="70" y2="220" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="70" y1="220" x2="560" y2="220" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M90,205 L150,190 L220,150 L290,100 L340,75 L400,60 L470,50 L540,45" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="70" y1="60" x2="560" y2="60" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<line x1="400" y1="60" x2="400" y2="220" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<circle cx="400" cy="60" r="5" class="dg-accent" stroke="none"/>
+<text x="20" y="30" font-size="12">검정력</text>
+<text x="490" y="238" font-size="12">표본크기 n</text>
+<text x="430" y="52" font-size="12" class="dg-dim">목표 검정력 80%</text>
+<text x="405" y="236" font-size="12">n*</text>
+</svg>`,
+    diagramCaption: String.raw`표본크기가 커질수록 검정력이 오르고 목표 검정력을 넘는 최소 지점이 필요한 표본크기다.`,
+    example: String.raw`<p>대조군 전환율이 $p_1=0.05$이고 실험군에서 $p_2=0.06$까지 오르는지 확인하고 싶다고 하자. 유의수준 $\alpha=0.05$ 양측검정이면 $z_{\alpha/2}=1.96$이고 검정력 80%를 원하면 $z_\beta=0.84$다.</p>
+$$n = \frac{(1.96+0.84)^2 \left[0.05 \times 0.95 + 0.06 \times 0.94\right]}{(0.06-0.05)^2} = \frac{7.84 \times 0.1039}{0.0001} \approx 8146$$
+<p>그룹당 약 8,146명 총 16,292명이 필요하다는 뜻이다. 만약 목표 전환율을 0.06 대신 0.055로 낮춰 절반 크기의 차이만 잡으려 하면 분모가 4분의 1로 줄어 필요 표본은 약 4배로 늘어난다.</p>`,
+    related: [{ label: "순차검정", slug: "sequential-testing" }, { label: "Multi-armed Bandit", slug: "multi-armed-bandit-product" }],
+    sections: []
+  },
+  "sequential-testing": {
+    title: String.raw`순차검정: 실험 중간에 계속 들여다봐도 안전하게 만들기`,
+    domain: "product",
+    subLabel: String.raw`A/B 테스트`,
+    intuition: String.raw`<p>실험 대시보드를 매일 열어보고 싶은 마음은 자연스럽다. 그런데 정해둔 표본크기에 도달하기 전에 매일 유의성 검정을 돌리고 처음으로 p값이 0.05 밑으로 내려가는 순간 실험을 멈춰버리면 문제가 생긴다. 실제로는 두 버전에 아무 차이가 없어도 매일 동전을 던지듯 검정을 반복하다 보면 언젠가는 우연히 유의한 순간이 나타나기 마련이고 그 순간 멈추는 습관이 있으면 결국 존재하지 않는 효과를 진짜라고 믿게 되는 빈도가 크게 늘어난다.</p>
+<p>순차검정은 이 문제를 원천적으로 다르게 접근한다. 몇 번을 들여다볼지 미리 정해두고 그 횟수만큼 나눠 쓸 수 있는 오류 예산을 설계하거나 아예 언제 멈추더라도 안전한 통계량 자체를 만들어서 검정 절차를 통계적으로 다시 설계한다. 그 결과 담당자가 매일 대시보드를 봐도 되고 유의한 결과가 뜨는 순간 바로 멈춰도 되는 검정을 얻는다.</p>`,
+    explanation: String.raw`<p>고정 표본 검정에서 유의수준 5%는 딱 한 번 정해진 시점에 검정할 때만 보장되는 숫자다. 결과를 반복해서 관찰하고 그때그때 p값이 임계치를 넘는 순간 멈추는 절차는 확률론적으로 랜덤워크가 특정 경계를 넘는 순간을 기다리는 것과 같다. 귀무가설이 참이어도 관찰 횟수를 늘릴수록 어느 시점에는 경계를 넘을 확률이 계속 쌓여서 무한히 들여다볼 수 있다면 결국 거의 확실하게 유의한 순간을 만나게 된다. 이것이 반복 들여다보기가 위험한 근본적인 이유다.</p>
+<p>해법 하나는 알파 소비 함수를 쓰는 그룹순차설계다. 전체 실험 기간 동안 몇 번을 확인할지 $K$번으로 미리 정하고 각 확인 시점마다 쓸 수 있는 오류 예산을 나눠 배정한다. 예를 들어 O'Brien-Fleming 방식은 초반 확인 시점에는 아주 엄격한 임계값을 쓰고 뒤로 갈수록 임계값을 완화해서 마지막 확인 시점에서야 나머지 예산 대부분을 쓴다. 초반에 우연히 튀는 결과로 잘못 멈추는 일을 막으면서도 전체 확인 횟수에 걸쳐 누적 오류율은 정확히 목표 수준에 맞춘다.</p>
+<p>또 다른 해법은 알와이즈밸리드 p값 또는 mSPRT라 불리는 방식으로 아예 확인 시점을 미리 정하지 않고 아무 때나 멈춰도 안전한 통계량을 만든다. 귀무가설 아래에서 기대값이 1인 음이 아닌 마팅게일 $M_t$를 구성하면 빌의 부등식에 의해 다음이 성립한다.</p>
+$$P\left(\exists\, t : M_t \geq \frac{1}{\alpha}\right) \leq \alpha$$
+<p>이 부등식은 언제 멈추든 상관없이 성립하기 때문에 담당자가 임의의 시점에 임의로 여러 번 확인해도 전체 위양성 확률은 여전히 $\alpha$ 이하로 유지된다. 고정 표본 검정이 딱 한 번의 관찰만 허용하는 것과 대비되는 지점이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<text x="160" y="16" font-size="12" text-anchor="middle">고정 임계값을 매번 확인</text>
+<rect x="40" y="20" width="240" height="200" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="40" y1="110" x2="280" y2="110" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<path d="M60,190 L100,150 L140,100 L170,80 L200,130 L240,170 L260,185" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="170" cy="80" r="5" class="dg-accent" stroke="none"/>
+<text x="170" y="68" font-size="11" text-anchor="middle">거짓 유의</text>
+<text x="480" y="16" font-size="12" text-anchor="middle">알파 소비 경계</text>
+<rect x="360" y="20" width="240" height="200" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M380,40 L420,55 L460,75 L500,95 L540,110 L580,122" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<path d="M380,190 L420,175 L460,185 L500,160 L540,140 L580,123" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="580" cy="122" r="5" class="dg-accent" stroke="none"/>
+<text x="540" y="240" font-size="11" text-anchor="middle">최종 확인 시점</text>
+</svg>`,
+    diagramCaption: String.raw`고정 임계값은 노이즈만으로도 일찍 넘을 수 있지만 갈수록 좁아지는 경계는 끝에서만 정당하게 넘는다.`,
+    example: String.raw`<p>2번의 확인 시점을 갖는 O'Brien-Fleming 방식의 대표적인 예시 경계값은 중간 확인에서 $Z_1 \approx 2.80$ 최종 확인에서 $Z_2 \approx 1.98$이다. 양측검정 명목 p값으로 환산하면 중간 확인은 약 0.005 최종 확인은 약 0.048에 해당한다.</p>
+<p>중간 시점에는 왠만큼 극단적인 결과가 아니면 절대 멈추지 않도록 문턱을 아주 높여두고 최종 시점에는 거의 표준적인 0.05에 가까운 문턱으로 되돌아온다. 두 확인 시점의 상관관계까지 고려해 계산하면 두 번을 확인해도 전체 위양성 확률은 정확히 5%로 유지된다.</p>`,
+    related: [{ label: "표본크기 산정", slug: "sample-size-calculation" }, { label: "Multi-armed Bandit", slug: "multi-armed-bandit-product" }],
+    sections: []
+  },
+  "multi-armed-bandit-product": {
+    title: String.raw`Multi-armed Bandit: 실험하면서 동시에 수익을 챙기기`,
+    domain: "product",
+    subLabel: String.raw`A/B 테스트`,
+    intuition: String.raw`<p>전통적인 A/B 테스트는 한쪽이 확실히 더 좋다는 게 눈에 보여도 미리 정한 표본크기에 도달할 때까지 트래픽을 반반으로 계속 나눈다. 그 기간 동안 안 좋은 쪽을 보여준 사용자만큼 전환을 그냥 흘려보낸 셈이다. Multi-armed Bandit은 여러 슬롯머신 중 어떤 것이 잘 터지는지 모르는 도박사처럼 행동한다. 성과가 쌓일수록 잘 터지는 쪽에 점점 더 많은 트래픽을 자동으로 몰아주면서도 아직 확신이 부족한 대안도 계속 조금씩 찔러본다.</p>
+<p>즉 무엇이 더 나은지 알아내는 일과 알아낸 걸 바로 활용해서 이득을 챙기는 일을 실험 기간 내내 동시에 진행한다. 배너 문구나 추천 순서처럼 정밀한 효과 크기 추정치가 굳이 필요 없고 그저 지금 이 순간 가장 잘 되는 안을 계속 밀어주고 싶을 때 A/B 테스트보다 자연스러운 선택이다.</p>`,
+    explanation: String.raw`<p>Multi-armed Bandit 문제의 목표는 리그렛을 최소화하는 것이다. 리그렛은 매 라운드마다 가장 좋은 팔을 선택했을 때 얻었을 보상과 실제 선택한 팔에서 얻은 보상의 차이를 누적한 값이다.</p>
+$$R_T = \sum_{t=1}^{T} \left(\mu^{*} - \mu_{a_t}\right)$$
+<p>A/B 테스트처럼 실험 기간 내내 절반씩 균등하게 배분하는 전략은 이 리그렛이 시간에 비례해서 계속 쌓이는 순수 탐색 전략이다. 밴딧 알고리즘은 좋은 팔이 드러날수록 그쪽 배분을 늘려서 리그렛이 시간에 비례하지 않고 훨씬 느리게 쌓이도록 만든다.</p>
+<p>대표적인 알고리즘인 톰슨 샘플링은 베이지안 방식으로 각 팔의 전환율에 대한 사후분포를 유지한다. 클릭 여부처럼 이진 결과라면 사전분포로 $\mathrm{Beta}(\alpha_0,\beta_0)$을 두고 성공 $s$회 실패 $f$회를 관측하면 사후분포는 $\mathrm{Beta}(\alpha_0+s,\ \beta_0+f)$로 갱신된다. 매 라운드마다 각 팔의 사후분포에서 표본 하나씩을 뽑아 가장 큰 값을 낸 팔에 트래픽을 보낸다. 데이터가 적어 불확실성이 큰 팔은 사후분포가 넓게 퍼져 있어서 가끔 큰 표본값이 나와 자연스럽게 더 탐색되고 데이터가 쌓여 확신이 붙은 팔은 좁아진 사후분포 덕분에 꾸준히 선택된다.</p>
+<p>다만 밴딧은 트래픽 배분 자체가 관측 결과에 따라 계속 바뀌기 때문에 실험이 끝난 뒤 각 안의 정확한 효과 크기를 통계적으로 보고하기가 A/B 테스트보다 까다롭다. 정밀한 효과 추정치와 신뢰구간이 꼭 필요한 의사결정에는 여전히 고정 표본 A/B 테스트가 표준이고 밴딧은 그 자리를 대체한다기보다 실시간 최적화가 목적일 때 쓰는 별도의 도구에 가깝다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="100" y="140" width="60" height="60" class="dg-accent"/>
+<rect x="260" y="160" width="60" height="40" class="dg-dim"/>
+<rect x="420" y="180" width="60" height="20" class="dg-dim"/>
+<text x="130" y="130" font-size="12" text-anchor="middle">A 25%</text>
+<text x="290" y="150" font-size="12" text-anchor="middle">B 15%</text>
+<text x="450" y="170" font-size="12" text-anchor="middle">C 8%</text>
+<text x="20" y="175" font-size="12">추정전환율</text>
+<text x="20" y="238" font-size="12">트래픽배분</text>
+<rect x="60" y="225" width="308" height="14" class="dg-accent"/>
+<rect x="368" y="225" width="110" height="14" class="dg-dim"/>
+<rect x="478" y="225" width="22" height="14" class="dg-dim"/>
+</svg>`,
+    diagramCaption: String.raw`추정 전환율이 높은 팔일수록 더 많은 트래픽이 자동으로 배분된다.`,
+    example: String.raw`<p>사전분포로 $\mathrm{Beta}(1,1)$을 쓰는 두 팔 A B가 있다고 하자. A는 100회 노출에 20회 전환 B는 100회 노출에 15회 전환이 관측됐다.</p>
+<p>사후분포는 A가 $\mathrm{Beta}(21,81)$ B가 $\mathrm{Beta}(16,86)$이 되고 사후평균은 각각 $21/102 \approx 20.6\%$와 $16/102 \approx 15.7\%$다. 매 라운드 이 두 분포에서 표본을 뽑아 더 큰 쪽에 트래픽을 주는 절차를 반복하면 데이터가 쌓일수록 A가 표본값에서 이길 확률이 점점 높아지고 자연스럽게 A로 흘러가는 트래픽 비중이 커진다.</p>`,
+    related: [{ label: "표본크기 산정", slug: "sample-size-calculation" }, { label: "순차검정", slug: "sequential-testing" }],
+    sections: []
+  },
+  "novelty-effect": {
+    title: String.raw`Novelty Effect: 새로워서 좋아 보이는 착시`,
+    domain: "product",
+    subLabel: String.raw`실험 함정`,
+    intuition: String.raw`<p>매장 진열을 완전히 바꾸면 며칠간은 손님들이 뭐가 바뀌었나 하고 이곳저곳 둘러보다가 평소보다 많이 산다. 그런데 그게 새 진열이 정말 더 좋아서인지 그냥 낯설어서 호기심에 이것저것 만져본 것뿐인지는 시간이 좀 지나야 구분된다. 새 기능을 출시했을 때도 똑같은 일이 벌어진다. 출시 초기에는 지표가 확 좋아 보이지만 그중 상당 부분은 새로움 자체가 만든 일시적 관심이지 기능이 실제로 더 유용해서가 아닐 수 있다.</p>
+<p>이 착시를 novelty effect라 부른다. 실험을 며칠만 돌리고 초반 수치만 보고 승자를 선언하면 실제로는 몇 주 뒤 원래 수준으로 가라앉을 반짝 효과를 영구적인 개선으로 착각하게 된다. 반대 방향의 착시도 있다. 완전히 새로운 UI가 처음에는 손에 익지 않아 지표가 오히려 떨어졌다가 사용자가 적응하면서 서서히 좋아지는 경우로 change aversion이라 불린다. 두 경우 모두 초반 며칠의 수치만으로 판단하면 틀린 결론에 이른다는 공통점이 있다.</p>`,
+    explanation: String.raw`<p>novelty effect는 시간에 따라 처치 효과 자체가 변한다는 점에서 표본크기나 유의성과는 다른 종류의 함정이다. 관측된 효과를 시간의 함수로 모델링하면 대략 다음과 같은 지수감쇠 형태로 근사할 수 있다.</p>
+$$\Delta_t = \Delta_\infty + (\Delta_0 - \Delta_\infty)\, e^{-t/\tau}$$
+<p>$\Delta_0$는 출시 직후의 관측 효과 $\Delta_\infty$는 충분한 시간이 지난 뒤 자리 잡는 정상상태 효과 $\tau$는 감쇠 속도를 나타내는 상수다. 실험을 짧게 돌리면 $\Delta_t$가 $\Delta_0$에 가까운 값으로 관측되어 진짜 장기 효과인 $\Delta_\infty$보다 크게 부풀려진 수치를 보게 된다.</p>
+<p>이 함정이 실무에서 위험한 이유는 방향이 늘 과대평가 쪽으로만 작동하지 않는다는 데 있다. change aversion처럼 기능은 진짜 유용한데 습관 형성에 시간이 걸려서 초반에는 오히려 손해로 보이는 경우도 있다. 즉 단순히 초반 수치가 과장됐다고 항상 깎아서 해석해도 안 되고 패턴의 모양 자체를 확인해야 한다.</p>
+<p>진단하는 방법은 크게 두 가지다. 하나는 실험을 충분히 길게 돌리면서 일자별 효과 크기 추세를 그려보는 것이고 다른 하나는 출시 이전 경험이 아예 없는 신규 사용자만 따로 떼어 분석하는 것이다. 신규 사용자에게는 비교할 예전 버전에 대한 기억 자체가 없으므로 호기심에서 나오는 novelty effect가 원천적으로 발생하지 않는다. 신규 사용자에서의 효과와 기존 사용자에서의 효과가 크게 다르면 novelty effect가 섞여 있다는 강한 신호다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="200" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="60" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M80,50 L140,90 L200,120 L260,140 L320,150 L380,155 L440,157 L500,158" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="60" y1="158" x2="520" y2="158" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="20" y="30" font-size="12">업리프트</text>
+<text x="460" y="216" font-size="12">경과일</text>
+<text x="420" y="150" font-size="11" class="dg-dim">정상상태 수준</text>
+<text x="90" y="42" font-size="11">출시 직후</text>
+</svg>`,
+    diagramCaption: String.raw`출시 직후 반짝 오른 업리프트가 시간이 지나며 정상상태 수준으로 가라앉는다.`,
+    example: String.raw`<p>어떤 신기능의 일자별 업리프트가 1일차 +18% 7일차 +9% 14일차 +4% 28일차 +3%로 관측됐다고 하자. 28일차 수치를 정상상태 근사치로 보면 실험을 하루만 보고 판단했을 경우 진짜 효과보다 약 6배 부풀린 채로 의사결정을 내렸을 것이다.</p>
+<p>이럴 때 실무에서는 최소 2에서 4주 관측 후 최근 며칠간의 수치가 더 이상 크게 움직이지 않는지 확인하고 그 안정된 구간의 평균을 최종 효과로 채택하는 방식을 쓴다.</p>`,
+    related: [{ label: "SRM", slug: "srm-sample-ratio-mismatch" }, { label: "순차검정", slug: "sequential-testing" }],
+    sections: []
+  },
+  "srm-sample-ratio-mismatch": {
+    title: String.raw`SRM: 표본비율불일치는 실험이 고장났다는 신호`,
+    domain: "product",
+    subLabel: String.raw`실험 함정`,
+    intuition: String.raw`<p>실험을 대조군과 실험군에 정확히 반반씩 배정하도록 설계했는데 막상 데이터를 열어보니 51.2% 대 48.8%로 나왔다면 이게 그냥 우연한 흔들림인지 아니면 어딘가 파이프라인이 고장난 신호인지 구분해야 한다. SRM은 결과 지표를 보기도 전에 먼저 확인하는 사전 점검이다. 배정 자체가 설계대로 랜덤하게 이뤄졌는지를 검사한다.</p>
+<p>이 점검이 중요한 이유는 실험의 신뢰성이 애초에 무작위 배정이라는 전제 위에 서 있기 때문이다. 예를 들어 특정 브라우저에서 캐싱 버그로 실험군 페이지 로딩이 실패해 그 사용자들이 조용히 대조군으로 다시 잡히는 일이 생기면 두 그룹은 더 이상 무작위로 갈린 두 집단이 아니라 특정 기기나 환경 조건에서 체계적으로 다른 집단이 된다. 이렇게 오염된 상태에서는 결과 지표가 어느 쪽으로 나오든 그 차이가 기능 때문인지 배정 버그 때문인지 알 도리가 없다.</p>`,
+    explanation: String.raw`<p>SRM 검사는 각 그룹에 배정된 실제 인원수를 설계된 비율에서 기대되는 인원수와 비교하는 카이제곱 적합도 검정이다.</p>
+$$X^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i}$$
+<p>$O_i$는 그룹 $i$의 관측 인원 $E_i$는 설계된 비율대로 배정됐을 때 기대되는 인원이고 $k$는 그룹 수다. 귀무가설인 정상 배정 아래에서 이 통계량은 자유도 $k-1$인 카이제곱분포를 따른다. 값이 충분히 크면 배정 비율이 설계와 다르다는 뜻이고 이는 무작위성이 어딘가에서 깨졌다는 강력한 신호다.</p>
+<p>보통의 유의성 검정과 달리 SRM 검사에서는 유의수준을 훨씬 엄격하게 잡는다. 통상 쓰는 0.05가 아니라 0.001 수준을 기준으로 삼는 경우가 많은데 이는 SRM 알람을 잘못 울려서 멀쩡한 실험을 다시 확인하게 만드는 비용이 SRM을 놓쳐서 오염된 결과로 잘못된 의사결정을 내리는 비용보다 훨씬 작기 때문이다. 즉 웬만큼 애매한 차이는 그냥 넘기고 확실히 이상한 경우에만 경고를 울리도록 문턱을 높여둔다.</p>
+<p>SRM이 잡혔을 때는 결과 지표를 먼저 보지 말고 원인부터 찾아야 한다. 흔한 원인은 특정 플랫폼에서 리다이렉트 실패로 일부 사용자가 로그에서 누락되는 경우 봇 트래픽 필터링이 두 그룹에 비대칭으로 적용되는 경우 실험 시작 이전에 이미 한쪽 버전을 봤던 사용자가 재배정되며 편향을 만드는 경우 등이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="480" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="100" y="40" width="60" height="160" class="dg-dim"/>
+<rect x="180" y="40" width="60" height="160" class="dg-dim"/>
+<text x="130" y="216" font-size="11" text-anchor="middle">기대 대조군</text>
+<text x="210" y="216" font-size="11" text-anchor="middle">기대 실험군</text>
+<rect x="300" y="34" width="60" height="166" class="dg-accent"/>
+<rect x="380" y="48" width="60" height="152" class="dg-accent"/>
+<text x="330" y="216" font-size="11" text-anchor="middle">관찰 대조군</text>
+<text x="410" y="216" font-size="11" text-anchor="middle">관찰 실험군</text>
+<text x="20" y="30" font-size="12">인원수</text>
+</svg>`,
+    diagramCaption: String.raw`기대했던 균등 배정과 실제 관찰된 배정 사이에 카이제곱 검정으로 잡히는 차이가 있다.`,
+    example: String.raw`<p>50대50으로 설계된 실험에 총 20,000명이 들어왔는데 대조군 10,245명 실험군 9,755명으로 관찰됐다고 하자. 기대 인원은 각각 10,000명이다.</p>
+$$X^2 = \frac{(10245-10000)^2}{10000} + \frac{(9755-10000)^2}{10000} = \frac{245^2}{10000} \times 2 = 12.005$$
+<p>자유도 1인 카이제곱분포에서 유의수준 0.001의 임계값은 약 10.83이다. 계산된 12.005는 이 값을 넘으므로 $p<0.001$ 수준에서 SRM이 확인된다. 결과 지표가 무엇을 보여주든 원인을 찾아 고치기 전까지는 신뢰할 수 없다.</p>`,
+    related: [{ label: "Novelty Effect", slug: "novelty-effect" }, { label: "표본크기 산정", slug: "sample-size-calculation" }],
+    sections: []
+  },
+  "north-star-metric": {
+    title: String.raw`North Star Metric: 조직 전체가 함께 보는 단 하나의 지표`,
+    domain: "product",
+    subLabel: String.raw`북극성지표 · OMTM`,
+    intuition: String.raw`<p>회사가 커지면 팀마다 각자 챙기는 숫자가 생긴다. 마케팅은 가입자 수를 늘리고 싶어 하고 엔지니어링은 장애 없는 서비스를 원하고 영업은 계약 건수를 채우고 싶어 한다. 문제는 이 숫자들이 각각 좋아져도 회사 전체가 실제로 더 건강해지는 건 아닐 수 있다는 점이다. 가입자만 늘고 아무도 쓰지 않으면 소용이 없다. North Star Metric은 이런 각자의 목표를 하나로 꿰는 단일 지표다. 이 지표가 오르면 회사가 고객에게 실제로 더 많은 가치를 주고 있다는 뜻이 되도록 신중하게 골라낸 숫자다.</p>
+<p>좋은 North Star Metric의 조건은 몇 가지로 정리된다. 회사가 파는 것이 아니라 고객이 실제로 얻는 가치를 반영해야 하고 매출처럼 뒤늦게 움직이는 후행지표가 아니라 앞으로의 성장을 미리 알려주는 선행지표여야 하며 한 부서만이 아니라 여러 팀이 함께 움직일 수 있는 지표여야 한다. 그리고 무엇보다 회사 안 누구에게 설명해도 바로 이해되는 단순함이 있어야 한다.</p>`,
+    explanation: String.raw`<p>North Star Metric을 고를 때 흔히 하는 실수는 매출을 그대로 쓰는 것이다. 매출은 가격을 급격히 올리거나 무리한 업셀을 강요해도 단기적으로 움직일 수 있어서 회사가 실제로 건강해지고 있는지와 어긋나는 방향으로도 오를 수 있다. 반면 잘 고른 North Star Metric은 고객이 제품에서 얻는 핵심 가치의 빈도나 강도를 직접 담는다. 숙박 예약 플랫폼이라면 예약된 숙박일수 음악 스트리밍이라면 실제로 재생된 시간처럼 사용자가 제품에서 얻는 실질적 경험량에 가까운 숫자를 고른다.</p>
+<p>이 지표는 보통 그 자체로 관리하기보다 몇 개의 입력지표로 분해해서 다룬다. 예를 들어 주간 활성 창작자 수라는 North Star Metric은 신규 가입자 수 신규 가입자의 활성화율 기존 사용자의 재방문 빈도라는 몇 개의 입력지표의 곱이나 합으로 나타낼 수 있다. 각 팀이 자신이 실제로 움직일 수 있는 입력지표 하나씩을 맡으면 조직 전체가 하나의 지표를 향해 나눠서 일하는 구조가 만들어진다. 다만 이 분해가 제품이 바뀌어도 여전히 유효한지 주기적으로 다시 검증해야 한다. 시간이 지나며 입력지표를 움직여도 North Star Metric이 더 이상 따라오지 않는 상황이 생길 수 있다.</p>
+<p>이 개념은 Lean Analytics에서 말하는 OMTM 즉 지금 이 순간 가장 중요한 단 하나의 지표와 자주 겹쳐 쓰인다. 다만 OMTM은 특정 성장 단계나 팀 단위에서 한시적으로 집중할 지표를 가리키는 경우가 많고 North Star Metric은 회사 전체가 오래 유지하는 상위 앵커에 가깝다는 뉘앙스 차이가 있다. 단일 지표에만 의존하면 그 지표를 게임하듯 억지로 올리는 부작용이 생길 수 있어서 실무에서는 항상 가드레일 지표와 짝을 지어 쓴다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="200" y="20" width="160" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="50" font-size="13" text-anchor="middle">North Star Metric</text>
+<line x1="280" y1="70" x2="100" y2="140" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="70" x2="280" y2="140" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="70" x2="460" y2="140" class="dg-line" stroke-width="1.5"/>
+<rect x="30" y="140" width="140" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="100" y="165" font-size="12" text-anchor="middle">입력지표 1</text>
+<text x="100" y="183" font-size="11" text-anchor="middle" class="dg-dim">신규 활성화율</text>
+<rect x="210" y="140" width="140" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="165" font-size="12" text-anchor="middle">입력지표 2</text>
+<text x="280" y="183" font-size="11" text-anchor="middle" class="dg-dim">재방문 빈도</text>
+<rect x="390" y="140" width="140" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="460" y="165" font-size="12" text-anchor="middle">입력지표 3</text>
+<text x="460" y="183" font-size="11" text-anchor="middle" class="dg-dim">30일 잔존율</text>
+</svg>`,
+    diagramCaption: String.raw`North Star Metric은 여러 팀이 나눠 갖는 입력지표들의 조합으로 분해된다.`,
+    example: String.raw`<p>주간 활성 창작자 수를 신규가입자수 $N$ 활성화율 $a$ 재방문율 $r$의 곱으로 근사한다고 하자. $N=10{,}000$ $a=0.30$ $r=0.40$이면 이번 주 활성 창작자 수는 $10{,}000 \times 0.30 \times 0.40 = 1{,}200$명이다.</p>
+<p>온보딩 팀이 활성화율을 30%에서 33%로 3%포인트 개선하면 나머지가 그대로라도 $10{,}000 \times 0.33 \times 0.40 = 1{,}320$명이 되어 North Star Metric이 약 10% 상승한다. 온보딩 팀은 매출이나 재방문율을 직접 건드리지 않고도 자기 입력지표 하나만으로 전체 지표에 기여한 것을 확인할 수 있다.</p>`,
+    related: [{ label: "가드레일 지표", slug: "guardrail-metric" }, { label: "퍼널분석", slug: "funnel-analysis" }],
+    sections: []
+  },
+  "guardrail-metric": {
+    title: String.raw`가드레일 지표: 북극성지표를 해치면서 이기지 않도록 막기`,
+    domain: "product",
+    subLabel: String.raw`북극성지표 · OMTM`,
+    intuition: String.raw`<p>어떤 팀이 오직 North Star Metric 하나만 보고 평가받는다면 그 지표를 올리는 데는 좋지만 다른 걸 조용히 망가뜨리는 방법도 얼마든지 찾아낼 수 있다. 알림을 마구 보내면 당장 참여 지표는 오르지만 사용자는 지쳐서 앱을 지운다. 가입 문턱을 낮추려고 부정 계정 검사를 느슨하게 풀면 가입자 수는 늘지만 사기 거래도 함께 늘어난다. 가드레일 지표는 이런 부작용을 감시하려고 주 지표 옆에 따로 붙여두는 방어선이다. 주 지표가 아무리 좋아 보여도 가드레일이 나쁜 방향으로 움직이면 그 실험이나 기능은 통과시키지 않는다.</p>
+<p>실험 설계에서는 보통 딱 하나의 주 지표에 대해서는 유의하게 좋아지는지를 확인하고 여러 개의 가드레일 지표에 대해서는 유의하게 나빠지지 않는지를 확인하는 식으로 역할을 나눈다. 페이지 로딩 속도 오류율 고객 문의 건수 매출 같은 것들이 흔한 가드레일 후보다.</p>`,
+    explanation: String.raw`<p>가드레일은 크게 두 층위로 나뉜다. 회사 전체 어떤 실험에도 공통으로 붙는 조직 차원의 가드레일과 지금 테스트 중인 기능에 특화된 지역 가드레일이다. 예를 들어 결제 플로우를 바꾸는 실험이라면 응답속도나 크래시율 같은 조직 공통 가드레일에 더해 장바구니 이탈률 같은 그 실험에 특화된 가드레일을 추가로 감시한다.</p>
+<p>가드레일을 여러 개 동시에 감시할 때는 다중비교 문제를 신경 써야 한다. 지표 하나를 유의수준 5%로 검정하면 위양성 확률이 5%지만 서로 독립인 지표 $m$개를 동시에 각각 5%로 검정하면 그중 하나라도 우연히 위양성이 뜰 확률은 $1-(1-0.05)^m$으로 훨씬 커진다. 이를 억제하는 가장 간단한 방법이 본페로니 보정으로 각 지표의 검정 기준을 $\alpha/m$으로 낮춰서 전체 오탐 확률을 원하는 수준으로 되돌린다.</p>
+<p>가드레일이 위반됐다고 해서 그 기능이 무조건 나쁘다는 뜻은 아니다. 위반은 정확히는 출시 전에 반드시 들여다보고 그 트레이드오프를 의식적으로 받아들일지 결정해야 한다는 신호다. 때로는 리더십이 작은 가드레일 손실을 감수하고서라도 더 큰 North Star Metric 개선을 택하는 경우도 있지만 그 결정이 아무도 모르게 우연히 일어나는 일은 없어야 한다는 게 가드레일의 핵심 역할이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M80,170 L160,150 L240,120 L320,95 L400,75 L480,55" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="480" y="45" font-size="11" class="dg-dim">NSM 상승</text>
+<line x1="60" y1="140" x2="520" y2="140" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="480" y="132" font-size="11" class="dg-dim">가드레일 임계선</text>
+<path d="M80,170 L160,168 L240,165 L320,162 L400,150 L480,120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="480" cy="120" r="5" class="dg-accent" stroke="none"/>
+<text x="440" y="108" font-size="11">가드레일 위반</text>
+</svg>`,
+    diagramCaption: String.raw`North Star Metric은 오르고 있지만 가드레일 지표가 임계선을 넘어서면 그 실험은 멈춰야 한다.`,
+    example: String.raw`<p>한 실험에서 서로 독립이라 가정할 수 있는 가드레일 지표 8개를 각각 유의수준 5%로 감시한다고 하자. 그중 적어도 하나가 우연히 위양성으로 뜰 확률은 다음과 같다.</p>
+$$1-(1-0.05)^8 = 1-0.95^8 \approx 1-0.6634 = 0.3366$$
+<p>약 33.7%로 실제로는 아무 문제가 없어도 세 번에 한 번꼴로 알람이 울린다는 뜻이다. 본페로니 보정을 적용하면 지표당 기준을 $0.05/8=0.00625$로 낮춰서 전체 오탐 확률을 다시 5% 근처로 되돌릴 수 있다.</p>`,
+    related: [{ label: "North Star Metric", slug: "north-star-metric" }, { label: "SRM", slug: "srm-sample-ratio-mismatch" }],
+    sections: []
+  },
+  "funnel-analysis": {
+    title: String.raw`퍼널분석: 단계마다 얼마나 빠져나가는지 추적하기`,
+    domain: "product",
+    subLabel: String.raw`퍼널 · 코호트`,
+    intuition: String.raw`<p>방문자 100명 중 2명이 결제까지 이어진다는 숫자 하나만 알면 뭘 고쳐야 할지 알 수 없다. 그 2%가 어디서 발목이 잡혀서 나온 숫자인지가 훨씬 중요하다. 상품을 열심히 둘러보다가 장바구니 담기에서 대부분 이탈하는지 아니면 장바구니까지는 잘 가는데 결제 화면에서 카드번호 입력하다가 포기하는지에 따라 고쳐야 할 곳이 완전히 다르다. 퍼널분석은 목표에 도달하기까지의 여정을 순서대로 단계로 쪼개고 각 단계마다 다음 단계로 넘어가는 사람이 몇 퍼센트인지를 따로따로 계산해서 어디서 가장 크게 새는지 짚어낸다.</p>
+<p>깔때기 모양으로 위가 넓고 아래로 갈수록 좁아지는 그림으로 자주 그려지는데 실제로 각 단계에서 위에서 아래로 갈수록 인원이 줄어드는 모습이 깔때기와 닮았기 때문이다.</p>`,
+    explanation: String.raw`<p>퍼널을 정의하려면 최초 유입 단계를 $S_0$이라 하고 그 뒤로 목표까지 이어지는 순서 있는 단계들을 $S_1, S_2, \ldots, S_n$이라 하자. 각 단계의 전환율 $c_i$는 $S_{i-1}$까지 도달한 사람 중 $S_i$까지 도달한 사람의 비율이다. 전체 목표 달성률은 각 단계 전환율의 곱이다.</p>
+$$C_n = c_1 \times c_2 \times \cdots \times c_n$$
+<p>이 곱셈 구조 때문에 트래픽이 많은 초반 단계의 작은 개선이 트래픽이 적은 후반 단계의 큰 개선보다 실제 최종 인원 증가폭에서 더 큰 효과를 낼 때가 많다. 어느 단계를 먼저 고칠지 우선순위를 매길 때는 퍼센트포인트 개선폭만 볼 게 아니라 그 단계에 남아 있는 절대 트래픽 규모까지 함께 곱해서 예상 증가 인원을 비교해야 한다.</p>
+<p>실제로 퍼널을 만들 때는 세션이나 일정 시간창 안에서 순서대로 단계를 완료한 사용자만 세는 엄격한 정의를 쓰는 게 중요하다. 시간창 없이 그냥 각 단계 이벤트가 발생한 적이 있는지만 세면 몇 달 전에 장바구니에 담고 오늘 결제한 사용자까지 같은 퍼널 안에 섞여 전환율이 실제보다 부풀려진다.</p>
+<p>다만 퍼널분석은 사용자가 정해진 하나의 경로를 순서대로 밟는다고 가정한다는 한계가 있다. 실제로는 재방문 사용자가 저장된 장바구니로 곧장 이동하거나 중간 단계를 건너뛰는 경우도 흔해서 이런 비선형적인 여정까지 보려면 퍼널분석에 더해 경로분석이나 프로세스 마이닝 같은 보완적인 방법을 함께 쓰는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+<polygon points="80,20 480,20 430,70 130,70" class="dg-dim"/>
+<polygon points="130,70 430,70 370,120 190,120" class="dg-dim"/>
+<polygon points="190,120 370,120 330,170 230,170" class="dg-dim"/>
+<polygon points="230,170 330,170 310,220 250,220" class="dg-accent"/>
+<text x="500" y="48" font-size="12">방문 100,000</text>
+<text x="500" y="98" font-size="12">조회 40,000 (40%)</text>
+<text x="500" y="148" font-size="12">장바구니 12,000 (30%)</text>
+<text x="500" y="198" font-size="12">결제 3,600 (누적 3.6%)</text>
+</svg>`,
+    diagramCaption: String.raw`각 단계를 지날 때마다 사용자 수가 줄어드는 폭이 다르므로 어디서 가장 크게 새는지 알 수 있다.`,
+    example: String.raw`<p>방문 100,000명 중 상품조회 40,000명 40% 장바구니담기 12,000명 상품조회 대비 30% 결제진입 6,000명 장바구니 대비 50% 결제완료 3,600명 결제진입 대비 60%로 이어진다고 하자.</p>
+$$C_4 = 0.4 \times 0.3 \times 0.5 \times 0.6 = 0.036$$
+<p>전체 방문자 대비 최종 결제 전환율은 3.6%이고 $100{,}000 \times 0.036 = 3{,}600$명으로 실제 결제완료 인원과 일치한다. 만약 장바구니에서 결제진입으로 넘어가는 단계 전환율을 50%에서 60%로 10%포인트 올리면 결제진입이 7,200명 결제완료가 4,320명으로 늘어 720명의 추가 결제를 얻는다.</p>`,
+    related: [{ label: "코호트 리텐션 곡선", slug: "cohort-retention-curve" }, { label: "North Star Metric", slug: "north-star-metric" }],
+    sections: []
+  },
+  "cohort-retention-curve": {
+    title: String.raw`코호트 리텐션 곡선: 가입 시점이 다른 집단끼리 공정하게 비교하기`,
+    domain: "product",
+    subLabel: String.raw`퍼널 · 코호트`,
+    intuition: String.raw`<p>오늘 활성 사용자 수만 매일 체크하면 신규 가입자가 꾸준히 들어오는 한 기존 사용자가 조용히 떠나고 있어도 전체 숫자는 계속 올라갈 수 있다. 새는 양동이에 물을 계속 부으면 수위가 유지되는 것처럼 보이는 것과 같다. 코호트 리텐션은 이 착시를 걷어낸다. 같은 시기에 가입한 사용자들을 하나의 집단으로 묶고 그 집단이 가입 후 며칠 몇 주가 지났을 때 몇 퍼센트나 여전히 남아 있는지를 따로 추적한다.</p>
+<p>이렇게 하면 1월에 가입한 사람들과 3월에 가입한 사람들을 가입 시점이 다르다는 이유로 불공정하게 비교하는 일을 피할 수 있다. 각 집단을 달력 날짜가 아니라 가입 이후 경과일 기준으로 나란히 놓고 비교해야 제품이 실제로 더 끈끈해졌는지 계절적 요인 때문에 일시적으로 좋아 보이는 건지 구분할 수 있다.</p>`,
+    explanation: String.raw`<p>가입 시기 $t$에 속한 코호트 $C_t$에 대해 경과일 $k$에서의 리텐션은 $C_t$ 중 $t+k$ 시점에도 여전히 활동한 사용자의 비율로 정의한다. 여러 코호트에 대해 이 값을 $k$의 함수로 그리면 시간이 지날수록 값이 줄어드는 감쇠 곡선을 여러 개 겹쳐 그린 그림이 된다. 코호트를 행에 경과일을 열에 두면 대각선 형태로 채워지는 삼각형 모양의 표가 되는데 이를 코호트 삼각형이라 부른다.</p>
+<p>대부분의 소비자 제품에서 리텐션 곡선은 초반 며칠 사이 가파르게 떨어지다가 이후 완만해지며 특정 수준으로 수렴하는 모양을 보인다. 이 수렴하는 꼬리 수준이 제품이 장기적으로 실제 붙잡아두는 핵심 사용자층의 비율에 대한 근사치로 쓰인다.</p>
+<p>여기서 핵심은 비교의 기준축이다. 달력 날짜를 기준으로 두 코호트를 비교하면 명절이나 프로모션처럼 특정 날짜에만 영향을 주는 계절 요인이 리텐션 차이처럼 보이는 착시를 만들 수 있다. 가입 이후 경과일이라는 상대 시간축으로 정렬해야 두 코호트 사이의 진짜 차이 즉 제품이나 온보딩 개선이 만든 차이만 남는다.</p>
+<p>퍼널분석과는 보는 질문 자체가 다르다. 퍼널은 한 번의 여정 안에서 목표 행동을 완료했는지를 보고 코호트 리텐션은 가입 이후 여러 날에 걸쳐 반복해서 돌아오는지를 본다. 두 관점 모두 필요하지만 서로를 대체하지는 않는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M80,60 L160,130 L240,155 L320,168 L400,175 L480,178" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M80,90 L160,150 L240,172 L320,182 L400,188 L480,190" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="20" y="30" font-size="12">리텐션</text>
+<text x="460" y="216" font-size="12">경과일</text>
+<text x="486" y="172" font-size="11" class="dg-accent">2월 코호트</text>
+<text x="486" y="196" font-size="11" class="dg-dim">1월 코호트</text>
+</svg>`,
+    diagramCaption: String.raw`가입 시점이 다른 두 코호트를 경과일 기준으로 정렬해야 공정하게 비교할 수 있다.`,
+    example: String.raw`<p>1월 코호트 10,000명은 30일차 리텐션이 8%이고 온보딩을 개선한 뒤 가입한 2월 코호트 12,000명은 30일차 리텐션이 13%다.</p>
+<p>절대 인원으로 보면 1월 코호트는 30일차에 $10{,}000 \times 0.08=800$명이 남아 있고 2월 코호트는 $12{,}000 \times 0.13=1{,}560$명이 남아 있다. 신규 가입자 수 자체가 20% 늘어난 것을 감안해도 경과일 기준 리텐션율이 8%에서 13%로 올랐다는 사실은 단순히 유입이 늘어난 게 아니라 온보딩 개선이 실제로 사용자를 더 오래 붙잡아두고 있다는 증거다.</p>`,
+    related: [{ label: "퍼널분석", slug: "funnel-analysis" }, { label: "Novelty Effect", slug: "novelty-effect" }],
+    sections: []
+  },
+  "last-click-attribution": {
+    title: String.raw`라스트클릭 어트리뷰션: 마지막 접점에 모든 공을 돌리기`,
+    domain: "product",
+    subLabel: String.raw`마케팅 어트리뷰션`,
+    intuition: String.raw`<p>어떤 사람이 인스타그램 광고를 보고 며칠 뒤 구글에서 검색해서 광고를 클릭하고 또 며칠 뒤 이메일 링크를 눌러서 구매까지 마쳤다고 하자. 이 구매는 어느 채널 덕분일까. 라스트클릭 어트리뷰션은 가장 단순하게 대답한다. 구매 직전에 마지막으로 거친 접점이 그 채널이니 그 채널이 전액 공로를 가져간다. 그 앞의 접점들은 아무리 중요한 역할을 했어도 0원의 공로만 인정받는다.</p>
+<p>이 방식이 오래 쓰인 이유는 계산이 아주 간단하기 때문이다. 쿠키나 클릭 아이디만 있으면 구매 직전 마지막 클릭이 무엇이었는지는 어떤 광고 플랫폼에서도 쉽게 집계할 수 있다. 문제는 이 단순함이 특정 종류의 채널을 체계적으로 과대평가하게 만든다는 데 있다.</p>`,
+    explanation: String.raw`<p>라스트클릭 어트리뷰션은 정해진 관측기간 안에서 전환 직전의 마지막 마케팅 접점 하나를 찾아 전환과 매출 전부를 그 채널에 귀속시키는 규칙이다. 구현이 단순하고 결정론적이라는 장점 덕분에 오랫동안 업계 기본값으로 쓰였다.</p>
+<p>문제는 리타겟팅이나 브랜드검색광고처럼 구매를 이미 마음먹은 사람을 마지막에 붙잡는 성격의 채널이 과도하게 유리해진다는 점이다. 이런 채널은 실제로는 이미 다른 채널이 만들어놓은 구매 의도를 마무리 짓기만 했을 뿐인데 라스트클릭 기준으로는 마치 그 채널이 처음부터 끝까지 그 전환을 만들어낸 것처럼 보인다. 이 왜곡된 신호를 믿고 예산을 마지막 접점 채널에 계속 더 투입하면 정작 인지도를 만들어주던 초반 채널의 예산이 줄어들고 장기적으로는 퍼널 상단으로 들어오는 신규 트래픽 자체가 말라버릴 수 있다. 평가 지표가 실제 인과적 기여가 아니라 마지막 클릭이라는 상관관계 신호만 측정한 데서 생기는 왜곡이다.</p>
+<p>정반대로 첫 번째 접점에 모든 공을 돌리는 퍼스트클릭 어트리뷰션은 반대 방향으로 똑같은 실수를 한다. 두 방식 모두 실제 구매 여정에 여러 접점이 함께 기여한다는 사실을 무시하고 단 하나의 접점만 본다는 근본적인 한계를 공유한다. 이 한계를 넘으려면 여러 접점의 기여를 함께 나누는 다중접점 모델이 필요하고 그중 이론적으로 가장 공정한 방식이 샤플리 기반 어트리뷰션이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="96" font-size="11" text-anchor="middle">인스타</text>
+<text x="80" y="111" font-size="11" text-anchor="middle">광고</text>
+<line x1="110" y1="100" x2="230" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="280" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="96" font-size="11" text-anchor="middle">검색</text>
+<text x="280" y="111" font-size="11" text-anchor="middle">광고</text>
+<line x1="310" y1="100" x2="430" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="480" cy="100" r="34" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="480" y="96" font-size="11" text-anchor="middle">이메일</text>
+<text x="480" y="111" font-size="11" text-anchor="middle">구매</text>
+<text x="80" y="155" font-size="12" text-anchor="middle">0%</text>
+<text x="280" y="155" font-size="12" text-anchor="middle">0%</text>
+<text x="480" y="155" font-size="13" text-anchor="middle" class="dg-accent">100%</text>
+</svg>`,
+    diagramCaption: String.raw`구매 직전 접점 하나가 전체 전환의 공을 모두 가져간다.`,
+    example: String.raw`<p>어떤 사용자가 0일차 인스타그램 광고 3일차 구글 검색광고 6일차 이메일을 거쳐 5만원짜리 상품을 구매했다고 하자. 라스트클릭 기준으로는 5만원 전액이 이메일 채널의 매출로 잡히고 인스타그램과 검색광고는 이 전환에 대해 0원으로 기록된다.</p>
+<p>전체 1,000건의 전환 중 마지막 접점이 이메일인 경우가 600건 검색이 300건 소셜이 100건이라면 라스트클릭 집계상 이메일은 전체 전환의 60%를 만든 채널로 보고된다. 하지만 그 600건 중 상당수가 이메일을 보기 전에 이미 다른 채널에서 구매 결심을 마쳤을 수 있어서 이 60%라는 숫자가 이메일의 진짜 인과적 기여도라고 보기는 어렵다.</p>`,
+    related: [{ label: "샤플리 기반 어트리뷰션", slug: "shapley-attribution" }, { label: "MMM", slug: "mmm-marketing-mix-model" }],
+    sections: []
+  },
+  "shapley-attribution": {
+    title: String.raw`샤플리 기반 어트리뷰션: 채널마다 진짜 기여만큼 나눠 갖기`,
+    domain: "product",
+    subLabel: String.raw`마케팅 어트리뷰션`,
+    intuition: String.raw`<p>세 명이 같이 프로젝트를 해서 보너스를 받았는데 셋의 역할이 서로 겹쳐서 누구 혼자서는 그 결과를 못 만들었다면 보너스를 어떻게 나눠야 공평할까. 게임이론에는 이 질문에 대한 답이 있다. 어떤 사람을 팀에 넣었을 때와 뺐을 때 결과가 얼마나 달라지는지를 가능한 모든 팀 구성 조합에서 확인하고 그 차이를 평균 내는 것이다. 마케팅에서는 팀원 대신 채널을 놓고 똑같은 질문을 던진다. 어떤 채널을 고객 여정에 추가했을 때 전환 확률이 얼마나 오르는지를 다른 채널들의 등장 순서를 모두 고려해서 평균 낸다.</p>
+<p>이렇게 계산한 몫은 채널 각각이 실제로 만들어낸 한계기여도를 반영하기 때문에 마지막 클릭이라는 우연한 순서 하나만 보고 몰아주는 라스트클릭보다 훨씬 공정하다.</p>`,
+    explanation: String.raw`<p>채널 전체 집합을 $N$이라 하고 부분집합 $S \subseteq N$에 대해 그 채널 조합에만 노출됐을 때의 전환 성과를 $v(S)$라 정의한다. 채널 $i$의 샤플리 값은 다음과 같다.</p>
+$$\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(|N|-|S|-1)!}{|N|!}\Big[v(S\cup\{i\}) - v(S)\Big]$$
+<p>이 식은 채널 $i$가 여러 채널이 순서대로 추가되는 모든 경우의 수에서 만들어내는 한계기여도 $v(S\cup\{i\}) - v(S)$를 그 순서가 나타날 확률로 가중평균한 값이다. 샤플리 값은 전체 전환 성과가 채널별 몫의 합과 정확히 일치하고 동일하게 기여하는 채널은 동일한 몫을 받으며 아무 기여도 없는 채널은 정확히 0을 받는다는 공정성 조건을 모두 만족하는 유일한 배분 방식이라는 게 증명돼 있다. 시간대별 가중치나 위치 기반 규칙처럼 임의로 정한 어트리뷰션 방식은 이런 공정성을 동시에 보장하지 못한다.</p>
+<p>실무에서 걸리는 문제는 계산량이다. 채널이 $|N|$개면 부분집합이 $2^{|N|}$개가 되어 채널 수가 15개나 20개를 넘어가면 정확한 계산이 사실상 불가능해진다. 그래서 실제로는 핵심 채널 몇 개로 범위를 좁히거나 순서 조합을 몬테카를로로 샘플링해서 근사하는 방식을 쓴다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="220" cy="130" r="100" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="340" cy="130" r="100" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="150" y="80" font-size="12">검색</text>
+<text x="410" y="80" font-size="12">소셜</text>
+<text x="280" y="130" font-size="12" text-anchor="middle">함께 노출</text>
+<text x="130" y="230" font-size="11" class="dg-dim">v(검색)=40</text>
+<text x="430" y="230" font-size="11" class="dg-dim">v(소셜)=20</text>
+<text x="280" y="20" font-size="12" text-anchor="middle">v(검색,소셜)=70</text>
+</svg>`,
+    diagramCaption: String.raw`두 채널이 함께 만든 전환을 등장 순서별 한계기여도 평균으로 공정하게 나눈다.`,
+    example: String.raw`<p>단순화를 위해 검색과 소셜 두 채널만 있다고 하자. 관측 데이터에서 $v(\varnothing)=0$ $v(\text{Search})=40$ $v(\text{Social})=20$ $v(\text{Search},\text{Social})=70$이 나왔다.</p>
+<p>채널이 둘뿐이면 등장 순서는 검색 다음 소셜 그리고 소셜 다음 검색 두 가지뿐이다. 검색이 먼저인 순서에서 검색의 한계기여는 $40-0=40$ 소셜의 한계기여는 $70-40=30$이다. 소셜이 먼저인 순서에서 소셜의 한계기여는 $20-0=20$ 검색의 한계기여는 $70-20=50$이다. 두 순서를 평균하면 검색의 샤플리 값은 $(40+50)/2=45$ 소셜은 $(30+20)/2=25$이고 합은 $45+25=70$으로 전체 전환 성과와 정확히 맞아떨어진다. 만약 실제 여정 중 소셜이 마지막 접점인 비율이 더 높다면 라스트클릭은 소셜을 과대평가하겠지만 샤플리 값은 검색이 진짜로는 더 큰 몫인 45를 가져가야 한다고 말해준다.</p>`,
+    related: [{ label: "라스트클릭 어트리뷰션", slug: "last-click-attribution" }, { label: "MMM", slug: "mmm-marketing-mix-model" }],
+    sections: []
+  },
+  "mmm-marketing-mix-model": {
+    title: String.raw`MMM: 채널들이 서로 얽힌 효과까지 회귀로 풀어내기`,
+    domain: "product",
+    subLabel: String.raw`마케팅 어트리뷰션`,
+    intuition: String.raw`<p>클릭 기반 어트리뷰션은 쿠키나 클릭 로그처럼 디지털 발자국이 남는 채널만 볼 수 있다. TV 광고나 옥외광고 라디오처럼 클릭이라는 게 애초에 존재하지 않는 채널은 아무리 정교한 어트리뷰션 모델이라도 원천적으로 잡아내지 못한다. Marketing Mix Model은 개인 단위 클릭을 아예 포기하고 훨씬 거친 눈높이로 접근한다. 채널별 주간 또는 월간 총 광고비와 그 기간의 총 매출을 놓고 회귀분석으로 어떤 채널이 매출을 얼마나 끌어올렸는지 역산한다.</p>
+<p>개인을 추적하지 않기 때문에 쿠키나 기기 식별자가 아예 없어도 되고 TV처럼 클릭이 없는 채널도 광고비라는 숫자만 있으면 같은 틀 안에 넣을 수 있다는 게 가장 큰 장점이다.</p>`,
+    explanation: String.raw`<p>전형적인 MMM은 시점 $t$의 매출 $y_t$를 채널별 광고비의 변환값에 대한 선형모형으로 설명한다.</p>
+$$y_t = \beta_0 + \sum_{c} \beta_c\, f_c(x_{c,t}) + \gamma\, z_t + \epsilon_t$$
+<p>$x_{c,t}$는 채널 $c$의 시점 $t$ 광고비이고 $z_t$는 계절성 가격변동 경쟁사 활동 같은 통제변수다. 변환함수 $f_c$가 중요한 이유는 광고비를 그대로 넣으면 현실의 두 가지 효과를 놓치기 때문이다. 하나는 이월효과로 이번 주에 본 광고가 몇 주 뒤 구매에도 영향을 준다는 사실이고 흔히 다음과 같은 기하급수적 감쇠로 표현한다.</p>
+$$f(x_t) = x_t + \lambda\, f(x_{t-1}), \quad 0 \le \lambda < 1$$
+<p>이 이월효과 항이 라스트클릭 어트리뷰션과 근본적으로 다른 지점이다. 라스트클릭은 전환 직전 접점 단 하나에만 전액을 몰아주고 그 이전 노출은 이월 없이 곧바로 0으로 취급하지만 MMM의 이월효과 항은 몇 주 전에 집행한 광고비도 감쇠된 형태로 이번 주 매출에 계속 흔적을 남긴다고 가정한다.</p>
+<p>다른 하나는 포화효과로 같은 채널에 광고비를 더 쏟아부어도 추가로 얻는 매출은 점점 줄어든다는 사실이며 보통 오목한 형태의 함수로 표현한다.</p>
+<p>단순히 채널별 광고비와 매출의 상관관계만 보는 방식이나 사용자 단위 추적에 의존하는 다중접점 어트리뷰션이 놓치는 지점을 MMM이 메운다. 오프라인 채널을 포함해 전체 매체믹스를 한 번에 보고 개인 식별자 없이도 작동해서 브라우저의 쿠키 제한이나 모바일 광고 식별자 제한으로 사용자 단위 추적이 예전만큼 힘을 못 쓰는 환경에서도 흔들리지 않는다는 것도 장점이다. 다만 대가도 있다. 계수를 안정적으로 추정하려면 보통 2년 이상의 데이터가 필요하고 여러 채널이 같은 시기에 함께 집행되는 경우가 많아 다중공선성 때문에 개별 채널 계수가 불안정해지기 쉬워서 릿지 회귀나 베이지안 사전분포 같은 보정이 흔히 함께 쓰인다. 결과도 주 단위 집계 수준의 거친 추정치라 개인 단위 어트리뷰션만큼 세밀하지는 않다.</p>
+<p>그래서 실무에서는 두 방법을 함께 쓰는 경우가 많다. TV나 옥외광고처럼 추적이 안 되는 상단 채널의 전체 예산 배분은 MMM으로 정하고 디지털 채널 안에서의 세부 배분은 샤플리 같은 다중접점 모델로 보완해 하나의 통합된 측정 체계로 맞춘다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="150" width="30" height="50" class="dg-dim"/>
+<rect x="80" y="120" width="30" height="80" class="dg-dim"/>
+<rect x="120" y="170" width="30" height="30" class="dg-dim"/>
+<text x="95" y="216" font-size="11" text-anchor="middle">채널별 주간 광고비</text>
+<line x1="170" y1="150" x2="250" y2="150" class="dg-line" stroke-width="1.5"/>
+<rect x="250" y="100" width="140" height="100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="140" font-size="12" text-anchor="middle">회귀 모델</text>
+<text x="320" y="160" font-size="11" text-anchor="middle" class="dg-dim">이월효과+포화</text>
+<line x1="390" y1="150" x2="460" y2="150" class="dg-line" stroke-width="1.5"/>
+<path d="M460,190 L490,170 L520,140 L550,120 L580,100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="520" y="216" font-size="11" text-anchor="middle">추정 매출 기여</text>
+</svg>`,
+    diagramCaption: String.raw`여러 채널의 광고비가 이월효과와 포화를 반영한 회귀식을 거쳐 매출 기여로 분해된다.`,
+    example: String.raw`<p>TV 채널에 1주차에만 1,000만원을 쓰고 2주차와 3주차에는 추가 집행이 없었다고 하자. 이월효과 감쇠율 $\lambda=0.5$를 적용하면 1주차 이월효과는 그대로 1,000만원이고 2주차는 $0+0.5\times1{,}000=500$만원 3주차는 $0+0.5\times500=250$만원이다.</p>
+<p>실제로 새 광고비를 쓰지 않은 2주차와 3주차에도 각각 500만원 250만원어치의 광고 효과가 여전히 매출에 영향을 미치는 것으로 모델에 반영된다. 이 덕분에 광고를 본 시점과 실제 구매 시점 사이에 며칠에서 몇 주씩 시차가 있는 소비자 행동도 회귀식 안에서 자연스럽게 설명된다.</p>`,
+    related: [{ label: "샤플리 기반 어트리뷰션", slug: "shapley-attribution" }, { label: "라스트클릭 어트리뷰션", slug: "last-click-attribution" }],
+    sections: []
+  },
+  "uplift-modeling": {
+    title: String.raw`Uplift Modeling: 마케팅에 반응할 사람만 골라내기`,
+    domain: "product",
+    subLabel: String.raw`인과적 임팩트 측정`,
+    intuition: String.raw`<p>10만 명에게 할인쿠폰을 보냈더니 20%가 구매했다고 해서 쿠폰이 2만 명을 설득했다고 말할 수는 없다. 그중 상당수는 쿠폰이 없었어도 어차피 살 사람들이라 회사는 그냥 마진만 깎아준 셈이고 일부는 쿠폰을 받으니 오히려 부담스러워 구매를 미루는 사람일 수도 있으며 진짜로 쿠폰 때문에 산 사람은 그 일부일 뿐이다. 일반적인 구매 예측 모델은 쿠폰을 받은 사람과 안 받은 사람을 따로 보고 각자 살 확률만 예측할 뿐 같은 사람이 쿠폰을 받았을 때와 안 받았을 때 행동이 얼마나 달라지는지는 구분하지 못한다. Uplift Modeling은 바로 이 차이 즉 처치가 그 사람의 행동을 실제로 얼마나 바꾸는지를 예측하도록 설계된 모델이다.</p>
+<p>목표는 명확하다. 쿠폰을 받아야만 사는 사람에게만 쿠폰을 주고 어차피 살 사람이나 줘도 안 살 사람 심지어 주면 오히려 역효과가 나는 사람에게는 쿠폰을 아끼는 것이다.</p>`,
+    explanation: String.raw`<p>인과추론의 근본적인 문제는 한 사람에 대해 처치를 받았을 때의 결과와 안 받았을 때의 결과를 동시에 관측할 수 없다는 데 있다. 개인별 처치효과 $\tau_i = y_i(1) - y_i(0)$는 그래서 원리적으로 관측 불가능하다. Uplift Modeling은 무작위로 나뉜 과거의 처치군과 대조군 데이터를 이용해 개인 하나의 두 가지 잠재적 결과를 직접 비교하는 대신 특징이 비슷한 사람들을 처치군과 대조군에서 각각 모아 그 그룹 단위의 평균 차이를 특징의 함수로 추정한다.</p>
+$$\tau(x) = E[Y(1) \mid X=x] - E[Y(0) \mid X=x]$$
+<p>구매확률 자체를 예측해서 점수가 높은 순으로 타겟팅하는 일반적인 반응모델은 애초에 구매확률이 높은 사람 즉 쿠폰이 없어도 어차피 살 사람들을 우선적으로 골라내는 경향이 있다. 이 사람들에게 예산을 쓰는 건 결과를 바꾸지 못하면서 마진만 내주는 낭비다.</p>
+<p>고객을 처치 여부에 따른 반응으로 나누면 네 가지 유형이 나온다. 처치해야만 사는 설득 가능군은 우플리프트가 양수라 타겟팅할 가치가 가장 크고 처치 여부와 무관하게 어차피 사는 확실 구매군과 어차피 안 사는 가망 없음군은 우플리프트가 0에 가까워 타겟팅해도 결과가 달라지지 않는다. 가장 위험한 유형은 처치를 받으면 오히려 구매를 덜 하게 되는 역효과군으로 우플리프트가 음수다. 일반 반응모델은 처치군과 대조군을 함께 놓고 비교하지 않기 때문에 이 역효과군을 원리적으로 찾아낼 수가 없다.</p>
+<p>모델링 방법으로는 처치군과 대조군에 각각 별도 모델을 학습시키고 예측값을 빼는 투모델 방식이 가장 단순하지만 두 모델의 오차 패턴이 다르면 편향이 생기기 쉽다. 좀 더 정교한 방식은 우플리프트 트리처럼 애초에 분기 기준 자체를 처치군과 대조군 사이 결과분포 차이를 최대로 벌리는 방향으로 잡아서 처음부터 우플리프트를 직접 최적화한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 320" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="260" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="260" x2="480" y2="260" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="270" y1="20" x2="270" y2="260" class="dg-line" stroke-width="1" stroke-dasharray="4,4"/>
+<line x1="60" y1="140" x2="480" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="150" y="80" font-size="13" text-anchor="middle" class="dg-accent">Persuadables</text>
+<text x="150" y="98" font-size="10" text-anchor="middle" class="dg-dim">처치해야 사는 사람</text>
+<text x="380" y="80" font-size="13" text-anchor="middle">Sure Things</text>
+<text x="380" y="98" font-size="10" text-anchor="middle" class="dg-dim">어차피 사는 사람</text>
+<text x="150" y="200" font-size="13" text-anchor="middle">Lost Causes</text>
+<text x="150" y="218" font-size="10" text-anchor="middle" class="dg-dim">어차피 안 사는 사람</text>
+<text x="380" y="200" font-size="13" text-anchor="middle" class="dg-accent">Sleeping Dogs</text>
+<text x="380" y="218" font-size="10" text-anchor="middle" class="dg-dim">건드리면 역효과</text>
+<text x="270" y="290" font-size="11" text-anchor="middle">미처치 시 구매확률: 낮음 → 높음</text>
+</svg>`,
+    diagramCaption: String.raw`처치 여부에 따른 구매확률 조합으로 네 유형이 나뉘고 우플리프트는 설득 가능군을 겨냥한다.`,
+    example: String.raw`<p>20,000명을 처치군 10,000명 대조군 10,000명으로 무작위 배정한 쿠폰 캠페인에서 처치군 구매 2,200명(22%) 대조군 구매 1,800명(18%)이 나왔다고 하자. 전체 평균 우플리프트는 $22\%-18\%=4\%\text{p}$이고 순증 구매는 $2{,}200-1{,}800=400$명이다.</p>
+<p>우플리프트 모델로 예측점수 상위 10%인 2,000명씩을 처치군과 대조군에서 뽑아 비교했더니 처치군은 35%인 700명이 구매하고 대조군은 15%인 300명이 구매해 그 구간의 순증이 400명이었다. 즉 전체 순증 400명 전부가 상위 10% 구간에서 나온 셈이고 나머지 90% 구간에서는 쿠폰이 구매 여부를 거의 바꾸지 못했다는 뜻이다. 상위 10%에게만 쿠폰을 준다면 예산의 10분의 1만 쓰고도 순증 구매 전체를 그대로 얻을 수 있다.</p>`,
+    related: [{ label: "Synthetic Control", slug: "synthetic-control" }, { label: "MMM", slug: "mmm-marketing-mix-model" }],
+    sections: []
+  },
+  "synthetic-control": {
+    title: String.raw`Synthetic Control: 있을 수 없는 대조군을 가상으로 합성하기`,
+    domain: "product",
+    subLabel: String.raw`인과적 임팩트 측정`,
+    intuition: String.raw`<p>한 도시에 지하철 노선을 새로 깔았을 때 그게 그 도시 상권 매출을 얼마나 끌어올렸는지 알고 싶다고 하자. 도시 단위로는 무작위로 절반에만 지하철을 놓을 수 없고 그 도시와 완벽히 똑같은 쌍둥이 도시도 존재하지 않는다. Synthetic Control은 이럴 때 진짜 쌍둥이를 찾는 대신 여러 다른 도시를 적당한 비율로 섞어서 가짜 쌍둥이를 인공적으로 만들어낸다. 섞는 비율은 그 조합이 변화 이전 기간 동안 실제 도시의 흐름을 최대한 비슷하게 따라가도록 데이터로 골라낸다. 이렇게 만든 가상의 쌍둥이가 변화 이전에는 실제 도시와 거의 겹치다가 변화 이후 갈라지기 시작한다면 그 벌어진 틈이 바로 지하철이 만든 효과라고 볼 수 있다.</p>
+<p>사람이 눈대중으로 비슷해 보이는 도시 하나를 골라 비교하는 방식보다 훨씬 체계적이고 무엇보다 변화가 일어나기 전 기간에 그 가상의 쌍둥이가 실제로 얼마나 잘 들어맞았는지를 눈으로 미리 검증할 수 있다는 게 강점이다.</p>`,
+    explanation: String.raw`<p>처치를 받은 단위를 1번이라 하고 처치를 받지 않은 $J$개의 후보 단위 즉 도너풀이 있다고 하자. 각 도너 $j$에 가중치 $w_j$를 부여해 처치 이전 기간의 실제 값과 가장 가깝게 재현하는 가중치 조합을 찾는다.</p>
+$$\min_{w} \sum_{t \in \text{pre}} \Big(Y_{1t} - \sum_{j=2}^{J+1} w_j Y_{jt}\Big)^2 \quad \text{s.t. } w_j \ge 0,\ \sum_j w_j = 1$$
+<p>가중치가 음수가 될 수 없고 합이 1이 되도록 제한하는 것이 일반 회귀와의 결정적인 차이다. 이 제약이 없으면 가중치가 실제 어떤 도너에서도 관측된 적 없는 극단적인 값으로 튈 수 있어서 결과로 나온 가상의 쌍둥이가 현실적으로 존재할 수 없는 조합이 되어버린다.</p>
+<p>이 방법이 필요한 이유는 눈대중으로 비교군 하나를 고르는 전통적인 방식의 약점 때문이다. 비교군을 하나만 고르면 그 선택이 자의적이고 그 비교군이 처치가 없었다면 실제 도시와 나란히 움직였을 것이라는 평행추세 가정을 검증할 방법이 마땅치 않다. Synthetic Control은 여러 후보를 데이터가 알아서 섞도록 맡기고 그 결과물의 적합도를 처치 이전 기간에서 수치와 그래프로 직접 확인할 수 있게 해준다는 점에서 이 약점을 정면으로 보완한다.</p>
+<p>처치 이후 효과는 매 시점마다 실제 값과 합성된 값의 차이 $\hat\tau_t = Y_{1t} - \sum_j w_j Y_{jt}$로 추정한다. 처치받은 단위가 보통 하나뿐이라 일반적인 표준오차 계산이 통하지 않으므로 유의성은 플라시보 검정으로 확인한다. 실제로는 처치받지 않은 도너풀의 다른 단위들을 하나씩 돌아가며 처치받은 것처럼 가정하고 같은 절차를 반복해서 우연히도 이만큼 큰 격차가 나올 수 있는지를 살펴본다. 진짜 처치받은 단위의 격차가 이 가짜 격차들보다 뚜렷하게 크다면 그 효과는 우연이 아니라는 근거가 된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="300" y1="20" x2="300" y2="220" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="300" y="14" font-size="11" text-anchor="middle">변화 시점</text>
+<path d="M80,160 L150,150 L220,140 L300,130 L360,90 L420,60 L480,40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M80,162 L150,152 L220,142 L300,132 L360,128 L420,124 L480,120" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="3,3"/>
+<text x="486" y="36" font-size="11" class="dg-accent">실제 A지역</text>
+<text x="486" y="116" font-size="11" class="dg-dim">합성 대조군</text>
+</svg>`,
+    diagramCaption: String.raw`가상의 합성 대조군은 변화 이전에는 실제 지표와 거의 겹치다가 이후 격차가 벌어진다.`,
+    example: String.raw`<p>새 결제 플로우를 A지역에만 적용했고 도너풀은 B C D지역이다. 처치 이전 기간 적합 결과 가중치는 $w_B=0.5$ $w_C=0.2$ $w_D=0.3$으로 합이 1이고 이 가중조합은 처치 이전 A지역의 실제 지수와 평균 1% 이내로 거의 겹쳤다.</p>
+<p>출시 이후 어느 주 실제 A지역 지수는 118이고 같은 주 B C D지역 지수는 각각 101, 107, 99였다. 합성 대조군 값은 다음과 같다.</p>
+$$0.5 \times 101 + 0.2 \times 107 + 0.3 \times 99 = 50.5 + 21.4 + 29.7 = 101.6$$
+<p>실제 값 118과 합성 대조군 101.6의 차이인 16.4포인트가 새 결제 플로우가 만든 추정 인과효과다. 이 차이는 그 시기 전체 지역에 공통으로 있었을 계절적 상승분을 이미 걷어낸 수치라는 점이 핵심이다.</p>`,
+    related: [{ label: "Uplift Modeling", slug: "uplift-modeling" }, { label: "샤플리 기반 어트리뷰션", slug: "shapley-attribution" }],
+    sections: []
+  },
+  "ltv-modeling": {
+    title: String.raw`LTV 모델링: 고객 한 명이 평생 벌어다 줄 돈 추정하기`,
+    domain: "product",
+    subLabel: String.raw`LTV · 이탈예측`,
+    intuition: String.raw`<p>고객 한 명을 데려오는 데 돈을 쓰기 전에 먼저 답해야 할 질문이 있다. 이 고객이 앞으로 얼마를 벌어다 줄 것인가다. 이 숫자 없이는 마케팅비를 얼마까지 써도 되는지 판단할 기준 자체가 없다. LTV(Lifetime Value)는 고객 한 명이 서비스를 이용하는 동안 남길 것으로 예상되는 총 이익을 미리 추정한 값이다.</p>
+<p>계산 방식을 아주 단순화하면 이렇다. 이 고객이 한 달에 얼마를 쓰는지, 그 중 실제 이익으로 남는 비율은 얼마인지, 그리고 평균적으로 몇 달이나 머무는지를 곱한다. 오래 머물수록 많이 남기고 이탈이 빠를수록 LTV는 낮아진다.</p>`,
+    explanation: String.raw`<p>가장 널리 쓰이는 단순 공식은 $LTV = \frac{ARPU \times m}{c}$다. $ARPU$는 고객 한 명의 월평균 매출, $m$은 매출총이익률, $c$는 월 이탈률이다. 이탈률이 매달 일정하다고 가정하면 평균 체류 개월수는 $\frac{1}{c}$가 되고 여기에 월별 순이익을 곱한 값이 곧 LTV다.</p>
+<p>이 공식은 이탈률이 시간에 관계없이 일정하다고 가정한다는 한계가 있다. 실제로는 가입 직후 몇 달의 이탈률이 특히 높고 오래 남은 고객일수록 이후 이탈률이 낮아지는 경우가 흔하다. 그래서 정교한 팀은 단순 공식 대신 생존분석이나 그래디언트부스팅 같은 모델로 코호트별, 개인별 잔존 곡선을 직접 추정하고 그 곡선 아래 면적으로 LTV를 계산한다.</p>
+<p>여기서 나온 월평균 매출과 이탈률 추정치는 뒤에 나오는 Payback Period 계산에 그대로 재사용된다. 이탈률 $c$ 자체는 Churn 예측 모델이 만들어내는 위험도 점수를 집계해서 얻는 경우가 많아 두 개념은 사실상 한 파이프라인 위에 있다.</p>
+<p>흔한 함정은 세 가지다. 매출총이익률을 반영하지 않고 매출만으로 LTV를 계산하면 실제보다 크게 부풀려진다. 전체 고객 평균 하나로 뭉뚱그리면 상위 소수 고객이 평균을 끌어올려 대다수 고객의 실제 가치를 과대평가하게 된다. 마지막으로 이탈률이 일정하다는 가정 자체가 초기 코호트에서는 잘 맞지 않아 신생 서비스일수록 단순 공식의 오차가 커진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="210" x2="580" y2="210" class="dg-line" stroke-width="1.5"/>
+<rect x="70" y="90" width="50" height="120" class="dg-accent"/>
+<rect x="150" y="118" width="50" height="92" class="dg-dim"/>
+<rect x="230" y="140" width="50" height="70" class="dg-dim"/>
+<rect x="310" y="158" width="50" height="52" class="dg-dim"/>
+<rect x="390" y="172" width="50" height="38" class="dg-dim"/>
+<rect x="470" y="184" width="50" height="26" class="dg-dim"/>
+<text x="95" y="225" text-anchor="middle" font-size="12">1개월</text>
+<text x="175" y="225" text-anchor="middle" font-size="12">2개월</text>
+<text x="255" y="225" text-anchor="middle" font-size="12">3개월</text>
+<text x="335" y="225" text-anchor="middle" font-size="12">4개월</text>
+<text x="415" y="225" text-anchor="middle" font-size="12">5개월</text>
+<text x="495" y="225" text-anchor="middle" font-size="12">6개월</text>
+<path d="M 60 80 L 60 68 L 530 68 L 530 80" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="295" y="56" text-anchor="middle" font-size="13">누적 순이익 = LTV</text>
+<text x="50" y="245" font-size="12" class="dg-dim">이탈로 남는 고객이 줄면서 매달 순이익도 함께 줄어든다</text>
+</svg>`,
+    diagramCaption: String.raw`매달 이탈로 줄어드는 고객이 남기는 순이익을 모두 더한 값이 LTV다.`,
+    example: String.raw`<p>월평균 매출(ARPU) 10달러, 매출총이익률 70%, 월 이탈률 5%인 구독 서비스가 있다고 하자. $LTV = \frac{10 \times 0.7}{0.05} = 140$이므로 이 고객 한 명의 생애가치는 약 140달러로 추정된다. 같은 이탈률이 계속 유지된다면 평균 체류 개월수는 $\frac{1}{0.05}=20$개월이다.</p>`,
+    related: [{ label: "Churn 예측", slug: "churn-prediction" }, { label: "LTV:CAC 비율", slug: "ltv-cac-ratio" }, { label: "Payback Period", slug: "payback-period" }],
+    sections: []
+  },
+  "churn-prediction": {
+    title: String.raw`Churn 예측: 떠나기 전에 미리 알아채기`,
+    domain: "product",
+    subLabel: String.raw`LTV · 이탈예측`,
+    intuition: String.raw`<p>고객이 서비스를 떠난 뒤에는 할 수 있는 일이 별로 없다. 이미 해지 버튼을 누른 고객을 되돌리기는 훨씬 어렵다. Churn 예측은 아직 떠나지 않은 고객 중 곧 떠날 가능성이 높은 사람을 미리 골라내서 그 전에 손을 쓸 수 있게 해준다.</p>
+<p>방법은 과거에 실제로 이탈한 고객들이 이탈 전에 보였던 행동 패턴을 모델에 학습시키는 것이다. 로그인 빈도가 줄었는지, 핵심 기능 사용이 뜸해졌는지, 결제 실패나 고객센터 문의가 늘었는지 같은 신호를 모아 각 고객에게 이탈 위험 점수를 매긴다. 마케팅팀이나 CS팀은 이 점수 상위 그룹에게 리텐션 캠페인이나 할인, 직접 연락을 집중한다.</p>`,
+    explanation: String.raw`<p>입력 특징으로는 사용 빈도 추세, 마지막 접속 이후 경과일, 핵심 기능 사용량 변화, 결제 실패 이력, 고객센터 문의 이력 등을 주로 쓴다. 모델은 로지스틱회귀나 그래디언트부스팅 같은 분류기로 이탈 확률을 직접 출력하거나 생존분석 모델로 언제쯤 이탈할지 시점까지 함께 추정한다.</p>
+<p>이탈은 대체로 소수 사건이라 클래스 불균형이 심하다. 전체 정확도만 보면 모든 고객을 잔존으로 예측해도 숫자가 높게 나올 수 있어 의미가 없다. 그래서 재현율, 정밀도, 그리고 무작위 접촉 대비 몇 배나 더 많은 이탈자를 잡아내는지를 보는 리프트 지표로 평가한다. 어느 위험도 임계값 위를 개입 대상으로 삼을지는 개입 비용과 실제로 막았을 때 얻는 LTV를 비교해서 정한다.</p>
+<p>여기서 나오는 이탈 확률은 LTV 모델링의 분모에 들어가는 월 이탈률 $c$의 원천이 되는 경우가 많다. 이탈 예측이 정교해질수록 LTV 추정도 함께 정확해지는 구조다.</p>
+<p>흔한 함정은 라벨 정의부터 흔들린다는 점이다. 구독 해지를 이탈로 볼지, 몇 주 이상 미접속을 이탈로 볼지에 따라 학습 데이터 자체가 달라진다. 또한 해지 페이지 방문처럼 이탈 직전에만 나타나는 신호를 특징으로 넣으면 모델이 지나치게 쉬운 문제를 푸는 것처럼 보이는 라벨 누수가 생긴다. 마지막으로 위험군을 정확히 골라내도 개입 자체가 효과가 없다면 예측은 정확해도 실제 이탈은 줄지 않는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="150" x2="600" y2="150" class="dg-line" stroke-width="1.5"/>
+<path d="M 40 60 C 150 65, 220 90, 300 110 S 450 135, 520 145" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="110" r="6" class="dg-accent"/>
+<circle cx="520" cy="145" r="6" class="dg-dim" stroke="none"/>
+<text x="300" y="95" text-anchor="middle" font-size="12">모델 플래그 시점</text>
+<text x="520" y="165" text-anchor="middle" font-size="12">실제 이탈</text>
+<path d="M 300 178 L 300 190 L 520 190 L 520 178" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="410" y="205" text-anchor="middle" font-size="12">개입 가능 구간</text>
+<text x="40" y="45" font-size="12" class="dg-dim">사용 빈도(활동량)</text>
+</svg>`,
+    diagramCaption: String.raw`활동량이 꺾이기 시작할 때 모델이 먼저 알아채면 실제 이탈까지 개입할 시간이 생긴다.`,
+    example: String.raw`<p>전체 사용자 10000명 중 이번 달 실제 이탈자가 500명(이탈률 5%)이라고 하자. 모델이 위험도 상위 1000명을 이탈 위험군으로 분류했는데 그 중 200명이 실제로 이탈했다면 재현율은 $\frac{200}{500}=0.4$, 정밀도는 $\frac{200}{1000}=0.2$다. 무작위로 1000명을 골랐다면 기대 이탈자 수는 $1000 \times \frac{500}{10000}=50$명이라 재현율은 $\frac{50}{500}=0.1$에 그쳤을 것이다. 모델을 쓰면 무작위보다 $\frac{0.4}{0.1}=4$배 많은 이탈자를 같은 접촉 규모로 찾아내는 셈이다.</p>`,
+    related: [{ label: "LTV 모델링", slug: "ltv-modeling" }, { label: "LTV:CAC 비율", slug: "ltv-cac-ratio" }],
+    sections: []
+  },
+  "personalized-ranking": {
+    title: String.raw`개인화 랭킹: 사용자마다 다른 순서로 보여주기`,
+    domain: "product",
+    subLabel: String.raw`추천 · 개인화`,
+    intuition: String.raw`<p>모든 사용자에게 똑같은 순서로 상품이나 콘텐츠를 보여주면 어떤 사용자에게는 딱 맞는 항목이 화면 저 아래에 묻혀버릴 수 있다. 사람마다 관심사와 과거 행동이 다른데 노출 순서만 하나로 고정하면 그 차이를 전혀 활용하지 못하는 셈이다.</p>
+<p>개인화 랭킹은 같은 후보 목록이라도 사용자마다 다른 순서로 재배열한다. 이 사용자가 과거에 무엇을 봤고 무엇을 클릭했고 무엇을 구매했는지를 반영해 그 사람에게 더 끌릴 만한 항목을 위로 올린다.</p>`,
+    explanation: String.raw`<p>실무 시스템은 보통 두 단계로 나뉜다. 먼저 전체 아이템 중 후보를 수천 개 수준으로 좁히는 후보생성 단계를 거치고 그 위에서 더 정교한 랭킹 모델이 순서를 매긴다. 랭킹 단계의 스코어링 함수는 예측 클릭확률, 예측 구매확률, 마진, 다양성 패널티 등 여러 신호의 가중합이거나 이런 신호들을 입력으로 받는 학습된 랭킹 모델의 출력값이다.</p>
+<p>랭킹 모델은 개별 아이템 점수를 독립적으로 예측하는 방식(pointwise)도 있고 두 아이템의 순서를 직접 비교하도록 학습하는 방식(pairwise), 목록 전체의 순서를 한 번에 최적화하는 방식(listwise)도 있다. 목적함수를 클릭확률 하나로만 두면 자극적이거나 눈길만 끄는 항목이 과도하게 위로 올라올 위험이 있어 마진이나 장기 만족도 신호를 함께 섞는 경우가 많다.</p>
+<p>흔한 함정은 지나친 개인화로 사용자가 이미 좋아한다고 알려진 것만 반복 노출하는 필터버블이다. 다양성 패널티를 적당히 섞지 않으면 사용자의 취향 폭이 점점 좁아진 것처럼 보이는 왜곡이 생긴다. 신규 사용자는 행동 기록이 없어 개인화 신호 자체가 부족한 콜드스타트 문제도 있고 방금 일어난 행동이 실시간으로 반영되지 못하면 이미 구매한 상품을 계속 추천하는 뒤늦은 개인화가 나타난다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<text x="130" y="24" text-anchor="middle" font-size="13">일반 랭킹</text>
+<text x="470" y="24" text-anchor="middle" font-size="13">개인화 랭킹</text>
+<rect x="80" y="40" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="62" text-anchor="middle" font-size="12">A</text>
+<rect x="80" y="84" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="106" text-anchor="middle" font-size="12">B</text>
+<rect x="80" y="128" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="150" text-anchor="middle" font-size="12">C</text>
+<rect x="80" y="172" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="194" text-anchor="middle" font-size="12">D</text>
+<rect x="420" y="40" width="100" height="34" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="470" y="62" text-anchor="middle" font-size="12">D</text>
+<rect x="420" y="84" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="106" text-anchor="middle" font-size="12">A</text>
+<rect x="420" y="128" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="150" text-anchor="middle" font-size="12">C</text>
+<rect x="420" y="172" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="194" text-anchor="middle" font-size="12">B</text>
+<line x1="180" y1="57" x2="420" y2="101" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="101" x2="420" y2="189" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="145" x2="420" y2="145" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="189" x2="420" y2="57" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="230" text-anchor="middle" font-size="12" class="dg-dim">이 사용자에게는 D가 가장 관련도 높아 맨 위로 올라온다</text>
+</svg>`,
+    diagramCaption: String.raw`같은 후보 4개라도 사용자 신호에 따라 노출 순서가 완전히 달라질 수 있다.`,
+    example: String.raw`<p>클릭 예측 점수에 가중치 0.7, 마진 점수에 가중치 0.3을 준 스코어링 함수가 있다고 하자. 아이템 A는 클릭 예측 0.08, 마진 점수 0.5로 $0.7\times0.08+0.3\times0.5=0.206$이고 아이템 B는 클릭 예측 0.05, 마진 점수 0.9로 $0.7\times0.05+0.3\times0.9=0.305$다. 클릭 예측만 보면 A가 앞서지만 마진까지 반영한 최종 점수는 B가 더 높아 개인화 랭킹에서는 B가 위로 올라온다.</p>`,
+    related: [{ label: "밴딧 기반 추천", slug: "bandit-based-recommendation-product" }, { label: "CTR", slug: "ctr-product" }, { label: "CVR", slug: "cvr" }],
+    sections: []
+  },
+  "bandit-based-recommendation-product": {
+    title: String.raw`밴딧 기반 추천: 실시간으로 탐색과 활용의 균형 잡기`,
+    domain: "product",
+    subLabel: String.raw`추천 · 개인화`,
+    intuition: String.raw`<p>추천 알고리즘이나 정렬 방식 후보가 여러 개 있을 때 어떤 게 더 나은지 확인하려면 실제로 써봐야 한다. 그런데 지금까지 제일 낫다고 믿는 방식만 계속 쓰면 더 나은 대안을 영영 발견하지 못한다. 반대로 새로운 방식을 계속 시험만 하면 이미 검증된 좋은 옵션을 충분히 활용하지 못해 그만큼 기회비용이 쌓인다.</p>
+<p>밴딧 기반 추천은 이 탐색과 활용 사이의 줄다리기를 정해진 실험 기간 없이 실시간 트래픽 안에서 계속 자동으로 조절한다. 성과가 좋아 보이는 옵션에는 점점 더 많은 트래픽을 흘려보내고 아직 확신이 부족한 옵션에는 적은 트래픽을 계속 흘려 정보를 갱신한다.</p>`,
+    explanation: String.raw`<p>고전적인 A/B테스트는 실험 기간 동안 트래픽을 균등하게 나누고 기간이 끝난 뒤 한 번에 승자를 정한다. 밴딧은 그 사이 계속 관측치를 쌓으며 트래픽 배분 비율 자체를 실시간으로 바꾼다. 가장 단순한 방법은 엡실론 그리디로 확률 $\epsilon$만큼은 무작위로 아무 옵션이나 시도하고 나머지 $1-\epsilon$은 지금까지 성과가 가장 좋은 옵션을 그대로 활용한다. UCB나 톰슨 샘플링 같은 방법은 각 옵션의 성과 추정치와 함께 그 추정치의 불확실성까지 반영해 아직 덜 알려진 옵션에 조금 더 기회를 주는 식으로 탐색과 활용을 더 정교하게 조절한다.</p>
+<p>사용자 특징까지 반영해 사용자마다 최선의 옵션이 다를 수 있다고 보는 방식을 맥락적 밴딧이라 부른다. 이 경우 밴딧의 팔 선택 문제는 개인화 랭킹의 스코어링 문제와 사실상 맞닿는다. 랭킹 모델이 내놓은 점수를 팔의 기대 보상으로 쓰고 그 위에 탐색 로직을 얹는 구조가 흔하다.</p>
+<p>흔한 함정은 초반 데이터가 적을 때 우연히 성과가 좋아 보인 옵션에 트래픽이 너무 빨리 쏠려 다른 옵션을 제대로 검증하지 못하고 조기에 수렴해버리는 것이다. 사용자 취향이 시간에 따라 바뀌는 비정상성 환경에서는 과거에 이겼던 팔에 계속 트래픽이 몰려 새로운 변화에 둔감해질 수 있다. 전환처럼 보상이 나타나기까지 시간이 걸리는 지표를 목표로 쓰면 아직 결과가 확정되지 않은 최근 노출을 어떻게 반영할지도 별도로 설계해야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="520" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="30" width="52" height="40" class="dg-accent"/>
+<rect x="92" y="30" width="468" height="40" class="dg-dim"/>
+<text x="66" y="55" text-anchor="middle" font-size="12">탐색 10%</text>
+<text x="326" y="55" text-anchor="middle" font-size="12">활용 90%(현재 최선의 팔)</text>
+<line x1="66" y1="70" x2="66" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="66" y1="110" x2="150" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="66" y1="110" x2="300" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="66" y1="110" x2="450" y2="150" class="dg-line" stroke-width="1.5"/>
+<rect x="105" y="150" width="90" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="150" y="174" text-anchor="middle" font-size="12">팔 A</text>
+<rect x="255" y="150" width="90" height="40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="174" text-anchor="middle" font-size="12">팔 B(최선)</text>
+<rect x="405" y="150" width="90" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="450" y="174" text-anchor="middle" font-size="12">팔 C</text>
+<line x1="326" y1="70" x2="300" y2="150" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="215" text-anchor="middle" font-size="12" class="dg-dim">활용 트래픽은 최선의 팔로 몰리고 탐색 트래픽은 세 팔에 고르게 나뉜다</text>
+</svg>`,
+    diagramCaption: String.raw`탐색 비율만큼은 계속 다른 옵션을 시도하며 정보를 갱신한다.`,
+    example: String.raw`<p>하루 노출 90000건, 탐색 비율(엡실론) 0.1인 엡실론 그리디 정책을 쓴다고 하자. 탐색에 배정되는 노출은 $90000\times0.1=9000$건이고 이를 후보 3개 팔에 고르게 나누면 팔마다 $9000/3=3000$건씩 받는다. 나머지 $90000\times0.9=81000$건은 모두 현재 성과가 가장 좋은 팔로 간다. 그 결과 최선의 팔은 하루 $81000+3000=84000$건을, 나머지 두 팔은 각각 3000건을 받는 셈이다.</p>`,
+    related: [{ label: "개인화 랭킹", slug: "personalized-ranking" }, { label: "CTR", slug: "ctr-product" }],
+    sections: []
+  },
+  "cac": {
+    title: String.raw`CAC: 고객 한 명을 데려오는 데 든 돈`,
+    domain: "product",
+    subLabel: String.raw`획득 지표`,
+    intuition: String.raw`<p>마케팅 예산을 얼마나 써도 되는지 정하려면 먼저 고객 한 명을 데려오는 데 실제로 얼마가 드는지부터 알아야 한다. CAC(Customer Acquisition Cost)는 이 질문에 가장 직접적으로 답하는 숫자다. 마케터나 대표가 매달 이 숫자를 챙겨보는 이유는 같은 예산으로 몇 명을 더 데려올 수 있는지, 그리고 그 비용이 감당할 만한 수준인지를 바로 확인할 수 있기 때문이다.</p>
+<p>이 숫자가 시간이 지나며 계속 오른다면 경고 신호다. 같은 예산으로 살 수 있는 신규 고객 수가 줄어들고 있다는 뜻이고 채널이 포화되고 있거나 경쟁이 치열해지고 있다는 신호일 수 있다.</p>`,
+    explanation: String.raw`<p>$CAC = \frac{S}{N}$이다. 여기서 $S$는 해당 기간에 쓴 마케팅비용 전체이고 $N$은 같은 기간에 새로 확보한 고객 수다. 제대로 계산하려면 $S$에는 광고비뿐 아니라 마케팅 인건비, 툴 비용, 크리에이티브 제작비까지 온전히(fully-loaded) 담아야 한다.</p>
+<p>CAC는 채널별로 크게 다르다. 유료 광고와 오가닉 유입, 추천 유입을 하나로 뭉쳐 평균 CAC만 보면 실제로 어느 채널이 효율적인지가 가려진다. 채널별로 나눠 봐야 예산을 어디로 옮겨야 할지 판단할 수 있다.</p>
+<p>CAC 하나만으로는 이 비용이 적정한지 알 수 없다. 뒤에 나오는 LTV:CAC 비율과 Payback Period가 CAC를 다른 지표와 엮어서 판단 기준을 만들어준다.</p>
+<p>흔한 함정은 광고비만 넣고 인건비나 툴 비용을 빼서 CAC를 실제보다 낮게 계산하는 것이다. 이러면 사업이 실제보다 더 효율적으로 보이는 착시가 생긴다. 또한 오가닉 유입까지 포함한 전체 신규 고객 수를 분모에 넣으면 유료 마케팅의 실제 효율이 희석되어 보인다는 점도 유의해야 한다.</p>`,
+    example: String.raw`<p>마케팅비로 5만 달러를 써서 신규 고객 500명을 얻었다면 $CAC=\frac{50000}{500}=100$이므로 고객 한 명을 데려오는 데 평균 100달러가 든 셈이다.</p>`,
+    related: [{ label: "CPA", slug: "cpa" }, { label: "LTV:CAC 비율", slug: "ltv-cac-ratio" }, { label: "Payback Period", slug: "payback-period" }],
+    sections: []
+  },
+  "cpa": {
+    title: String.raw`CPA: 전환 하나에 들어간 광고비`,
+    domain: "product",
+    subLabel: String.raw`획득 지표`,
+    intuition: String.raw`<p>광고 캠페인이 실제로 성과를 내고 있는지 확인하려면 노출이나 클릭 수보다 실제 전환 하나에 얼마가 들었는지를 봐야 한다. 전환은 가입일 수도 있고 장바구니 담기나 실제 구매일 수도 있다. CPA(Cost Per Action)는 캠페인이나 채널마다 이 값을 비교해서 예산을 어디로 옮길지 정하는 잣대로 쓰인다.</p>
+<p>같은 광고비를 썼어도 CPA가 낮은 캠페인이 있고 높은 캠페인이 있다면 마케터는 성과가 좋은 쪽으로 예산을 옮기는 근거로 CPA를 쓴다.</p>`,
+    explanation: String.raw`<p>$CPA = \frac{S}{X}$다. $S$는 광고비이고 $X$는 전환 건수다. 여기서 전환을 무엇으로 정의하느냐가 CPA 값을 크게 바꾼다. 회원가입처럼 넓게 잡으면 CPA는 낮게 나오고 유료 결제처럼 좁게 잡으면 CAC와 값이 거의 같아진다.</p>
+<p>CAC와의 차이는 단위에 있다. CAC는 신규 고객 한 명 단위로 계산하고 CPA는 전환 이벤트 한 건 단위로 계산한다. 한 고객이 여러 번 전환할 수 있는 서비스라면 CPA와 CAC는 서로 다른 값을 가리키게 된다.</p>
+<p>흔한 함정은 어트리뷰션이다. 사용자가 여러 광고를 거쳐 전환에 이르는 경우 그 전환을 어느 채널의 성과로 인정할지에 따라 채널별 CPA가 크게 달라진다. 마지막 클릭에만 전환을 몰아주는 라스트클릭 귀속은 검색 광고처럼 퍼널 하단에 있는 채널을 유리하게 만들고 인지도 광고처럼 상단에서 역할을 하는 채널의 기여는 과소평가하는 경향이 있다.</p>`,
+    example: String.raw`<p>광고비 2만 달러를 써서 전환 400건을 얻었다면 $CPA=\frac{20000}{400}=50$이므로 전환 하나당 평균 50달러가 든 셈이다.</p>`,
+    related: [{ label: "CAC", slug: "cac" }, { label: "CVR", slug: "cvr" }],
+    sections: []
+  },
+  "cpm": {
+    title: String.raw`CPM: 천 번 보여주는 데 드는 비용`,
+    domain: "product",
+    subLabel: String.raw`획득 지표`,
+    intuition: String.raw`<p>클릭이나 전환을 논하기 전 단계에서 얼마나 많은 사람에게 광고를 보여줬는지가 목표인 캠페인도 있다. 브랜드 인지도를 올리려는 캠페인이 대표적이다. CPM(Cost Per Mille)은 노출 1000회당 얼마가 드는지를 재서 서로 다른 매체나 지면의 단가를 같은 기준으로 비교할 수 있게 해준다.</p>
+<p>매체를 구매하는 담당자는 클릭률이나 전환율을 아직 모르는 단계에서도 CPM만으로 여러 매체의 견적을 빠르게 비교할 수 있다.</p>`,
+    explanation: String.raw`<p>$CPM = \frac{S}{I/1000}$다. $S$는 광고비, $I$는 노출 수다. 이름의 M은 1000을 뜻하는 로마 숫자 표기 mille에서 왔다.</p>
+<p>퍼포먼스 마케팅에서는 최종적으로 CPA나 CAC를 기준으로 삼지만 CPM은 그 앞 단계인 도달 효율을 비교하는 용도로 쓰인다. 사실 CPM, CTR, CVR을 함께 놓고 보면 최종 CPA를 역산할 수 있다. CPM을 1000으로 나눈 노출 1회당 비용을 CTR과 CVR로 나누면 전환 하나당 비용이 나온다.</p>
+<p>흔한 함정은 CPM이 낮은 매체가 무조건 좋다고 오해하는 것이다. CPM이 낮아도 노출된 사용자가 실제 화면에 뜨지 않았거나(가시성 문제) 봇 트래픽이 섞여 있다면 그 저렴한 노출은 애초에 가치가 없다. CPM은 단가일 뿐 노출 품질까지 보장하지는 않는다.</p>`,
+    example: String.raw`<p>광고비 2000달러로 노출 50만 회를 얻었다면 $CPM=\frac{2000}{500000/1000}=\frac{2000}{500}=4$이므로 노출 1000회를 보여주는 데 4달러가 든 셈이다.</p>`,
+    related: [{ label: "CAC", slug: "cac" }, { label: "CTR", slug: "ctr-product" }],
+    sections: []
+  },
+  "ltv-cac-ratio": {
+    title: String.raw`LTV:CAC 비율: 벌어들이는 돈이 들인 돈보다 충분히 큰가`,
+    domain: "product",
+    subLabel: String.raw`수익성 지표`,
+    intuition: String.raw`<p>고객 한 명을 데려오는 데 쓴 돈보다 그 고객이 벌어다 줄 돈이 충분히 크지 않다면 고객을 늘릴수록 오히려 손해가 쌓이는 구조가 된다. 마케터나 투자자가 CAC 하나만 보지 않고 LTV와 함께 보는 이유가 여기 있다. LTV:CAC 비율은 이 둘의 관계를 한 숫자로 요약해 사업이 지금 남는 장사인지 아닌지를 즉시 보여준다.</p>
+<p>이 숫자를 보면 지금 마케팅 예산을 더 써도 되는지, 아니면 획득 비용부터 낮춰야 하는지를 판단할 수 있다.</p>`,
+    explanation: String.raw`<p>$\frac{LTV}{CAC}$로 계산한다. SaaS 업계에서는 이 값이 3 이상이면 건강한 수준이라는 경험칙이 널리 인용된다. 다만 이는 업종과 성장 단계에 따라 달라질 수 있는 경험칙일 뿐 절대적인 기준은 아니다. 값이 1 이하라면 고객을 늘릴수록 손해가 쌓이는 구조이고 3에서 5 사이는 대체로 안정적인 구간으로 본다. 반대로 지나치게 높은 값, 예를 들어 10을 넘는 경우는 오히려 마케팅에 너무 소극적이어서 더 빠르게 성장할 기회를 놓치고 있다는 신호로 해석되기도 한다.</p>
+<p>이 비율이 의미 있으려면 LTV와 CAC 각각이 같은 기준으로 계산돼야 한다. LTV는 매출총이익률을 반영한 순이익 기준으로, CAC는 인건비와 툴 비용까지 포함한 전체 비용 기준으로 맞춰야 두 숫자를 나눈 값이 왜곡되지 않는다.</p>
+<p>흔한 함정은 두 가지다. LTV는 미래를 추정한 값이라 낙관적으로 잡히기 쉽고 초기에 오래 남은 소수 고객만 보고 전체를 낙관하는 생존편향에 빠지기 쉽다. 또한 지금의 CAC는 현재 채널 믹스를 기준으로 한 값이라 마케팅 규모를 키우면 남아 있는 잠재 고객의 획득 비용이 더 비싸지면서 CAC 자체가 오르는 경우가 많다. 지금 비율이 좋다고 해서 그 비율이 그대로 유지된다는 보장은 없다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="220" x2="500" y2="220" class="dg-line" stroke-width="1.5"/>
+<rect x="120" y="180" width="80" height="40" class="dg-dim"/>
+<text x="160" y="240" text-anchor="middle" font-size="12">CAC</text>
+<text x="160" y="170" text-anchor="middle" font-size="12">100달러</text>
+<rect x="320" y="164" width="80" height="56" class="dg-accent"/>
+<text x="360" y="240" text-anchor="middle" font-size="12">LTV</text>
+<text x="360" y="154" text-anchor="middle" font-size="12">140달러</text>
+<line x1="80" y1="100" x2="480" y2="100" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="480" y="94" text-anchor="end" font-size="12" class="dg-dim">3배 기준선</text>
+<text x="300" y="40" text-anchor="middle" font-size="13">LTV/CAC = 1.4, 기준선(3배)에는 못 미친다</text>
+</svg>`,
+    diagramCaption: String.raw`LTV 막대가 CAC 막대의 3배에 이르러야 흔히 말하는 건강한 구간에 들어간다.`,
+    example: String.raw`<p>앞서 구한 LTV 140달러와 CAC 100달러를 그대로 쓰면 $\frac{140}{100}=1.4$로 흔히 말하는 3배 기준에 못 미친다. 반대로 LTV가 450달러, CAC가 100달러라면 $\frac{450}{100}=4.5$로 건강한 구간에 들어간다.</p>`,
+    related: [{ label: "CAC", slug: "cac" }, { label: "LTV 모델링", slug: "ltv-modeling" }, { label: "Payback Period", slug: "payback-period" }],
+    sections: []
+  },
+  "roas": {
+    title: String.raw`ROAS: 광고비 1원당 얼마나 팔렸는가`,
+    domain: "product",
+    subLabel: String.raw`수익성 지표`,
+    intuition: String.raw`<p>캠페인을 운영하는 마케터는 매출 전체를 계산할 여유 없이도 지금 광고가 매출로 얼마나 돌아오고 있는지 바로 알고 싶을 때가 많다. ROAS(Return On Ad Spend)는 광고비 대비 그 광고에서 발생한 매출을 즉시 비교할 수 있게 해줘서 입찰 조정 같은 실시간 캠페인 운영에 특히 자주 쓰인다.</p>
+<p>CAC나 LTV:CAC 비율이 이익과 고객 단위로 계산되는 데 비해 ROAS는 매출과 광고비만으로 빠르게 계산할 수 있어 캠페인 단위 성과를 즉시 확인하는 용도로 널리 쓰인다.</p>`,
+    explanation: String.raw`<p>$ROAS = \frac{R}{S}$다. $R$은 그 광고에서 발생한 것으로 귀속된 매출이고 $S$는 광고비다. 보통 3.5배처럼 배수로 표기하거나 350%처럼 백분율로 표기한다.</p>
+<p>ROAS는 매출 기준이라는 점에서 CAC나 CPA와 근본적으로 다르다. 매출총이익률이 낮은 사업은 ROAS가 높게 나와도 실제로 남는 이익은 얼마 안 될 수 있다. ROAS만 보고 캠페인을 판단하면 이익률이 다른 상품 카테고리 사이의 비교가 왜곡될 수 있다.</p>
+<p>흔한 함정은 CPA와 마찬가지로 어트리뷰션 문제다. 같은 매출이 여러 광고 접점에 걸쳐 있을 때 그 매출을 어느 광고의 성과로 인정하느냐에 따라 ROAS가 크게 달라진다. 또한 쿠폰이나 할인으로 발생한 매출까지 그대로 $R$에 포함하면 실제 광고 효율보다 부풀려진 값이 나온다.</p>`,
+    example: String.raw`<p>광고비 1만 달러를 써서 그 광고로 발생한 매출이 3만5천 달러였다면 $ROAS=\frac{35000}{10000}=3.5$로 광고비 1달러당 3.5달러의 매출이 발생한 셈이다.</p>`,
+    related: [{ label: "CAC", slug: "cac" }, { label: "CPA", slug: "cpa" }],
+    sections: []
+  },
+  "payback-period": {
+    title: String.raw`Payback Period: 들인 돈을 회수하는 데 몇 달이 걸리는가`,
+    domain: "product",
+    subLabel: String.raw`수익성 지표`,
+    intuition: String.raw`<p>LTV:CAC 비율이 장기적으로 이 사업이 남는 장사인지를 알려준다면 Payback Period는 그 돈을 실제로 언제 다시 손에 쥐는지를 알려준다. 특히 현금이 넉넉하지 않은 초기 스타트업일수록 장기 수익성 못지않게 당장의 현금흐름이 중요해서 이 지표를 함께 챙겨본다.</p>
+<p>CAC로 100을 썼어도 그 돈이 1개월 만에 돌아오는 사업과 2년이 걸려야 돌아오는 사업은 성장 속도를 낼 수 있는 여력이 완전히 다르다.</p>`,
+    explanation: String.raw`<p>$T = \frac{CAC}{ARPU}$다. $CAC$는 고객 한 명을 획득하는 데 든 비용이고 $ARPU$는 고객당 월평균 매출이다. SaaS 업계에서는 흔히 12개월 이내를 양호한 기준으로 언급하지만 이 역시 절대적인 법칙이 아니라 업종과 자금 사정에 따라 달라지는 경험칙이다.</p>
+<p>이 계산에 쓰이는 월평균 매출 추정치는 LTV 모델링에서 쓴 $ARPU$와 같은 값을 그대로 재사용할 수 있다. 결국 Payback Period는 CAC를 LTV 계산에 쓰인 월별 수익 흐름 위에 얹어서 회수 시점을 뽑아낸 지표라고 볼 수 있다.</p>
+<p>흔한 함정은 매출 기준 계산과 매출총이익률을 반영한 이익 기준 계산을 섞어서 비교하는 것이다. 두 방식은 결과가 크게 달라지므로 어느 쪽을 쓰는지 항상 명시해야 한다. 또한 초기 할인가로 가입한 코호트는 이후 정가로 전환되며 $ARPU$ 자체가 바뀌기 때문에 가입 초기 데이터만으로 회수 기간을 낙관적으로 잡지 않도록 주의해야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="600" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="60" y2="30" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="90" x2="600" y2="90" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="600" y="82" text-anchor="end" font-size="12" class="dg-dim">CAC 100달러 회수 완료선</text>
+<path d="M 60 200 L 600 77" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="543" cy="90" r="5" class="dg-accent"/>
+<text x="543" y="112" text-anchor="middle" font-size="12">약 14.3개월</text>
+<text x="60" y="216" font-size="12">0개월</text>
+<text x="580" y="216" font-size="12">16개월</text>
+<text x="70" y="42" font-size="12" class="dg-dim">누적 총이익</text>
+</svg>`,
+    diagramCaption: String.raw`누적 이익이 CAC를 넘어서는 시점이 곧 회수 완료 시점이다.`,
+    example: String.raw`<p>CAC가 100달러이고 고객당 월평균 매출이 10달러라면 $T=\frac{100}{10}=10$개월 만에 들인 돈을 회수한다. 다만 이 계산은 매출 전체를 기준으로 한 것이고 매출총이익률 70%를 반영한 월 이익 7달러를 기준으로 다시 계산하면 $\frac{100}{7}\approx14.3$개월로 늘어난다.</p>`,
+    related: [{ label: "CAC", slug: "cac" }, { label: "LTV:CAC 비율", slug: "ltv-cac-ratio" }],
+    sections: []
+  },
+  "ctr-product": {
+    title: String.raw`CTR: 보여준 만큼 클릭으로 이어졌는가`,
+    domain: "product",
+    subLabel: String.raw`전환 · 참여 지표`,
+    intuition: String.raw`<p>광고나 배너를 보여줬을 때 실제로 사람들의 눈길을 끌었는지 확인하는 가장 기본적인 반응 신호가 클릭이다. 마케터가 광고 문구나 이미지, 타겟팅을 바꿨을 때 그 효과를 가장 빠르게 확인할 수 있는 숫자가 CTR이다.</p>
+<p>전환이나 매출까지 가기 전에 애초에 사람들이 눈여겨보기라도 했는지를 보는 단계라서 캠페인 초기 반응을 점검할 때 가장 먼저 확인하는 지표다.</p>`,
+    explanation: String.raw`<p>$CTR = \frac{c}{n}$이다. $c$는 클릭 수, $n$은 노출 수다. 노출을 셀 때는 실제로 화면에 보일 기회가 있었던 경우만 세야 한다. 화면 밖에 있어 보이지 않은 노출까지 그대로 세면 CTR이 실제보다 낮게 잡히는 왜곡이 생긴다.</p>
+<p>CTR은 전환 퍼널의 첫 관문이다. 노출에서 클릭으로, 클릭에서 다시 CVR로 이어지는 흐름에서 CTR이 낮으면 그 아래 단계인 전환 자체가 애초에 일어날 기회가 줄어든다.</p>
+<p>흔한 함정은 표본이 작을 때 우연한 차이를 실제 효과로 착각하는 것이다. 통계적 유의성을 확인하지 않고 CTR이 조금 높다고 바로 승자로 정하면 잘못된 결론에 이르기 쉽다. 또한 자극적인 문구로 클릭만 유도하고 실제로는 관심 없는 사용자를 끌어들이면 CTR은 높아도 그 다음 단계인 CVR은 오히려 낮아질 수 있어 CTR과 CVR을 함께 봐야 한다.</p>`,
+    example: String.raw`<p>노출 20만 회 중 클릭이 6000회 나왔다면 $CTR=\frac{6000}{200000}=0.03$이므로 클릭률은 3%다.</p>`,
+    related: [{ label: "CVR", slug: "cvr" }, { label: "CPM", slug: "cpm" }],
+    sections: []
+  },
+  "cvr": {
+    title: String.raw`CVR: 방문한 만큼 전환으로 이어졌는가`,
+    domain: "product",
+    subLabel: String.raw`전환 · 참여 지표`,
+    intuition: String.raw`<p>클릭까지는 왔더라도 실제로 가입하거나 구매하지 않으면 매출로 이어지지 않는다. CVR은 방문한 사람 중 실제로 원하는 행동까지 완료한 비율을 재서 랜딩페이지나 결제 플로우, 가격처럼 퍼널 중간 구간을 손봤을 때 그 효과가 진짜 매출과 직결되는지를 보여준다.</p>
+<p>CTR을 아무리 높여도 CVR이 낮으면 결국 매출은 늘지 않기 때문에 그로스팀은 CTR 개선과 별개로 CVR 개선에 따로 시간을 쓴다.</p>`,
+    explanation: String.raw`<p>$CVR = \frac{x}{v}$다. $x$는 전환 건수, $v$는 방문 수다. 방문을 클릭 기준으로 셀지 페이지 진입 기준으로 셀지는 퍼널을 어디서부터 볼지에 따라 다르다.</p>
+<p>CTR과 CVR을 곱하면 노출부터 최종 전환까지 이어지는 전체 퍼널 전환율이 나온다. 이 값은 다시 CPA와 CAC 계산의 분모인 전환 수, 신규 고객 수와 직접 연결된다.</p>
+<p>흔한 함정은 방문의 정의가 세션 단위인지 순사용자 단위인지에 따라 값이 달라진다는 점이다. 같은 사용자가 여러 세션에 걸쳐 방문하면 두 정의의 CVR이 서로 다르게 나온다. 또한 구매 결정까지 며칠씩 걸리는 상품인데 당일 전환만 집계하면 CVR이 실제보다 낮게 잡히는 관찰기간 문제도 있다.</p>`,
+    example: String.raw`<p>위 CTR 예시에서 이어지는 클릭 6000건 중 실제 전환이 300건이었다면 $CVR=\frac{300}{6000}=0.05$로 전환율은 5%다. 노출 대비로 보면 $\frac{300}{200000}=0.0015$로 최종 전환율은 0.15%까지 낮아진다.</p>`,
+    related: [{ label: "CTR", slug: "ctr-product" }, { label: "CPA", slug: "cpa" }],
+    sections: []
+  },
+  "k-factor": {
+    title: String.raw`K-factor: 한 사람이 새 사람을 몇 명이나 데려오는가`,
+    domain: "product",
+    subLabel: String.raw`전환 · 참여 지표`,
+    intuition: String.raw`<p>마케팅비를 쓰지 않고도 사용자가 알아서 다른 사용자를 데려오는 구조라면 성장 비용이 훨씬 낮아진다. K-factor는 사용자 한 명이 평균적으로 새 사용자를 몇 명이나 데려오는지를 재서 이 서비스가 자발적으로 퍼지는 구조인지를 판단하게 해준다.</p>
+<p>드롭박스나 초창기 소셜 서비스들이 유료 광고 없이도 빠르게 성장한 사례를 설명할 때 자주 인용되는 지표가 K-factor다.</p>`,
+    explanation: String.raw`<p>$K = i \times r$이다. $i$는 사용자 한 명이 보내는 평균 초대 수이고 $r$은 초대 하나가 실제 가입으로 이어질 확률이다. $K$가 1보다 크면 이론상 사용자 한 명이 자기 자신을 대체하고도 남는 새 사용자를 데려오는 셈이라 외부 마케팅 없이도 사용자 수가 스스로 늘어나는 구조가 된다. $K$가 1보다 작으면 바이럴만으로는 성장이 죽고 다른 유입 채널이 반드시 필요하다.</p>
+<p>K-factor는 바이럴 사이클 타임, 즉 한 사용자가 초대해서 그 초대로 들어온 신규 사용자가 다시 활성화되기까지 걸리는 시간과 함께 봐야 진짜 의미가 있다. $K$가 1.2로 1을 넘어도 사이클이 6개월씩 걸린다면 체감되는 성장 속도는 매우 느리다. 반대로 $K$가 1.1로 낮아도 사이클이 며칠이면 짧은 기간에 여러 번 복리로 늘어나 체감 성장은 훨씬 빠를 수 있다.</p>
+<p>흔한 함정은 K-factor가 한 번 1을 넘었다고 계속 유지된다고 믿는 것이다. 초대할 수 있는 주변 사람 풀 자체가 점점 소진되면 $i$가 자연히 줄어들어 $K$도 함께 낮아진다. 스팸 방지를 위해 초대 한도를 두면 $i$가 인위적으로 제한되어 실제 잠재력보다 낮은 $K$가 관측될 수도 있다. 또한 유료 광고로 유입된 사용자가 만든 초대까지 그대로 $K$ 계산에 섞으면 순수하게 자발적으로 퍼진 효과를 과대평가하게 된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="140" cy="130" r="44" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="126" text-anchor="middle" font-size="12">기존 사용자</text>
+<text x="140" y="142" text-anchor="middle" font-size="12">1명</text>
+<path d="M 184 110 C 260 60, 340 60, 400 100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="290" y="55" text-anchor="middle" font-size="12">초대 4건 × 전환율 30%</text>
+<circle cx="420" cy="130" r="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="420" y="126" text-anchor="middle" font-size="12">신규 사용자</text>
+<text x="420" y="142" text-anchor="middle" font-size="12">1.2명</text>
+<path d="M 400 160 C 340 210, 260 210, 184 150" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="290" y="230" text-anchor="middle" font-size="12" class="dg-dim">다음 라운드에도 같은 비율로 반복된다</text>
+<text x="290" y="20" text-anchor="middle" font-size="13">K = 1.2, 1명당 1명 넘게 데려와 순증가</text>
+</svg>`,
+    diagramCaption: String.raw`K가 1을 넘으면 한 바퀴 돌 때마다 사용자 수가 스스로 불어난다.`,
+    example: String.raw`<p>사용자 한 명이 평균 4명을 초대하고 초대 하나가 가입으로 이어질 확률이 30%라면 $K=4\times0.3=1.2$다. 1보다 크므로 이론상 사용자 수는 외부 마케팅 없이도 스스로 늘어나는 국면에 있다.</p>`,
+    related: [{ label: "CAC", slug: "cac" }, { label: "LTV:CAC 비율", slug: "ltv-cac-ratio" }],
+    sections: []
+  },
+  "rfm-analysis": {
+    title: String.raw`RFM 분석: 최근성, 빈도, 금액으로 고객 등급 매기기`,
+    domain: "product",
+    subLabel: String.raw`고객 등급화`,
+    intuition: String.raw`<p>어떤 사업이든 고객 수가 늘면 모두를 똑같이 대하기 어려워진다. VIP 고객과 오래전에 떠난 휴면 고객에게 같은 메일을 보내는 건 자원 낭비다. RFM 분석은 복잡한 모델 없이 딱 세 가지 숫자만 본다. 최근에 샀는가(Recency), 얼마나 자주 샀는가(Frequency), 얼마나 많이 썼는가(Monetary). 이 세 축으로 점수를 매기면 누가 지금 챙겨야 할 우량 고객이고 누가 이탈 직전인지 바로 줄 세울 수 있다.</p>
+<p>마케팅팀은 이 등급을 보고 VIP에게는 신제품을 먼저 보여주고 휴면 고객에게는 복귀 쿠폰을 보내는 식으로 대응을 나눈다.</p>`,
+    explanation: String.raw`<p>계산 방식은 단순하다. 전체 고객을 R, F, M 각 기준으로 정렬한 뒤 다섯 구간으로 나누고 각 구간에 1점부터 5점까지 부여한다. 세 점수를 나란히 붙여 하나의 코드로 표현하면 그 자체가 고객 등급이 된다. 고객 수가 적어 다섯 구간으로 나누기 어려울 때는 정렬 대신 미리 정한 절대 기준값으로 점수를 매기기도 한다. $R, F, M \in \{1,2,3,4,5\}$ 범위 안에서 조합이 정해지므로 최대 125개의 세그먼트가 나올 수 있지만 실무에서는 보통 5에서 10개 등급으로 묶어서 쓴다.</p>
+<p>정교한 클러스터링 모델이 얼마든지 있는데도 RFM이 지금도 널리 쓰이는 이유는 단순함 자체가 강점이기 때문이다. 계산이 가볍고 결과를 숫자 세 개로 설명할 수 있어 마케팅팀이 별도 분석 없이 바로 실행에 옮길 수 있다. 반면 행동 기반 세그멘테이션처럼 사용 패턴을 통째로 학습하는 방식은 정확도는 높지만 왜 그 세그먼트로 묶였는지 설명하기 어렵고 재계산 비용도 크다.</p>
+<p>다만 RFM은 세 축이 서로 독립이라고 가정하고 점수를 매기기 때문에 한계가 있다. 오랜만에 한 번 크게 결제한 고객처럼 최근성과 금액이 반대로 움직이는 고객을 제대로 구분하지 못한다. 이런 고객의 진짜 행동 동기를 파악하려면 행동 기반 세그멘테이션처럼 더 세밀한 축을 봐야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="20" font-size="12">한 고객의 RFM 점수 프로파일</text>
+<line x1="130" y1="35" x2="130" y2="165" class="dg-line" stroke-width="1.5"/>
+<line x1="130" y1="165" x2="410" y2="165" class="dg-line" stroke-width="1.5"/>
+<text x="10" y="55" font-size="12">R 최근성</text>
+<rect x="132" y="42" width="280" height="22" class="dg-accent"/>
+<text x="418" y="58" font-size="12">5/5</text>
+<text x="10" y="100" font-size="12">F 빈도</text>
+<rect x="132" y="87" width="168" height="22" class="dg-dim"/>
+<text x="306" y="103" font-size="12">3/5</text>
+<text x="10" y="145" font-size="12">M 금액</text>
+<rect x="132" y="132" width="224" height="22" class="dg-dim"/>
+<text x="362" y="148" font-size="12">4/5</text>
+<text x="132" y="180" font-size="11" class="dg-dim">1</text>
+<text x="188" y="180" font-size="11" class="dg-dim">2</text>
+<text x="244" y="180" font-size="11" class="dg-dim">3</text>
+<text x="300" y="180" font-size="11" class="dg-dim">4</text>
+<text x="356" y="180" font-size="11" class="dg-dim">5</text>
+</svg>`,
+    diagramCaption: String.raw`고객 한 명의 R, F, M 세 점수를 나란히 놓으면 등급이 한눈에 드러난다.`,
+    example: String.raw`<p>고객 A는 3일 전에 구매했고 올해 24번 구매했으며 누적 결제액이 120만원이다. 고객 B는 200일 동안 구매가 없었고 올해 3번 구매했으며 누적 9만원을 썼다. 고객 C는 15일 전 구매했고 올해 10번 구매했으며 누적 50만원을 썼다.</p>
+<p>최근성은 7일 미만이면 5점, 30일 미만이면 4점, 90일 미만이면 3점, 180일 미만이면 2점, 그 이상이면 1점을 준다. 빈도는 20회 이상이면 5점, 10회 이상이면 4점, 5회 이상이면 3점, 2회 이상이면 2점, 그 이하는 1점이다. 금액은 100만원 이상이면 5점, 50만원 이상이면 4점, 20만원 이상이면 3점, 5만원 이상이면 2점, 그 미만은 1점이다.</p>
+<p>이 기준으로 고객 A는 R5F5M5, 고객 C는 R4F4M4, 고객 B는 R1F2M2가 된다. A는 지금 가장 챙겨야 할 우량 고객이고 B는 휴면 전환 캠페인을 보내야 할 대상이다.</p>`,
+    related: [{ label: "행동 기반 세그멘테이션", slug: "behavioral-segmentation" }, { label: "코호트 삼각형", slug: "cohort-triangle" }],
+    sections: []
+  },
+  "behavioral-segmentation": {
+    title: String.raw`행동 기반 세그멘테이션: 등급 대신 행동 패턴으로 나누기`,
+    domain: "product",
+    subLabel: String.raw`고객 등급화`,
+    intuition: String.raw`<p>RFM은 고객을 우량과 이탈 위험처럼 서열로 나눈다. 하지만 등급이 같아도 쓰는 방식은 전혀 다를 수 있다. 매일 협업 기능만 쓰는 사람과 매일 리포트 기능만 뽑아보는 사람은 결제 금액이 같아도 완전히 다른 제품 경험을 하고 있다. 행동 기반 세그멘테이션은 등급을 매기는 대신 사용자가 실제로 어떤 행동을 하는지를 보고 비슷하게 행동하는 사람들끼리 묶는다.</p>
+<p>이렇게 나온 그룹에는 우량이나 불량 같은 서열이 없다. 파워유저형, 기능 탐색형, 알림 의존형처럼 이름만 다른 유형이 있을 뿐이다.</p>`,
+    explanation: String.raw`<p>먼저 각 사용자의 행동을 숫자로 바꾼다. 세션당 사용한 기능의 비율, 접속 요일 분포, 특정 이벤트가 발생한 빈도 같은 값들을 모아 하나의 특징 벡터로 만든다. 이 벡터에 K평균이나 계층적 군집화 같은 클러스터링 알고리즘을 적용하면 사람이 미리 기준을 정하지 않아도 데이터 스스로 비슷한 사용자끼리 뭉친 군집을 드러낸다.</p>
+<p>RFM과의 근본적인 차이는 축을 누가 정하느냐에 있다. RFM은 최근성, 빈도, 금액이라는 세 축을 조사자가 미리 정해두고 값만 채운다. 행동 기반 세그멘테이션은 어떤 축이 의미 있는지조차 데이터에서 찾아낸다. 그만큼 표현력은 크지만 해석은 어려워진다. 클러스터 하나가 만들어지면 왜 이 사람들이 묶였는지 사람이 나중에 이름을 붙이고 설명을 채워야 한다.</p>
+<p>안정성도 다르다. RFM 점수는 기준 구간만 정해두면 신규 고객에게도 바로 계산할 수 있지만 클러스터링은 전체 사용자 집합이 바뀔 때마다 다시 돌려야 군집 경계가 안정적으로 유지된다. 그럼에도 제품팀이 이 방식을 쓰는 이유는 명확하다. 마케팅 등급보다 어떤 기능을 어떤 유형의 사용자에게 먼저 보여줄지 같은 제품 설계 질문에 훨씬 직접적인 답을 준다.</p>`,
+    example: String.raw`<p>세션당 협업 기능 사용 비율과 주간 로그인 횟수 두 값만으로도 유형이 갈리는 경우가 흔하다. 로그인이 주 5회 이상이면서 협업 기능 비율이 70% 이상인 사용자는 파워유저형으로, 로그인이 주 1에서 2회이면서 리포트 기능만 골라 쓰는 사용자는 기능 탐색형으로 묶인다. 두 그룹의 RFM 등급이 똑같이 R4F4M3이더라도 다음에 보여줘야 할 온보딩 화면은 완전히 다르다.</p>`,
+    related: [{ label: "RFM 분석", slug: "rfm-analysis" }, { label: "코호트 안정화 지점", slug: "cohort-stabilization-point" }],
+    sections: []
+  },
+  "cohort-triangle": {
+    title: String.raw`코호트 삼각형: 가입월과 경과월을 교차시켜 세대별 곡선 비교하기`,
+    domain: "product",
+    subLabel: String.raw`코호트 매트릭스`,
+    intuition: String.raw`<p>전체 사용자의 리텐션을 하나의 곡선으로만 보면 착시가 생긴다. 최근에 신규 가입자가 급증했다면 그 사람들은 아직 이탈할 시간조차 없었을 뿐인데 전체 평균 리텐션이 좋아 보일 수 있다. 코호트 삼각형은 가입한 달을 행으로 두고 가입 후 몇 개월이 지났는지를 열로 두어 세대별 리텐션을 나란히 놓고 비교한다.</p>
+<p>최근에 가입한 세대일수록 아직 지켜본 개월 수가 적기 때문에 표를 채우면 자연스럽게 계단 모양의 삼각형이 만들어진다.</p>`,
+    explanation: String.raw`<p>행은 가입월, 열은 경과월(M0, M1, M2 등)이다. 칸 (i, j)에는 i월에 가입한 사용자 중 j개월 뒤에도 활성 상태인 비율이 들어간다. 가장 오래된 세대는 모든 경과월 칸을 채울 수 있지만 이번 달에 막 가입한 세대는 M0 칸 하나만 채울 수 있다. 아직 시간이 지나지 않아 관측 자체가 불가능한 칸은 비워둔다.</p>
+<p>이 표를 열 방향으로 읽으면 가입 후 같은 개월 수가 지났을 때 세대마다 리텐션이 어떻게 다른지 비교할 수 있다. 최근 세대의 M1 값이 예전 세대보다 꾸준히 높아지고 있다면 온보딩 개선 효과가 실제로 작동하고 있다는 신호다. 대각선 방향으로 읽으면 특정 캘린더 월에 발생한 사건, 예를 들어 서버 장애나 대규모 프로모션이 여러 세대에 동시에 남긴 흔적을 찾을 수 있다.</p>
+<p>단일 리텐션 곡선보다 나은 점은 분명하다. 신규 유입이 갑자기 늘거나 줄면 평균 곡선은 그 변화에 휩쓸려 왜곡되지만 코호트 삼각형은 세대를 분리해서 보기 때문에 유입 규모 변화와 리텐션 품질 변화를 구분해서 읽을 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 540 230" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="16" font-size="12">가입월 × 경과월 잔존율(%)</text>
+<text x="150" y="38" font-size="12" text-anchor="middle">M0</text>
+<text x="250" y="38" font-size="12" text-anchor="middle">M1</text>
+<text x="350" y="38" font-size="12" text-anchor="middle">M2</text>
+<text x="450" y="38" font-size="12" text-anchor="middle">M3</text>
+<text x="50" y="69" font-size="12" text-anchor="middle">1월</text>
+<text x="50" y="109" font-size="12" text-anchor="middle">2월</text>
+<text x="50" y="149" font-size="12" text-anchor="middle">3월</text>
+<text x="50" y="189" font-size="12" text-anchor="middle">4월</text>
+<rect x="100" y="45" width="100" height="40" class="dg-dim"/><rect x="100" y="45" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="150" y="69" font-size="12" text-anchor="middle">100</text>
+<rect x="200" y="45" width="100" height="40" class="dg-dim"/><rect x="200" y="45" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="250" y="69" font-size="12" text-anchor="middle">45</text>
+<rect x="300" y="45" width="100" height="40" class="dg-dim"/><rect x="300" y="45" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="350" y="69" font-size="12" text-anchor="middle">30</text>
+<rect x="400" y="45" width="100" height="40" class="dg-dim"/><rect x="400" y="45" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="450" y="69" font-size="12" text-anchor="middle">25</text>
+<rect x="100" y="85" width="100" height="40" class="dg-dim"/><rect x="100" y="85" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="150" y="109" font-size="12" text-anchor="middle">100</text>
+<rect x="200" y="85" width="100" height="40" class="dg-dim"/><rect x="200" y="85" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="250" y="109" font-size="12" text-anchor="middle">50</text>
+<rect x="300" y="85" width="100" height="40" class="dg-dim"/><rect x="300" y="85" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="350" y="109" font-size="12" text-anchor="middle">35</text>
+<rect x="400" y="85" width="100" height="40" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<rect x="100" y="125" width="100" height="40" class="dg-dim"/><rect x="100" y="125" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="150" y="149" font-size="12" text-anchor="middle">100</text>
+<rect x="200" y="125" width="100" height="40" class="dg-dim"/><rect x="200" y="125" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="250" y="149" font-size="12" text-anchor="middle">55</text>
+<rect x="300" y="125" width="100" height="40" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<rect x="400" y="125" width="100" height="40" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<rect x="100" y="165" width="100" height="40" class="dg-dim"/><rect x="100" y="165" width="100" height="40" fill="none" class="dg-line" stroke-width="1"/><text x="150" y="189" font-size="12" text-anchor="middle">100</text>
+<rect x="200" y="165" width="100" height="40" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<rect x="300" y="165" width="100" height="40" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<rect x="400" y="165" width="100" height="40" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<polyline points="500,45 500,85 400,85 400,125 300,125 300,165 200,165 200,205" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="505" y="215" font-size="11" class="dg-dim" text-anchor="end">관측 경계</text>
+</svg>`,
+    diagramCaption: String.raw`가입월이 최근일수록 아직 관측되지 않은 경과월 칸이 늘어나 표가 삼각형 모양이 된다.`,
+    example: String.raw`<p>1월 신규 가입자는 1000명이고 M1 리텐션 45%, M2 30%, M3 25%까지 모두 관측됐다. 2월 신규 가입자는 1200명이고 M1 50%, M2 35%까지만 관측됐다. 3월 신규 가입자 900명은 M1 55%까지만, 이번 달 가입자 1100명은 M0 100%만 관측된 상태다.</p>
+<p>M1 값만 세대별로 나열하면 45%, 50%, 55%로 최근 세대일수록 꾸준히 오르고 있다. 아직 M2, M3를 확인할 수 없는 최근 세대라도 이 추세가 이어진다면 장기 리텐션도 개선될 가능성이 높다고 조심스럽게 예상할 수 있다.</p>`,
+    related: [{ label: "코호트 안정화 지점", slug: "cohort-stabilization-point" }, { label: "RFM 분석", slug: "rfm-analysis" }],
+    sections: []
+  },
+  "cohort-stabilization-point": {
+    title: String.raw`코호트 안정화 지점: 리텐션 곡선이 평평해지는 순간`,
+    domain: "product",
+    subLabel: String.raw`코호트 매트릭스`,
+    intuition: String.raw`<p>리텐션 곡선은 대부분 가입 직후 가파르게 떨어지다가 어느 순간부터 거의 수평에 가까워진다. 이 평평해지는 지점 이후에 남아있는 사람들이 사실상 이 제품에 진짜로 정착한 사람들이다. 안정화 지점을 알면 아직 충분히 시간이 지나지 않은 최신 코호트라도 장기적으로 몇 퍼센트가 남을지 미리 가늠할 수 있다.</p>`,
+    explanation: String.raw`<p>리텐션 곡선은 보통 초기 급락 구간과 그 뒤를 잇는 완만한 꼬리 구간으로 나뉜다. 초기 급락은 호기심으로 써본 사람들이 빠르게 빠져나가는 구간이고 꼬리 구간은 실제로 습관이 된 사람들이 천천히 줄어드는 구간이다. 안정화 지점은 연속된 두 시점 사이의 리텐션 하락폭이 정해둔 임계값보다 작은 상태가 몇 개월 이상 이어지는 시점으로 정의한다.</p>
+<p>이 지점이 중요한 이유는 코호트별 장기 가치를 비교할 때 12개월, 24개월까지 기다릴 필요 없이 몇 개월 안에 대략적인 장기 리텐션 수준을 추정할 수 있게 해주기 때문이다. LTV 계산이나 신규 코호트의 건강도 조기 점검에 바로 쓸 수 있다.</p>
+<p>다만 곡선이 평평해 보이는 게 진짜 안정화인지 일시적인 정체인지는 구분해야 한다. 계절적 요인이나 진행 중인 프로모션 때문에 잠깐 하락이 멈춘 것일 수도 있다. 충분히 긴 관측 구간과 여러 코호트를 함께 비교해야 우연한 정체와 진짜 안정화를 가려낼 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="30" x2="60" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="180" x2="480" y2="180" class="dg-line" stroke-width="1.5"/>
+<text x="45" y="34" font-size="11" text-anchor="end" class="dg-dim">50%</text>
+<text x="45" y="184" font-size="11" text-anchor="end" class="dg-dim">0%</text>
+<polyline points="80,45 140,90 200,105 260,114 320,117 380,118.5 440,119.1" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="320" cy="117" r="5" class="dg-accent"/>
+<line x1="320" y1="117" x2="320" y2="180" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="320" y="98" font-size="12" text-anchor="middle">안정화 지점</text>
+<text x="80" y="198" font-size="11" text-anchor="middle" class="dg-dim">M1</text>
+<text x="140" y="198" font-size="11" text-anchor="middle" class="dg-dim">M2</text>
+<text x="200" y="198" font-size="11" text-anchor="middle" class="dg-dim">M3</text>
+<text x="260" y="198" font-size="11" text-anchor="middle" class="dg-dim">M4</text>
+<text x="320" y="198" font-size="11" text-anchor="middle" class="dg-dim">M5</text>
+<text x="380" y="198" font-size="11" text-anchor="middle" class="dg-dim">M6</text>
+<text x="440" y="198" font-size="11" text-anchor="middle" class="dg-dim">M7</text>
+</svg>`,
+    diagramCaption: String.raw`리텐션 곡선의 낙폭이 작아지기 시작하는 지점 이후가 장기 잔존율의 근사치다.`,
+    example: String.raw`<p>어떤 코호트의 리텐션이 M1 45%, M2 30%, M3 25%, M4 22%, M5 21%, M6 20.5%, M7 20.3%로 이어졌다. 구간별 하락폭은 M1에서 M2까지 15%p, M2에서 M3까지 5%p, M3에서 M4까지 3%p, M4에서 M5까지 1%p, M5에서 M6까지 0.5%p, M6에서 M7까지 0.2%p로 점점 줄어든다.</p>
+<p>하락폭이 0.5%p 이하로 줄어든 M5 이후를 안정화 지점으로 보면 이 코호트의 장기 잔존율은 20% 안팎으로 수렴할 것이라고 미리 근사할 수 있다.</p>`,
+    related: [{ label: "코호트 삼각형", slug: "cohort-triangle" }, { label: "행동 기반 세그멘테이션", slug: "behavioral-segmentation" }],
+    sections: []
+  },
+  "van-westendorp-psm": {
+    title: String.raw`Van Westendorp PSM: 네 가지 질문으로 수용 가격대 찾기`,
+    domain: "product",
+    subLabel: String.raw`가격 민감도 조사`,
+    intuition: String.raw`<p>이 제품 얼마면 사겠냐고 바로 물으면 응답자는 방어적으로 낮은 금액을 부르기 쉽다. 자기가 부른 금액이 실제 판매가에 영향을 줄까 봐 눈치를 보기 때문이다. Van Westendorp PSM은 가격을 직접 묻는 대신 네 가지 다른 질문을 던져서 응답자가 가진 가격 감각의 하한과 상한을 간접적으로 드러낸다.</p>
+<p>네 질문은 이렇다. 너무 싸서 품질이 의심되는 가격, 저렴하다고 느끼는 가격, 비싸지만 그래도 고려할 가격, 너무 비싸서 아예 사지 않을 가격. 이 네 개의 답을 모으면 조사자가 가격을 하나도 제시하지 않고도 사람들이 받아들일 수 있는 가격대를 찾아낼 수 있다.</p>`,
+    explanation: String.raw`<p>모든 응답자에게 이 네 질문을 하고 각 질문마다 가격이 오를수록 응답이 누적되는 비율을 그래프로 그린다. 너무 쌈과 저렴함 곡선은 가격이 오를수록 그렇게 답하는 비율이 줄어드는 하향 곡선이 되고 비쌈과 너무 비쌈 곡선은 가격이 오를수록 비율이 늘어나는 상향 곡선이 된다. 두 종류의 곡선이 만나는 지점들이 의미 있는 경계값을 만든다. 너무 쌈 곡선과 비쌈 곡선이 만나는 점을 한계 저가점(PMC)이라 부르고 이 아래로 가격을 내리면 품질 의심이 시작된다고 본다. 저렴함 곡선과 너무 비쌈 곡선이 만나는 점을 한계 고가점(PME)이라 부르고 이 위로 가격을 올리면 구매 저항이 본격적으로 시작된다고 본다. PMC와 PME 사이가 수용 가능 가격대다.</p>
+<p>왜 가격을 직접 묻지 않고 네 개로 쪼개는지는 질문의 프레임 문제와 관련이 있다. 단일 질문은 조사자가 가격을 언급하지 않더라도 응답자에게 이미 특정 기준점을 암묵적으로 심어준다. 반대로 네 질문은 각각 다른 극단을 묻기 때문에 조사자가 어떤 가격도 제시하지 않은 상태에서 응답자 스스로 가진 하한과 상한을 드러내게 만든다.</p>
+<p>한계도 있다. 이 방법은 실제 구매 행동이 아니라 설문 응답에 기반한 진술 선호다. 경쟁 상품 가격이나 실제 지갑을 여는 순간의 압박감은 반영되지 않는다. 그래서 실무에서는 PSM으로 대략적인 가격대를 먼저 좁힌 뒤 Gabor-Granger처럼 실제 구매 의향을 직접 묻는 방법과 함께 쓰는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="18" font-size="12">누적 응답 비율</text>
+<line x1="60" y1="30" x2="60" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="460" y2="220" class="dg-line" stroke-width="1.5"/>
+<text x="470" y="224" font-size="11" class="dg-dim">가격</text>
+<rect x="235" y="40" width="65" height="180" class="dg-dim" opacity="0.2"/>
+<text x="268" y="55" font-size="11" text-anchor="middle">수용 가격대</text>
+<polyline points="60,45 140,80 220,130 300,175 460,215" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<polyline points="60,60 160,90 260,130 360,170 460,200" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polyline points="60,215 160,180 260,140 360,95 460,55" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<polyline points="60,220 180,200 280,160 380,110 460,60" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<circle cx="235" cy="150" r="4" class="dg-accent"/>
+<text x="215" y="140" font-size="11" text-anchor="middle">PMC</text>
+<circle cx="300" cy="148" r="4" class="dg-accent"/>
+<text x="320" y="140" font-size="11" text-anchor="middle">PME</text>
+<line x1="60" y1="235" x2="80" y2="235" class="dg-stroke-ink" stroke-width="2"/>
+<text x="85" y="239" font-size="11">너무 쌈</text>
+<line x1="180" y1="235" x2="200" y2="235" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="205" y="239" font-size="11">저렴함</text>
+<line x1="280" y1="235" x2="300" y2="235" class="dg-stroke-accent" stroke-width="2"/>
+<text x="305" y="239" font-size="11">비쌈</text>
+<line x1="380" y1="235" x2="400" y2="235" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="405" y="239" font-size="11">너무 비쌈</text>
+</svg>`,
+    diagramCaption: String.raw`너무 쌈, 저렴함 곡선과 비쌈, 너무 비쌈 곡선이 교차하는 구간이 수용 가능한 가격대를 만든다.`,
+    example: String.raw`<p>응답자 5명에게 네 질문을 던져 얻은 답을 만원 단위로 정리하면 다음과 같다. 응답자별 순서는 너무 쌈, 저렴함, 비쌈, 너무 비쌈이다. 1번은 3, 5, 9, 13. 2번은 2, 6, 10, 15. 3번은 4, 7, 11, 14. 4번은 3, 6, 9, 12. 5번은 2, 5, 10, 16이다.</p>
+<p>각 질문의 답을 정렬해 중앙값을 구하면 너무 쌈은 2, 2, 3, 3, 4 중 3만원, 저렴함은 5, 5, 6, 6, 7 중 6만원, 비쌈은 9, 9, 10, 10, 11 중 10만원, 너무 비쌈은 12, 13, 14, 15, 16 중 14만원이다. 대략적인 경계로 보면 수용 가능 가격대는 6만원에서 10만원 사이이고 3만원 아래는 품질 의심이 시작되는 구간, 14만원 위는 구매 포기가 시작되는 구간에 가깝다.</p>`,
+    related: [{ label: "Gabor-Granger 방법", slug: "gabor-granger-method" }, { label: "A/B 가격 테스트의 함정", slug: "ab-price-test-pitfalls" }],
+    sections: []
+  },
+  "gabor-granger-method": {
+    title: String.raw`Gabor-Granger 방법: 여러 가격을 제시해 수요곡선 그리기`,
+    domain: "product",
+    subLabel: String.raw`가격 민감도 조사`,
+    intuition: String.raw`<p>Van Westendorp가 사람들이 마음속에 가진 가격 감각을 간접적으로 묻는다면 Gabor-Granger는 훨씬 직접적이다. 몇 개의 구체적인 가격을 제시하고 각 가격에서 사시겠습니까라고 그대로 묻는다. 가격이 오를수록 사겠다는 사람이 줄어드는 모습을 그대로 그래프로 그리면 그 자체가 수요곡선이 된다.</p>`,
+    explanation: String.raw`<p>응답자에게 가격 몇 개를 순서대로 제시하고 각각에 대해 예 또는 아니오로 답하게 한다. 가격 $p$에서 사겠다고 답한 비율을 $D(p)$라 하면 가격이 오를수록 $D(p)$는 단조 감소하는 계단형 곡선이 된다. 여기에 가격을 곱한 $R(p) = p \times D(p)$를 계산하면 기대 매출을 지수화한 값을 얻고 이 값이 가장 큰 가격을 매출 최적화 관점의 후보 가격으로 삼는다.</p>
+<p>Van Westendorp와의 차이는 누가 가격을 정하느냐에 있다. PSM은 응답자가 스스로 기준점을 만들게 하지만 Gabor-Granger는 조사자가 미리 몇 개의 가격을 골라서 제시해야 한다. 제시 범위 밖의 가격에 대한 반응은 알 수 없다는 뜻이다. 대신 사겠다 안 사겠다처럼 구매 결정에 훨씬 가까운 질문이라 응답이 행동 지향적이고 $R(p)$처럼 매출을 바로 시뮬레이션할 수 있다는 장점이 있다.</p>
+<p>한계는 PSM과 비슷하다. 여전히 실제 결제가 아니라 설문 속 진술 의향이고 경쟁 상품 가격이 화면에 없는 상태에서 답하기 때문에 실제 시장 반응과 차이가 날 수 있다. 그래서 두 방법을 함께 써서 서로의 약점을 보완하는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 580 240" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="18" font-size="12">구매의향 D(p)와 매출지수 R(p)=p×D(p)</text>
+<line x1="50" y1="40" x2="50" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="50" y1="200" x2="540" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="65" y="65" width="50" height="135" class="dg-dim"/>
+<rect x="165" y="87" width="50" height="113" class="dg-dim"/>
+<rect x="265" y="125" width="50" height="75" class="dg-dim"/>
+<rect x="365" y="155" width="50" height="45" class="dg-dim"/>
+<rect x="465" y="185" width="50" height="15" class="dg-dim"/>
+<polyline points="90,71 190,50 290,71 390,106 490,163" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="190" cy="50" r="5" class="dg-accent"/>
+<text x="190" y="34" font-size="12" text-anchor="middle">최적가 7,000원</text>
+<text x="90" y="215" font-size="11" text-anchor="middle" class="dg-dim">5,000</text>
+<text x="190" y="215" font-size="11" text-anchor="middle" class="dg-dim">7,000</text>
+<text x="290" y="215" font-size="11" text-anchor="middle" class="dg-dim">9,000</text>
+<text x="390" y="215" font-size="11" text-anchor="middle" class="dg-dim">11,000</text>
+<text x="490" y="215" font-size="11" text-anchor="middle" class="dg-dim">13,000</text>
+<text x="290" y="232" font-size="11" text-anchor="middle" class="dg-dim">제시 가격(원)</text>
+</svg>`,
+    diagramCaption: String.raw`구매의향은 가격이 오를수록 줄어들지만 매출지수는 7,000원에서 정점을 찍는다.`,
+    example: String.raw`<p>5,000원, 7,000원, 9,000원, 11,000원, 13,000원 다섯 가격을 20명에게 제시하고 사겠다고 답한 사람 수를 세었더니 각각 18명, 15명, 10명, 6명, 2명이었다. 구매의향 비율 $D(p)$는 90%, 75%, 50%, 30%, 10%다.</p>
+<p>매출지수 $R(p) = p \times D(p)$를 계산하면 4500, 5250, 4500, 3300, 1300이다. 가장 큰 값은 7,000원에서 나온 5250이므로 이 데이터 안에서는 7,000원이 매출을 극대화하는 후보 가격이 된다.</p>`,
+    related: [{ label: "Van Westendorp PSM", slug: "van-westendorp-psm" }, { label: "프리미엄 전환율", slug: "premium-conversion-rate" }],
+    sections: []
+  },
+  "ab-price-test-pitfalls": {
+    title: String.raw`A/B 가격 테스트의 함정: 같은 상품을 다른 값에 팔면 생기는 문제`,
+    domain: "product",
+    subLabel: String.raw`가격 실험과 전환`,
+    intuition: String.raw`<p>새 버튼 색을 절반에게만 보여주는 A/B 테스트는 큰 문제가 없다. 하지만 가격을 A/B 테스트하면 이야기가 다르다. 같은 상품을 누군가에게는 9,900원에 누군가에게는 12,900원에 판다는 뜻이고 사용자가 이 사실을 알게 되면 신뢰가 크게 흔들릴 수 있다. 심한 경우 가격차별 관련 규제에 걸릴 수도 있다.</p>`,
+    explanation: String.raw`<p>가장 먼저 발견 가능성 문제가 있다. 사용자들은 스크린샷을 공유하고 커뮤니티에서 가격을 비교하고 여러 계정으로 확인한다. 서로 다른 가격이 발견되는 순간 실험으로 얻는 매출 증가분보다 신뢰 훼손 비용이 훨씬 클 수 있다.</p>
+<p>취소 불가능성 문제도 있다. 일반적인 UI 실험은 끝나면 원래대로 돌리면 그만이지만 가격 실험은 이미 그 가격에 결제한 고객이 존재한다. 실험을 끝내고 가격을 하나로 통일하는 순간 먼저 비싸게 산 고객에 대한 환불이나 보상 문제가 남는다.</p>
+<p>법적, 윤리적 문제도 무시할 수 없다. 정당한 사유 없이 동일 상품을 다른 가격에 파는 행위는 국가와 산업에 따라 소비자보호 규제에 저촉될 수 있다. 특히 지역이나 기기 종류처럼 보호 대상이 될 수 있는 속성과 가격이 상관관계를 가지면 차별 논란으로 번지기 쉽다.</p>
+<p>실험 설계 자체의 함정도 있다. 가격 반응은 신규 유입 사용자와 기존 사용자가 다르게 나타나고 이미 본 가격을 기준점으로 삼는 프레이밍 효과가 섞여 순수한 가격탄력성을 읽어내기 어렵다. 그래서 실무에서는 같은 시점에 사용자를 가격으로 나누는 대신 신규 코호트에만 새 가격을 시차를 두고 적용하거나 지역별로 이미 정당화 가능한 요금제를 따로 만드는 방식을 쓴다. Van Westendorp나 Gabor-Granger 같은 설문 기반 방법으로 사전에 가격대를 좁혀두면 실제 A/B 테스트 규모 자체를 최소화할 수 있다.</p>`,
+    example: String.raw`<p>사용자 100명씩 두 그룹에 각각 9,900원과 12,900원을 보여줬다고 하자. 전환율은 9,900원 그룹이 8%, 12,900원 그룹이 6%였다. 예상 매출은 9,900원 그룹이 $100 \times 0.08 \times 9900 = 79200$원, 12,900원 그룹이 $100 \times 0.06 \times 12900 = 77400$원으로 거의 차이가 없다. 매출 차이는 실험 오차 범위 안에 들어올 만큼 작은데 발견 시 감수해야 할 신뢰 훼손 위험은 훨씬 크다.</p>`,
+    related: [{ label: "Van Westendorp PSM", slug: "van-westendorp-psm" }, { label: "프리미엄 전환율", slug: "premium-conversion-rate" }],
+    sections: []
+  },
+  "premium-conversion-rate": {
+    title: String.raw`프리미엄 전환율: 무료 사용자 중 몇 명이 결제로 넘어가는가`,
+    domain: "product",
+    subLabel: String.raw`가격 실험과 전환`,
+    intuition: String.raw`<p>프리미엄 모델은 일단 무료로 최대한 많은 사람을 들어오게 한 다음 그 중 일부를 유료로 전환시켜 수익을 낸다. 프리미엄 전환율은 그 일부가 얼마나 되는지 보여주는 숫자다. 무료 사용자가 아무리 많아도 이 비율이 낮으면 사업은 돈을 벌지 못한다.</p>`,
+    explanation: String.raw`<p>정의는 단순하다. $\text{CVR}_{\text{free to paid}} = \dfrac{N_{\text{paid}}}{N_{\text{free}}}$. 여기서 분모를 어떻게 잡느냐가 실무에서 가장 중요한 함정이다. 누적 가입자 전체를 분모로 쓰면 오래전에 가입해 이미 이탈한 사용자까지 포함되어 전환율이 실제보다 낮게 보인다. 특정 기간의 활성 무료 사용자나 특정 코호트로 분모를 명확히 정의해야 서로 다른 시점의 숫자를 의미 있게 비교할 수 있다.</p>
+<p>이 지표를 올리는 레버는 크게 세 가지다. 무료 사용자 자체를 늘리는 방법은 퍼널 상단을 넓히지만 전환율 자체는 오히려 희석될 수 있다. 무료 기능의 한도를 조여 업그레이드 압박을 만드는 페이월 설계도 있다. 사용자가 제품 가치를 가장 크게 느끼는 순간, 흔히 아하 모먼트 직후에 전환 유도를 배치하는 방법도 있다.</p>
+<p>코호트 관점에서 보면 전환은 가입 즉시 한 번에 일어나기보다 시간이 지나며 누적된다. 그래서 단일 시점의 스냅샷 숫자보다 가입 후 30일, 90일 시점의 누적 전환곡선으로 보는 쪽이 더 정확한 진단을 준다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="40" width="360" height="50" class="dg-dim"/>
+<text x="240" y="70" font-size="13" text-anchor="middle">무료 사용자 10,000명</text>
+<polygon points="225,100 255,100 240,130" class="dg-dim"/>
+<rect x="150" y="140" width="180" height="50" class="dg-accent"/>
+<text x="240" y="170" font-size="13" text-anchor="middle">유료 전환 250명</text>
+<text x="240" y="215" font-size="12" text-anchor="middle">CVR = 250 / 10,000 = 2.5%</text>
+</svg>`,
+    diagramCaption: String.raw`무료 사용자 전체 중 유료로 넘어간 비율이 프리미엄 전환율이다.`,
+    example: String.raw`<p>제품 A는 무료 사용자 10,000명 중 이번 달 250명이 유료로 전환했다. CVR은 $250/10000 = 0.025$, 즉 2.5%다. 제품 B는 무료 사용자 2,000명 중 80명이 전환해 CVR이 $80/2000 = 0.04$, 즉 4%다. B는 절대 유료 고객 수는 A보다 적지만 전환율은 더 높다. 무료 사용자 기반의 크기만으로는 전환 효율을 판단할 수 없다는 뜻이다.</p>`,
+    related: [{ label: "Gabor-Granger 방법", slug: "gabor-granger-method" }, { label: "A/B 가격 테스트의 함정", slug: "ab-price-test-pitfalls" }],
+    sections: []
+  },
+  "growth-loop": {
+    title: String.raw`그로스 루프: 출력이 다시 입력이 되는 순환 구조`,
+    domain: "product",
+    subLabel: String.raw`루프 구조`,
+    intuition: String.raw`<p>전통적인 마케팅 퍼널은 위에서 아래로 한 방향으로만 흐른다. 광고를 보고 가입하고 결제하면 그걸로 끝이다. 그로스 루프는 이 끝을 다시 시작으로 연결한다. 기존 사용자의 행동, 예를 들어 친구 초대나 콘텐츠 공유가 새로운 사용자를 데려오고 그 새로운 사용자가 다시 같은 행동을 반복하면서 스스로 굴러가는 순환을 만든다.</p>
+<p>이 순환 덕분에 광고비를 계속 태우지 않아도 성장이 이어질 수 있다.</p>`,
+    explanation: String.raw`<p>루프는 보통 네 단계로 나눠 본다. 입력은 지금 있는 사용자 규모, 행동은 사용자가 콘텐츠를 만들거나 친구를 초대하는 행위, 출력은 그 행동이 만들어낸 신규 방문이나 노출, 그리고 그 출력이 다시 입력으로 재투입되는 연결이다. 퍼널과 근본적으로 다른 점은 종착점의 위치다. 퍼널은 전환에서 끝나지만 루프의 종착점은 다음 루프의 시작점과 같다.</p>
+<p>이 재투입 구조 때문에 루프는 선형이 아니라 복리로 커진다. 한 바퀴 돌 때마다 입력이 순증가율 $k$배로 불어난다면 $n$번째 바퀴 이후의 규모는 $N_n = N_0 \times k^n$을 따른다. $k > 1$이면 루프가 스스로 확장하고 $k < 1$이면 외부 유입 없이는 서서히 죽는다.</p>
+<p>어떤 자원이 순환하느냐에 따라 루프 종류도 나뉜다. 사용자가 만든 콘텐츠가 검색엔진에 노출되어 새 방문자를 데려오는 콘텐츠 루프, 초대 자체가 동력인 바이럴 루프, 광고 수익으로 다시 광고를 사는 유료 루프, 고객 성공 사례가 다음 영업 자료가 되는 영업 루프가 대표적이다. 퍼널 최적화만으로는 이미 들어온 사용자를 더 잘 전환시키는 데는 강하지만 애초에 사용자를 어떻게 계속 데려올지에 대한 설계 원칙을 주지 못한다. 루프는 신규 유입 자체를 제품 구조 안에 내장시킨다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="190" y="20" width="100" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="240" y="45" font-size="12" text-anchor="middle">입력 (기존 사용자)</text>
+<rect x="330" y="150" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="390" y="175" font-size="12" text-anchor="middle">행동 (초대·공유)</text>
+<rect x="30" y="150" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="175" font-size="12" text-anchor="middle">출력 (신규 방문)</text>
+<line x1="280" y1="55" x2="345" y2="150" class="dg-line" stroke-width="1.5"/>
+<polygon points="345,150 332,140 336,155" class="dg-dim"/>
+<line x1="330" y1="170" x2="150" y2="170" class="dg-line" stroke-width="1.5"/>
+<polygon points="150,170 163,163 163,177" class="dg-dim"/>
+<path d="M90,150 Q140,70 195,50" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="195,50 182,53 190,63" class="dg-accent"/>
+<text x="130" y="105" font-size="12">재투입</text>
+<text x="240" y="230" font-size="13" text-anchor="middle">N_n = N_0 × k^n (k &gt; 1이면 확장)</text>
+</svg>`,
+    diagramCaption: String.raw`출력이 다시 입력으로 재투입되면서 루프가 스스로 반복된다.`,
+    example: String.raw`<p>초기 사용자 100명이 있고 한 바퀴 돌 때마다 20%씩 순증가하는 루프라면 $k=1.2$다. 세 바퀴 뒤 규모는 $N_3 = 100 \times 1.2^3 = 100 \times 1.728 = 172.8$, 약 173명이다. 반대로 한 바퀴마다 10%씩 순감소하는 루프라면 $k=0.9$이고 세 바퀴 뒤 규모는 $100 \times 0.9^3 = 100 \times 0.729 = 72.9$, 약 73명으로 줄어든다.</p>`,
+    related: [{ label: "사이클 타임", slug: "cycle-time" }, { label: "바이럴 계수 K", slug: "viral-coefficient-k" }],
+    sections: []
+  },
+  "cycle-time": {
+    title: String.raw`사이클 타임: 루프 한 바퀴가 도는 데 걸리는 시간`,
+    domain: "product",
+    subLabel: String.raw`루프 구조`,
+    intuition: String.raw`<p>루프가 같은 배율로 커진다고 해도 한 바퀴 도는 데 하루 걸리는 루프와 한 달 걸리는 루프는 전혀 다른 속도로 성장한다. 사이클 타임은 그 한 바퀴가 완료되는 데 걸리는 평균 시간이다. 배율이 아무리 좋아도 한 바퀴 도는 데 너무 오래 걸리면 실제로 체감되는 성장은 느릴 수밖에 없다.</p>`,
+    explanation: String.raw`<p>사이클 타임은 한 사용자가 루프의 시작 행동을 한 시점부터 그 결과로 생긴 신규 사용자가 다시 같은 행동을 할 수 있는 상태에 이르기까지 걸리는 평균 시간이다. 같은 배율 $k$를 가진 두 루프라도 사이클 타임 $T$가 다르면 일정 기간 $t$ 동안 도는 바퀴 수 $n = t/T$가 달라지고 그 결과 누적 규모 $N(t) = N_0 \times k^{t/T}$도 크게 달라진다. 사이클 타임이 짧을수록 같은 시간 안에 더 많은 바퀴를 돌아 누적 성장이 커진다.</p>
+<p>그로스 팀이 종종 $k$를 늘리기보다 사이클 타임을 줄이는 쪽에 먼저 손을 대는 이유가 여기 있다. $k$를 1.1에서 1.3으로 올리려면 사용자 행동 자체를 바꿔야 해서 어렵지만 사이클 타임을 줄이는 일은 온보딩 마찰을 없애거나 알림 타이밍을 당기는 등 UX 개선만으로 가능한 경우가 많다.</p>
+<p>실무에서는 루프 시작 이벤트와 다음 루프 시작이 가능해지는 이벤트 사이의 시간차를 사용자별로 측정하고 그 중앙값이나 평균을 사이클 타임으로 쓴다. 이 값이 며칠 단위인지 몇 주 단위인지에 따라 같은 배율이라도 체감되는 성장 속도는 완전히 달라진다.</p>`,
+    example: String.raw`<p>두 제품을 비교해보자. 제품 A는 $k=1.5$이고 사이클 타임이 1주다. 제품 B는 $k=2.0$이고 사이클 타임이 4주다. 12주 동안 A는 12바퀴, B는 3바퀴를 돈다. 초기 사용자 100명 기준으로 12주 뒤 규모는 A가 $100 \times 1.5^{12} \approx 100 \times 129.75 \approx 12975$명, B가 $100 \times 2^3 = 800$명이다.</p>
+<p>배율만 보면 B가 더 매력적으로 보이지만 사이클 타임까지 반영하면 A가 압도적으로 앞선다. 배율보다 한 바퀴가 얼마나 빨리 도는지가 실제 성장 속도를 더 크게 좌우한다는 뜻이다.</p>`,
+    related: [{ label: "그로스 루프", slug: "growth-loop" }, { label: "바이럴 사이클 타임", slug: "viral-cycle-time" }],
+    sections: []
+  },
+  "viral-coefficient-k": {
+    title: String.raw`바이럴 계수 K: 루프 안에서 확산력을 재는 숫자`,
+    domain: "product",
+    subLabel: String.raw`바이럴 측정`,
+    intuition: String.raw`<p>한 사용자가 서비스를 쓰면서 평균 몇 명의 새 사용자를 데려오는지를 하나의 숫자로 압축한 것이 바이럴 계수 K다. K가 1보다 크면 외부 마케팅 없이도 사용자 수가 스스로 불어나고 1보다 작으면 자연 유입만으로는 규모가 서서히 줄어들어 결국 외부 유입에 의존하게 된다.</p>`,
+    explanation: String.raw`<p>이 사이트의 마케팅 지표 공식 그룹에서는 K-factor를 $K = i \times c$로 정의한다. $i$는 사용자 한 명이 평균적으로 보내는 초대 수, $c$는 초대 하나가 실제 가입으로 이어지는 전환율이다. 여기서 다루는 바이럴 계수는 같은 정의를 그로스 루프라는 더 넓은 틀 안에 놓고 다시 보는 것이다. K는 그로스 루프에서 다룬 순증가율 $k$가 초대라는 구체적인 행동으로 나타난 값이라고 볼 수 있다.</p>
+<p>K 하나만으로는 성장 속도를 판단할 수 없다는 점이 중요한 함정이다. K가 1.5인 루프라도 한 바퀴 도는 데 6개월이 걸린다면 매일 도는 K 1.1짜리 루프보다 체감 성장이 훨씬 느릴 수 있다. 일정 기간의 누적 배율은 $K^{t/T}$ 형태를 따르기 때문에 K가 커도 사이클 타임 T가 길면 지수 자체가 작아져 전체 값은 오히려 작을 수 있다. 그래서 바이럴 계수는 반드시 사이클 타임과 함께 봐야 완전한 그림이 된다.</p>
+<p>측정할 때도 주의할 점이 있다. 초대 수와 전환율을 전체 사용자 평균으로 뭉뚱그리면 소수의 파워 초대자가 평균을 왜곡할 수 있다. 초대 후 가입까지 걸리는 시간이 코호트마다 다르면 아직 전환 기회가 남아있는 최근 발송분까지 분모에 포함시켜 K를 실제보다 낮게 추정하기 쉽다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="240" cy="30" r="14" class="dg-accent"/>
+<text x="240" y="34" font-size="11" text-anchor="middle">1명</text>
+<line x1="240" y1="44" x2="140" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="44" x2="240" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="44" x2="340" y2="100" class="dg-line" stroke-width="1.5"/>
+<text x="300" y="70" font-size="12">평균 K명 초대</text>
+<circle cx="140" cy="112" r="12" class="dg-dim"/>
+<circle cx="240" cy="112" r="12" class="dg-dim"/>
+<circle cx="340" cy="112" r="12" class="dg-dim"/>
+<text x="240" y="140" font-size="12" text-anchor="middle">1세대: K명</text>
+<line x1="240" y1="124" x2="190" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="124" x2="290" y2="180" class="dg-line" stroke-width="1.5"/>
+<circle cx="190" cy="192" r="10" class="dg-dim"/>
+<circle cx="290" cy="192" r="10" class="dg-dim"/>
+<text x="240" y="220" font-size="12" text-anchor="middle">2세대: 약 K² 명</text>
+</svg>`,
+    diagramCaption: String.raw`한 명이 평균 K명을 데려오면 세대를 거듭할수록 사용자 수는 K의 거듭제곱으로 불어난다.`,
+    example: String.raw`<p>사용자 한 명이 평균 5명을 초대하고 그 중 20%가 실제로 가입한다면 $K = 5 \times 0.2 = 1.0$이다. 정확히 현상 유지 지점이라 1000명으로 시작하면 한 바퀴 뒤에도 여전히 1000명이다.</p>
+<p>초대 수를 4명, 전환율을 32.5%로 바꾸면 $K = 4 \times 0.325 = 1.3$이 된다. 1000명이 다섯 바퀴를 돌면 $1000 \times 1.3^5 = 1000 \times 3.71293 \approx 3713$명까지 불어난다.</p>`,
+    related: [{ label: "그로스 루프", slug: "growth-loop" }, { label: "바이럴 사이클 타임", slug: "viral-cycle-time" }],
+    sections: []
+  },
+  "viral-cycle-time": {
+    title: String.raw`바이럴 사이클 타임: 초대한 사람이 활성 사용자가 되기까지 걸리는 시간`,
+    domain: "product",
+    subLabel: String.raw`바이럴 측정`,
+    intuition: String.raw`<p>바이럴 계수 K가 확산의 폭을 잰다면 바이럴 사이클 타임은 확산의 속도를 잰다. 어떤 사용자가 친구를 초대한 순간부터 그 친구가 가입해서 다시 다른 사람을 초대할 수 있는 활성 사용자가 되기까지 걸리는 평균 시간이 짧을수록 같은 K라도 훨씬 빠르게 사용자 수가 불어난다.</p>`,
+    explanation: String.raw`<p>측정 구간은 보통 셋으로 나눌 수 있다. 초대 발송부터 피초대자의 가입까지, 가입부터 실제 활성화까지, 그리고 활성화된 사용자가 다시 초대를 보낼 수 있는 상태가 되기까지다. 이 구간들을 합친 총 시간이 바이럴 사이클 타임이다. 어느 구간이 병목인지 파악하는 일이 실무에서 중요하다. 발송에서 가입까지가 길면 초대 링크 노출 방식이나 알림 타이밍 문제일 가능성이 크고 가입에서 활성화까지가 길면 온보딩 과정 자체가 무겁다는 신호다.</p>
+<p>같은 K를 가진 두 서비스라도 사이클 타임이 다르면 그로스 루프 항목에서 다룬 $N(t) = N_0 \times K^{t/T}$ 관계에 따라 일정 기간 뒤 누적 사용자 수가 크게 벌어진다. 그래서 K를 올리는 데만 집중하기보다 초대 직후 바로 앱을 열게 만드는 딥링크, 가입 절차를 최소화하는 소셜 로그인, 첫 사용에서 바로 가치를 보여주는 온보딩처럼 사이클 타임 자체를 줄이는 개선이 K를 조금 올리는 개선보다 더 큰 성장 효과를 내는 경우가 흔하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="90" x2="480" y2="90" class="dg-line" stroke-width="1.5"/>
+<circle cx="60" cy="90" r="6" class="dg-dim"/>
+<circle cx="220" cy="90" r="6" class="dg-accent"/>
+<circle cx="480" cy="90" r="6" class="dg-accent"/>
+<text x="60" y="115" font-size="12" text-anchor="middle">초대 발송</text>
+<text x="220" y="115" font-size="12" text-anchor="middle">가입</text>
+<text x="480" y="115" font-size="12" text-anchor="middle">활성화 (재초대 가능)</text>
+<text x="140" y="75" font-size="12" text-anchor="middle">2일</text>
+<text x="350" y="75" font-size="12" text-anchor="middle">5일</text>
+<line x1="60" y1="140" x2="480" y2="140" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="60" y1="135" x2="60" y2="145" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="480" y1="135" x2="480" y2="145" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="270" y="163" font-size="13" text-anchor="middle">바이럴 사이클 타임 T = 7일</text>
+</svg>`,
+    diagramCaption: String.raw`초대 발송부터 재초대가 가능한 활성 사용자가 되기까지의 시간을 모두 더한 값이다.`,
+    example: String.raw`<p>초대 발송에서 가입까지 평균 2일, 가입에서 활성화까지 평균 5일이 걸린다면 바이럴 사이클 타임은 $T = 7$일이다. $K=1.2$이고 초기 500명이라면 60일 동안 완전히 도는 바퀴 수는 $60/7 \approx 8.57$이므로 8바퀴로 계산한다.</p>
+<p>$1.2^8 = 4.29981696$이므로 8바퀴 뒤 규모는 $500 \times 4.29981696 \approx 2150$명이다. 사이클 타임을 7일에서 3.5일로 절반 줄이면 같은 60일 동안 약 17바퀴를 돌게 되어 규모는 훨씬 커진다.</p>`,
+    related: [{ label: "바이럴 계수 K", slug: "viral-coefficient-k" }, { label: "사이클 타임", slug: "cycle-time" }],
+    sections: []
+  },
+  "recommendation-ctr-uplift": {
+    title: String.raw`추천 클릭률 상승분: 추천이 정말 클릭을 더 끌어냈는가`,
+    domain: "product",
+    subLabel: String.raw`성과 지표`,
+    intuition: String.raw`<p>추천 영역의 클릭률이 높다고 해서 추천 시스템이 잘 작동한다고 바로 말할 수 없다. 원래 인기 많은 상품은 어디에 놓아도 잘 클릭되기 때문이다. 진짜 알고 싶은 것은 이 추천을 보여주지 않았어도 사용자가 그만큼 클릭했을지다.</p>
+<p>이 반사실적 질문에 답하려면 추천을 보여준 집단과 보여주지 않은 집단을 나눠 두 집단의 클릭률을 직접 비교해야 한다. 그 차이가 추천이 만들어낸 순수한 클릭 상승분이다.</p>`,
+    explanation: String.raw`<p>클릭률(CTR)은 노출수 대비 클릭수로 정의된다. $\mathrm{CTR} = \dfrac{\text{clicks}}{\text{impressions}}$. 그런데 추천 영역 하나만의 CTR을 재면 두 가지가 뒤섞인다. 사용자가 검색이나 카테고리 탐색으로도 어차피 찾아냈을 상품이 추천 자리에 우연히 노출된 경우와 추천이 아니었다면 발견하지 못했을 상품을 추천이 실제로 끌어낸 경우가 같은 숫자 안에 합쳐진다.</p>
+<p>이를 분리하려면 무작위로 나눈 두 집단이 필요하다. 한쪽에는 추천 알고리즘을 그대로 적용하고 다른 쪽에는 추천 영역을 노출하지 않거나 인기순 혹은 무작위 순서로 대체한다. 절대 상승분은 $\text{Uplift} = \mathrm{CTR}_{\text{treat}} - \mathrm{CTR}_{\text{control}}$로 정의되고 대조군 대비 얼마나 늘었는지 비교하고 싶을 때는 상대 상승분 $\dfrac{\mathrm{CTR}_{\text{treat}} - \mathrm{CTR}_{\text{control}}}{\mathrm{CTR}_{\text{control}}}$을 함께 본다.</p>
+<p>이 숫자가 통계적으로 의미 있는 차이인지도 확인해야 한다. 표본 크기가 작으면 우연한 변동만으로도 비슷한 크기의 차이가 나올 수 있어서 A/B 테스트의 신뢰구간이나 유의성 검정을 함께 봐야 한다. 또한 클릭만 늘고 구매나 체류시간 같은 가드레일 지표가 오히려 나빠졌다면 자극적인 섬네일처럼 클릭을 유도하기만 하는 낚시성 추천일 위험도 점검해야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="520" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="140" y="140" width="80" height="60" class="dg-dim"/>
+<rect x="340" y="116" width="80" height="84" class="dg-accent"/>
+<text x="180" y="128" font-size="13" text-anchor="middle">대조군</text>
+<text x="180" y="228" font-size="12" class="dg-dim" text-anchor="middle">CTR 6.0%</text>
+<text x="380" y="104" font-size="13" text-anchor="middle">추천 노출군</text>
+<text x="380" y="228" font-size="12" text-anchor="middle">CTR 8.4%</text>
+<line x1="240" y1="140" x2="330" y2="116" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="285" y="105" font-size="12" text-anchor="middle">+2.4%p</text>
+</svg>`,
+    diagramCaption: String.raw`대조군과 추천 노출군의 클릭률 차이가 추천이 만들어낸 순수 상승분이다.`,
+    example: String.raw`<p>노출군 10만 명에게 추천을 보여주고 대조군 10만 명에게는 인기순 목록을 보여줬다고 하자. 노출군 클릭수는 8,400건으로 $\mathrm{CTR}_{\text{treat}} = 8{,}400/100{,}000 = 8.4\%$다. 대조군 클릭수는 6,000건으로 $\mathrm{CTR}_{\text{control}} = 6{,}000/100{,}000 = 6.0\%$다.</p>
+<p>절대 상승분은 $8.4\% - 6.0\% = 2.4\%\text{p}$이고 상대 상승분은 $2.4/6.0 = 40\%$다. 추천 알고리즘이 인기순 대비 클릭을 40퍼센트 더 끌어냈다는 뜻이다.</p>`,
+    related: [{ label: "커버리지", slug: "recommendation-coverage" }, { label: "Intra-List Diversity", slug: "intra-list-diversity-product" }],
+    sections: []
+  },
+  "recommendation-coverage": {
+    title: String.raw`커버리지: 전체 아이템 중 실제로 추천되는 비율`,
+    domain: "product",
+    subLabel: String.raw`성과 지표`,
+    intuition: String.raw`<p>추천 시스템이 똑같은 인기 상품 몇 개만 계속 추천한다면 개인화라는 말이 무색해진다. 커버리지는 전체 상품 중에서 실제로 누군가에게 한 번이라도 추천된 상품이 얼마나 되는지를 재는 지표다.</p>
+<p>추천 정확도만 최적화하면 이미 잘 팔리는 상품을 반복 추천하는 쪽이 유리하다. 커버리지는 그런 쏠림을 드러내서 카탈로그 전체를 얼마나 골고루 활용하고 있는지 보여준다.</p>`,
+    explanation: String.raw`<p>카탈로그 커버리지는 한 번이라도 추천된 서로 다른 상품수를 전체 상품수로 나눈 값이다. $\mathrm{Coverage} = \dfrac{\text{distinct items recommended}}{\text{total catalog items}}$. 사용자 커버리지라는 변형도 있는데 이는 전체 사용자 중 유의미한 추천을 받을 수 있는 사용자 비율을 재며 콜드스타트 사용자가 많은 서비스에서 특히 중요하게 본다.</p>
+<p>이 지표가 필요한 이유는 정확도 지표만으로는 추천 알고리즘의 편향을 잡아낼 수 없기 때문이다. 협업 필터링 계열 모델은 상호작용 데이터가 많은 인기 상품일수록 더 정확하게 예측하는 경향이 있어서 정확도만 보고 모델을 고르면 자연스럽게 인기 편향이 강한 모델이 이긴다. 반면 커버리지가 높아도 관련 없는 상품을 억지로 끼워 넣으면 정확도가 떨어지므로 두 지표는 함께 모니터링해야 균형이 잡힌다.</p>
+<p>롱테일 상품 발굴이 비즈니스 목표인 경우 예를 들어 신상품 노출이나 재고 소진이 중요한 이커머스라면 커버리지를 직접적인 성공 지표로 삼기도 한다. 다만 커버리지가 낮은 것 자체가 항상 나쁜 신호는 아니다. 사용자 만족과 직결되는 상위 상품군이 실제로 소수에 집중된 서비스라면 무리하게 커버리지를 끌어올리는 것이 오히려 추천 품질을 해칠 수 있다.</p>`,
+    example: String.raw`<p>전체 상품이 20,000개인 쇼핑몰에서 최근 일주일 동안 어떤 사용자에게든 한 번이라도 추천된 서로 다른 상품이 2,400개였다면 $\mathrm{Coverage} = 2{,}400/20{,}000 = 12\%$다. 나머지 88퍼센트에 해당하는 17,600개 상품은 그 기간 동안 단 한 번도 추천 화면에 노출되지 않았다는 뜻이다.</p>`,
+    related: [{ label: "추천 클릭률 상승분", slug: "recommendation-ctr-uplift" }, { label: "Intra-List Diversity", slug: "intra-list-diversity-product" }],
+    sections: []
+  },
+  "intra-list-diversity-product": {
+    title: String.raw`Intra-List Diversity: 추천 목록 안이 얼마나 다채로운가`,
+    domain: "product",
+    subLabel: String.raw`다양성 지표`,
+    intuition: String.raw`<p>추천 목록 10개가 전부 비슷한 색상, 비슷한 브랜드, 비슷한 가격대의 상품이라면 사용자에게는 사실상 선택지가 하나 있는 것과 다르지 않다. Intra-List Diversity는 한 사용자에게 뜬 추천 목록 안의 아이템들이 서로 얼마나 다른지를 재는 지표다.</p>
+<p>정확도가 높은 추천이라도 다양성이 낮으면 사용자는 계속 비슷한 것만 보게 되고 취향의 다른 면을 발견할 기회를 잃는다. 이 지표는 그런 획일성을 숫자로 드러낸다.</p>`,
+    explanation: String.raw`<p>가장 흔한 정의는 목록 안 아이템 쌍의 평균 비유사도다. 아이템 특징 벡터나 임베딩으로 코사인 유사도 $\mathrm{sim}(i,j)$를 구한 뒤 $1 - \mathrm{sim}(i,j)$를 비유사도로 쓰고 목록 크기 $n$에 대해 $\mathrm{ILD} = \dfrac{2}{n(n-1)}\sum_{i<j}\left(1-\mathrm{sim}(i,j)\right)$로 평균 낸다. 값이 클수록 목록 안 아이템들이 서로 이질적이라는 뜻이다.</p>
+<p>이 지표가 필요한 이유는 precision이나 CTR 같은 정확도 지표가 목록 내부의 중복을 전혀 벌점 처리하지 않기 때문이다. 협업 필터링 기반 랭킹은 사용자와 비슷한 취향을 가진 다른 사용자들이 좋아한 상품을 상위에 올리는데 이런 상품들은 서로 특징이 비슷한 경우가 많아서 정확도를 그대로 최적화하면 목록이 자연스럽게 필터버블처럼 좁아진다.</p>
+<p>다양성을 억지로 높이면 관련성이 떨어지는 아이템이 끼어들어 정확도가 낮아지는 트레이드오프가 있다. 그래서 실무에서는 상위 후보군을 뽑은 뒤 관련성과 다양성을 함께 고려해 순서를 다시 매기는 재랭킹 기법인 MMR(Maximal Marginal Relevance) 같은 방법으로 두 목표 사이의 절충점을 찾는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="100" y1="160" x2="280" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="50" x2="460" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="160" x2="460" y2="160" class="dg-line" stroke-width="1.5"/>
+<circle cx="100" cy="160" r="16" class="dg-accent"/>
+<circle cx="280" cy="50" r="16" class="dg-accent"/>
+<circle cx="460" cy="160" r="16" class="dg-accent"/>
+<text x="100" y="195" font-size="12" text-anchor="middle">아이템 1</text>
+<text x="280" y="35" font-size="12" text-anchor="middle">아이템 2</text>
+<text x="460" y="195" font-size="12" text-anchor="middle">아이템 3</text>
+<text x="175" y="98" font-size="12" class="dg-dim">비유사도 0.2</text>
+<text x="365" y="98" font-size="12" class="dg-dim">비유사도 0.5</text>
+<text x="280" y="182" font-size="12" class="dg-dim" text-anchor="middle">비유사도 0.7</text>
+</svg>`,
+    diagramCaption: String.raw`목록 안 모든 아이템 쌍의 비유사도를 평균 내면 리스트 전체의 다양성이 된다.`,
+    example: String.raw`<p>추천 목록이 아이템 1, 2, 3 세 개뿐이라 하자. 코사인 유사도가 각각 $\mathrm{sim}(1,2)=0.8$, $\mathrm{sim}(1,3)=0.3$, $\mathrm{sim}(2,3)=0.5$로 계산됐다면 비유사도는 각각 $0.2$, $0.7$, $0.5$다.</p>
+<p>세 쌍의 평균을 내면 $\mathrm{ILD} = (0.2+0.7+0.5)/3 \approx 0.467$이다. 1에 가까울수록 다양하고 0에 가까울수록 비슷한 아이템들로만 채워진 목록이라는 뜻이므로 이 목록은 중간보다 살짝 낮은 다양성을 가진 셈이다.</p>`,
+    related: [{ label: "커버리지", slug: "recommendation-coverage" }, { label: "세렌디피티", slug: "serendipity-metric" }],
+    sections: []
+  },
+  "serendipity-metric": {
+    title: String.raw`세렌디피티: 예상 밖인데도 만족스러운 추천`,
+    domain: "product",
+    subLabel: String.raw`다양성 지표`,
+    intuition: String.raw`<p>사용자가 이미 좋아할 걸 뻔히 아는 상품만 계속 추천하면 안전하지만 지루하다. 세렌디피티는 사용자가 예상하지 못했는데도 실제로 마음에 들어 한 추천이 얼마나 나왔는지를 재는 지표다.</p>
+<p>단순히 특이한 추천을 많이 하는 것과는 다르다. 예상 밖이면서 동시에 사용자에게 실제로 유용했던 경우만 세렌디피티로 인정한다. 예상 밖인데 관심도 없는 추천은 그냥 엉뚱한 추천일 뿐이다.</p>`,
+    explanation: String.raw`<p>세렌디피티를 정의하려면 먼저 무엇이 예상된 추천인지 기준이 있어야 한다. 보통 인기순 추천이나 사용자의 과거 이용 이력만으로 만든 단순한 베이스라인 추천기를 기준선으로 두고 그 목록에 없는 아이템을 예상 밖으로 취급한다. 여기에 사용자가 실제로 클릭하거나 구매하는 등 유용하다고 반응한 아이템 집합을 겹쳐서 $\mathrm{Serendipity} = \dfrac{|\text{Unexpected} \cap \text{Useful}|}{|\text{Recommended}|}$로 계산한다.</p>
+<p>이 지표가 정확도 지표와 별도로 필요한 이유는 정확도만 최적화한 추천기가 결국 사용자의 과거 행동을 그대로 반복해서 보여주는 방향으로 수렴하기 때문이다. 그 결과 사용자는 이미 아는 취향 안에 갇히고 서비스는 새로운 발견의 기회를 만들어주지 못한다. 세렌디피티는 이런 정체를 막고 장기적인 참여와 만족을 지키기 위한 보완 지표로 쓰인다.</p>
+<p>다만 예상 밖이라는 기준 자체가 어떤 베이스라인을 고르느냐에 따라 달라지고 유용함도 클릭 같은 암묵적 신호로 근사할 수밖에 없어서 절대적인 숫자보다는 시간에 따른 변화나 알고리즘 간 상대 비교로 쓰는 경우가 많다. 세렌디피티를 끌어올리려는 재랭킹은 정확도를 희생하는 경우가 흔해서 Intra-List Diversity와 마찬가지로 관련성과의 균형을 함께 살펴야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="40" width="440" height="240" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="280" y1="40" x2="280" y2="280" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="160" x2="500" y2="160" class="dg-line" stroke-width="1.5"/>
+<rect x="280" y="40" width="220" height="120" class="dg-accent" opacity="0.18"/>
+<text x="170" y="95" font-size="13" text-anchor="middle">예상됨 + 만족</text>
+<text x="170" y="115" font-size="12" class="dg-dim" text-anchor="middle">뻔한 추천</text>
+<text x="390" y="95" font-size="13" text-anchor="middle">예상 밖 + 만족</text>
+<text x="390" y="115" font-size="12" text-anchor="middle">세렌디피티</text>
+<text x="170" y="215" font-size="13" text-anchor="middle">예상됨 + 무관심</text>
+<text x="170" y="235" font-size="12" class="dg-dim" text-anchor="middle">지루한 추천</text>
+<text x="390" y="215" font-size="13" text-anchor="middle">예상 밖 + 무관심</text>
+<text x="390" y="235" font-size="12" class="dg-dim" text-anchor="middle">엉뚱한 추천</text>
+<text x="280" y="296" font-size="12" class="dg-dim" text-anchor="middle">예상됨 ← → 예상 밖</text>
+</svg>`,
+    diagramCaption: String.raw`예상 밖이면서 동시에 사용자가 만족한 추천만 세렌디피티로 인정된다.`,
+    example: String.raw`<p>어떤 사용자에게 추천 아이템 20개를 보여줬는데 이 중 실제로 클릭하거나 구매한 유용한 아이템이 8개였다고 하자. 이 8개 중에서 인기순 베이스라인 목록에는 없었던 예상 밖 아이템이 5개였다면 $\mathrm{Serendipity} = 5/20 = 25\%$다.</p>
+<p>나머지 유용한 아이템 3개는 베이스라인에도 있었을 뻔한 추천이었으므로 세렌디피티로는 잡히지 않는다. 같은 추천기라도 베이스라인을 더 정교하게 잡으면 예상 밖으로 분류되는 아이템 수가 줄어들어 세렌디피티 값 자체가 낮아질 수 있다는 점도 함께 기억해야 한다.</p>`,
+    related: [{ label: "Intra-List Diversity", slug: "intra-list-diversity-product" }, { label: "추천 클릭률 상승분", slug: "recommendation-ctr-uplift" }],
+    sections: []
+  },
+  "ice-score": {
+    title: String.raw`ICE 스코어: 영향력, 확신도, 실행난이도를 곱해 우선순위 매기기`,
+    domain: "product",
+    subLabel: String.raw`우선순위화`,
+    intuition: String.raw`<p>실험하고 싶은 아이디어는 항상 리소스보다 많다. 회의 때마다 무엇부터 테스트할지 감으로 정하면 목소리 큰 사람의 아이디어가 이기기 쉽다. ICE 스코어는 각 아이디어에 세 가지 질문을 던지고 점수를 곱해서 순위를 빠르게 매기는 방법이다.</p>
+<p>정밀한 계산이 목적이 아니라 여러 아이디어를 상대적으로 줄 세우기 위한 도구다. 회의 자리에서 몇 분 안에 우선순위 목록을 뽑아낼 수 있다는 것이 가장 큰 장점이다.</p>`,
+    explanation: String.raw`<p>ICE는 Impact, Confidence, Ease 세 요소의 곱이다. $\mathrm{ICE} = I \times C \times E$이며 보통 각 요소를 1점에서 10점 사이로 매긴다. Impact는 성공했을 때 지표에 미칠 영향의 크기, Confidence는 효과가 있을 것이라는 근거의 강도, Ease는 실행이 얼마나 쉬운지를 뜻하며 어려울수록 낮은 점수를 준다.</p>
+<p>곱셈 구조를 쓰는 이유는 세 요소 중 하나라도 아주 낮으면 전체 점수도 낮아야 합리적이기 때문이다. 아무리 임팩트가 커도 성공 확신이 전혀 없거나 구현이 극도로 어렵다면 그 아이디어를 우선순위 상위에 둘 이유가 없다. 반대로 덧셈으로 세 점수를 합치면 한 요소가 낮아도 다른 두 요소가 높으면 점수가 부풀려져서 이런 걸러내기 효과가 사라진다.</p>
+<p>ICE는 RICE 프레임워크에서 Reach(영향을 받는 사용자 규모)를 뺀 더 가벼운 버전으로 볼 수 있다. Reach까지 정확히 추정하려면 데이터 분석이 필요하지만 ICE는 팀원들이 감으로 빠르게 점수를 매겨도 되도록 설계되어 스프린트 계획이나 브레인스토밍처럼 속도가 중요한 자리에 적합하다. 다만 점수가 주관적이라 사람마다 기준이 다르고 특히 Ease를 실제보다 낙관적으로 매기는 경향이 흔해서 여러 명이 각자 점수를 매긴 뒤 평균을 쓰는 방식이 권장된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="200" x2="420" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="80" width="60" height="120" class="dg-dim"/>
+<text x="90" y="70" font-size="12" text-anchor="middle">Impact 8</text>
+<text x="145" y="145" font-size="16" text-anchor="middle">×</text>
+<rect x="170" y="95" width="60" height="105" class="dg-dim"/>
+<text x="200" y="85" font-size="12" text-anchor="middle">Confidence 7</text>
+<text x="255" y="145" font-size="16" text-anchor="middle">×</text>
+<rect x="280" y="110" width="60" height="90" class="dg-dim"/>
+<text x="310" y="100" font-size="12" text-anchor="middle">Ease 6</text>
+<text x="365" y="145" font-size="16" text-anchor="middle">=</text>
+<rect x="400" y="70" width="130" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="465" y="105" font-size="16" text-anchor="middle">ICE 336</text>
+</svg>`,
+    diagramCaption: String.raw`세 항목 점수를 곱해 하나의 점수로 우선순위를 정한다.`,
+    example: String.raw`<p>아이디어 A는 Impact 8, Confidence 7, Ease 6으로 평가받아 $\mathrm{ICE} = 8 \times 7 \times 6 = 336$이다. 아이디어 B는 Impact 9로 더 높지만 Confidence가 4로 낮아 $\mathrm{ICE} = 9 \times 4 \times 9 = 324$에 그친다.</p>
+<p>총점은 A가 336으로 B의 324보다 근소하게 높아 A를 먼저 테스트하는 것이 합리적이다. Impact만 보면 B가 앞서 보이지만 곱셈 구조가 확신도 낮은 아이디어의 순위를 자연스럽게 끌어내린 것이다.</p>`,
+    related: [{ label: "PIE 프레임워크", slug: "pie-framework" }, { label: "인풋 지표 트리", slug: "input-metric-tree" }],
+    sections: []
+  },
+  "pie-framework": {
+    title: String.raw`PIE 프레임워크: 잠재력, 중요도, 난이도로 페이지 개선 순서 정하기`,
+    domain: "product",
+    subLabel: String.raw`우선순위화`,
+    intuition: String.raw`<p>ICE 스코어가 개별 실험 아이디어의 순위를 매기는 도구라면 PIE 프레임워크는 그보다 한 단계 위에서 어느 페이지나 퍼널 구간부터 손봐야 할지 정하는 도구다. 랜딩페이지, 결제 페이지, 온보딩 화면 중 무엇을 먼저 최적화할지 고를 때 쓴다.</p>
+<p>ICE와 구조는 비슷하다. 세 가지 질문에 점수를 매기고 곱해서 순위를 뽑는다는 점은 같지만 평가 대상이 개별 아이디어가 아니라 페이지나 퍼널 단위라는 점이 다르다.</p>`,
+    explanation: String.raw`<p>PIE는 Potential, Importance, Ease 세 요소의 곱이다. $\mathrm{PIE} = P \times I \times E$이며 역시 1점에서 10점 사이로 점수를 매긴다. Potential은 그 페이지가 개선될 여지, 즉 현재 전환율이 얼마나 낮은지를 나타내고 Importance는 그 페이지가 받는 트래픽이나 매출 기여도를, Ease는 실행 난이도의 역수를 뜻한다. 원래 WiderFunnel이 제안한 PIE는 세 점수를 평균 내는 방식이었지만 팀에 따라 ICE와 같은 곱셈 구조로 쓰기도 한다.</p>
+<p>PIE가 별도로 필요한 이유는 ICE가 이미 정해진 후보 아이디어들 사이의 순위를 매길 뿐 애초에 어느 페이지에서 아이디어를 뽑아야 하는지는 알려주지 않기 때문이다. 트래픽이 적고 이미 전환율이 최적화된 페이지에서 아무리 좋은 아이디어를 내도 비즈니스 임팩트는 작다. PIE는 이런 페이지 선정을 ICE보다 먼저 하는 상위 레이어 역할을 한다. 실무에서는 먼저 PIE로 손볼 페이지를 정하고 그 페이지 안에서 다시 ICE로 구체적인 실험 아이디어 순위를 매기는 이중 구조로 함께 쓰는 경우가 많다.</p>
+<p>Potential을 판단할 때는 그 페이지의 현재 전환율을 업계 벤치마크나 유사 페이지와 비교해서 낮을수록 개선 여지가 크다고 본다. Importance는 방문자 수나 매출 기여도 같은 규모 지표로 판단하며 트래픽이 적은 페이지는 아무리 전환율을 두 배로 올려도 전체 지표에 미치는 영향이 작다. Ease는 ICE와 마찬가지로 개발 리소스, 이해관계자 승인, 기술적 제약을 종합해 매긴다.</p>`,
+    example: String.raw`<p>랜딩페이지는 Potential 7(전환율이 낮음), Importance 9(트래픽이 많음), Ease 5(구조 변경이 어느 정도 필요함)로 평가되어 $\mathrm{PIE} = 7 \times 9 \times 5 = 315$다. 결제 페이지는 Potential 4(이미 최적화가 많이 되어 있음), Importance 10(매출에 직결됨), Ease 3(결제 흐름 변경은 리스크가 큼)으로 $\mathrm{PIE} = 4 \times 10 \times 3 = 120$이다.</p>
+<p>결제 페이지가 매출에 더 직접적으로 연결돼 있어도 이미 최적화가 많이 되어 있고 변경 리스크가 커서 PIE 점수는 랜딩페이지보다 낮다. 이번 분기에는 랜딩페이지 최적화를 먼저 진행하는 것이 합리적이다.</p>`,
+    related: [{ label: "ICE 스코어", slug: "ice-score" }, { label: "인풋 지표 트리", slug: "input-metric-tree" }],
+    sections: []
+  },
+  "input-metric-tree": {
+    title: String.raw`인풋 지표 트리: 노스스타 지표를 팀별 담당 지표로 쪼개기`,
+    domain: "product",
+    subLabel: String.raw`지표 트리`,
+    intuition: String.raw`<p>노스스타 지표 하나만 보고 있으면 그 지표가 떨어졌을 때 어느 팀이 무엇을 고쳐야 할지 알 수 없다. 인풋 지표 트리는 노스스타 지표를 더 작은 하위 지표들로 쪼개서 각 하위 지표를 특정 팀이 책임지도록 만드는 구조다.</p>
+<p>모두가 노스스타 지표를 함께 보되 실제로 움직이는 것은 각자 담당한 인풋 지표라는 원칙이다. 이렇게 나누면 지표 하락의 원인을 훨씬 빠르게 좁혀갈 수 있다.</p>`,
+    explanation: String.raw`<p>가장 단단한 트리는 정의상 곱셈이나 덧셈으로 정확히 분해되는 산식 기반 트리다. 예를 들어 주간 결제액이라는 노스스타 지표는 방문자수와 구매전환율과 평균결제액의 곱으로 정확히 나뉜다. $\text{Revenue} = \text{Visitors} \times \text{CVR} \times \text{AOV}$처럼 표현할 수 있으며 이 경우 방문자수는 마케팅팀, 구매전환율(CVR)은 프로덕트팀, 평균결제액(AOV)은 상품 및 가격 담당팀이 나눠 책임지는 식으로 조직 구조와 지표 트리를 맞출 수 있다.</p>
+<p>모든 지표가 이렇게 산식으로 깔끔하게 나뉘지는 않는다. 세션당 페이지뷰나 스크롤 깊이처럼 노스스타 지표와 정의상 연결되어 있지는 않지만 과거 데이터에서 상관관계가 강해서 인풋으로 채택하는 경우도 흔하다. 산식 기반 인풋은 수학적으로 항상 참이라 트리 구조 자체가 틀릴 위험은 없지만 상관 기반 인풋은 그 상관관계가 인과관계인지 우연인지 구분이 안 된 채로 트리에 들어간다는 위험을 안고 있다.</p>
+<p>트리를 한 단계 더 내려가면 각 인풋 지표를 다시 그 아래 인풋으로 쪼갤 수 있다. 구매전환율은 장바구니 추가율과 결제 완료율의 곱으로 다시 나뉘는 식이다. 이렇게 층을 늘릴수록 담당 범위는 좁아지고 원인 추적은 더 정밀해지지만 층이 너무 많아지면 각 팀이 노스스타 지표와의 연결을 체감하기 어려워지는 부작용도 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="180" y="20" width="200" height="44" class="dg-accent"/>
+<text x="280" y="47" font-size="13" text-anchor="middle">노스스타: 주간 결제액</text>
+<line x1="280" y1="64" x2="110" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="64" x2="280" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="64" x2="450" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="40" y="100" width="140" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="110" y="124" font-size="12" text-anchor="middle">방문자수</text>
+<rect x="210" y="100" width="140" height="40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="124" font-size="12" text-anchor="middle">구매전환율</text>
+<rect x="380" y="100" width="140" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="450" y="124" font-size="12" text-anchor="middle">평균결제액</text>
+<line x1="280" y1="140" x2="205" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="140" x2="355" y2="180" class="dg-line" stroke-width="1.5"/>
+<rect x="140" y="180" width="130" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="205" y="204" font-size="11" text-anchor="middle">장바구니 추가율</text>
+<rect x="290" y="180" width="130" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="355" y="204" font-size="11" text-anchor="middle">결제 완료율</text>
+</svg>`,
+    diagramCaption: String.raw`노스스타 지표를 곱셈으로 분해하면 각 인풋 지표를 담당할 팀이 명확해진다.`,
+    example: String.raw`<p>방문자수 50,000명, 구매전환율 4%, 평균결제액 30,000원이라면 주간 결제액은 $50{,}000 \times 0.04 \times 30{,}000 = 60{,}000{,}000$원이다.</p>
+<p>프로덕트팀이 담당하는 구매전환율만 4%에서 5%로 끌어올리고 나머지 두 인풋이 그대로라면 결제액은 $50{,}000 \times 0.05 \times 30{,}000 = 75{,}000{,}000$원이 되어 25% 늘어난다. 어느 인풋이 얼마나 움직였는지가 노스스타 지표 변화로 바로 환산되는 것이 산식 기반 트리의 장점이다.</p>`,
+    related: [{ label: "지표 트리 검증", slug: "metric-tree-validation" }, { label: "ICE 스코어", slug: "ice-score" }],
+    sections: []
+  },
+  "metric-tree-validation": {
+    title: String.raw`지표 트리 검증: 인풋을 움직이면 정말 노스스타도 움직이는가`,
+    domain: "product",
+    subLabel: String.raw`지표 트리`,
+    intuition: String.raw`<p>지표 트리를 한 번 그렸다고 끝이 아니다. 담당 인풋 지표를 열심히 올렸는데 정작 노스스타 지표는 꿈쩍하지 않는 일이 실무에서 자주 벌어진다. 지표 트리 검증은 인풋과 노스스타 사이의 연결이 지금도 여전히 유효한지 주기적으로 다시 확인하는 작업이다.</p>
+<p>특히 상관관계만으로 만들어진 인풋 지표는 시간이 지나거나 사용자층이 바뀌면 그 연결이 조용히 사라질 수 있다. 검증하지 않으면 팀이 엉뚱한 지표를 열심히 올리고 있다는 사실을 알아채지 못한다.</p>`,
+    explanation: String.raw`<p>인풋 지표 트리에서 이미 다뤘듯이 산식으로 정확히 분해된 인풋은 수학적으로 항상 참이라 그 구조 자체는 흔들리지 않는다. 하지만 산식 기반 트리에서도 한 인풋을 개선하는 조치가 다른 인풋을 반대 방향으로 움직이는 상쇄 효과가 있을 수 있다. 전환율을 올리려고 넣은 팝업이 방문자의 재방문 의욕을 꺾어 방문자수 인풋을 갉아먹는 경우가 그렇다.</p>
+<p>더 취약한 쪽은 상관 기반 인풋이다. 이 상관관계는 처음부터 인과관계가 아니라 특정 시기의 사용자층이나 계절적 요인 같은 제3의 변수가 두 지표를 동시에 움직였던 우연이었을 수 있다. 서비스가 성장하고 사용자 구성이 바뀌거나 알고리즘과 UI가 바뀌면 과거에 관찰된 상관관계가 더 이상 성립하지 않게 되는데 트리는 이런 변화를 스스로 알려주지 않는다.</p>
+<p>검증은 세 가지 방법을 함께 쓴다. 인풋과 노스스타 사이의 상관을 주기적으로 다시 계산해서 강도가 약해지고 있는지 추적하는 방법, 인풋만 의도적으로 조작하는 A/B 테스트를 돌려 상관이 아니라 실제 인과관계인지 확인하는 방법, 그리고 인풋 지표가 목표치만큼 올랐는데도 노스스타가 반응하지 않으면 그 인풋을 트리에서 빼고 재설계하는 방법이다. 인풋 지표가 팀의 목표(KPI)로 굳어지는 순간 그 지표를 직접 게이밍하려는 유인이 생겨 인풋과 아웃풋의 관계 자체가 왜곡될 수 있다는 점도 검증 주기를 짧게 가져가야 하는 이유 중 하나다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="220" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="55" font-size="12" text-anchor="middle">인풋 지표</text>
+<text x="140" y="75" font-size="12" class="dg-dim" text-anchor="middle">스크롤 깊이 40% → 60%</text>
+<rect x="310" y="110" width="220" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="420" y="135" font-size="12" text-anchor="middle">노스스타 지표</text>
+<text x="420" y="155" font-size="12" class="dg-dim" text-anchor="middle">리텐션 22% → 21.5%</text>
+<line x1="250" y1="75" x2="315" y2="130" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="280" y="95" font-size="20" class="dg-accent" text-anchor="middle">×</text>
+<text x="280" y="20" font-size="12" class="dg-dim" text-anchor="middle">예상했던 연결이 확인되지 않음</text>
+</svg>`,
+    diagramCaption: String.raw`인풋 지표가 올라도 노스스타 지표가 반응하지 않으면 그 연결은 재검증 대상이다.`,
+    example: String.raw`<p>한 팀이 세션당 스크롤 깊이를 인풋 지표로 삼고 6개월에 걸쳐 40%에서 60%까지 끌어올렸다. 그런데 같은 기간 노스스타인 주간 리텐션은 22%에서 21.5%로 오히려 소폭 내려갔다.</p>
+<p>스크롤 깊이와 리텐션은 과거 데이터에서 상관이 있어 보였지만 실제로는 두 지표가 한때 함께 움직였던 우연이었을 가능성이 크다. 이 팀은 스크롤 깊이를 트리에서 빼고 리텐션과 실험적으로 검증된 다른 인풋 지표를 찾는 재설계에 들어갔다.</p>`,
+    related: [{ label: "인풋 지표 트리", slug: "input-metric-tree" }, { label: "ICE 스코어", slug: "ice-score" }],
+    sections: []
+  },
+  "precision-recall-tradeoff-fraud": {
+    title: String.raw`Precision-Recall 트레이드오프: 사기 탐지는 둘 다 잡을 수 없다`,
+    domain: "product",
+    subLabel: String.raw`사기 탐지`,
+    intuition: String.raw`<p>사기 거래를 하나도 놓치지 않으려고 기준을 빡빡하게 잡으면 멀쩡한 고객의 정상 결제까지 사기로 오인해서 막게 된다. 반대로 오탐을 줄이려고 기준을 느슨하게 풀면 진짜 사기를 놓치는 일이 늘어난다. 이 둘을 동시에 완벽하게 잡는 모델은 존재하지 않는다.</p>
+<p>정밀도와 재현율은 같은 모델의 기준선을 어디에 두느냐에 따라 반대 방향으로 움직이는 한 쌍의 지표다. 사기 탐지에서는 이 트레이드오프가 단순한 튜닝 문제가 아니라 피할 수 없는 구조적 긴장관계다.</p>`,
+    explanation: String.raw`<p>정밀도(Precision)는 모델이 사기라고 예측한 거래 중 실제로 사기였던 비율이다. $\mathrm{Precision} = \dfrac{TP}{TP+FP}$. 재현율(Recall)은 실제 사기 거래 중 모델이 잡아낸 비율이다. $\mathrm{Recall} = \dfrac{TP}{TP+FN}$. 판정 기준을 낮춰서 더 많은 거래를 사기로 분류하면 놓치는 사기가 줄어 재현율은 오르지만 그만큼 정상 거래를 잘못 잡는 경우도 늘어 정밀도는 떨어진다. 기준을 높이면 정반대로 움직인다.</p>
+<p>이 관계가 단순한 튜닝 이슈가 아니라 근본적으로 피할 수 없는 이유는 두 가지다. 첫째는 클래스 불균형이다. 실제 사기 거래는 전체 거래의 0.1퍼센트에서 1퍼센트 남짓으로 극히 드물어서 아주 작은 정밀도 손실만으로도 절대적인 오탐 건수는 크게 늘어난다. 둘째는 비용 비대칭이다. 사기를 놓치는 false negative는 직접적인 금전 손실로 이어지고 정상 고객을 차단하는 false positive는 고객 이탈과 신뢰 훼손으로 이어지는데 두 비용의 크기가 서로 다르고 상황마다 바뀌기 때문에 어느 한쪽만 항상 옳은 기준이라는 게 존재하지 않는다.</p>
+<p>이런 이유로 사기 탐지 모델을 평가할 때는 정밀도나 재현율 하나만 보지 않고 임계값을 바꿔가며 둘의 관계 전체를 그린 PR 곡선을 본다. 사기처럼 양성 클래스가 극히 드문 문제에서는 ROC-AUC가 실제보다 낙관적으로 보이는 경향이 있어서 PR-AUC를 더 신뢰할 만한 평가 지표로 쓴다. 실무에서는 F1 스코어처럼 두 지표를 하나로 절충하거나 오탐과 미탐 각각의 실제 금전적 비용을 추정해서 그 비용의 합을 최소화하는 임계값을 고르는 방식으로 트레이드오프를 다룬다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="70" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="70" y1="220" x2="70" y2="40" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="295" y="248" font-size="12" text-anchor="middle">재현율 Recall</text>
+<text x="35" y="130" font-size="12" text-anchor="middle" transform="rotate(-90 35 130)">정밀도 Precision</text>
+<path d="M90,60 C220,65 320,120 460,190" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="150" cy="72" r="6" class="dg-accent"/>
+<circle cx="420" cy="175" r="6" class="dg-accent"/>
+<text x="150" y="55" font-size="11" text-anchor="middle">엄격한 기준</text>
+<text x="420" y="205" font-size="11" text-anchor="middle">느슨한 기준</text>
+</svg>`,
+    diagramCaption: String.raw`판정 기준을 느슨하게 할수록 재현율은 오르고 정밀도는 떨어진다.`,
+    example: String.raw`<p>거래 1,000건 중 모델이 50건을 사기로 예측했고 그중 30건이 실제 사기였다면 $\mathrm{Precision} = 30/50 = 60\%$다. 전체 실제 사기 거래가 40건이었다면 $\mathrm{Recall} = 30/40 = 75\%$다.</p>
+<p>판정 기준을 낮춰 더 많은 거래를 사기로 잡도록 조정하면 예측 건수가 70건으로 늘고 그중 35건이 실제 사기라고 하자. $\mathrm{Precision} = 35/70 = 50\%$로 떨어지고 $\mathrm{Recall} = 35/40 = 87.5\%$로 오른다. 더 많은 사기를 잡아낸 대신 정상 거래를 오탐하는 비율도 함께 늘어난 것이다.</p>`,
+    related: [{ label: "결제 이상 패턴 탐지", slug: "payment-anomaly-detection" }, { label: "결제 사기율", slug: "payment-fraud-rate" }],
+    sections: []
+  },
+  "payment-anomaly-detection": {
+    title: String.raw`결제 이상 패턴 탐지: 정상 분포에서 벗어난 결제 실시간으로 잡기`,
+    domain: "product",
+    subLabel: String.raw`사기 탐지`,
+    intuition: String.raw`<p>대부분의 결제는 익숙한 금액대와 익숙한 시간, 익숙한 위치라는 정상적인 패턴을 따른다. 이상 패턴 탐지는 그 정상 분포에서 벗어난 결제를 실시간으로 잡아내는 방법이다.</p>
+<p>사기라고 확정된 라벨이 없어도 평소와 다르다는 사실 자체가 위험 신호가 될 수 있다는 것이 핵심이다. 그래서 사기 탐지 모델보다 먼저 혹은 나란히 작동하는 1차 방어선으로 자주 쓰인다.</p>`,
+    explanation: String.raw`<p>정상 결제 분포는 금액, 시간대, 위치, 디바이스, 결제 빈도 같은 여러 축에서 모델링된다. 가장 단순한 방식은 사용자별 평소 결제 금액의 평균과 표준편차를 구해두고 새 결제가 그 분포에서 몇 표준편차 떨어져 있는지를 z-점수로 계산하는 방법이다. $z = \dfrac{x-\mu}{\sigma}$이며 $z$가 특정 임계값을 넘으면 이상치로 플래그한다. 더 정교한 시스템은 Isolation Forest나 오토인코더의 재구성 오차처럼 다차원 패턴 전체를 학습하는 비지도 모델을 쓴다.</p>
+<p>이상 탐지가 사기 탐지와 구분되는 지점은 라벨의 유무다. 사기 탐지는 과거에 사기로 확정된 거래 라벨을 이용한 지도학습이 중심이지만 이상 탐지는 정상 패턴만 학습하고 거기서 벗어나는 정도를 점수화하는 비지도 혹은 준지도 방식이 중심이다. 그래서 신종 사기 수법처럼 아직 라벨이 쌓이지 않은 새로운 패턴에도 반응할 수 있다는 장점이 있다. 실무에서는 이상 점수를 그 자체로 차단 기준으로 쓰기보다 지도학습 사기 탐지 모델에 넣는 입력 피처 중 하나로 결합하는 경우가 많다.</p>
+<p>결제 승인은 보통 수백 밀리초 안에 결정돼야 하므로 무거운 배치 분석이 아니라 최근 사용자 행동 프로파일을 스트리밍으로 즉시 비교하는 구조가 필요하다. 임계값을 너무 민감하게 잡으면 정상 결제까지 차단해 고객 이탈로 이어지고 너무 둔감하게 잡으면 사기를 그대로 통과시키는 근본적인 긴장관계는 Precision-Recall 트레이드오프와 같은 맥락에서 이해할 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="520" y2="180" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M60,178 C120,178 160,50 220,50 C280,50 320,178 380,178 L520,176" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="220" y="35" font-size="12" text-anchor="middle">정상 결제 분포</text>
+<text x="220" y="196" font-size="11" class="dg-dim" text-anchor="middle">평균 5만원</text>
+<line x1="460" y1="176" x2="460" y2="70" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="460" cy="176" r="6" class="dg-accent"/>
+<text x="460" y="58" font-size="12" text-anchor="middle">이상 결제 20만원</text>
+<text x="460" y="42" font-size="11" class="dg-dim" text-anchor="middle">z = 10</text>
+</svg>`,
+    diagramCaption: String.raw`정상 결제 분포에서 표준편차 기준으로 크게 벗어난 지점이 이상치로 플래그된다.`,
+    example: String.raw`<p>어떤 사용자의 평소 결제 금액이 평균 5만원, 표준편차 1만 5천원이라 하자. 오늘 결제가 20만원 들어왔다면 $z = (20-5)/1.5 \approx 10$으로 평균에서 표준편차 10배 떨어진 값이다.</p>
+<p>보통 $z$가 3을 넘으면 이상치로 보는 기준을 쓰는데 10은 그 기준을 훨씬 넘는 수치라 결제가 완료되기 전에 추가 인증을 요구하거나 일시 보류하는 실시간 대응으로 이어질 가능성이 크다.</p>`,
+    related: [{ label: "Precision-Recall 트레이드오프", slug: "precision-recall-tradeoff-fraud" }, { label: "결제 사기율", slug: "payment-fraud-rate" }],
+    sections: []
+  },
+  "invalid-traffic-filtering": {
+    title: String.raw`스팸/봇 트래픽 필터링 지표: 가짜 트래픽이 얼마나 섞여 있는가`,
+    domain: "product",
+    subLabel: String.raw`트래픽 품질`,
+    intuition: String.raw`<p>광고나 서비스로 들어오는 트래픽에는 사람이 아닌 봇, 크롤러, 클릭 농장, 중복 요청 같은 가짜 트래픽이 늘 섞여 있다. 이걸 걸러내지 않으면 광고비가 실제 사람이 아닌 곳에 낭비되고 전환율 같은 지표도 왜곡된다.</p>
+<p>스팸 트래픽 필터링 지표는 전체 트래픽 중 가짜로 판정되어 걸러진 비율을 재서 지금 얼마나 깨끗한 트래픽 위에서 의사결정을 하고 있는지 보여준다.</p>`,
+    explanation: String.raw`<p>업계에서는 무효 트래픽을 두 종류로 나눈다. 알려진 봇 목록이나 데이터센터 IP처럼 규칙 기반으로 쉽게 걸러지는 일반 무효 트래픽(GIVT)과 사람처럼 행동을 위장해서 규칙만으로는 잡히지 않고 행동 패턴 분석이나 머신러닝이 필요한 정교한 무효 트래픽(SIVT)이다. Invalid Traffic Rate는 이 둘을 합쳐 필터링된 트래픽 수를 전체 트래픽 수로 나눈 값이다. $\mathrm{IVT\ Rate} = \dfrac{\text{filtered traffic}}{\text{total traffic}}$.</p>
+<p>이 지표가 중요한 이유는 광고주와 퍼블리셔 양쪽의 신뢰가 걸려 있기 때문이다. 광고주 입장에서는 실제로 도달한 잠재고객 규모를 부풀리지 않기 위해 필요하고 퍼블리셔나 플랫폼 입장에서는 광고 사기 의혹에서 스스로를 방어하기 위해 필요하다. 그래서 MRC(Media Rating Council) 같은 업계 기구의 공인을 받는 조건으로 무효 트래픽 측정 방법론을 요구하는 경우가 많다.</p>
+<p>필터링은 IP 평판 목록, User-Agent 패턴, 마우스 움직임이 없거나 클릭 간격이 비정상적으로 짧은 행동 시그널, 트래픽 유입 시간대와 지역의 이상 패턴을 종합해서 이뤄진다. 너무 공격적으로 필터링하면 VPN이나 프라이버시 도구를 쓰는 정상 사용자까지 걸러져서 실제 트래픽과 매출을 과소 집계하게 되므로 결제 사기율과 마찬가지로 과도한 차단이 정상 사용자에게 주는 피해와 균형을 맞춰야 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<text x="280" y="30" font-size="13" text-anchor="middle">전체 트래픽 100,000</text>
+<rect x="40" y="60" width="480" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="40" y="60" width="41" height="50" class="dg-accent"/>
+<line x1="61" y1="60" x2="61" y2="40" class="dg-line" stroke-width="1"/>
+<text x="61" y="30" font-size="11" text-anchor="middle">무효 8.5%</text>
+<text x="290" y="90" font-size="12" text-anchor="middle">유효 트래픽 91.5%</text>
+<text x="61" y="130" font-size="10" class="dg-dim" text-anchor="middle">GIVT+SIVT</text>
+</svg>`,
+    diagramCaption: String.raw`전체 트래픽 중 GIVT와 SIVT로 걸러진 비율이 Invalid Traffic Rate다.`,
+    example: String.raw`<p>어떤 캠페인에 클릭 100,000건이 유입됐다. 필터링 시스템이 이 중 GIVT로 6,000건, SIVT로 2,500건을 무효로 판정했다면 전체 무효 트래픽은 8,500건이다.</p>
+<p>$\mathrm{IVT\ Rate} = 8{,}500/100{,}000 = 8.5\%$다. 광고주는 실제 사람에게 도달한 클릭을 91,500건으로 보고 캠페인 효율을 다시 계산해야 한다.</p>`,
+    related: [{ label: "결제 사기율", slug: "payment-fraud-rate" }, { label: "결제 이상 패턴 탐지", slug: "payment-anomaly-detection" }],
+    sections: []
+  },
+  "payment-fraud-rate": {
+    title: String.raw`결제 사기율: 거래 중 몇 퍼센트가 사기로 확인되는가`,
+    domain: "product",
+    subLabel: String.raw`트래픽 품질`,
+    intuition: String.raw`<p>결제 사기율은 회사가 처리한 거래 중 실제로 사기로 확인된 거래가 차지하는 비율이다. 단순한 나눗셈처럼 보이지만 확인됐다는 표현 안에 함정이 있다. 방금 일어난 결제가 사기인지 아닌지는 그 자리에서 바로 알 수 없고 카드사의 이의제기(chargeback)를 거쳐야 최종 확정되기 때문이다.</p>
+<p>그래서 이번 달 사기율이라는 숫자는 항상 잠정치이고 시간이 지나면서 위로 조정되는 경우가 많다. 이 시차를 모르고 최신 숫자만 보면 사기 위험을 과소평가하게 된다.</p>`,
+    explanation: String.raw`<p>Fraud Rate는 건수 기준과 금액 기준 두 가지로 함께 본다. 건수 기준은 사기로 확인된 거래수를 전체 거래수로 나눈 값이다. $\mathrm{Fraud\ Rate} = \dfrac{\text{confirmed fraud transactions}}{\text{total transactions}}$이고 금액 기준은 사기 거래 금액을 전체 거래 금액으로 나눈다. 사기범은 대체로 소액 여러 건보다 고액 한 건을 노리는 경향이 있어서 두 기준의 값이 크게 벌어지는 경우가 흔하고 그 차이 자체가 사기 패턴에 대한 정보가 된다.</p>
+<p>확정치가 늦게 나오는 이유는 카드사 chargeback이 실제 결제 시점에서 몇 주에서 몇 달 뒤에 접수되는 경우가 많기 때문이다. 그래서 업계에서는 특정 결제월의 사기율을 chargeback 접수 기간이 끝나는 보통 90일에서 180일 뒤에야 확정치로 발표하고 그 전까지 발표되는 숫자는 이후 계속 위로 재조정될 잠정치로 취급한다.</p>
+<p>이 지표는 내부 리스크 관리 지표이면서 동시에 Visa나 Mastercard 같은 카드 네트워크가 가맹점에 부과하는 프로그램의 판정 기준이기도 하다. 특정 임계치를 넘으면 벌금이 부과되거나 가맹점 등급이 강등될 수 있어서 사기 탐지 모델과 이상 패턴 탐지 시스템이 최종적으로 만들어낸 성과가 이 지표 하나로 요약된다고 볼 수 있다. 다만 사기율만 낮추려고 탐지 기준을 과도하게 강화하면 정상 고객까지 차단하는 부작용이 커지므로 Precision-Recall 트레이드오프와 마찬가지로 다른 지표와 함께 균형을 봐야 한다.</p>`,
+    example: String.raw`<p>이번 달 거래 50,000건 중 사기로 최종 확인된 거래가 60건이라면 건수 기준 $\mathrm{Fraud\ Rate} = 60/50{,}000 = 0.12\%$다. 같은 달 거래 총액 25억원 중 사기 거래 금액이 9천만원이었다면 금액 기준 $\mathrm{Fraud\ Rate} = 90{,}000{,}000/2{,}500{,}000{,}000 = 3.6\%$다.</p>
+<p>건수로는 0.12퍼센트에 불과하지만 금액으로는 3.6퍼센트나 되는 것은 사기 거래 한 건의 평균 금액이 정상 거래보다 훨씬 크다는 뜻이다. 리스크팀이 건수 기준만 보고 안심하면 실제 손실 규모를 놓치게 된다.</p>`,
+    related: [{ label: "Precision-Recall 트레이드오프", slug: "precision-recall-tradeoff-fraud" }, { label: "스팸/봇 트래픽 필터링", slug: "invalid-traffic-filtering" }, { label: "결제 이상 패턴 탐지", slug: "payment-anomaly-detection" }],
+    sections: []
+  },
 };

@@ -202,6 +202,9 @@
   }
   .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
   .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+  a.chip-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-card:hover, a.chip-card:focus-visible { border-color: var(--chip-c, var(--ink-faint)); }
+  a.chip-card:hover .name, a.chip-card:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
@@ -257,13 +260,13 @@
     <div class="sub-block">
       <p class="sub-title">A/B 테스트</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">표본크기 산정</p><p class="formula">검정력 기반 최소 표본 계산</p></div><div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">순차검정</p><p class="formula">중간에 계속 봐도 안전한 검정 설계</p></div><div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">Multi-armed Bandit</p><p class="formula">탐색과 수익을 동시에 최적화</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=sample-size-calculation" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-a)"><p class="name">표본크기 산정</p><p class="formula">검정력 기반 최소 표본 계산</p></a><a class="chip-card" href="../concepts/index.html?c=sequential-testing" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-a)"><p class="name">순차검정</p><p class="formula">중간에 계속 봐도 안전한 검정 설계</p></a><a class="chip-card" href="../concepts/index.html?c=multi-armed-bandit-product" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-a)"><p class="name">Multi-armed Bandit</p><p class="formula">탐색과 수익을 동시에 최적화</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">실험 함정</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">Novelty Effect</p><p class="formula">새로움 자체로 인한 일시적 효과</p></div><div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">SRM</p><p class="formula">표본비율불일치, 실험 파이프라인 결함 신호</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=novelty-effect" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-a)"><p class="name">Novelty Effect</p><p class="formula">새로움 자체로 인한 일시적 효과</p></a><a class="chip-card" href="../concepts/index.html?c=srm-sample-ratio-mismatch" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-a)"><p class="name">SRM</p><p class="formula">표본비율불일치, 실험 파이프라인 결함 신호</p></a>
       </div>
     </div>
   </div>
@@ -274,13 +277,13 @@
     <div class="sub-block">
       <p class="sub-title">북극성지표 · OMTM</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">North Star Metric</p><p class="formula">조직 전체가 보는 단일 핵심지표</p></div><div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">가드레일 지표</p><p class="formula">북극성지표를 해치지 않는지 감시</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=north-star-metric" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-b)"><p class="name">North Star Metric</p><p class="formula">조직 전체가 보는 단일 핵심지표</p></a><a class="chip-card" href="../concepts/index.html?c=guardrail-metric" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-b)"><p class="name">가드레일 지표</p><p class="formula">북극성지표를 해치지 않는지 감시</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">퍼널 · 코호트</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">퍼널분석</p><p class="formula">단계별 이탈률 추적</p></div><div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">코호트 리텐션 곡선</p><p class="formula">가입시점별 잔존율 비교</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=funnel-analysis" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-b)"><p class="name">퍼널분석</p><p class="formula">단계별 이탈률 추적</p></a><a class="chip-card" href="../concepts/index.html?c=cohort-retention-curve" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-b)"><p class="name">코호트 리텐션 곡선</p><p class="formula">가입시점별 잔존율 비교</p></a>
       </div>
     </div>
   </div>
@@ -291,13 +294,13 @@
     <div class="sub-block">
       <p class="sub-title">마케팅 어트리뷰션</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">라스트클릭 어트리뷰션</p><p class="formula">마지막 접점에 전액 귀속</p></div><div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">샤플리 기반 어트리뷰션</p><p class="formula">채널별 한계기여도 배분</p></div><div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">MMM</p><p class="formula">Marketing Mix Model, 채널간 상호작용 회귀</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=last-click-attribution" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-c)"><p class="name">라스트클릭 어트리뷰션</p><p class="formula">마지막 접점에 전액 귀속</p></a><a class="chip-card" href="../concepts/index.html?c=shapley-attribution" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-c)"><p class="name">샤플리 기반 어트리뷰션</p><p class="formula">채널별 한계기여도 배분</p></a><a class="chip-card" href="../concepts/index.html?c=mmm-marketing-mix-model" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-c)"><p class="name">MMM</p><p class="formula">Marketing Mix Model, 채널간 상호작용 회귀</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">인과적 임팩트 측정</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">Uplift Modeling</p><p class="formula">처치 효과가 큰 사용자군 식별</p></div><div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">Synthetic Control</p><p class="formula">가상의 대조군을 합성해 비교</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=uplift-modeling" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-c)"><p class="name">Uplift Modeling</p><p class="formula">처치 효과가 큰 사용자군 식별</p></a><a class="chip-card" href="../concepts/index.html?c=synthetic-control" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-c)"><p class="name">Synthetic Control</p><p class="formula">가상의 대조군을 합성해 비교</p></a>
       </div>
     </div>
   </div>
@@ -308,13 +311,13 @@
     <div class="sub-block">
       <p class="sub-title">LTV · 이탈예측</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">LTV 모델링</p><p class="formula">고객 생애가치 추정</p></div><div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">Churn 예측</p><p class="formula">이탈 확률 조기 감지</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ltv-modeling" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-d)"><p class="name">LTV 모델링</p><p class="formula">고객 생애가치 추정</p></a><a class="chip-card" href="../concepts/index.html?c=churn-prediction" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-d)"><p class="name">Churn 예측</p><p class="formula">이탈 확률 조기 감지</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">추천 · 개인화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">개인화 랭킹</p><p class="formula">사용자별 노출 순서 최적화</p></div><div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">밴딧 기반 추천</p><p class="formula">실시간 탐색-활용 균형</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=personalized-ranking" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-d)"><p class="name">개인화 랭킹</p><p class="formula">사용자별 노출 순서 최적화</p></a><a class="chip-card" href="../concepts/index.html?c=bandit-based-recommendation-product" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-d)"><p class="name">밴딧 기반 추천</p><p class="formula">실시간 탐색-활용 균형</p></a>
       </div>
     </div>
   </div>
@@ -326,19 +329,19 @@
     <div class="sub-block">
       <p class="sub-title">획득 지표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CAC</p><p class="formula">CAC = 마케팅비용 / 신규고객수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CPA</p><p class="formula">CPA = 광고비 / 전환수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CPM</p><p class="formula">CPM = 광고비 / (노출수/1000)</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=cac" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">CAC</p><p class="formula">CAC = 마케팅비용 / 신규고객수</p></a><a class="chip-card" href="../concepts/index.html?c=cpa" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">CPA</p><p class="formula">CPA = 광고비 / 전환수</p></a><a class="chip-card" href="../concepts/index.html?c=cpm" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">CPM</p><p class="formula">CPM = 광고비 / (노출수/1000)</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">수익성 지표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">LTV:CAC 비율</p><p class="formula">LTV / CAC, 통상 3 이상을 건강한 기준으로 봄</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">ROAS</p><p class="formula">ROAS = 광고 매출 / 광고비</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">Payback Period</p><p class="formula">CAC / 고객당 월평균 매출</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ltv-cac-ratio" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">LTV:CAC 비율</p><p class="formula">LTV / CAC, 통상 3 이상을 건강한 기준으로 봄</p></a><a class="chip-card" href="../concepts/index.html?c=roas" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">ROAS</p><p class="formula">ROAS = 광고 매출 / 광고비</p></a><a class="chip-card" href="../concepts/index.html?c=payback-period" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">Payback Period</p><p class="formula">CAC / 고객당 월평균 매출</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">전환 · 참여 지표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CTR</p><p class="formula">CTR = 클릭수 / 노출수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CVR</p><p class="formula">CVR = 전환수 / 방문수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">K-factor(바이럴계수)</p><p class="formula">K = 초대수 × 초대당 전환율, K&gt;1이면 자발적 확산</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ctr-product" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">CTR</p><p class="formula">CTR = 클릭수 / 노출수</p></a><a class="chip-card" href="../concepts/index.html?c=cvr" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">CVR</p><p class="formula">CVR = 전환수 / 방문수</p></a><a class="chip-card" href="../concepts/index.html?c=k-factor" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-e)"><p class="name">K-factor(바이럴계수)</p><p class="formula">K = 초대수 × 초대당 전환율, K&gt;1이면 자발적 확산</p></a>
       </div>
     </div>
   </div>
@@ -349,13 +352,13 @@
     <div class="sub-block">
       <p class="sub-title">고객 등급화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">RFM 분석</p><p class="formula">Recency, Frequency, Monetary 3축 점수화로 고객 등급 산출</p></div><div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">행동 기반 세그멘테이션</p><p class="formula">사용 패턴 클러스터링으로 등급이 아닌 행동 유형으로 분리</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=rfm-analysis" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-f)"><p class="name">RFM 분석</p><p class="formula">Recency, Frequency, Monetary 3축 점수화로 고객 등급 산출</p></a><a class="chip-card" href="../concepts/index.html?c=behavioral-segmentation" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-f)"><p class="name">행동 기반 세그멘테이션</p><p class="formula">사용 패턴 클러스터링으로 등급이 아닌 행동 유형으로 분리</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">코호트 매트릭스</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">코호트 삼각형</p><p class="formula">가입월 × 경과월 리텐션을 삼각행렬로 배치해 세대별 곡선 비교</p></div><div class="chip-card" style="--chip-c:var(--c-pd-f)"><p class="name">코호트 안정화 지점</p><p class="formula">리텐션 곡선이 평평해지는 시점, 진짜 잔존 규모의 근사치</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=cohort-triangle" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-f)"><p class="name">코호트 삼각형</p><p class="formula">가입월 × 경과월 리텐션을 삼각행렬로 배치해 세대별 곡선 비교</p></a><a class="chip-card" href="../concepts/index.html?c=cohort-stabilization-point" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-f)"><p class="name">코호트 안정화 지점</p><p class="formula">리텐션 곡선이 평평해지는 시점, 진짜 잔존 규모의 근사치</p></a>
       </div>
     </div>
   </div>
@@ -366,13 +369,13 @@
     <div class="sub-block">
       <p class="sub-title">가격 민감도 조사</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">Van Westendorp PSM</p><p class="formula">너무 쌈, 저렴, 비쌈, 너무 비쌈 4개 질문으로 수용 가격대 도출</p></div><div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">Gabor-Granger 방법</p><p class="formula">여러 제시 가격에 대한 구매의향 응답으로 수요곡선 추정</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=van-westendorp-psm" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-g)"><p class="name">Van Westendorp PSM</p><p class="formula">너무 쌈, 저렴, 비쌈, 너무 비쌈 4개 질문으로 수용 가격대 도출</p></a><a class="chip-card" href="../concepts/index.html?c=gabor-granger-method" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-g)"><p class="name">Gabor-Granger 방법</p><p class="formula">여러 제시 가격에 대한 구매의향 응답으로 수요곡선 추정</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">가격 실험과 전환</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">A/B 가격 테스트의 함정</p><p class="formula">동일 상품을 다른 가격에 팔면 가격차별 관련 윤리, 법적 이슈 발생</p></div><div class="chip-card" style="--chip-c:var(--c-pd-g)"><p class="name">프리미엄 전환율</p><p class="formula">Free to Paid CVR = 유료 전환자수 / 전체 무료 사용자수</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ab-price-test-pitfalls" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-g)"><p class="name">A/B 가격 테스트의 함정</p><p class="formula">동일 상품을 다른 가격에 팔면 가격차별 관련 윤리, 법적 이슈 발생</p></a><a class="chip-card" href="../concepts/index.html?c=premium-conversion-rate" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-g)"><p class="name">프리미엄 전환율</p><p class="formula">Free to Paid CVR = 유료 전환자수 / 전체 무료 사용자수</p></a>
       </div>
     </div>
   </div>
@@ -383,13 +386,13 @@
     <div class="sub-block">
       <p class="sub-title">루프 구조</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">그로스 루프</p><p class="formula">입력이 출력을 다시 늘리는 순환 구조, 끝이 다시 시작으로 연결되는 퍼널</p></div><div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">사이클 타임</p><p class="formula">루프 한 바퀴가 도는 데 걸리는 시간, 짧을수록 복리 성장 속도가 빨라짐</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=growth-loop" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-h)"><p class="name">그로스 루프</p><p class="formula">입력이 출력을 다시 늘리는 순환 구조, 끝이 다시 시작으로 연결되는 퍼널</p></a><a class="chip-card" href="../concepts/index.html?c=cycle-time" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-h)"><p class="name">사이클 타임</p><p class="formula">루프 한 바퀴가 도는 데 걸리는 시간, 짧을수록 복리 성장 속도가 빨라짐</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">바이럴 측정</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">바이럴 계수 K</p><p class="formula">마케팅 지표 공식 그룹의 K-factor 참조, 루프 안 확산력 지표로도 쓰임</p></div><div class="chip-card" style="--chip-c:var(--c-pd-h)"><p class="name">바이럴 사이클 타임</p><p class="formula">한 사용자가 초대해서 신규 사용자가 활성화되기까지 걸리는 시간</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=viral-coefficient-k" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-h)"><p class="name">바이럴 계수 K</p><p class="formula">마케팅 지표 공식 그룹의 K-factor 참조, 루프 안 확산력 지표로도 쓰임</p></a><a class="chip-card" href="../concepts/index.html?c=viral-cycle-time" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-h)"><p class="name">바이럴 사이클 타임</p><p class="formula">한 사용자가 초대해서 신규 사용자가 활성화되기까지 걸리는 시간</p></a>
       </div>
     </div>
   </div>
@@ -400,13 +403,13 @@
     <div class="sub-block">
       <p class="sub-title">성과 지표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">추천 클릭률 상승분(Uplift)</p><p class="formula">Uplift = 추천 노출군 CTR − 대조군 CTR</p></div><div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">커버리지</p><p class="formula">Coverage = 추천 가능한 아이템수 / 전체 아이템수</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=recommendation-ctr-uplift" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-i)"><p class="name">추천 클릭률 상승분(Uplift)</p><p class="formula">Uplift = 추천 노출군 CTR − 대조군 CTR</p></a><a class="chip-card" href="../concepts/index.html?c=recommendation-coverage" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-i)"><p class="name">커버리지</p><p class="formula">Coverage = 추천 가능한 아이템수 / 전체 아이템수</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">다양성 지표</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">Intra-List Diversity</p><p class="formula">추천 리스트 내 아이템 쌍의 평균 비유사도, 높을수록 다양한 추천</p></div><div class="chip-card" style="--chip-c:var(--c-pd-i)"><p class="name">세렌디피티</p><p class="formula">예상 밖이면서도 만족스러운 추천이 나온 비율</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=intra-list-diversity-product" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-i)"><p class="name">Intra-List Diversity</p><p class="formula">추천 리스트 내 아이템 쌍의 평균 비유사도, 높을수록 다양한 추천</p></a><a class="chip-card" href="../concepts/index.html?c=serendipity-metric" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-i)"><p class="name">세렌디피티</p><p class="formula">예상 밖이면서도 만족스러운 추천이 나온 비율</p></a>
       </div>
     </div>
   </div>
@@ -417,13 +420,13 @@
     <div class="sub-block">
       <p class="sub-title">우선순위화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">ICE 스코어</p><p class="formula">ICE = Impact × Confidence × Ease, 실험 아이디어 우선순위 산출</p></div><div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">PIE 프레임워크</p><p class="formula">Potential × Importance × Ease, 페이지 및 퍼널 단위 개선 우선순위 산출</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ice-score" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-j)"><p class="name">ICE 스코어</p><p class="formula">ICE = Impact × Confidence × Ease, 실험 아이디어 우선순위 산출</p></a><a class="chip-card" href="../concepts/index.html?c=pie-framework" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-j)"><p class="name">PIE 프레임워크</p><p class="formula">Potential × Importance × Ease, 페이지 및 퍼널 단위 개선 우선순위 산출</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">지표 트리</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">인풋 지표 트리</p><p class="formula">노스스타 지표를 하위 인풋 지표들로 분해한 트리, 팀별 담당 인풋을 명확화</p></div><div class="chip-card" style="--chip-c:var(--c-pd-j)"><p class="name">지표 트리 검증</p><p class="formula">인풋 지표 변화가 실제로 노스스타 지표를 움직이는지 상관, 인과 관계 재확인</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=input-metric-tree" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-j)"><p class="name">인풋 지표 트리</p><p class="formula">노스스타 지표를 하위 인풋 지표들로 분해한 트리, 팀별 담당 인풋을 명확화</p></a><a class="chip-card" href="../concepts/index.html?c=metric-tree-validation" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-j)"><p class="name">지표 트리 검증</p><p class="formula">인풋 지표 변화가 실제로 노스스타 지표를 움직이는지 상관, 인과 관계 재확인</p></a>
       </div>
     </div>
   </div>
@@ -434,13 +437,13 @@
     <div class="sub-block">
       <p class="sub-title">사기 탐지</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">Precision-Recall 트레이드오프</p><p class="formula">정밀도를 올리면 재현율이 떨어지는 사기 탐지 모델의 근본적 긴장관계</p></div><div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">결제 이상 패턴 탐지</p><p class="formula">정상 결제 분포에서 벗어난 이상치를 실시간으로 탐지</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=precision-recall-tradeoff-fraud" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-k)"><p class="name">Precision-Recall 트레이드오프</p><p class="formula">정밀도를 올리면 재현율이 떨어지는 사기 탐지 모델의 근본적 긴장관계</p></a><a class="chip-card" href="../concepts/index.html?c=payment-anomaly-detection" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-k)"><p class="name">결제 이상 패턴 탐지</p><p class="formula">정상 결제 분포에서 벗어난 이상치를 실시간으로 탐지</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">트래픽 품질</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">스팸/봇 트래픽 필터링 지표</p><p class="formula">Invalid Traffic Rate = 필터링된 트래픽 / 전체 트래픽</p></div><div class="chip-card" style="--chip-c:var(--c-pd-k)"><p class="name">결제 사기율</p><p class="formula">Fraud Rate = 사기로 확인된 거래수 / 전체 거래수</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=invalid-traffic-filtering" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-k)"><p class="name">스팸/봇 트래픽 필터링 지표</p><p class="formula">Invalid Traffic Rate = 필터링된 트래픽 / 전체 트래픽</p></a><a class="chip-card" href="../concepts/index.html?c=payment-fraud-rate" target="_blank" rel="noopener" style="--chip-c:var(--c-pd-k)"><p class="name">결제 사기율</p><p class="formula">Fraud Rate = 사기로 확인된 거래수 / 전체 거래수</p></a>
       </div>
     </div>
   </div>
