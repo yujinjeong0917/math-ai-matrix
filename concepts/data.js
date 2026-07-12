@@ -5775,4 +5775,1830 @@ $$I_A = \frac{0.40+0.20+0.30}{3} = 0.30$$
     related: [{ label: "필수 3요소", slug: "event-log-essentials" }, { label: "로그 불완전성", slug: "log-incompleteness" }],
     sections: []
   },
+  "matrix-factorization": {
+    title: String.raw`Matrix Factorization: 평점행렬을 저랭크로 분해하기`,
+    domain: "recsys",
+    subLabel: String.raw`협업필터링`,
+    intuition: String.raw`<p>추천 서비스는 사용자와 아이템의 모든 조합에 대한 평점을 알고 싶어합니다. 하지만 실제로 관측된 평점은 전체 조합 중 아주 일부뿐입니다. Matrix Factorization은 사용자마다 짧은 벡터를 하나씩, 아이템마다도 짧은 벡터를 하나씩 준 다음 두 벡터의 내적으로 평점을 예측합니다.</p>
+<p>사용자 벡터와 아이템 벡터가 관측된 평점을 잘 재현하도록 학습되면 한 번도 보지 못한 조합의 평점도 같은 내적으로 채울 수 있습니다. 벡터 몇 개만으로 거대한 평점행렬 전체를 압축해서 표현하는 셈입니다.</p>`,
+    explanation: String.raw`<p>사용자 수를 $m$, 아이템 수를 $n$이라 하면 평점행렬은 $R \in \mathbb{R}^{m\times n}$입니다. Matrix Factorization은 이를 사용자 잠재행렬 $P \in \mathbb{R}^{m\times k}$와 아이템 잠재행렬 $Q \in \mathbb{R}^{n\times k}$의 곱으로 근사합니다.</p>
+$$R \approx PQ^\top,\qquad \hat r_{ui} = p_u^\top q_i$$
+<p>학습은 관측된 평점에서만 오차를 재는 목적함수를 최소화합니다.</p>
+$$\min_{P,Q}\ \sum_{(u,i)\in\Omega} (r_{ui}-p_u^\top q_i)^2 + \lambda\left(\|p_u\|^2+\|q_i\|^2\right)$$
+<p>여기서 $\Omega$는 실제로 평점이 관측된 (사용자, 아이템) 쌍의 집합입니다.</p>
+<p>이전 세대인 이웃기반 협업필터링은 사용자끼리 또는 아이템끼리 평점 벡터의 유사도를 직접 계산했습니다. 유사도를 모든 쌍마다 저장하고 갱신해야 해서 사용자나 아이템이 늘어날수록 감당하기 어려워지고 평점이 희소할수록 유사도 자체가 불안정해집니다. Matrix Factorization은 유사도를 직접 계산하는 대신 소수의 잠재차원으로 압축된 벡터를 학습해서 이 확장성 문제를 피합니다.</p>
+<p>합이 관측된 쌍에서만 도는 이유도 여기에 있습니다. 실제 평점행렬은 대부분 비어 있어서 완전한 행렬을 요구하는 일반 SVD는 애초에 적용할 수 없습니다. 정규화 항 $\lambda(\|p_u\|^2+\|q_i\|^2)$은 평점을 몇 개밖에 남기지 않은 사용자나 아이템이 과적합되는 것을 막아줍니다.</p>
+<p>목적함수는 $P$와 $Q$를 동시에 움직이는 이차형식이라 전체적으로는 비볼록입니다. 확률적 경사하강법으로 관측된 평점 하나씩 오차를 줄여가며 $p_u$와 $q_i$를 같이 갱신하는 방식이 넷플릭스 프라이즈 시절부터 널리 쓰였습니다. 다음 항목인 ALS는 이 비볼록성을 정면으로 다루는 대신 한쪽을 고정해 문제를 쪼개는 방식으로 우회합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="150" height="150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="40" y1="70" x2="190" y2="70" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="110" x2="190" y2="110" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="150" x2="190" y2="150" class="dg-line" stroke-width="1"/>
+<line x1="80" y1="30" x2="80" y2="180" class="dg-line" stroke-width="1"/>
+<line x1="120" y1="30" x2="120" y2="180" class="dg-line" stroke-width="1"/>
+<line x1="160" y1="30" x2="160" y2="180" class="dg-line" stroke-width="1"/>
+<rect x="80" y="30" width="40" height="40" class="dg-accent"/>
+<rect x="160" y="70" width="30" height="40" class="dg-accent"/>
+<rect x="40" y="150" width="40" height="30" class="dg-accent"/>
+<text x="115" y="205" font-size="12" text-anchor="middle">R (평점행렬)</text>
+<text x="215" y="115" font-size="16" text-anchor="middle">≈</text>
+<rect x="245" y="30" width="35" height="150" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="262" y="205" font-size="12" text-anchor="middle">P (m×k)</text>
+<text x="300" y="115" font-size="16" text-anchor="middle">×</text>
+<rect x="330" y="90" width="230" height="35" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="445" y="145" font-size="12" text-anchor="middle">Qᵀ (k×n)</text>
+</svg>`,
+    diagramCaption: String.raw`희소한 평점행렬을 사용자 벡터 P와 아이템 벡터 Q의 곱으로 근사한다.`,
+    example: String.raw`<p>사용자 $u_1$의 잠재벡터가 $p_{u_1}=(1.2,\,0.5)$이고 아이템 $i_1$의 잠재벡터가 $q_{i_1}=(1.0,\,2.0)$이라면 예측 평점은 $\hat r_{u_1,i_1}=1.2\times1.0+0.5\times2.0=2.2$입니다. 실제 관측된 평점이 $2$라면 오차는 $0.2$ 정도에 불과합니다.</p>
+<p>같은 사용자가 아이템 $i_3$을 한 번도 평가하지 않았어도 $q_{i_3}=(0.8,\,1.0)$만 있으면 $\hat r_{u_1,i_3}=1.2\times0.8+0.5\times1.0=1.46$처럼 관측되지 않은 칸도 채울 수 있습니다. 관측된 평점을 재현하도록 학습된 벡터가 관측되지 않은 조합에도 그대로 적용된다는 점이 Matrix Factorization을 협업필터링에 쓰는 핵심 이유입니다.</p>`,
+    related: [{ label: "ALS", slug: "als-recsys" }, { label: "Two-Tower 모델", slug: "two-tower-model" }],
+    sections: []
+  },
+  "als-recsys": {
+    title: String.raw`ALS: 두 행렬을 번갈아 고정하며 최적화하기`,
+    domain: "recsys",
+    subLabel: String.raw`협업필터링`,
+    intuition: String.raw`<p>확률적 경사하강법으로 Matrix Factorization을 학습하면 평점 하나를 볼 때마다 사용자 벡터와 아이템 벡터를 동시에 조금씩 움직입니다. 두 벡터가 서로를 당기며 움직이다 보니 수렴 경로가 지그재그를 그리고 여러 서버에 나눠 병렬로 돌리기도 까다롭습니다.</p>
+<p>ALS는 순서를 바꿉니다. 아이템 벡터를 전부 고정한 채 사용자 벡터만 정확히 풀고, 다음엔 사용자 벡터를 전부 고정한 채 아이템 벡터만 정확히 풉니다. 이 둘을 번갈아 반복합니다. 한쪽을 고정하면 남은 쪽은 흔한 회귀 문제로 바뀌어서 닫힌 형태로 한 번에 풀립니다.</p>`,
+    explanation: String.raw`<p>$P$와 $Q$를 동시에 움직이는 원래 목적함수는 $p_u^\top q_i$라는 곱 때문에 비볼록입니다. 그런데 $Q$를 고정하고 보면 각 사용자 $u$에 대한 손실은 $p_u$에 대해 이차식이라 볼록합니다. 정규화가 있는 최소제곱 문제와 같은 형태여서 닫힌 형태 해가 존재합니다.</p>
+$$p_u = (Q_u^\top Q_u + \lambda I)^{-1} Q_u^\top r_u$$
+<p>$Q_u$는 사용자 $u$가 평가한 아이템들의 잠재벡터를 모은 행렬이고 $r_u$는 그 평점들입니다. $P$를 고정하면 같은 방식으로 각 아이템의 벡터도 닫힌 형태로 풀립니다. 두 단계를 번갈아 반복할 때마다 손실은 절대 늘어나지 않습니다. 다만 전체 문제는 여전히 비볼록이라 시작점에 따라 다른 지역해에 도달할 수 있습니다.</p>
+<p>암시적 피드백에서 ALS의 이점이 더 뚜렷합니다. 클릭이나 시청 로그는 평점처럼 명시적이지 않아서 어떤 아이템을 보지 않은 것도 약한 부정 신호로 취급해야 합니다. SGD 기반 방법은 관측된 항목에서만 오차를 계산하는 것이 자연스러운 반면 모든 사용자아이템 쌍을 매 에폭 순회하는 것은 계산량이 감당하기 어렵습니다. ALS는 신뢰도 가중치 $c_{ui}=1+\alpha r_{ui}$를 도입한 목적함수를 풀 때도 $Q^\top Q$처럼 사용자 전체가 공유하는 항을 한 번만 계산해두고 재사용하는 선형대수 트릭으로 이 전량 순회 비용을 줄입니다.</p>
+<p>각 사용자의 갱신은 고정된 $Q$와 그 사용자의 평점만 있으면 되고 다른 사용자 갱신과 독립적입니다. 그래서 수천 명의 사용자 벡터를 서로 다른 머신에 나눠 동시에 계산할 수 있습니다. Spark MLlib 같은 대규모 추천 인프라가 행렬분해의 기본 알고리즘으로 ALS를 쓰는 이유입니다.</p>`,
+    related: [{ label: "Matrix Factorization", slug: "matrix-factorization" }],
+    sections: []
+  },
+  "two-tower-model": {
+    title: String.raw`Two-Tower 모델: 사용자와 아이템을 각자의 탑에서 임베딩하기`,
+    domain: "recsys",
+    subLabel: String.raw`임베딩기반 검색`,
+    intuition: String.raw`<p>Matrix Factorization은 사용자 ID와 아이템 ID만으로 벡터를 학습합니다. 그래서 평점 이력이 없는 새 사용자나 새 아이템은 학습된 벡터 자체가 없어서 추천할 방법이 없습니다. Two-Tower 모델은 ID 하나를 그대로 벡터로 쓰는 대신 사용자에 대해 알려진 여러 정보를 신경망에 넣어 벡터로 바꿉니다.</p>
+<p>사용자탑은 나이나 최근 행동이나 기기 같은 정보를 받아 사용자 벡터를 만들고 아이템탑은 카테고리나 가격 같은 정보를 받아 아이템 벡터를 만듭니다. 두 벡터가 가까울수록 잘 맞는 조합입니다. 상호작용 이력이 전혀 없는 사용자나 아이템도 피처만 있으면 곧바로 그럴듯한 벡터를 받을 수 있습니다.</p>`,
+    explanation: String.raw`<p>점수는 두 탑이 각자 만든 벡터의 내적입니다.</p>
+$$s(u,i) = f_\theta(x_u)^\top g_\phi(x_i)$$
+<p>$f_\theta$는 사용자 피처 $x_u$를 받는 사용자탑이고 $g_\phi$는 아이템 피처 $x_i$를 받는 아이템탑입니다. Matrix Factorization의 $p_u^\top q_i$와 형태는 같지만 벡터가 ID를 찾아보는 테이블이 아니라 피처를 인코딩하는 신경망에서 나온다는 점이 다릅니다. 학습은 보통 같은 배치 안의 다른 아이템을 부정샘플로 쓰는 소프트맥스 손실을 씁니다.</p>
+$$\mathcal{L} = -\log \frac{\exp(s(u,i^+))}{\sum_{j} \exp(s(u,i_j))}$$
+<p>Wide&Deep이나 DIN처럼 사용자 피처와 아이템 피처를 처음부터 한데 합쳐 층을 쌓는 랭킹 모델은 정확도가 높지만 사용자 하나를 채점하려면 후보 아이템마다 신경망을 다시 통과시켜야 합니다. 후보가 수백만 개라면 요청마다 이 계산을 감당할 수 없습니다.</p>
+<p>Two-Tower는 두 탑을 마지막 내적 전까지 완전히 분리해둡니다. 대신 피처를 섞어 상호작용을 학습하는 표현력은 일부 포기합니다. 그 대가로 아이템탑은 전체 카탈로그에 대해 오프라인에서 한 번만 돌려 벡터를 미리 저장해둘 수 있고 요청이 올 때는 사용자탑만 실행해서 저장된 아이템 벡터들과 최근접 이웃 검색으로 비교하면 됩니다. 그래서 Two-Tower는 후보를 좁히는 첫 단계로 쓰이고 좁혀진 후보를 다시 세밀하게 줄세우는 일은 피처를 섞는 무거운 랭킹 모델이 맡습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="20" width="160" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="110" y="42" font-size="12" text-anchor="middle">사용자 피처</text>
+<line x1="110" y1="54" x2="110" y2="80" class="dg-line" stroke-width="1.5"/>
+<rect x="30" y="80" width="160" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="110" y="102" font-size="12" text-anchor="middle">사용자 타워</text>
+<line x1="110" y1="114" x2="110" y2="150" class="dg-line" stroke-width="1.5"/>
+<circle cx="110" cy="168" r="16" class="dg-accent"/>
+<text x="110" y="200" font-size="12" text-anchor="middle">u 벡터</text>
+<rect x="430" y="20" width="160" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="510" y="42" font-size="12" text-anchor="middle">아이템 피처</text>
+<line x1="510" y1="54" x2="510" y2="80" class="dg-line" stroke-width="1.5"/>
+<rect x="430" y="80" width="160" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="510" y="102" font-size="12" text-anchor="middle">아이템 타워</text>
+<line x1="510" y1="114" x2="510" y2="150" class="dg-line" stroke-width="1.5"/>
+<circle cx="510" cy="168" r="16" class="dg-accent"/>
+<text x="510" y="200" font-size="12" text-anchor="middle">i 벡터</text>
+<line x1="126" y1="172" x2="290" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="494" y1="172" x2="330" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="310" y="240" font-size="13" text-anchor="middle">내적 s(u,i) = u·i</text>
+</svg>`,
+    diagramCaption: String.raw`사용자탑과 아이템탑이 서로 다른 피처에서 독립적으로 벡터를 만들고 내적으로 점수를 낸다.`,
+    related: [{ label: "ANN 검색", slug: "ann-search" }, { label: "Matrix Factorization", slug: "matrix-factorization" }, { label: "Wide&Deep", slug: "wide-and-deep" }],
+    sections: []
+  },
+  "ann-search": {
+    title: String.raw`ANN 검색: 정확한 최근접 대신 빠른 근사로 후보 찾기`,
+    domain: "recsys",
+    subLabel: String.raw`임베딩기반 검색`,
+    intuition: String.raw`<p>Two-Tower가 사용자 벡터 하나를 내놓아도 수천만 개 아이템 벡터 중 가장 가까운 몇 개를 찾아야 합니다. 아이템 벡터 하나하나와 내적을 계산하는 정확한 최근접 이웃 검색은 아이템 수만큼 계산이 늘어나서 카탈로그가 커지면 요청 하나를 처리하는 데도 너무 오래 걸립니다.</p>
+<p>ANN 검색은 미리 색인을 만들어두고 그 색인을 따라가며 대부분의 아이템은 아예 비교하지 않은 채로 충분히 가까운 이웃을 찾습니다. 정확한 최근접이 아니라 근사한 최근접을 대가로 속도를 크게 얻습니다.</p>`,
+    explanation: String.raw`<p>전수조사 방식의 계산량은 아이템 수 $N$과 벡터 차원 $d$에 대해 $O(Nd)$입니다. 오천만 개 아이템을 128차원 벡터로 매 요청마다 전부 비교하는 것은 서빙에 허용된 밀리초 단위 시간 안에 끝낼 수 없습니다.</p>
+<p>대표적인 ANN 방식은 두 갈래입니다. IVF 계열은 아이템 벡터를 오프라인에서 군집화해두고 질의가 오면 질의 벡터와 가까운 몇 개 군집 안의 아이템만 비교합니다. 비교 대상이 $N$에서 대략 $\sqrt N$ 수준으로 줄어듭니다. HNSW 같은 그래프 계열은 아이템 벡터를 여러 층의 그래프로 연결해두고 위쪽 성긴 층에서 큰 걸음으로 이동한 뒤 아래쪽 촘촘한 층에서 세밀하게 좁혀가며 질의 벡터에 가까운 노드까지 도달합니다. 탐색 시간이 대략 로그 스케일로 줄어듭니다.</p>
+<p>정확도를 포기한 만큼 성능 지표도 달라집니다. 진짜 최근접 $k$개를 항상 보장하는 대신 실제로 찾아낸 비율인 재현율로 품질을 잽니다. 군집을 몇 개까지 볼지 그래프를 얼마나 넓게 탐색할지 같은 색인 파라미터를 조절해서 지연시간 예산 안에서 목표 재현율을 맞춥니다. 카탈로그가 수억 개를 넘어가면 벡터 자체를 짧은 코드로 압축하는 product quantization을 색인 구조와 함께 써서 메모리도 줄입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" font-size="13" text-anchor="middle">브루트포스: 전체 스캔</text>
+<circle cx="150" cy="120" r="8" class="dg-accent"/>
+<text x="150" y="145" font-size="11" text-anchor="middle">질의 벡터</text>
+<circle cx="60" cy="60" r="5" class="dg-dim"/>
+<circle cx="90" cy="200" r="5" class="dg-dim"/>
+<circle cx="220" cy="70" r="5" class="dg-dim"/>
+<circle cx="240" cy="180" r="5" class="dg-dim"/>
+<circle cx="40" cy="140" r="5" class="dg-dim"/>
+<circle cx="250" cy="130" r="5" class="dg-dim"/>
+<circle cx="180" cy="40" r="5" class="dg-dim"/>
+<circle cx="70" cy="30" r="5" class="dg-dim"/>
+<line x1="150" y1="120" x2="60" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="90" y2="200" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="220" y2="70" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="240" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="40" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="250" y2="130" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="180" y2="40" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<line x1="150" y1="120" x2="70" y2="30" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="470" y="18" font-size="13" text-anchor="middle">ANN: 그래프 일부만 탐색</text>
+<circle cx="360" cy="120" r="5" class="dg-dim"/>
+<circle cx="410" cy="70" r="5" class="dg-dim"/>
+<circle cx="420" cy="170" r="5" class="dg-dim"/>
+<circle cx="470" cy="100" r="5" class="dg-dim"/>
+<circle cx="480" cy="160" r="5" class="dg-dim"/>
+<circle cx="520" cy="60" r="5" class="dg-dim"/>
+<circle cx="540" cy="130" r="5" class="dg-dim"/>
+<circle cx="580" cy="90" r="8" class="dg-accent"/>
+<line x1="360" y1="120" x2="420" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="470" y1="100" x2="480" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="480" y1="160" x2="540" y2="130" class="dg-line" stroke-width="1"/>
+<line x1="360" y1="120" x2="410" y2="70" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="410" y1="70" x2="470" y2="100" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="470" y1="100" x2="520" y2="60" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="520" y1="60" x2="580" y2="90" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="360" y="145" font-size="11" text-anchor="middle">진입점</text>
+<text x="580" y="115" font-size="11" text-anchor="middle">근사 최근접</text>
+</svg>`,
+    diagramCaption: String.raw`브루트포스는 모든 항목을 비교하지만 ANN은 그래프의 일부 경로만 따라가 후보를 찾는다.`,
+    related: [{ label: "Two-Tower 모델", slug: "two-tower-model" }],
+    sections: []
+  },
+  "gbdt-ranking": {
+    title: String.raw`GBDT 랭킹: 그래디언트 부스팅 트리로 순위 매기기`,
+    domain: "recsys",
+    subLabel: String.raw`랭킹 모델`,
+    intuition: String.raw`<p>Two-Tower와 ANN 검색을 거치면 후보가 수백 개 수준으로 좁혀집니다. 이 단계부터는 사용자와 아이템 피처를 훨씬 깊게 섞어서 정밀하게 순위를 매길 여유가 생깁니다. GBDT는 작은 결정트리 여러 개를 이어붙인 앙상블입니다. 새 트리는 지금까지의 트리들이 아직 못 맞춘 부분만 골라 고치도록 학습됩니다.</p>
+<p>트리는 분기를 거듭하면서 나이나 요일이나 카테고리 같은 피처의 조합을 저절로 찾아냅니다. 사람이 미리 어떤 조합이 중요한지 짜서 넣어주지 않아도 됩니다.</p>`,
+    explanation: String.raw`<p>$M$개의 트리를 더한 최종 예측은 다음과 같습니다.</p>
+$$F_M(x) = \sum_{m=1}^{M} \gamma_m h_m(x)$$
+<p>각 트리 $h_m$은 지금까지의 예측 $F_{m-1}(x)$가 만드는 손실의 음의 그래디언트를 새로 학습합니다. 함수공간에서 경사하강을 반복하는 셈이라 부스팅이라 부릅니다.</p>
+<p>이전 세대의 선형 CTR 모델은 나이와 카테고리의 조합처럼 의미 있는 상호작용을 사람이 직접 새 피처 열로 만들어 넣어줘야 했습니다. 트리는 분기 경로 자체가 상호작용입니다. 나이로 한 번 나누고 그 안에서 다시 카테고리로 나누면 두 피처의 조합이 자연스럽게 만들어집니다.</p>
+<p>트리는 피처 스케일에 둔감하고 결측값도 기본 분기 방향으로 처리할 수 있어 다루기 편합니다. 데이터가 아주 많지 않은 표 형태 랭킹 피처에서는 딥러닝보다 적은 튜닝으로도 강한 성능을 내는 경우가 많아 지금도 랭킹 단계의 기본값으로 널리 쓰입니다. 다만 손실이 클릭 여부 같은 포인트별 정답만 보고 있어서 순위 자체가 얼마나 좋아지는지는 직접 보지 못한다는 한계가 남습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="70" width="90" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="75" y="100" font-size="12" text-anchor="middle">트리 1</text>
+<line x1="120" y1="95" x2="180" y2="95" class="dg-line" stroke-width="1.5"/>
+<text x="150" y="85" font-size="11" text-anchor="middle">잔차</text>
+<rect x="180" y="70" width="90" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="225" y="100" font-size="12" text-anchor="middle">트리 2</text>
+<line x1="270" y1="95" x2="330" y2="95" class="dg-line" stroke-width="1.5"/>
+<text x="300" y="85" font-size="11" text-anchor="middle">잔차</text>
+<rect x="330" y="70" width="90" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="375" y="100" font-size="12" text-anchor="middle">트리 3</text>
+<text x="375" y="145" font-size="11" text-anchor="middle" class="dg-dim">…</text>
+<line x1="420" y1="95" x2="470" y2="95" class="dg-line" stroke-width="1.5"/>
+<rect x="470" y="55" width="140" height="80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="540" y="90" font-size="12" text-anchor="middle">모든 트리 합</text>
+<text x="540" y="108" font-size="11" text-anchor="middle" class="dg-dim">F(x)=Σγₘhₘ(x)</text>
+</svg>`,
+    diagramCaption: String.raw`각 트리는 이전까지의 예측이 못 맞춘 잔차를 새로 학습해 더한다.`,
+    related: [{ label: "LambdaMART", slug: "lambdamart" }],
+    sections: []
+  },
+  "lambdamart": {
+    title: String.raw`LambdaMART: 순위 변화량을 그래디언트로 바꾸기`,
+    domain: "recsys",
+    subLabel: String.raw`랭킹 모델`,
+    intuition: String.raw`<p>GBDT를 클릭확률 같은 포인트별 손실로 학습하면 손실이 낮아도 순위 자체는 나쁠 수 있습니다. 1위여야 할 아이템의 점수를 살짝 틀리는 것과 40위쯤 되는 아이템의 점수를 살짝 틀리는 것은 순위표 품질에 미치는 영향이 전혀 다른데 포인트별 손실은 이 차이를 모릅니다.</p>
+<p>LambdaMART는 각 트리가 무엇을 고쳐야 하는지를 아예 다르게 정의합니다. 점수를 더 정확히 맞추라고 하는 대신 두 아이템의 순서를 바꾸면 NDCG가 얼마나 좋아지는지를 직접 그래디언트로 씁니다.</p>`,
+    explanation: String.raw`<p>순서가 뒤바뀐 두 아이템 $i$, $j$ 사이의 람다는 다음과 같이 정의됩니다.</p>
+$$\lambda_{ij} = -\frac{\sigma}{1+e^{\sigma(s_i-s_j)}}\left|\Delta \mathrm{NDCG}_{ij}\right|$$
+<p>$s_i$, $s_j$는 현재 모델이 매긴 점수이고 $|\Delta \mathrm{NDCG}_{ij}|$는 두 아이템의 순위를 맞바꿨을 때 NDCG가 바뀌는 크기입니다. 상위권에서 일어나는 스왑은 이 값이 크고 아무도 잘 보지 않는 하위권 스왑은 이 값이 작습니다. 그래서 그래디언트가 저절로 순위 지표에 실제로 영향을 주는 쌍에 집중됩니다.</p>
+<p>포인트별 손실은 모든 아이템의 오차를 똑같은 비중으로 줄이려 합니다. 상위권 순서를 바로잡는 것과 하위권 순서를 바로잡는 것을 구분하지 못한 채 학습 노력을 고르게 흩뿌립니다. LambdaMART는 이 문제를 순위쌍 단위로 재정의해서 고칩니다.</p>
+<p>한 아이템의 최종 람다는 그 아이템과 짝지어지는 모든 쌍의 람다를 더한 값입니다.</p>
+$$\lambda_i = \sum_j \lambda_{ij}$$
+<p>이 값을 일반적인 부스팅의 그래디언트처럼 취급해 트리를 학습시킵니다. MART가 여러 회귀트리를 더하는 부스팅 뼈대를 제공하고 람다가 순위를 고려한 그래디언트를 제공하는 조합입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="20" font-size="13" text-anchor="middle">상위권 스왑</text>
+<rect x="60" y="35" width="180" height="30" class="dg-accent"/>
+<text x="150" y="55" font-size="12" text-anchor="middle">1위: 아이템 B</text>
+<rect x="60" y="70" width="180" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="150" y="90" font-size="12" text-anchor="middle">2위: 아이템 A</text>
+<path d="M250,50 C 280,50 280,85 250,85" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="72" font-size="12">스왑하면</text>
+<text x="300" y="90" font-size="12" class="dg-accent">|ΔNDCG| 큼</text>
+<text x="450" y="150" font-size="13" text-anchor="middle">하위권 스왑</text>
+<rect x="380" y="165" width="140" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="450" y="183" font-size="11" text-anchor="middle">39위: 아이템 C</text>
+<rect x="380" y="195" width="140" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="450" y="213" font-size="11" text-anchor="middle">40위: 아이템 D</text>
+<text x="450" y="240" font-size="12" text-anchor="middle" class="dg-dim">|ΔNDCG| 작음</text>
+</svg>`,
+    diagramCaption: String.raw`상위권에서 순서가 뒤집히면 NDCG가 크게 변하므로 그래디언트도 거기에 집중된다.`,
+    example: String.raw`<p>두 아이템의 현재 점수가 $s_i=2.0$, $s_j=1.0$이고 $\sigma=1$이라 하겠습니다. 시그모이드 항은 $\dfrac{1}{1+e^{s_i-s_j}} = \dfrac{1}{1+e^{1}} \approx 0.269$입니다. 두 아이템이 1위와 5위처럼 상위권에 있어서 $|\Delta \mathrm{NDCG}_{ij}|\approx 0.4$라면 이 쌍의 크기는 $0.269\times0.4\approx 0.108$입니다. 같은 점수차라도 두 아이템이 39위와 40위에 있어서 $|\Delta \mathrm{NDCG}_{ij}|\approx 0.01$이라면 크기는 $0.269\times0.01\approx 0.003$으로 훨씬 작아집니다.</p>`,
+    related: [{ label: "GBDT 랭킹", slug: "gbdt-ranking" }],
+    sections: []
+  },
+  "wide-and-deep": {
+    title: String.raw`Wide&Deep: 암기와 일반화를 함께 학습하기`,
+    domain: "recsys",
+    subLabel: String.raw`딥러닝 랭킹`,
+    intuition: String.raw`<p>선형 모델에 사람이 직접 만든 교차피처를 넣으면 특정 조합이 과거에 잘 통했다는 사실을 정확히 암기합니다. 하지만 한 번도 본 적 없는 조합에는 손을 못 씁니다. 임베딩을 쓰는 딥러닝은 반대로 낯선 조합에도 그럴듯한 예측을 내지만 아주 특수한 규칙 하나가 정확히 맞아떨어져야 하는 경우는 뭉뚱그려버리기 쉽습니다.</p>
+<p>Wide&Deep은 이 둘을 따로 두지 않고 한 모델 안에 나란히 둡니다. 선형인 wide 부분이 암기를 맡고 신경망인 deep 부분이 일반화를 맡아 같은 학습 신호로 함께 학습됩니다.</p>`,
+    explanation: String.raw`<p>wide 부분은 원본 피처와 사람이 직접 만든 교차피처 $\phi(x)$를 입력받는 일반화 선형모델입니다.</p>
+$$y_{wide} = w^\top [x,\ \phi(x)] + b$$
+<p>deep 부분은 범주형 피처를 임베딩한 뒤 여러 층의 완전연결층을 통과시킵니다.</p>
+$$a^{(l+1)} = \mathrm{ReLU}\left(W^{(l)}a^{(l)} + b^{(l)}\right)$$
+<p>두 출력은 하나의 로짓으로 합쳐져 같은 시그모이드와 같은 로그손실로 함께 학습됩니다.</p>
+$$P(y=1\mid x) = \sigma\!\left(w_{wide}^\top[x,\phi(x)] + w_{deep}^\top a^{(final)} + b\right)$$
+<p>두 부분을 따로 학습해 나중에 점수만 평균 내는 방식이 아니라 하나의 손실에서 나온 그래디언트가 wide와 deep 양쪽으로 동시에 흘러갑니다. 그래서 deep 부분이 일반화하느라 놓친 특정 조합의 오차를 wide 부분이 바로 옆에서 보정하도록 함께 맞춰집니다.</p>
+<p>Google Play 앱 추천에서 처음 제안된 구조로 암기와 일반화가 둘 다 필요하다는 문제의식에서 나왔습니다. 사용자 행동 이력 전체를 어떻게 다룰지는 아직 다루지 않는데 이 부분은 이력을 하나의 벡터로 뭉뚱그리지 않는 DIN에서 다시 다뤄집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="20" font-size="13" text-anchor="middle">Wide (선형 + 교차피처)</text>
+<rect x="40" y="35" width="220" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="150" y="57" font-size="12" text-anchor="middle">원본 피처 + 수동 교차피처</text>
+<line x1="150" y1="69" x2="150" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="100" width="180" height="30" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="150" y="120" font-size="12" text-anchor="middle">선형결합 w·x</text>
+<text x="460" y="20" font-size="13" text-anchor="middle">Deep (임베딩 + MLP)</text>
+<rect x="360" y="35" width="200" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="460" y="57" font-size="12" text-anchor="middle">범주형 피처 임베딩</text>
+<line x1="460" y1="69" x2="460" y2="95" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="95" width="160" height="28" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="460" y="113" font-size="11" text-anchor="middle">은닉층 1</text>
+<line x1="460" y1="123" x2="460" y2="140" class="dg-line" stroke-width="1.5"/>
+<rect x="390" y="140" width="140" height="28" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="460" y="158" font-size="11" text-anchor="middle">은닉층 2</text>
+<line x1="150" y1="130" x2="300" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="460" y1="168" x2="330" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="260" y="200" width="110" height="34" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="315" y="222" font-size="12" text-anchor="middle">합산 후 시그모이드</text>
+</svg>`,
+    diagramCaption: String.raw`wide는 교차피처를 암기하고 deep은 임베딩으로 일반화한 뒤 하나의 출력에서 합쳐진다.`,
+    related: [{ label: "DIN", slug: "din-attention" }, { label: "Two-Tower 모델", slug: "two-tower-model" }],
+    sections: []
+  },
+  "din-attention": {
+    title: String.raw`DIN: 과거 행동에 어텐션을 걸어 관심사를 짚어내기`,
+    domain: "recsys",
+    subLabel: String.raw`딥러닝 랭킹`,
+    intuition: String.raw`<p>한 사용자의 클릭 이력에는 휴대폰 케이스도 있고 등산화도 있고 소설책도 있을 수 있습니다. 이 이력을 전부 평균 내서 사용자 벡터 하나로 뭉뚱그리면 그 벡터는 어느 관심사도 뚜렷이 대표하지 못하는 흐릿한 값이 됩니다. 지금 채점하려는 후보 아이템과 무관한 과거 행동까지 똑같은 비중으로 섞여 들어가기 때문입니다.</p>
+<p>DIN은 이력을 미리 하나로 뭉치지 않습니다. 대신 후보 아이템이 바뀔 때마다 그 후보와 관련 있는 과거 행동에는 더 큰 가중치를, 무관한 행동에는 작은 가중치를 매겨 사용자 벡터를 그때그때 다시 만듭니다.</p>`,
+    explanation: String.raw`<p>과거 행동 임베딩 $e_1,\dots,e_T$와 후보 아이템 임베딩 $e_c$가 있을 때 각 과거 행동의 가중치는 둘을 함께 보는 작은 신경망으로 계산됩니다.</p>
+$$a_t = f_{attn}(e_t, e_c)$$
+<p>보통 $[e_t,\ e_c,\ e_t-e_c,\ e_t\odot e_c]$를 입력으로 받습니다. 이 가중치로 가중합한 벡터가 이번 채점에서 쓸 사용자 표현입니다.</p>
+$$v_u = \sum_{t=1}^{T} a_t e_t$$
+<p>Wide&Deep을 비롯한 이전 딥러닝 랭킹 모델들은 이력을 평균이나 합으로 미리 풀링해서 하나의 고정 벡터로 만들었습니다. 이 벡터는 지금 채점하는 후보가 무엇인지와 무관하게 항상 같습니다. 등산화와 소설을 둘 다 산 사용자는 텐트를 채점할 때는 등산 취향으로, 책장을 채점할 때는 독서 취향으로 보여야 하는데 고정된 하나의 벡터로는 이 둘을 구분할 수 없습니다.</p>
+<p>DIN의 가중치 $a_t$는 후보마다 새로 계산되기 때문에 $v_u$ 자체가 후보에 따라 달라집니다. 같은 사용자의 같은 이력이라도 어떤 아이템을 채점하느냐에 따라 다르게 반영됩니다. 여기서 쓰는 가중치는 Transformer의 셀프어텐션처럼 소프트맥스로 정규화해 전체 합을 1로 강제하지 않는 단순한 가중합 형태를 씁니다. 이력이 길 때 관련 있는 항목의 가중치가 서로 경쟁하며 억눌리는 것을 피하기 위한 설계입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="60" r="14" class="dg-dim"/>
+<text x="60" y="90" font-size="11" text-anchor="middle">폰케이스</text>
+<circle cx="150" cy="60" r="14" class="dg-accent"/>
+<text x="150" y="90" font-size="11" text-anchor="middle">등산화</text>
+<circle cx="240" cy="60" r="14" class="dg-dim"/>
+<text x="240" y="90" font-size="11" text-anchor="middle">소설</text>
+<circle cx="330" cy="60" r="14" class="dg-accent"/>
+<text x="330" y="90" font-size="11" text-anchor="middle">텐트조명</text>
+<text x="195" y="20" font-size="12" text-anchor="middle">사용자 과거 행동</text>
+<rect x="470" y="130" width="100" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="520" y="154" font-size="12" text-anchor="middle">후보: 텐트</text>
+<line x1="60" y1="74" x2="470" y2="140" class="dg-line" stroke-width="0.75"/>
+<line x1="150" y1="74" x2="470" y2="140" class="dg-stroke-accent" stroke-width="3"/>
+<line x1="240" y1="74" x2="470" y2="145" class="dg-line" stroke-width="0.75"/>
+<line x1="330" y1="74" x2="470" y2="150" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="400" y="110" font-size="11" text-anchor="middle" class="dg-dim">굵을수록 어텐션 가중치 큼</text>
+</svg>`,
+    diagramCaption: String.raw`후보 아이템과 관련 있는 과거 행동일수록 굵은 연결로 더 큰 가중치를 받는다.`,
+    related: [{ label: "Wide&Deep", slug: "wide-and-deep" }, { label: "Transformer 기반 랭킹", slug: "transformer-ranking" }],
+    sections: []
+  },
+  "transformer-ranking": {
+    title: String.raw`Transformer 기반 랭킹: 시퀀스 전체 문맥으로 순위 매기기`,
+    domain: "recsys",
+    subLabel: String.raw`딥러닝 랭킹`,
+    intuition: String.raw`<p>DIN의 어텐션은 후보 아이템마다 과거 행동을 다시 보긴 하지만 과거 행동들끼리는 서로 독립적으로 다룹니다. 바로 직전에 본 아이템이 그 앞의 아이템과 어떤 관계인지는 반영하지 않습니다. Transformer 기반 랭킹은 후보를 보기 전에 먼저 이력 전체에 셀프어텐션을 걸어서 각 과거 행동이 이력 안의 다른 행동들을 참고해 스스로의 표현을 다듬게 합니다.</p>`,
+    explanation: String.raw`<p>셀프어텐션은 이력 임베딩 $e_1,\dots,e_T$에서 쿼리 행렬 $Q$, 키 행렬 $K$, 값 행렬 $V$를 모두 같은 시퀀스에서 뽑아 계산합니다.</p>
+$$\mathrm{Attention}(Q,K,V) = \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
+<p>이런 층을 여러 개 쌓으면 이력 안의 모든 항목이 서로를 참고해 표현이 갱신됩니다. DIN처럼 후보와 이력 하나씩을 짝짓는 것이 아니라 이력 전체를 문맥으로 한 번에 섞습니다.</p>
+<p>DIN의 어텐션에서 키로 쓰이는 과거 행동 임베딩은 고정된 값이라 그 항목이 이력 안의 앞뒤 항목과 어떤 관계인지 반영할 방법이 없습니다. 순서 정보도 입력 방식 외에는 명시적으로 다루지 않습니다. 셀프어텐션에 위치 정보를 더하면 신발을 보다가 최근에 가방으로 관심이 옮겨간 세션과 몇 달 전에 그랬던 세션을 다르게 취급할 수 있습니다. 이력을 사용자 행동의 가방이 아니라 순서가 있는 문장처럼 다루는 SASRec이나 BERT4Rec류의 접근과 같은 방향입니다.</p>
+<p>셀프어텐션은 이력 안의 모든 쌍을 비교하므로 계산량이 $O(T^2)$로 DIN의 후보별 어텐션보다 무겁습니다. 그래서 보통 이력 표현은 그 랭킹 요청 안의 모든 후보가 공유하도록 한 번만 계산해두고 후보별 점수는 그 위에 더 가벼운 비교 연산을 얹어 계산합니다.</p>`,
+    related: [{ label: "DIN", slug: "din-attention" }, { label: "Wide&Deep", slug: "wide-and-deep" }],
+    sections: []
+  },
+  "contextual-bandit": {
+    title: String.raw`Contextual Bandit: 문맥을 보고 팔을 고르는 탐색과 활용`,
+    domain: "recsys",
+    subLabel: String.raw`밴딧 기반 추천`,
+    intuition: String.raw`<p>순위를 매길 수 있어도 지금 이 사용자에게 어떤 후보를 실제로 보여줄지는 또 다른 문제입니다. 지금까지 제일 좋아 보이는 것만 계속 보여주면 아직 충분히 시도하지 못한 후보의 진짜 성능을 영영 알 수 없습니다. 각 아이템을 슬롯머신의 팔 하나로 보고 무엇을 당길지 고르는 문제를 밴딧이라 부릅니다.</p>
+<p>Contextual Bandit은 여기에 한 가지를 더합니다. 모든 사용자에게 같은 팔이 최선이라고 가정하지 않고 지금 이 사용자와 상황이라는 문맥을 보고 어떤 팔이 좋을지 판단합니다.</p>`,
+    explanation: String.raw`<p>문맥을 보지 않는 밴딧은 각 팔의 보상을 팔 하나당 분포 하나로만 관리합니다. 대표적으로 epsilon-greedy는 확률 $\epsilon$으로 무작위 팔을 뽑고 나머지 확률로는 지금까지 평균 보상이 가장 높은 팔을 뽑습니다. 문제는 보상이 문맥에 따라 크게 다를 수 있다는 점입니다. 전체 평균으로는 별로인 팔이 특정 사용자군에서는 최선일 수 있는데 문맥을 무시한 모델은 이를 볼 방법이 없고 서로 다른 문맥의 데이터가 한 분포로 뒤섞여 학습도 느려집니다.</p>
+<p>Contextual Bandit은 매 라운드 문맥 $x_t$를 보고 팔 $a_t$를 고르고 고른 팔의 보상 $r_t$만 관측해 그 팔의 보상 모델을 갱신합니다. 대표적인 선형 방식인 LinUCB는 팔마다 기대보상을 $\hat r_a(x) = \theta_a^\top x$로 모델링하고 다음 값이 가장 큰 팔을 고릅니다.</p>
+$$\theta_a^\top x + \alpha\sqrt{x^\top A_a^{-1} x}$$
+<p>두 번째 항은 그 문맥에서 그 팔의 데이터가 적을수록 커지는 불확실성 항입니다. 데이터가 쌓일수록 저절로 줄어들어서 따로 탐색 비율을 정해두지 않아도 불확실한 곳을 더 살펴보게 됩니다.</p>
+<p>고른 팔의 보상만 관측된다는 점이 지도학습 랭킹과 결정적으로 다릅니다. 후보 전체에 정답이 붙어 있는 것이 아니라 실제로 보여준 것 하나에만 결과가 붙습니다. 로그에 남은 결과만 가지고 그대로 학습하면 과거에 자주 보여준 팔만 계속 강화하고 거의 보여주지 않은 팔에 대해서는 아무것도 배우지 못합니다. 그래서 탐색을 명시적으로 설계해야 합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="90" width="100" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="70" y="114" font-size="12" text-anchor="middle">문맥 x</text>
+<line x1="120" y1="110" x2="170" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="170" y="90" width="100" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="114" font-size="12" text-anchor="middle">정책</text>
+<line x1="270" y1="110" x2="310" y2="110" class="dg-line" stroke-width="1.5"/>
+<text x="450" y="30" font-size="12" text-anchor="middle">기대보상 ± 불확실성</text>
+<rect x="340" y="110" width="24" height="60" class="dg-dim"/>
+<line x1="352" y1="90" x2="352" y2="130" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="352" y="185" font-size="11" text-anchor="middle">팔 A</text>
+<rect x="400" y="80" width="24" height="90" class="dg-accent"/>
+<line x1="412" y1="60" x2="412" y2="100" class="dg-stroke-accent" stroke-width="2"/>
+<text x="412" y="185" font-size="11" text-anchor="middle">팔 B (선택)</text>
+<rect x="460" y="130" width="24" height="40" class="dg-dim"/>
+<line x1="472" y1="110" x2="472" y2="150" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="472" y="185" font-size="11" text-anchor="middle">팔 C</text>
+<text x="412" y="210" font-size="11" text-anchor="middle" class="dg-dim">보상은 선택된 팔에서만 관측된다</text>
+</svg>`,
+    diagramCaption: String.raw`정책이 문맥을 보고 팔을 고르면 그 팔의 보상만 관측되어 다음 선택에 반영된다.`,
+    related: [{ label: "Thompson Sampling", slug: "thompson-sampling" }],
+    sections: []
+  },
+  "thompson-sampling": {
+    title: String.raw`Thompson Sampling: 사후분포에서 뽑아서 탐색하기`,
+    domain: "recsys",
+    subLabel: String.raw`밴딧 기반 추천`,
+    intuition: String.raw`<p>epsilon-greedy는 이미 나쁘다고 확인된 팔에도 똑같은 확률로 무작위 탐색을 낭비합니다. 증거가 아무리 쌓여도 탐색 비율 자체는 고정돼 있습니다. Thompson Sampling은 각 팔이 얼마나 좋을지에 대한 확률분포를 관리하다가 매 라운드 각 분포에서 값을 하나씩 뽑아 가장 높게 뽑힌 팔을 고릅니다.</p>
+<p>증거가 많이 쌓인 팔은 분포가 좁아서 뽑히는 값도 진짜 성능 근처에 몰립니다. 증거가 적은 팔은 분포가 넓어서 어쩌다 높은 값이 뽑히기도 합니다. 그 우연이 바로 그 팔을 한 번 더 시도해보게 만드는 자연스러운 탐색입니다.</p>`,
+    explanation: String.raw`<p>클릭 여부처럼 베르누이 보상을 다룰 때는 팔마다 클릭확률에 대한 사후분포를 베타분포로 관리합니다.</p>
+$$\theta_a \sim \mathrm{Beta}(\alpha_a,\beta_a)$$
+<p>사전분포를 $\mathrm{Beta}(1,1)$로 시작해서 클릭이 나오면 $\alpha_a$를 하나 늘리고 클릭이 없으면 $\beta_a$를 하나 늘립니다. 베타분포와 베르누이 우도는 켤레 관계라 관측을 반영해도 사후분포는 계속 베타분포 형태를 유지합니다.</p>
+<p>매 라운드 모든 팔에서 $\theta_a$를 하나씩 뽑고 그 값을 마치 진짜 클릭률인 것처럼 취급해 가장 큰 팔을 고릅니다. 베타분포의 분산은 대략 $1/(\alpha_a+\beta_a)$ 크기로 관측이 쌓일수록 줄어들기 때문에 탐색량이 증거의 양에 맞춰 자동으로 조절됩니다.</p>
+<p>epsilon-greedy의 탐색 확률은 그 팔에 대한 증거가 얼마나 쌓였는지와 무관하게 고정돼 있어서 이미 확실히 나쁜 팔도 계속 같은 비율로 뽑습니다. Thompson Sampling의 탐색은 순전히 분포의 폭에서 나옵니다. 확실히 나쁘다고 판단된 팔은 좁고 낮은 분포를 갖게 되어 자연스럽게 덜 뽑히고 아직 충분히 안 뽑아본 팔만 계속 넓은 분포로 탐색됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="225" font-size="12" text-anchor="middle">클릭확률 θ</text>
+<path d="M 150,200 C 170,200 175,40 210,40 C 245,40 250,200 270,200" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="210" y="30" font-size="11" text-anchor="middle">팔 A (충분히 시도됨)</text>
+<path d="M 60,200 C 150,200 150,110 280,110 C 410,110 410,200 500,200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="410" y="100" font-size="11" text-anchor="middle">팔 B (거의 안 써봄)</text>
+<circle cx="215" cy="70" r="4" class="dg-accent"/>
+<text x="215" y="60" font-size="10" text-anchor="middle" class="dg-dim">샘플</text>
+<circle cx="450" cy="120" r="4" class="dg-accent"/>
+<text x="450" y="140" font-size="10" text-anchor="middle" class="dg-dim">샘플(운좋게 높음)</text>
+</svg>`,
+    diagramCaption: String.raw`충분히 시도된 팔은 좁은 분포에서, 아직 덜 써본 팔은 넓은 분포에서 값을 뽑는다.`,
+    example: String.raw`<p>팔 A가 지금까지 클릭 8번, 무클릭 2번이었다면 사후분포는 $\mathrm{Beta}(1+8,\,1+2)=\mathrm{Beta}(9,3)$이고 평균은 $9/(9+3)=0.75$ 근처에 좁게 몰려 있습니다. 팔 B는 클릭 1번 무클릭 1번뿐이라 사후분포는 $\mathrm{Beta}(2,2)$이고 평균은 $0.5$지만 분산이 훨씬 커서 어떤 라운드에는 $0.75$보다 큰 값이 뽑히기도 합니다. 그 라운드에는 평균은 더 낮아 보이는 팔 B가 선택되면서 탐색이 자연스럽게 일어납니다.</p>`,
+    related: [{ label: "Contextual Bandit", slug: "contextual-bandit" }],
+    sections: []
+  },
+  "slate-optimization": {
+    title: String.raw`슬레이트 최적화: 한 화면 전체를 하나의 조합으로 최적화하기`,
+    domain: "recsys",
+    subLabel: String.raw`강화학습 추천`,
+    intuition: String.raw`<p>지금까지의 랭킹은 아이템 하나하나의 점수를 매기고 높은 순서대로 나열합니다. 하지만 사용자는 화면에 놓인 아이템들을 한꺼번에 봅니다. 비슷한 아이템 두 개가 나란히 있으면 하나만 있을 때보다 얻는 게 별로 없고 서로 다른 취향을 골고루 담은 화면은 더 넓은 관심을 붙잡을 수 있습니다. 개별 점수만 보고 줄 세우면 이런 화면 안 아이템끼리의 관계를 놓칩니다.</p>
+<p>슬레이트 최적화는 화면 전체를 하나의 선택으로 다룹니다. 어떤 아이템 하나가 제일 좋아 보이는지가 아니라 어떤 조합을 함께 보여줘야 화면 전체가 가장 좋을지를 고릅니다.</p>`,
+    explanation: String.raw`<p>단순한 상위 $k$개 방식은 $\sum_i \mathrm{score}(i)$가 큰 순서로 아이템을 골라 채워 넣습니다. 사용자가 각 아이템을 다른 아이템과 무관하게 독립적으로 평가한다고 가정하는 셈입니다. 이 가정은 비슷한 아이템끼리 클릭을 나눠 갖는 대체 효과나 다양한 화면이 더 많은 관심을 끌어내는 보완 효과를 놓칩니다.</p>
+<p>슬레이트 최적화는 후보 전체에서 순서 있는 아이템 집합 $S=(i_1,\dots,i_k)$ 하나를 골라 그 슬레이트 전체의 기대보상을 최대화하는 문제로 다시 씁니다. 사용자 $u$가 주어졌을 때 $\mathbb{E}[R(S)\mid u]$의 $R(S)$는 개별 점수의 단순합이 아니라 조합 자체에 좌우됩니다. 가능한 슬레이트 조합은 $N$개 후보에서 $\binom{N}{k}k!$개나 되어 정확히 다 따져보는 것은 현실적이지 않습니다. 실제로는 이미 고른 아이템들에 가장 큰 보상을 더해줄 다음 아이템을 순차적으로 골라 넣는 탐욕적 구성이나 슬레이트 전체 혹은 지금까지 고른 슬레이트를 조건으로 한 다음 아이템을 직접 점수화하는 모델을 씁니다.</p>
+<p>결국 매 시점의 행동이 아이템 하나가 아니라 슬레이트 전체가 되는 문제로 바뀝니다. 그래서 슬레이트 최적화는 강화학습으로 풀리는 경우가 많습니다. 행동 공간을 슬레이트 단위로 잡고 그 슬레이트가 만들어낸 전체 참여도를 보상으로 삼으면 아이템끼리의 상호작용을 독립성을 가정하지 않고 데이터에서 직접 학습할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="20" font-size="13" text-anchor="middle">개별 점수로 상위 k개 선택</text>
+<rect x="40" y="40" width="60" height="60" class="dg-accent"/>
+<text x="70" y="75" font-size="11" text-anchor="middle">A</text>
+<rect x="110" y="40" width="60" height="60" class="dg-accent"/>
+<text x="140" y="75" font-size="11" text-anchor="middle">A'</text>
+<rect x="180" y="40" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="210" y="75" font-size="11" text-anchor="middle">B</text>
+<text x="140" y="118" font-size="11" text-anchor="middle" class="dg-dim">A와 A'는 비슷해서 겹침</text>
+<text x="470" y="20" font-size="13" text-anchor="middle">슬레이트 단위로 조합 최적화</text>
+<rect x="380" y="40" width="60" height="60" class="dg-accent"/>
+<text x="410" y="75" font-size="11" text-anchor="middle">A</text>
+<rect x="450" y="40" width="60" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="480" y="75" font-size="11" text-anchor="middle">C</text>
+<rect x="520" y="40" width="60" height="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="550" y="75" font-size="11" text-anchor="middle">B</text>
+<text x="480" y="118" font-size="11" text-anchor="middle" class="dg-dim">A, C, B는 서로 다른 관심사를 커버</text>
+<path d="M380,130 L580,130" fill="none" class="dg-line" stroke-width="1.5"/>
+<text x="480" y="150" font-size="11" text-anchor="middle">전체 슬레이트 = 하나의 액션</text>
+</svg>`,
+    diagramCaption: String.raw`개별 최고점 조합은 비슷한 항목이 겹칠 수 있지만 슬레이트 최적화는 화면 전체의 다양성까지 고려한다.`,
+    related: [{ label: "장기보상 최적화", slug: "long-term-reward-optimization" }, { label: "Contextual Bandit", slug: "contextual-bandit" }],
+    sections: []
+  },
+  "long-term-reward-optimization": {
+    title: String.raw`장기보상 최적화: 클릭 대신 리텐션을 보상으로`,
+    domain: "recsys",
+    subLabel: String.raw`강화학습 추천`,
+    intuition: String.raw`<p>즉각적인 클릭만 최적화하면 지금 당장 눈길을 끄는 자극적인 아이템이 유리해집니다. 사용자가 클릭을 후회하거나 그런 화면에 지쳐서 다음에 덜 찾아오게 되더라도 다음 클릭만 보는 모델은 그 대가를 볼 방법이 없습니다. 장기보상 최적화는 성공의 기준을 지금 이 클릭이 아니라 며칠이나 몇 주에 걸쳐 사용자가 다시 찾아오는지로 바꿉니다.</p>`,
+    explanation: String.raw`<p>여태 다룬 GBDT나 DIN이나 Transformer 기반 랭킹은 모두 이번 노출에서 클릭이 났는지만 보는 즉각보상으로 학습됩니다. 자주 클릭되지만 만족도는 낮은 아이템은 클릭률 지표에서는 좋아 보이면서도 그 사용자가 나중에 덜 찾아오게 만드는 대가를 조용히 쌓을 수 있는데 이 손해는 학습 신호가 보는 범위 바깥에서 일어납니다.</p>
+<p>추천을 상태와 행동과 보상이 이어지는 순차적 결정 문제로 보면 다음 한 스텝이 아니라 여러 스텝의 보상을 더한 값을 목적함수로 쓸 수 있습니다.</p>
+$$J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^{T}\gamma^t r_t\right]$$
+<p>$\gamma\in(0,1)$은 먼 미래의 보상을 덜 반영하는 할인율이고 $r_t$에는 즉각 클릭뿐 아니라 나중에 다시 찾아왔는지 같은 신호도 포함될 수 있습니다.</p>
+<p>어려운 지점은 진짜 장기보상인 다음 주 재방문 여부가 아주 늦게 관측되고 그 사이 다른 요인의 영향도 섞여서 어떤 추천이 어떤 결과에 얼마나 기여했는지 가려내기 어렵다는 데 있습니다. 그래서 실무에서는 재방문과 상관관계가 있으면서 더 빨리 관측되는 세션 길이나 활성일수 같은 대리 지표를 쓰거나 즉각 클릭이 아니라 누적 기대보상을 추정하는 가치함수 $Q(s,a)$를 로그 데이터로 따로 학습해서 즉각보상 기반 랭킹 점수를 보정하는 데 씁니다.</p>
+<p>Contextual Bandit이 최선인 것만 계속 보여주던 방식에서 벗어나 탐색을 명시적으로 다뤘던 것처럼 장기보상 최적화는 보상을 이번 클릭 하나로 보던 방식에서 벗어나 지금 보여준 것이 나중에 만드는 지연된 효과까지 다룹니다. 그 대가로 훨씬 어려운 신용할당과 측정 문제를 떠안습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="140" x2="580" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="100" cy="140" r="6" class="dg-accent"/>
+<text x="100" y="120" font-size="12" text-anchor="middle">오늘 클릭</text>
+<circle cx="260" cy="140" r="6" class="dg-dim"/>
+<text x="260" y="120" font-size="11" text-anchor="middle" class="dg-dim">재방문 없음?</text>
+<circle cx="420" cy="140" r="6" class="dg-accent"/>
+<text x="420" y="120" font-size="12" text-anchor="middle">일주일 뒤 재방문</text>
+<text x="100" y="165" font-size="11" text-anchor="middle" class="dg-dim">즉시보상만 보면 여기까지</text>
+<path d="M100,150 C 200,190 350,190 420,150" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="260" y="200" font-size="11" text-anchor="middle">장기보상은 여기까지 이어서 본다</text>
+</svg>`,
+    diagramCaption: String.raw`즉시 클릭만 보는 보상은 오늘에서 끊기지만 장기보상은 재방문까지 이어서 평가한다.`,
+    related: [{ label: "슬레이트 최적화", slug: "slate-optimization" }, { label: "Contextual Bandit", slug: "contextual-bandit" }],
+    sections: []
+  },
+  "ndcg": {
+    title: String.raw`NDCG: 순위에 할인 가중치를 준 누적 이득`,
+    domain: "recsys",
+    subLabel: String.raw`오프라인 평가`,
+    intuition: String.raw`<p>추천 목록에 정답이 몇 개 들어있는지만 세면 순서 정보를 놓친다. 좋아할 만한 아이템이 1위에 있는 목록과 9위에 있는 목록은 같은 아이템을 담고 있어도 사용자 경험이 전혀 다르다. NDCG는 상위권에 있는 관련 아이템에 더 큰 점수를 주고 하위권으로 갈수록 점수를 깎아서 이 차이를 숫자로 반영한다.</p>
+<p>또한 아이템마다 관련도가 이진값이 아니라 정도의 차이를 가질 수 있다는 점도 담는다. 완벽히 취향에 맞는 아이템과 그럭저럭 괜찮은 아이템을 같은 가중치로 세지 않는다.</p>`,
+    explanation: String.raw`<p>순위 $i$에 있는 아이템의 관련도를 $rel_i$라 하면 상위 $K$개까지의 누적 이득은 $DCG@K = \sum_{i=1}^{K} \frac{rel_i}{\log_2(i+1)}$로 정의된다. 분모의 $\log_2(i+1)$이 할인 항이다. 1위는 $\log_2 2 = 1$이라 할인이 없고 순위가 내려갈수록 분모가 커지며 같은 관련도라도 기여도가 줄어든다. 관련도가 세밀한 등급으로 나뉘는 서비스에서는 지수 형태인 $\frac{2^{rel_i}-1}{\log_2(i+1)}$을 쓰기도 하는데 고관련 아이템의 영향을 더 크게 벌리는 변형이다.</p>
+<p>DCG는 관련 아이템이 몇 개 존재하는지에 따라 값의 스케일이 달라져서 서로 다른 쿼리 사이의 점수를 그대로 비교할 수 없다. 그래서 같은 아이템 집합을 관련도 내림차순으로 재정렬했을 때 나오는 최댓값인 $IDCG@K$로 나눈다. $NDCG@K = \frac{DCG@K}{IDCG@K}$는 항상 0과 1 사이 값이 되고 쿼리마다 정답 개수가 달라도 서로 비교할 수 있다.</p>
+<p>MAP이나 Recall@K와 헷갈리기 쉬운데 셋은 서로 다른 것을 잰다. NDCG는 순위마다 로그로 할인된 가중치를 곱하고 등급이 있는 관련도까지 반영하는 연속적인 점수다. 반면 MAP은 관련 아이템을 맞다 틀리다 이진값으로만 보고 각 정답이 나온 지점의 정밀도를 평균한다. Recall@K는 순서를 아예 보지 않고 상위 K개 안에 정답이 몇 개나 들어왔는지 비율만 센다. 순위와 등급을 동시에 반영하고 싶을 때는 NDCG를 쓰고 정답을 놓치지 않았는지만 보고 싶을 때는 Recall을 쓴다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="20" font-size="13">실제 추천 순서</text>
+<rect x="20" y="30" width="70" height="50" class="dg-accent"/>
+<text x="55" y="60" text-anchor="middle" font-size="14">3</text>
+<rect x="100" y="30" width="70" height="50" class="dg-dim"/>
+<text x="135" y="60" text-anchor="middle" font-size="14">2</text>
+<rect x="180" y="30" width="70" height="50" class="dg-accent"/>
+<text x="215" y="60" text-anchor="middle" font-size="14">3</text>
+<rect x="260" y="30" width="70" height="50" class="dg-dim"/>
+<text x="295" y="60" text-anchor="middle" font-size="14">0</text>
+<text x="55" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(2)</text>
+<text x="135" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(3)</text>
+<text x="215" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(4)</text>
+<text x="295" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(5)</text>
+<text x="20" y="132" font-size="13">이상적 순서(정렬)</text>
+<rect x="20" y="142" width="70" height="50" class="dg-accent"/>
+<text x="55" y="172" text-anchor="middle" font-size="14">3</text>
+<rect x="100" y="142" width="70" height="50" class="dg-accent"/>
+<text x="135" y="172" text-anchor="middle" font-size="14">3</text>
+<rect x="180" y="142" width="70" height="50" class="dg-dim"/>
+<text x="215" y="172" text-anchor="middle" font-size="14">2</text>
+<rect x="260" y="142" width="70" height="50" class="dg-dim"/>
+<text x="295" y="172" text-anchor="middle" font-size="14">0</text>
+<text x="380" y="50" font-size="13">DCG ≈ 5.76</text>
+<text x="380" y="72" font-size="13" class="dg-dim">(실제 순서)</text>
+<text x="380" y="162" font-size="13">IDCG ≈ 5.89</text>
+<text x="380" y="184" font-size="13" class="dg-accent">NDCG ≈ 0.98</text>
+</svg>`,
+    diagramCaption: String.raw`실제 순위의 DCG를 이상적 순위의 DCG로 나누어 0에서 1 사이로 정규화한다.`,
+    example: String.raw`<p>4개짜리 추천 목록의 관련도가 순서대로 $3, 2, 3, 0$이라고 하자. $DCG@4 = \frac{3}{\log_2 2} + \frac{2}{\log_2 3} + \frac{3}{\log_2 4} + \frac{0}{\log_2 5} \approx 5.76$이다. 같은 아이템을 관련도 내림차순으로 재정렬하면 $3, 3, 2, 0$이 되고 $IDCG@4 \approx 5.89$다. 따라서 $NDCG@4 = 5.76 / 5.89 \approx 0.98$로 이상적 순서에 매우 가깝다는 뜻이다.</p>`,
+    related: [{ label: "MAP", slug: "map-metric" }, { label: "Recall@K", slug: "recall-at-k" }, { label: "A/B테스트 연계", slug: "ab-test-alignment" }],
+    sections: []
+  },
+  "map-metric": {
+    title: String.raw`MAP: 여러 쿼리의 평균 정밀도`,
+    domain: "recsys",
+    subLabel: String.raw`오프라인 평가`,
+    intuition: String.raw`<p>정밀도는 상위 K개 중 몇 개가 정답인지를 보는 지표지만 K를 어디서 끊느냐에 따라 값이 달라진다는 단점이 있다. Average Precision은 정답이 나올 때마다 그 지점까지의 정밀도를 기록해 평균을 내서 특정 K값에 의존하지 않고 전체 순위의 질을 하나의 숫자로 요약한다. MAP은 이 값을 여러 쿼리에 대해 다시 평균한 것이다.</p>
+<p>정답을 빨리 찾아낼수록 그리고 존재하는 정답을 하나도 놓치지 않을수록 MAP은 높아진다.</p>`,
+    explanation: String.raw`<p>한 쿼리의 Average Precision은 $AP = \frac{1}{|R|} \sum_{k=1}^{n} P(k) \cdot rel(k)$로 정의된다. $rel(k)$는 순위 $k$의 아이템이 정답이면 1 아니면 0인 이진 지시함수고 $P(k)$는 1위부터 $k$위까지의 정밀도다. $|R|$은 그 쿼리에 대해 실제로 존재하는 전체 정답 개수로 화면에 보여준 개수가 아니라 정답 집합 전체의 크기다. 정답이 나온 위치마다 그 시점의 정밀도를 더하고 전체 정답 개수로 나누기 때문에 정답을 상위권에서 하나라도 놓치면 그 즉시 점수가 떨어진다.</p>
+<p>MAP은 이렇게 구한 AP를 쿼리 전체에 대해 평균한 값이다. $MAP = \frac{1}{Q}\sum_{q=1}^{Q} AP_q$이며 $Q$는 평가에 쓴 쿼리 수다. 쿼리마다 정답 개수와 난이도가 달라도 각 쿼리를 0에서 1 사이 값인 AP로 정규화한 뒤 평균하기 때문에 여러 쿼리를 한 시스템의 성능 하나로 뭉뚱그려 비교할 수 있다.</p>
+<p>NDCG와 가장 크게 다른 지점은 관련도를 다루는 방식이다. MAP은 관련도를 맞다 틀리다로만 보고 등급을 두지 않으며 순위별 가중치도 로그가 아니라 그 지점까지의 정밀도라는 계단 함수로 결정된다. Recall@K와 비교하면 MAP은 정답이 나온 정확한 위치까지 반영하지만 Recall@K는 상위 K개 안에 들어왔는지 여부만 보고 그 안에서의 순서는 따지지 않는다는 차이가 있다.</p>`,
+    example: String.raw`<p>두 쿼리를 평가한다고 하자. 쿼리1은 정답이 총 3개이고 상위 5개 중 1위, 3위, 5위가 정답이었다. $P(1)=1, P(3)=2/3, P(5)=3/5$이므로 $AP_1 = (1 + 0.667 + 0.6)/3 \approx 0.756$이다. 쿼리2는 정답이 총 2개이고 2위, 5위가 정답이었다. $P(2)=1/2, P(5)=2/5$이므로 $AP_2 = (0.5+0.4)/2 = 0.45$다. 따라서 $MAP = (0.756+0.45)/2 \approx 0.60$이다.</p>`,
+    related: [{ label: "NDCG", slug: "ndcg" }, { label: "Recall@K", slug: "recall-at-k" }],
+    sections: []
+  },
+  "recall-at-k": {
+    title: String.raw`Recall@K: 상위 K개 안에 정답이 얼마나 들어있는가`,
+    domain: "recsys",
+    subLabel: String.raw`오프라인 평가`,
+    intuition: String.raw`<p>사용자가 좋아할 만한 아이템이 전부 몇 개인지는 이미 정해져 있다고 하자. 추천 목록 상위 K개를 보여줬을 때 그 정답들 중 몇 개나 목록 안에 들어왔는지를 비율로 재는 지표가 Recall@K다. 순서는 신경 쓰지 않고 상위 K개라는 범위 안에 얼마나 많이 담아냈는지만 본다.</p>
+<p>추천 시스템의 첫 단계인 후보 생성에서 특히 중요하다. 이 단계에서 정답을 놓치면 이후 랭킹 모델이 아무리 정교해도 애초에 없는 아이템을 등수 매길 수는 없기 때문이다.</p>`,
+    explanation: String.raw`<p>$Recall@K$는 다음과 같이 정의된다. $Recall@K = \frac{|\{relevant\} \cap \{top\text{-}K\}|}{|\{relevant\}|}$. 분자는 상위 K개 안에 들어온 정답 개수고 분모는 화면에 몇 개를 보여줬는지와 무관하게 존재하는 정답 전체의 개수다. K를 늘리면 분자가 커질 여지가 많아지므로 Recall@K는 K에 대해 단조증가한다.</p>
+<p>흔히 헷갈리는 Precision@K는 분모가 다르다. Precision@K는 상위 K개 중 몇 개가 정답이었는지를 $K$로 나눈 값이라 목록의 순수도를 재고 Recall@K는 존재하는 정답을 얼마나 놓치지 않았는지를 잰다. 같은 상위 K개를 두고도 분모를 K로 두느냐 전체 정답 수로 두느냐에 따라 완전히 다른 질문에 답하는 셈이다.</p>
+<p>NDCG나 MAP과 비교하면 Recall@K는 상위 K개 안에서의 순서를 전혀 반영하지 않는다. 정답이 1위에 있든 K위에 있든 Recall@K 값은 같다. 그래서 최종 랭킹의 품질보다는 후보 생성 단계처럼 일단 정답을 후보군 안에 담아냈는지를 확인하는 용도로 자주 쓰인다.</p>`,
+    example: String.raw`<p>어떤 사용자가 좋아할 만한 아이템이 전체 카탈로그에 4개 있다고 하자. 상위 10개 추천 목록 안에 그중 3개가 들어있다면 $Recall@10 = 3/4 = 0.75$다. 나머지 1개는 11위 밖에 있어 이 지표에는 잡히지 않는다.</p>`,
+    related: [{ label: "NDCG", slug: "ndcg" }, { label: "MAP", slug: "map-metric" }],
+    sections: []
+  },
+  "ctr": {
+    title: String.raw`CTR: 클릭률로 관심을 재기`,
+    domain: "recsys",
+    subLabel: String.raw`온라인 평가`,
+    intuition: String.raw`<p>오프라인 지표는 과거 로그로 계산하지만 실제 서비스에서 사용자가 지금 이 순간 추천에 반응하는지는 따로 봐야 한다. CTR은 가장 단순하면서도 직접적인 온라인 지표다. 아이템이 노출된 횟수 중 몇 번이나 클릭으로 이어졌는지를 본다.</p>
+<p>계산이 쉽고 실시간으로 집계할 수 있어서 많은 추천 시스템이 1차 신호로 CTR을 모니터링한다.</p>`,
+    explanation: String.raw`<p>$CTR = \frac{c}{n}$로 정의되며 $c$는 클릭 수이고 $n$은 노출 수다. 노출은 사용자가 실제로 화면에서 볼 기회가 있었던 경우만 세야 하며 화면 밖에 있어 보이지 않은 아이템까지 노출로 잡으면 CTR이 부풀려진다.</p>
+<p>위치 편향이 CTR 해석을 어렵게 만드는 대표적인 문제다. 목록 맨 위에 놓인 아이템은 내용과 무관하게 눈에 먼저 띄기 때문에 클릭률이 높게 나온다. CTR을 그대로 모델 성능 지표로 쓰면 실제로 관련도가 높아서가 아니라 위치가 좋아서 클릭된 결과를 관련도로 착각할 수 있다. 위치별 클릭 확률을 따로 추정해 보정하는 방법이 이런 편향을 줄이는 데 쓰인다.</p>
+<p>클릭은 관심의 신호일 뿐 만족의 증거는 아니라는 한계도 있다. 자극적인 썸네일이나 제목으로 클릭만 유도하고 내용은 실망스러운 경우에도 CTR은 높게 나온다. 그래서 CTR 단독보다는 클릭 이후 행동을 보는 체류시간 같은 지표와 함께 봐야 한다.</p>`,
+    related: [{ label: "체류시간", slug: "dwell-time" }, { label: "A/B테스트 연계", slug: "ab-test-alignment" }],
+    sections: []
+  },
+  "dwell-time": {
+    title: String.raw`체류시간: 클릭 이후 진짜로 소비했는가`,
+    domain: "recsys",
+    subLabel: String.raw`온라인 평가`,
+    intuition: String.raw`<p>클릭했다고 해서 그 콘텐츠를 제대로 봤다는 뜻은 아니다. 썸네일에 낚여 들어갔다가 1초 만에 뒤로 가기를 누르는 경우도 클릭 수에는 똑같이 잡힌다. 체류시간은 클릭 이후 사용자가 그 콘텐츠에 실제로 머문 시간을 재서 클릭이 진짜 만족으로 이어졌는지를 살펴본다.</p>
+<p>CTR이 관심을 끄는 힘을 잰다면 체류시간은 그 관심이 실제 소비로 이어졌는지를 잰다.</p>`,
+    explanation: String.raw`<p>체류시간은 보통 클릭 시점부터 사용자가 이탈하거나 다음 액션으로 넘어가는 시점까지의 시간 간격으로 측정한다. 탭을 열어둔 채 자리를 비우는 경우처럼 실제 소비와 무관하게 시간이 길게 잡히는 사례도 있어서 페이지 가시성 신호나 스크롤 재생 이벤트 같은 보조 신호를 함께 봐야 정확도가 올라간다.</p>
+<p>체류시간 분포는 대부분 한쪽으로 크게 치우친 형태를 띤다. 대다수는 짧게 머물고 소수가 아주 길게 머무는 식이라 평균값이 소수의 극단값에 쉽게 흔들린다. 그래서 평균보다 중앙값이나 특정 구간별 비율로 요약하는 경우가 많고 지나치게 긴 값은 상한을 씌워 잘라내기도 한다.</p>
+<p>CTR과 체류시간을 함께 보면 클릭만 유도하는 콘텐츠를 걸러낼 수 있다. CTR은 높은데 체류시간이 극단적으로 짧다면 자극적인 노출로 클릭만 얻고 실제 만족은 주지 못했다는 신호로 해석할 수 있다.</p>`,
+    related: [{ label: "CTR", slug: "ctr" }, { label: "A/B테스트 연계", slug: "ab-test-alignment" }],
+    sections: []
+  },
+  "ab-test-alignment": {
+    title: String.raw`A/B테스트 연계: 오프라인 지표와 실제 효과 사이의 간극 확인하기`,
+    domain: "recsys",
+    subLabel: String.raw`온라인 평가`,
+    intuition: String.raw`<p>NDCG 같은 오프라인 지표가 좋아졌다고 해서 실제 서비스에 배포했을 때 사용자 반응도 좋아진다는 보장은 없다. 오프라인 지표는 과거 정책이 이미 골라서 보여준 로그 위에서 계산되기 때문에 한 번도 보여준 적 없는 추천의 진짜 반응은 알 수 없다. A/B테스트는 실제 트래픽 일부를 새 모델로 흘려보내 진짜 반응을 직접 확인하는 절차다.</p>
+<p>그래서 오프라인 지표는 배포할 후보를 추리는 용도로 A/B테스트는 그 후보가 실제로 효과가 있는지 확인하는 최종 관문으로 쓰인다.</p>`,
+    explanation: String.raw`<p>오프라인 평가는 이미 수집된 로그 위에서 이루어지므로 과거 정책이 노출조차 시키지 않은 아이템에 대해서는 아무런 정보가 없다는 선택 편향을 안고 있다. 반면 A/B테스트는 사용자를 무작위로 대조군과 실험군으로 나누고 실험군에만 새 모델을 적용해 CTR 체류시간 리텐션 같은 온라인 지표를 두 집단 사이에서 통계적으로 비교한다. 무작위 배정 덕분에 두 집단의 차이는 순수하게 모델 변경의 효과로 해석할 수 있다.</p>
+<p>문제는 오프라인 지표 개선과 온라인 지표 개선이 항상 함께 움직이지는 않는다는 점이다. NDCG는 올랐는데 실제 CTR은 그대로거나 오히려 떨어지는 경우가 드물지 않다. 그래서 여러 차례 실험을 거치며 어떤 오프라인 지표의 변화가 어떤 온라인 지표의 변화를 실제로 예측하는지를 축적해두는 작업이 필요하다. 이 상관관계가 쌓이면 다음번에는 A/B테스트 전에 오프라인 지표만 보고도 배포할 가치가 있는지 어느 정도 가늠할 수 있게 된다.</p>
+<p>실무에서는 통계적 유의성뿐 아니라 실험 기간과 표본 크기도 함께 설계해야 한다. 표본이 너무 작거나 실험 기간이 짧으면 우연한 변동을 진짜 효과로 잘못 읽을 위험이 커진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="95" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="85" y="116" text-anchor="middle" font-size="12">오프라인 지표</text>
+<text x="85" y="132" text-anchor="middle" font-size="12">개선 확인</text>
+<line x1="150" y1="120" x2="190" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="190" y="95" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="255" y="116" text-anchor="middle" font-size="12">실 트래픽</text>
+<text x="255" y="132" text-anchor="middle" font-size="12">A/B 분할</text>
+<line x1="320" y1="110" x2="370" y2="52" class="dg-line" stroke-width="1.5"/>
+<line x1="320" y1="130" x2="370" y2="168" class="dg-line" stroke-width="1.5"/>
+<rect x="370" y="30" width="110" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="425" y="56" text-anchor="middle" font-size="12">A: 기존 모델</text>
+<rect x="370" y="146" width="110" height="44" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="425" y="172" text-anchor="middle" font-size="12">B: 신규 모델</text>
+<line x1="480" y1="52" x2="530" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="480" y1="168" x2="530" y2="130" class="dg-line" stroke-width="1.5"/>
+<rect x="530" y="95" width="130" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="595" y="116" text-anchor="middle" font-size="12">온라인 지표</text>
+<text x="595" y="132" text-anchor="middle" font-size="12">비교</text>
+<text x="255" y="210" text-anchor="middle" font-size="11" class="dg-dim">CTR·체류시간·리텐션으로 최종 판단</text>
+</svg>`,
+    diagramCaption: String.raw`오프라인 지표가 좋아져도 실제 효과는 A/B테스트의 온라인 지표로 다시 확인한다.`,
+    related: [{ label: "NDCG", slug: "ndcg" }, { label: "CTR", slug: "ctr" }, { label: "체류시간", slug: "dwell-time" }],
+    sections: []
+  },
+  "new-user-cold-start": {
+    title: String.raw`신규 사용자 콜드스타트: 행동 기록이 없을 때 무엇으로 대체할까`,
+    domain: "recsys",
+    subLabel: String.raw`콜드스타트 대응`,
+    intuition: String.raw`<p>협업 필터링은 사용자의 과거 클릭이나 평점이 쌓여야 비슷한 취향의 다른 사용자를 찾아 추천할 수 있다. 그런데 방금 가입한 사용자는 그런 기록이 전혀 없다. 이 시점에 아무 추천도 하지 않으면 사용자는 첫인상부터 실망하고 이탈할 수 있다.</p>
+<p>그래서 행동 데이터 대신 가입 시 물어본 정보나 인구통계 같은 다른 단서로 취향을 잠정적으로 추정한다.</p>`,
+    explanation: String.raw`<p>가장 흔한 방법은 온보딩 설문이다. 관심 있는 카테고리나 선호 아이템 몇 개를 직접 고르게 해서 첫 추천의 기준점을 만든다. 다만 사용자가 설문에서 고른 항목과 실제 행동에서 드러나는 취향은 종종 어긋나기 때문에 설문 응답은 어디까지나 잠정적인 출발점으로 다뤄야 한다.</p>
+<p>인구통계 정보를 활용하는 방법도 있다. 나이 지역 가입 경로 같은 정보를 바탕으로 비슷한 특성을 가진 기존 사용자 집단의 평균 취향을 빌려온다. 이런 정보조차 부족할 때는 전체 사용자에게 인기 있는 아이템을 우선 보여주는 인기 기반 추천으로 최소한의 품질을 확보한다.</p>
+<p>일단 몇 번의 클릭이나 평점이라도 쌓이기 시작하면 그 소량의 신호를 빠르게 반영해 추천을 갱신하고 충분한 상호작용이 모이는 시점부터는 점진적으로 협업 필터링 기반 추천으로 넘어간다. 온보딩 정보에서 행동 데이터로 무게중심을 옮기는 이 전환 과정 자체가 신규 사용자 콜드스타트 대응의 핵심이다.</p>`,
+    related: [{ label: "신규 아이템 콜드스타트", slug: "new-item-cold-start" }, { label: "하이브리드 방식", slug: "hybrid-recommendation" }],
+    sections: []
+  },
+  "new-item-cold-start": {
+    title: String.raw`신규 아이템 콜드스타트: 상호작용이 없는 새 아이템 추천하기`,
+    domain: "recsys",
+    subLabel: String.raw`콜드스타트 대응`,
+    intuition: String.raw`<p>협업 필터링은 어떤 아이템이 다른 아이템들과 함께 얼마나 선택되었는지를 보고 유사도를 계산한다. 방금 등록된 아이템은 그런 상호작용 기록이 전혀 없어서 아무리 좋은 아이템이라도 추천 후보에서 자연스럽게 밀려난다.</p>
+<p>이 문제를 풀려면 상호작용이 아니라 아이템 자체가 가진 특징으로 일단 자리를 잡아줘야 한다.</p>`,
+    explanation: String.raw`<p>가장 기본적인 대응은 콘텐츠 기반 특징을 활용하는 것이다. 제목 설명 카테고리 이미지 같은 메타데이터를 벡터로 바꿔두면 상호작용 기록이 없어도 기존 아이템들과 같은 특징 공간 안에 놓을 수 있다. 사용자가 좋아한 아이템과 특징이 비슷한 신규 아이템을 임시로 추천 후보에 끼워 넣는 식이다.</p>
+<p>동시에 신규 아이템에 일부러 노출 기회를 배분해 초기 반응 데이터를 빠르게 모으는 전략도 함께 쓰인다. 신상품 전용 노출 슬롯을 두거나 탐색과 활용을 함께 고려하는 밴딧 기법으로 소량의 트래픽을 신규 아이템 탐색에 할당한다.</p>
+<p>이렇게 모은 초기 상호작용이 일정 수준을 넘어서면 그 아이템은 콘텐츠 기반 추천에서 협업 필터링 기반 추천으로 자연스럽게 옮겨간다. 결국 콘텐츠 특징은 상호작용 데이터가 쌓이기 전까지 자리를 지켜주는 임시 다리 역할을 한다.</p>`,
+    related: [{ label: "하이브리드 방식", slug: "hybrid-recommendation" }, { label: "특징 벡터화", slug: "feature-vectorization" }, { label: "콘텐츠 유사도 추천", slug: "content-similarity-recommendation" }],
+    sections: []
+  },
+  "hybrid-recommendation": {
+    title: String.raw`하이브리드 방식: 협업필터링과 콘텐츠 기반을 함께 쓰기`,
+    domain: "recsys",
+    subLabel: String.raw`콜드스타트 대응`,
+    intuition: String.raw`<p>협업 필터링은 데이터가 쌓일수록 강력해지지만 신규 사용자나 신규 아이템 앞에서는 무력하다. 콘텐츠 기반 필터링은 상호작용 없이도 작동하지만 아이템 자체의 특징 밖으로는 잘 나가지 못해 새로운 취향을 발견하는 힘이 약하다. 하이브리드 방식은 두 방법을 함께 써서 서로의 약점을 상대의 강점으로 메운다.</p>`,
+    explanation: String.raw`<p>가장 단순한 결합은 두 방법이 각각 매긴 점수를 가중합하는 것이다. 최종 점수를 $score = \alpha \cdot CF_{score} + (1-\alpha) \cdot content_{score}$처럼 두고 상호작용 데이터가 충분한 사용자나 아이템에는 $\alpha$를 높여 협업 필터링 비중을 키우고 데이터가 부족한 콜드스타트 상황에는 $\alpha$를 낮춰 콘텐츠 기반 비중을 키운다.</p>
+<p>조건에 따라 아예 다른 방법으로 전환하는 방식도 있다. 상호작용이 임계치 이하인 동안은 콘텐츠 기반 추천만 쓰다가 충분히 쌓이면 협업 필터링으로 전환한다. 또는 콘텐츠 기반으로 넓은 후보군을 먼저 추리고 그 후보군 안에서 협업 필터링이나 랭킹 모델이 순서를 다시 매기는 계단식 구조도 흔히 쓰인다.</p>
+<p>최근에는 두 신호를 별도 시스템으로 분리하지 않고 하나의 랭킹 모델 안에 함께 넣는 방식이 많다. 아이템의 콘텐츠 특징 벡터와 협업 필터링에서 나온 임베딩을 같은 모델의 입력 특징으로 나란히 넣어 모델 스스로 두 신호의 가중치를 학습하게 하는 식이다. 결과적으로 콜드스타트 구간에서는 콘텐츠 특징이 신호를 채우고 데이터가 쌓인 구간에서는 협업 신호가 주도권을 넘겨받는 흐름이 하나의 모델 안에서 자연스럽게 이어진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="41" text-anchor="middle" font-size="12">협업필터링 점수</text>
+<text x="95" y="58" text-anchor="middle" font-size="11" class="dg-dim">상호작용 기반</text>
+<rect x="20" y="130" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="151" text-anchor="middle" font-size="12">콘텐츠 기반 점수</text>
+<text x="95" y="168" text-anchor="middle" font-size="11" class="dg-dim">특징 벡터 기반</text>
+<line x1="170" y1="45" x2="260" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="155" x2="260" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="260" y="70" width="160" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="340" y="95" text-anchor="middle" font-size="12">가중 결합</text>
+<text x="340" y="112" text-anchor="middle" font-size="11" class="dg-dim">α·CF+(1-α)·콘텐츠</text>
+<line x1="420" y1="100" x2="470" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="470" y="75" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="545" y="96" text-anchor="middle" font-size="12">최종 추천 순위</text>
+<text x="340" y="55" text-anchor="middle" font-size="11" class="dg-dim">데이터 적을수록 α 감소</text>
+</svg>`,
+    diagramCaption: String.raw`협업필터링과 콘텐츠 기반 점수를 상황에 맞는 가중치로 섞어 최종 순위를 만든다.`,
+    related: [{ label: "신규 사용자 콜드스타트", slug: "new-user-cold-start" }, { label: "신규 아이템 콜드스타트", slug: "new-item-cold-start" }, { label: "협업필터링과의 비교", slug: "cf-vs-content-comparison" }],
+    sections: []
+  },
+  "feature-vectorization": {
+    title: String.raw`특징 벡터화: 텍스트와 메타데이터를 숫자로 바꾸기`,
+    domain: "recsys",
+    subLabel: String.raw`콘텐츠 기반 필터링`,
+    intuition: String.raw`<p>콘텐츠 기반 추천을 하려면 아이템끼리 얼마나 비슷한지 계산할 수 있어야 한다. 그런데 제목이나 설명 같은 텍스트 카테고리 같은 메타데이터는 그 자체로는 거리나 유사도를 계산할 수 있는 숫자가 아니다. 특징 벡터화는 이런 정보를 비교 가능한 숫자 벡터로 바꾸는 과정이다.</p>`,
+    explanation: String.raw`<p>고전적인 방법은 TF-IDF다. 문서 $d$에서 단어 $t$의 가중치를 $TFIDF(t,d) = tf(t,d) \times \log\frac{N}{df(t)}$로 계산하는데 $tf(t,d)$는 그 문서 안에서 단어가 등장한 빈도고 $N$은 전체 문서 수 $df(t)$는 그 단어가 등장한 문서 수다. 한 문서 안에서 자주 나오면서도 다른 문서에서는 드물게 나오는 단어일수록 그 문서를 특징짓는 단어로 보고 가중치를 높게 준다. 결과는 어휘 사전 크기만큼 차원을 가지지만 대부분이 0인 희소 벡터가 된다.</p>
+<p>최근에는 신경망 기반 임베딩을 더 널리 쓴다. 단어나 문장을 사전학습된 인코더에 통과시키면 의미가 비슷한 표현이 벡터 공간에서도 가깝게 놓이는 조밀한 벡터를 얻는다. TF-IDF는 정확히 같은 단어가 겹쳐야만 유사도를 인식하지만 임베딩은 단어가 달라도 의미가 비슷하면 가깝게 배치되므로 동의어나 바꿔 쓴 표현까지 포착할 수 있다.</p>
+<p>텍스트뿐 아니라 카테고리나 가격대 같은 정형 메타데이터도 원핫 인코딩 같은 방식으로 숫자 벡터로 바꾼 뒤 텍스트 벡터와 이어붙여 아이템 하나를 대표하는 특징 벡터를 완성한다. 이렇게 만든 벡터가 이후 콘텐츠 유사도 추천의 재료가 된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="140" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="41" text-anchor="middle" font-size="12">제목·설명·태그</text>
+<text x="90" y="58" text-anchor="middle" font-size="11" class="dg-dim">원본 텍스트·메타데이터</text>
+<line x1="160" y1="45" x2="210" y2="45" class="dg-line" stroke-width="1.5"/>
+<rect x="210" y="20" width="140" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="41" text-anchor="middle" font-size="12">TF-IDF·임베딩</text>
+<text x="280" y="58" text-anchor="middle" font-size="11" class="dg-dim">수치 벡터화</text>
+<line x1="350" y1="45" x2="400" y2="45" class="dg-line" stroke-width="1.5"/>
+<rect x="400" y="20" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="460" y="41" text-anchor="middle" font-size="12">특징 벡터 v</text>
+<text x="460" y="58" text-anchor="middle" font-size="11" class="dg-dim">[0.1, 0.0, 0.8, ...]</text>
+<rect x="20" y="120" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="150" text-anchor="middle" font-size="12">다른 아이템 벡터</text>
+<line x1="140" y1="145" x2="400" y2="90" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="270" y="115" text-anchor="middle" font-size="11" class="dg-dim">코사인 유사도 비교</text>
+</svg>`,
+    diagramCaption: String.raw`텍스트와 메타데이터를 벡터로 바꾸면 아이템끼리 코사인 유사도로 비교할 수 있다.`,
+    related: [{ label: "콘텐츠 유사도 추천", slug: "content-similarity-recommendation" }, { label: "신규 아이템 콜드스타트", slug: "new-item-cold-start" }],
+    sections: []
+  },
+  "content-similarity-recommendation": {
+    title: String.raw`콘텐츠 유사도 추천: 비슷한 특징을 가진 아이템 찾기`,
+    domain: "recsys",
+    subLabel: String.raw`콘텐츠 기반 필터링`,
+    intuition: String.raw`<p>사용자가 예전에 좋아했던 아이템의 특징을 알고 있다면 그 특징과 비슷한 다른 아이템을 찾아 보여주면 된다. 콘텐츠 유사도 추천은 이 단순한 아이디어를 그대로 구현한 방법이다.</p>`,
+    explanation: String.raw`<p>먼저 사용자가 좋아한 아이템들의 특징 벡터를 모아 사용자 프로필 벡터를 만든다. 보통은 좋아한 아이템 벡터들의 평균이나 가중평균을 쓴다. 그다음 후보 아이템들의 벡터와 이 프로필 벡터 사이의 유사도를 계산해 가장 가까운 순서대로 추천 목록을 만든다. 유사도는 대개 코사인 유사도를 쓰는데 $\cos(\mathbf{u}, \mathbf{v}) = \frac{\mathbf{u}\cdot\mathbf{v}}{\|\mathbf{u}\|\|\mathbf{v}\|}$로 정의되어 벡터의 크기가 아니라 방향이 얼마나 비슷한지만 본다.</p>
+<p>이 방식은 상호작용 데이터 없이도 작동하고 왜 이 아이템을 추천했는지 특징 단위로 설명하기 쉽다는 장점이 있다. 다만 항상 사용자가 이미 좋아했던 것과 특징이 비슷한 아이템만 찾아내기 때문에 프로필 벡터에서 멀리 떨어진 사용자가 아직 접해보지 못한 취향은 구조적으로 잘 찾아내지 못한다.</p>`,
+    related: [{ label: "특징 벡터화", slug: "feature-vectorization" }, { label: "협업필터링과의 비교", slug: "cf-vs-content-comparison" }],
+    sections: []
+  },
+  "cf-vs-content-comparison": {
+    title: String.raw`협업필터링과의 비교: 콜드스타트는 강하지만 새 취향 발견은 약하다`,
+    domain: "recsys",
+    subLabel: String.raw`콘텐츠 기반 필터링`,
+    intuition: String.raw`<p>콘텐츠 기반 필터링과 협업 필터링은 추천의 근거로 삼는 정보 자체가 다르다. 콘텐츠 기반은 아이템이 가진 특징을 보고 협업 필터링은 사용자들의 집단적인 행동 패턴을 본다. 이 차이 때문에 두 방법의 강점과 약점은 거의 정반대로 나타난다.</p>`,
+    explanation: String.raw`<p>콘텐츠 기반은 아이템 자체의 특징만 있으면 되므로 그 아이템에 대한 상호작용이 하나도 없어도 바로 추천에 활용할 수 있다. 사용자 쪽도 마찬가지로 좋아한 아이템 몇 개만 있으면 프로필을 만들 수 있어 협업 필터링보다 콜드스타트에 훨씬 강하다. 추천 이유도 특징 단위로 설명할 수 있어 해석이 쉽다.</p>
+<p>반대로 협업 필터링은 개별 아이템의 내용을 전혀 몰라도 다른 사용자들이 함께 선택한 패턴만으로 추천할 수 있다. 이 과정에서 겉보기 특징으로는 전혀 연결되지 않는 아이템 사이의 숨겨진 연관성을 찾아내기도 한다. 이런 뜻밖의 발견은 콘텐츠 기반이 구조적으로 하기 어려운 일이다. 콘텐츠 기반은 언제나 사용자 프로필과 특징이 비슷한 아이템만 찾기 때문에 이미 알고 있는 취향의 범위를 벗어나기 어렵다.</p>
+<p>대신 협업 필터링은 상호작용 데이터가 충분히 쌓일 때만 제 성능을 낸다. 신규 사용자나 신규 아이템 앞에서는 참고할 행동 기록 자체가 없어 추천 품질이 크게 떨어진다. 결국 콜드스타트에는 콘텐츠 기반이 취향의 새로운 발견에는 협업 필터링이 유리하다는 상반된 성격 때문에 실무에서는 둘을 함께 쓰는 하이브리드 방식을 택하는 경우가 많다.</p>`,
+    related: [{ label: "하이브리드 방식", slug: "hybrid-recommendation" }, { label: "콘텐츠 유사도 추천", slug: "content-similarity-recommendation" }, { label: "신규 아이템 콜드스타트", slug: "new-item-cold-start" }],
+    sections: []
+  },
+  "filter-bubble": {
+    title: String.raw`필터버블: 추천이 좁은 취향에 갇히는 현상`,
+    domain: "recsys",
+    subLabel: String.raw`다양성 · 공정성 · 탐색`,
+    intuition: String.raw`<p>추천 시스템은 클릭한 것과 비슷한 것을 계속 보여준다. 그러다 보면 사용자가 원래 좋아하던 몇 가지 취향 바깥은 점점 화면에 뜨지 않게 된다. 처음에는 편리하지만 시간이 지날수록 선택지가 스스로 좁아지는 것처럼 느껴진다. 이 현상을 필터버블이라고 부른다.</p>
+<p>문제는 사용자가 스스로 이 좁힘을 알아채기 어렵다는 점이다. 안 보이는 것은 안 보인다는 사실조차 알 수 없다. 그래서 추천 시스템을 설계할 때는 정확도만이 아니라 얼마나 다양한 아이템을 보여주는지도 함께 신경 써야 한다.</p>`,
+    explanation: String.raw`<p>필터버블은 협업 필터링이나 콘텐츠 기반 추천이 클릭 로그를 학습 신호로 쓰는 구조에서 자연스럽게 생긴다. 사용자가 A 장르를 클릭하면 모델은 A와 비슷한 아이템의 점수를 높이고 그 아이템이 다시 노출되어 클릭될 확률이 올라간다. 이 순환이 반복될수록 A 바깥의 아이템은 노출 기회 자체를 얻지 못해 클릭 데이터가 쌓이지 않고 모델은 그 아이템을 계속 낮게 평가한다. 정확도를 높이려는 최적화가 결과적으로 노출 범위를 스스로 좁히는 피드백 루프를 만드는 셈이다.</p>
+<p>다양성은 보통 추천 목록 안에서 아이템끼리 얼마나 다른지로 측정한다. 대표적으로 목록 내 다양성은 $\mathrm{ILD} = \frac{1}{|R|(|R|-1)} \sum_{i \ne j \in R} d(i, j)$로 정의한다. 여기서 $R$은 추천 목록, $d(i,j)$는 두 아이템 사이의 거리다. 값이 클수록 목록 안 아이템들이 서로 이질적이라는 뜻이다.</p>
+<p>완화 방법은 크게 두 갈래다. 하나는 재랭킹 단계에서 관련성 점수와 다양성 점수를 함께 최적화하는 것이고 다른 하나는 학습 단계에서부터 탐색적 노출을 일부 섞어 새로운 아이템에 대한 신호를 계속 확보하는 것이다. 뒤쪽 방법은 exploration exploitation 문제와 그대로 이어진다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="20" font-size="12" class="dg-dim">라운드 1 · 다양한 카테고리 노출</text>
+<circle cx="60" cy="55" r="13" class="dg-accent"/>
+<circle cx="60" cy="90" r="13" class="dg-dim"/>
+<circle cx="60" cy="125" r="13" class="dg-accent"/>
+<circle cx="60" cy="160" r="13" class="dg-dim"/>
+<circle cx="110" cy="55" r="13" class="dg-dim"/>
+<circle cx="110" cy="90" r="13" class="dg-accent"/>
+<circle cx="110" cy="125" r="13" class="dg-dim"/>
+<circle cx="110" cy="160" r="13" class="dg-dim"/>
+<text x="185" y="103" font-size="11" class="dg-dim">클릭</text>
+<line x1="175" y1="108" x2="235" y2="108" class="dg-line" stroke-width="1.5"/>
+<text x="255" y="20" font-size="12" class="dg-dim">라운드 2 · 좋아한 카테고리만 강화</text>
+<circle cx="280" cy="75" r="16" class="dg-accent"/>
+<circle cx="280" cy="125" r="14" class="dg-accent"/>
+<circle cx="330" cy="100" r="9" class="dg-dim"/>
+<text x="400" y="103" font-size="11" class="dg-dim">클릭</text>
+<line x1="390" y1="108" x2="450" y2="108" class="dg-line" stroke-width="1.5"/>
+<text x="470" y="20" font-size="12" class="dg-dim">라운드 3 · 카테고리 고착</text>
+<circle cx="530" cy="108" r="20" class="dg-accent"/>
+</svg>`,
+    diagramCaption: String.raw`클릭이 쌓일수록 노출되는 카테고리 종류가 점점 줄어든다.`,
+    related: [{ label: "노출 공정성", slug: "exposure-fairness" }, { label: "Exploration-Exploitation", slug: "exploration-exploitation-recsys" }],
+    sections: []
+  },
+  "exposure-fairness": {
+    title: String.raw`노출 공정성: 인기 아이템 쏠림을 막고 기회를 고르게 나누기`,
+    domain: "recsys",
+    subLabel: String.raw`다양성 · 공정성 · 탐색`,
+    intuition: String.raw`<p>추천 순위는 보통 클릭 확률이 높은 순서로 매겨진다. 그런데 클릭 확률 자체가 이미 얼마나 많이 노출됐었는지에 영향을 받는다. 이미 인기 있는 아이템은 계속 상위에 노출되어 더 많은 클릭을 쌓고 품질이 비슷해도 노출 기회를 못 받은 아이템은 클릭 데이터가 없어서 계속 하위에 머문다.</p>
+<p>노출 공정성은 이 쏠림을 구조적으로 막는 문제다. 사용자에게 보여줄 추천의 질을 크게 해치지 않으면서 아이템마다 노출 기회를 좀 더 고르게 나눠주는 것이 목표다.</p>`,
+    explanation: String.raw`<p>추천 서비스의 노출 분포는 대개 멱법칙을 따른다. 상위 소수 아이템이 전체 클릭과 노출의 대부분을 차지하고 나머지 긴 꼬리는 노출 자체가 거의 없다. 이는 사용자 경험만의 문제가 아니라 공급 측면에도 영향을 준다. 신규 판매자나 창작자는 콘텐츠 품질과 무관하게 노출 기회를 얻지 못해 시장에 진입하기 어려워진다.</p>
+<p>흔히 쓰는 완화 방법은 재랭킹 단계에서 관련성과 공정성을 함께 고려하는 것이다. 최종 점수를 $\mathrm{score}(i) = \lambda \cdot \mathrm{rel}(i) + (1-\lambda) \cdot \mathrm{fair}(i)$처럼 관련성 항과 공정성 항의 가중합으로 두고 공정성 항은 그 아이템이 최근 얼마나 적게 노출됐는지에 비례하게 설계한다. $\lambda$를 낮출수록 다양한 아이템이 상위에 섞이지만 관련성은 다소 희생된다.</p>
+<p>다른 방향은 노출량 자체에 제약을 거는 것이다. 특정 인기 아이템군이 전체 노출의 특정 비율을 넘지 못하도록 상한을 두거나 반대로 신규 아이템에는 일정 비율의 노출을 최소 보장으로 할당한다. 두 방법 모두 사용자 만족도와 공급자 공정성 사이의 트레이드오프를 명시적으로 다루는 접근이라는 공통점이 있다.</p>`,
+    example: String.raw`<p>어떤 서비스에서 상위 1%의 아이템이 전체 클릭의 60%를 가져간다고 하자. 재랭킹에서 공정성 항의 가중치를 높여 신규 아이템에 노출의 최소 5%를 보장하도록 제약을 걸면 상위 1%의 클릭 점유율은 낮아지고 나머지 아이템의 평균 노출 횟수는 늘어난다. 다만 사용자가 느끼는 관련성 지표는 그만큼 소폭 낮아질 수 있어 $\lambda$ 값을 실험으로 조정해야 한다.</p>`,
+    related: [{ label: "필터버블", slug: "filter-bubble" }, { label: "Exploration-Exploitation", slug: "exploration-exploitation-recsys" }],
+    sections: []
+  },
+  "exploration-exploitation-recsys": {
+    title: String.raw`Exploration-Exploitation: 아는 것만 추천하면 새 취향을 놓친다`,
+    domain: "recsys",
+    subLabel: String.raw`다양성 · 공정성 · 탐색`,
+    intuition: String.raw`<p>지금까지 클릭한 것만 보고 추천하면 안전하지만 사용자가 아직 시도해보지 않은 취향은 영영 발견되지 않는다. 반대로 새로운 것만 계속 보여주면 사용자가 확실히 좋아할 것도 놓치고 만족도가 떨어진다. 추천 시스템은 이 둘 사이에서 균형을 잡아야 한다.</p>
+<p>알고 있는 선호를 활용하는 것을 exploitation, 아직 모르는 선호를 확인해보는 것을 exploration이라고 부른다. 슬롯머신 여러 대 중 어느 것을 당길지 고르는 멀티암드 밴딧 문제와 구조가 같다.</p>`,
+    explanation: String.raw`<p>각 아이템을 슬롯머신의 팔 하나로 보면 추천 시스템은 매 요청마다 어느 팔을 당길지 정하고 클릭 여부로 보상을 관찰한다. 단순한 방법은 $\epsilon$-그리디로 확률 $1-\epsilon$로는 지금까지 가장 좋았던 아이템을 추천하고 확률 $\epsilon$로는 무작위로 다른 아이템을 섞어 보여준다. $\epsilon$이 너무 작으면 탐색이 부족하고 너무 크면 추천 품질이 떨어진다.</p>
+<p>더 정교한 방법은 UCB로, 아이템 $i$의 점수를 $\mathrm{UCB}_i = \hat\mu_i + c\sqrt{\dfrac{\ln t}{n_i}}$로 계산한다. $\hat\mu_i$는 지금까지 관찰된 평균 클릭률, $n_i$는 그 아이템이 노출된 횟수, $t$는 전체 시도 횟수다. 노출이 적었던 아이템일수록 두 번째 항인 불확실성 보너스가 커져서 자연스럽게 탐색 우선순위가 올라가고 데이터가 쌓일수록 보너스는 줄어들어 확실한 아이템 위주로 수렴한다.</p>
+<p>추천에서는 사용자 문맥에 따라 최적의 아이템이 달라지므로 문맥 정보를 함께 쓰는 컨텍스추얼 밴딧, 대표적으로 LinUCB를 많이 쓴다. 각 아이템의 기대 보상을 문맥 벡터의 선형함수로 모델링하고 UCB와 같은 방식으로 불확실성 보너스를 더해 탐색과 활용을 함께 수행한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="22" font-size="12" class="dg-dim">막대 = 평균 클릭률, 선 = 불확실성 보너스를 더한 UCB</text>
+<line x1="60" y1="210" x2="520" y2="210" class="dg-line" stroke-width="1.5"/>
+<rect x="100" y="130" width="70" height="80" class="dg-dim"/>
+<line x1="135" y1="118" x2="135" y2="130" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="122" y1="118" x2="148" y2="118" class="dg-stroke-accent" stroke-width="2"/>
+<text x="135" y="228" text-anchor="middle" font-size="12">A</text>
+<text x="135" y="244" text-anchor="middle" font-size="11" class="dg-dim">자주 노출</text>
+<rect x="245" y="150" width="70" height="60" class="dg-dim"/>
+<line x1="280" y1="95" x2="280" y2="150" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="267" y1="95" x2="293" y2="95" class="dg-stroke-accent" stroke-width="2"/>
+<text x="280" y="228" text-anchor="middle" font-size="12">B</text>
+<text x="280" y="244" text-anchor="middle" font-size="11" class="dg-dim">보통</text>
+<rect x="390" y="170" width="70" height="40" class="dg-dim"/>
+<line x1="425" y1="70" x2="425" y2="170" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="412" y1="70" x2="438" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<text x="425" y="228" text-anchor="middle" font-size="12">C</text>
+<text x="425" y="244" text-anchor="middle" font-size="11" class="dg-dim">거의 안 봄</text>
+</svg>`,
+    diagramCaption: String.raw`노출이 적어 불확실성이 큰 C는 평균은 낮아도 UCB 상단은 A보다 높아 탐색 우선순위를 얻는다.`,
+    related: [{ label: "필터버블", slug: "filter-bubble" }, { label: "노출 공정성", slug: "exposure-fairness" }],
+    sections: []
+  },
+  "session-based-recommendation": {
+    title: String.raw`세션 기반 추천: 로그인 없이 지금 행동만으로 추천하기`,
+    domain: "recsys",
+    subLabel: String.raw`세션 기반 추천`,
+    intuition: String.raw`<p>온라인 쇼핑몰에 로그인하지 않고 들어온 사용자도 있고 오랜만에 들어와서 예전 취향이 지금과 다를 수도 있다. 이런 사용자에게는 과거 전체 이력을 쓰는 개인화 추천을 적용하기 어렵다. 세션 기반 추천은 그 사용자가 지금 이 방문에서 클릭하고 담은 몇 개의 행동만 보고 다음에 볼 만한 아이템을 추천한다.</p>
+<p>비유하면 오래 알고 지낸 단골 손님의 취향을 기억해서 추천하는 대신 방금 매장에 들어와 둘러본 코너만 보고 다음 코너를 안내하는 셈이다.</p>`,
+    explanation: String.raw`<p>전통적인 협업 필터링은 사용자 아이디별로 누적된 이력을 벡터나 임베딩으로 요약해 추천에 쓴다. 하지만 익명 사용자, 신규 방문자, 로그인하지 않은 사용자에게는 그런 이력이 없다. 세션 기반 추천은 사용자 식별자 대신 하나의 세션, 즉 같은 방문 동안의 클릭과 장바구니 담기와 조회 같은 행동 순서만을 입력으로 쓴다.</p>
+<p>핵심은 순서 정보다. 단순히 세션 안에서 함께 본 아이템의 집합만 보는 것이 아니라 어떤 아이템 다음에 어떤 아이템을 봤는지 즉 순서를 반영해야 다음 행동을 더 잘 예측할 수 있다. 초기에는 아이템 간 전이 확률을 마르코프 체인으로 모델링하는 방법을 썼고 이후에는 RNN 계열인 GRU4Rec이나 셀프어텐션 기반 모델인 SASRec, BERT4Rec처럼 세션 전체 맥락을 함께 인코딩하는 방식으로 발전했다.</p>
+<p>세션 기반 추천은 next-item prediction 과제로 정식화되는 경우가 많다. 세션 안 클릭 순서 $x_1, x_2, \ldots, x_t$가 주어졌을 때 다음 클릭 $x_{t+1}$을 전체 아이템 카탈로그에 대한 순위 문제로 예측한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="20" font-size="12" class="dg-dim">이번 세션의 클릭 순서</text>
+<circle cx="60" cy="70" r="16" class="dg-dim"/><text x="60" y="74" text-anchor="middle" font-size="11">A</text>
+<line x1="76" y1="70" x2="124" y2="70" class="dg-line" stroke-width="1.5"/>
+<circle cx="140" cy="70" r="16" class="dg-dim"/><text x="140" y="74" text-anchor="middle" font-size="11">B</text>
+<line x1="156" y1="70" x2="204" y2="70" class="dg-line" stroke-width="1.5"/>
+<circle cx="220" cy="70" r="16" class="dg-dim"/><text x="220" y="74" text-anchor="middle" font-size="11">C</text>
+<line x1="236" y1="70" x2="290" y2="70" class="dg-line" stroke-width="1.5"/>
+<rect x="300" y="40" width="120" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="360" y="65" text-anchor="middle" font-size="12">세션 모델</text>
+<text x="360" y="82" text-anchor="middle" font-size="11" class="dg-dim">GRU4Rec 등</text>
+<line x1="420" y1="70" x2="470" y2="70" class="dg-line" stroke-width="1.5"/>
+<circle cx="490" cy="70" r="18" class="dg-accent"/><text x="490" y="74" text-anchor="middle" font-size="11">D?</text>
+<text x="490" y="108" text-anchor="middle" font-size="12">다음 클릭 예측</text>
+<text x="30" y="160" font-size="12" class="dg-dim">사용자 아이디나 로그인, 과거 이력이 없어도 동작</text>
+</svg>`,
+    diagramCaption: String.raw`세션 안 클릭 순서만으로 다음에 볼 아이템을 예측한다.`,
+    related: [{ label: "GRU4Rec", slug: "gru4rec" }, { label: "Next-item Prediction", slug: "next-item-prediction" }],
+    sections: []
+  },
+  "gru4rec": {
+    title: String.raw`GRU4Rec: RNN으로 세션 안의 클릭 순서를 학습하기`,
+    domain: "recsys",
+    subLabel: String.raw`세션 기반 추천`,
+    intuition: String.raw`<p>세션 안 클릭은 순서가 있다. 신발을 보고 나서 양말을 본 사람과 양말을 보고 나서 신발을 본 사람은 다음에 원하는 것이 다를 수 있다. GRU4Rec은 순환신경망의 일종인 GRU를 이용해 이 순서 정보를 압축된 은닉 상태에 담아 다음 클릭을 예측하는 모델이다.</p>
+<p>세션마다 클릭 개수가 다르고 짧은 세션이 대부분이라는 점 때문에 일반적인 RNN 학습 방식을 그대로 쓰기보다 세션 여러 개를 동시에 병렬로 흘려보내는 학습 기법을 함께 제안했다.</p>`,
+    explanation: String.raw`<p>GRU 셀은 매 시점 입력 $x_t$와 이전 은닉 상태 $h_{t-1}$을 받아 새 은닉 상태 $h_t$를 만든다. 입력 $x_t$는 직전에 클릭한 아이템의 임베딩이다. 업데이트 게이트 $z_t = \sigma(W_z x_t + U_z h_{t-1})$는 새 후보 상태를 얼마나 반영해 이전 상태를 대체할지, 리셋 게이트 $r_t = \sigma(W_r x_t + U_r h_{t-1})$는 후보 상태를 계산할 때 이전 상태를 얼마나 무시할지를 정한다. 후보 상태는 $\tilde h_t = \tanh(W x_t + U(r_t \odot h_{t-1}))$로 계산하고 최종 은닉 상태는 $h_t = (1 - z_t)\odot h_{t-1} + z_t \odot \tilde h_t$로 두 상태를 게이트 비율만큼 섞는다. 이 은닉 상태가 지금까지의 클릭 순서를 압축한 세션 표현이다.</p>
+<p>출력층은 은닉 상태 $h_t$를 카탈로그 전체 아이템에 대한 점수로 변환하고 점수가 가장 높은 아이템들을 다음 클릭 후보로 내놓는다. 아이템 수가 수만에서 수백만 개에 이르기 때문에 매 스텝 전체 카탈로그에 대해 손실을 계산하는 대신 미니배치 안의 다른 세션이 클릭한 아이템을 부정 샘플로 활용하는 샘플링 방식을 쓴다. 손실함수로는 BPR 계열의 페어와이즈 순위 손실이나 TOP1처럼 정답 아이템 점수를 부정 샘플보다 높이는 방향의 손실을 사용한다.</p>
+<p>학습 효율을 위해 GRU4Rec은 세션 여러 개를 같은 미니배치 안에서 나란히 흘려보내다가 짧은 세션이 끝나면 그 자리를 새 세션으로 바로 채우는 세션 병렬 미니배치 기법을 쓴다. 세션 길이가 제각각이라 패딩을 많이 넣어야 하는 일반적인 RNN 배치 방식보다 계산 낭비가 훨씬 적다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 160" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="55" width="70" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="75" y="85" text-anchor="middle" font-size="12">GRU</text>
+<text x="75" y="45" text-anchor="middle" font-size="11" class="dg-dim">x = A</text>
+<line x1="110" y1="80" x2="170" y2="80" class="dg-line" stroke-width="1.5"/>
+<text x="140" y="73" text-anchor="middle" font-size="10" class="dg-dim">h1</text>
+<rect x="170" y="55" width="70" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="205" y="85" text-anchor="middle" font-size="12">GRU</text>
+<text x="205" y="45" text-anchor="middle" font-size="11" class="dg-dim">x = B</text>
+<line x1="240" y1="80" x2="300" y2="80" class="dg-line" stroke-width="1.5"/>
+<text x="270" y="73" text-anchor="middle" font-size="10" class="dg-dim">h2</text>
+<rect x="300" y="55" width="70" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="335" y="85" text-anchor="middle" font-size="12">GRU</text>
+<text x="335" y="45" text-anchor="middle" font-size="11" class="dg-dim">x = C</text>
+<line x1="370" y1="80" x2="430" y2="80" class="dg-line" stroke-width="1.5"/>
+<text x="400" y="73" text-anchor="middle" font-size="10" class="dg-dim">h3</text>
+<rect x="430" y="55" width="150" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="505" y="78" text-anchor="middle" font-size="12">전체 아이템 점수</text>
+<text x="505" y="94" text-anchor="middle" font-size="11" class="dg-dim">다음 클릭 = D 확률 최대</text>
+</svg>`,
+    diagramCaption: String.raw`은닉 상태가 클릭 순서를 누적하며 매 시점 다음 아이템 점수를 계산한다.`,
+    related: [{ label: "세션 기반 추천", slug: "session-based-recommendation" }, { label: "Next-item Prediction", slug: "next-item-prediction" }],
+    sections: []
+  },
+  "next-item-prediction": {
+    title: String.raw`Next-item Prediction: 다음에 클릭할 아이템 예측하기`,
+    domain: "recsys",
+    subLabel: String.raw`세션 기반 추천`,
+    intuition: String.raw`<p>지금까지 무엇을 봤는지 알 때 바로 다음에 무엇을 볼지 맞히는 문제다. 언어모델이 지금까지 나온 단어들을 보고 다음 단어를 예측하는 것과 같은 구조를 단어 대신 아이템에 적용한 것이라고 보면 된다.</p>
+<p>세션 기반 추천, GRU4Rec, SASRec처럼 순서를 다루는 추천 모델 대부분이 학습과 평가 목표를 바로 이 next-item prediction으로 세운다.</p>`,
+    explanation: String.raw`<p>정식으로 쓰면 세션 또는 사용자의 클릭 이력 $x_1, \ldots, x_t$가 주어졌을 때 다음 아이템 $x_{t+1}$을 전체 아이템 카탈로그 $\mathcal I$ 위에서의 확률분포 $P(x_{t+1} \mid x_1, \ldots, x_t)$로 추정하는 문제다. 카탈로그 크기가 크기 때문에 소프트맥스를 그대로 쓰기보다 일부 부정 샘플만 뽑아 대조하는 샘플드 소프트맥스나 페어와이즈 순위 손실을 주로 쓴다. 대표적으로 BPR 손실은 정답 아이템 $i$와 무작위로 뽑은 오답 아이템 $j$에 대해 $-\ln \sigma(\hat r_i - \hat r_j)$를 최소화해 정답 점수가 오답 점수보다 높아지도록 학습한다.</p>
+<p>평가는 분류 정확도가 아니라 순위 지표로 한다. 정답 아이템이 상위 $k$개 추천 안에 들었는지를 보는 Recall@k, 정답이 나온 순위의 역수를 평균한 MRR, 순위가 높을수록 가중치를 주는 NDCG를 함께 본다. 순서를 무시하는 협업 필터링 지표와 달리 이 지표들은 다음 클릭이 얼마나 상위에 노출됐는지를 직접 반영한다.</p>
+<p>모델 구조는 시간이 지나며 마르코프 체인, RNN인 GRU4Rec, 셀프어텐션인 SASRec과 BERT4Rec으로 발전해 왔지만 어느 쪽이든 결국 같은 next-item prediction 목표를 최적화한다는 점은 동일하다.</p>`,
+    related: [{ label: "세션 기반 추천", slug: "session-based-recommendation" }, { label: "GRU4Rec", slug: "gru4rec" }],
+    sections: []
+  },
+  "offline-online-metric-gap": {
+    title: String.raw`지표 괴리: 오프라인 점수가 좋아도 온라인 성과로 이어지지 않는 이유`,
+    domain: "recsys",
+    subLabel: String.raw`오프라인-온라인 지표 괴리`,
+    intuition: String.raw`<p>새 추천 모델을 과거 로그로 평가했더니 NDCG가 올랐다. 그런데 실제 서비스에 배포하니 클릭률이나 체류시간은 그대로거나 오히려 떨어진다. 흔히 벌어지는 일이다. 오프라인 지표와 온라인 지표가 다른 것을 측정하고 있기 때문이다.</p>
+<p>오프라인 평가는 이미 일어난 과거 행동을 정답으로 두고 그것을 얼마나 잘 맞히는지를 본다. 온라인 성과는 새 모델이 실제로 보여준 추천에 사용자가 그 순간 어떻게 반응하는지를 본다. 둘 사이에는 좁혀지지 않는 간극이 있을 수 있다.</p>`,
+    explanation: String.raw`<p>오프라인 지표인 NDCG, Recall@k, AUC 등은 기존 시스템이 노출했던 아이템에 대한 과거 클릭만을 정답으로 쓴다. 이 로그 자체가 기존 추천 시스템의 편향을 그대로 물려받는다. 기존에 한 번도 노출되지 않았던 아이템은 좋아할 사용자가 있어도 로그에 클릭 기록이 없으므로 오프라인 평가에서 정답으로 인정받을 기회조차 없다. 새 모델이 그런 아이템을 잘 찾아내도 오프라인 지표는 이를 개선으로 인식하지 못하거나 오히려 감점으로 처리한다.</p>
+<p>또한 오프라인 지표는 정확도만 보고 사용자가 실제 화면에서 느끼는 요소, 이를테면 같은 종류만 늘어선 지루함이나 로딩 지연, 썸네일과 제목의 매력도는 전혀 반영하지 못한다. NDCG가 오른 모델이 관련성 높은 아이템만 촘촘히 채워 다양성이 떨어지면 클릭률은 오르되 세션당 체류시간이나 재방문율 같은 장기 지표는 나빠질 수 있다.</p>
+<p>이 간극을 메우기 위한 방법이 온라인 A/B 테스트, interleaving, replay 평가다. A/B 테스트는 실제 트래픽을 나눠 완전히 새로운 반응을 관찰하지만 트래픽과 시간이 많이 든다. interleaving과 replay 평가는 A/B 테스트보다 적은 트래픽과 시간으로 온라인 성과에 더 가까운 추정치를 얻으려는 중간 단계 방법들이다.</p>`,
+    example: String.raw`<p>모델 B가 모델 A보다 오프라인 NDCG@10이 5% 높게 나왔다고 하자. 그런데 모델 B가 상위권을 이미 인기 있는 베스트셀러 위주로 채우는 경향이 있다면 로그에 클릭 기록이 많은 그 아이템들 덕분에 오프라인 지표는 쉽게 오른다. 실제 서비스에서는 사용자가 베스트셀러를 이미 다 알고 있어 새로 클릭하지 않고 결과적으로 온라인 클릭률은 모델 A와 차이가 없거나 낮게 나올 수 있다.</p>`,
+    related: [{ label: "Interleaving", slug: "interleaving" }, { label: "Replay 평가", slug: "replay-evaluation" }],
+    sections: []
+  },
+  "interleaving": {
+    title: String.raw`Interleaving: 두 랭킹을 섞어서 실제 클릭으로 우열 가리기`,
+    domain: "recsys",
+    subLabel: String.raw`오프라인-온라인 지표 괴리`,
+    intuition: String.raw`<p>추천 알고리즘 A와 B 중 어느 쪽이 더 좋은지 알고 싶을 때 가장 확실한 방법은 사용자를 반으로 나눠 각각 다른 알고리즘을 보여주는 A/B 테스트다. 하지만 두 그룹의 사용자 성향 차이 때문에 결과가 흐려질 수 있고 확실한 차이를 보려면 꽤 많은 트래픽과 시간이 필요하다.</p>
+<p>Interleaving은 한 사용자에게 A와 B의 추천 결과를 한 화면에 섞어서 보여주고 그 사용자가 A가 준 아이템을 더 많이 클릭했는지 B가 준 아이템을 더 많이 클릭했는지로 우열을 가린다. 같은 사용자가 같은 순간 두 알고리즘을 동시에 겪기 때문에 사용자 차이라는 잡음이 사라지고 A/B 테스트보다 훨씬 적은 사용자로도 유의미한 차이를 볼 수 있다.</p>`,
+    explanation: String.raw`<p>가장 널리 쓰는 방식은 team-draft interleaving이다. 스포츠 팀을 짤 때 번갈아 선수를 뽑는 것처럼 동전을 던져 이번 자리는 A 목록에서 채울지 B 목록에서 채울지를 정하고 아직 최종 목록에 없는 아이템 중 해당 목록의 최상위 아이템을 가져온다. 같은 아이템이 A, B 양쪽 상위권에 있으면 한 번만 채택하고 다음 자리로 넘어간다. 이렇게 만든 하나의 통합 목록을 사용자에게 보여주되 각 아이템이 A팀 소속인지 B팀 소속인지는 내부적으로 기록해둔다.</p>
+<p>사용자가 클릭을 하면 그 클릭이 A팀 아이템에서 나왔는지 B팀 아이템에서 나왔는지를 집계한다. 여러 사용자에 걸쳐 A팀 클릭 수와 B팀 클릭 수를 비교해 어느 쪽이 더 많은 클릭을 받았는지로 승패를 정한다. 동전을 던져 어느 팀이 먼저 뽑을지를 매번 무작위로 정하기 때문에 항상 먼저 뽑는 쪽이 유리해지는 위치 편향이 상쇄된다.</p>
+<p>balanced interleaving처럼 두 팀의 기여도를 더 세밀하게 맞추는 변형도 있지만 핵심 아이디어는 같다. 같은 노출 기회 안에서 두 랭킹을 직접 경쟁시켜 클릭이라는 실제 행동으로 우열을 가리는 것이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="18" font-size="12" class="dg-dim">랭킹 A</text>
+<rect x="30" y="28" width="90" height="26" class="dg-dim"/><text x="75" y="45" text-anchor="middle" font-size="11">a1</text>
+<rect x="30" y="58" width="90" height="26" class="dg-dim"/><text x="75" y="75" text-anchor="middle" font-size="11">a2</text>
+<rect x="30" y="88" width="90" height="26" class="dg-dim"/><text x="75" y="105" text-anchor="middle" font-size="11">a3</text>
+<text x="270" y="18" font-size="12" class="dg-dim">랭킹 B</text>
+<rect x="270" y="28" width="90" height="26" class="dg-dim"/><text x="315" y="45" text-anchor="middle" font-size="11">b1</text>
+<rect x="270" y="58" width="90" height="26" class="dg-dim"/><text x="315" y="75" text-anchor="middle" font-size="11">b2</text>
+<rect x="270" y="88" width="90" height="26" class="dg-dim"/><text x="315" y="105" text-anchor="middle" font-size="11">b3</text>
+<text x="460" y="18" font-size="12">통합 목록</text>
+<rect x="460" y="28" width="90" height="26" class="dg-accent"/><text x="505" y="45" text-anchor="middle" font-size="11">a1</text>
+<rect x="460" y="58" width="90" height="26" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="505" y="75" text-anchor="middle" font-size="11">b1</text>
+<rect x="460" y="88" width="90" height="26" class="dg-accent"/><text x="505" y="105" text-anchor="middle" font-size="11">a2</text>
+<rect x="460" y="118" width="90" height="26" fill="none" class="dg-stroke-accent" stroke-width="2"/><text x="505" y="135" text-anchor="middle" font-size="11">b2</text>
+<text x="505" y="165" text-anchor="middle" font-size="11" class="dg-dim">채워진 칸 = A팀, 테두리만 = B팀</text>
+<text x="505" y="182" text-anchor="middle" font-size="11" class="dg-dim">클릭이 어느 팀 칸에서 나왔는지로 승패 결정</text>
+</svg>`,
+    diagramCaption: String.raw`동전을 던져 각 자리를 A 또는 B 목록에서 채우고 실제 클릭으로 승패를 가른다.`,
+    example: String.raw`<p>100명의 사용자에게 interleaving 결과를 보여줬더니 A팀 아이템에서 나온 클릭이 62회, B팀 아이템에서 나온 클릭이 38회였다고 하자. 총 클릭 100회 중 A팀 비율이 62%로 B팀보다 뚜렷하게 높으므로 이 실험에서는 랭킹 A가 더 우수하다고 판단한다. 같은 차이를 순수 A/B 테스트로 확인하려면 사용자 간 편차 때문에 훨씬 많은 트래픽이 필요했을 것이다.</p>`,
+    related: [{ label: "지표 괴리", slug: "offline-online-metric-gap" }, { label: "Replay 평가", slug: "replay-evaluation" }],
+    sections: []
+  },
+  "replay-evaluation": {
+    title: String.raw`Replay 평가: 과거 로그를 재생해 온라인에 가까운 추정치 얻기`,
+    domain: "recsys",
+    subLabel: String.raw`오프라인-온라인 지표 괴리`,
+    intuition: String.raw`<p>새 추천 모델을 실제 서비스에 올려보지 않고도 온라인 성과에 가까운 값을 추정하고 싶을 때가 있다. Replay 평가는 과거에 실제로 있었던 로그를 다시 재생하면서 새 모델이 그 순간 실제로 노출됐던 아이템과 같은 아이템을 추천했을 때만 그 로그의 클릭 결과를 그대로 채택하는 방법이다.</p>
+<p>새 모델이 실제 노출과 다른 아이템을 추천한 순간은 그 사용자가 그 아이템을 클릭했을지 알 수 없으므로 그냥 버린다. 남은 기록만으로 성과를 추정한다.</p>`,
+    explanation: String.raw`<p>기존 시스템이 무작위로 아이템을 노출했던 로그가 있다고 하자. 각 로그 항목은 사용자 문맥, 노출된 아이템, 클릭 여부로 이루어진다. Replay 평가는 새 모델을 이 로그에 대해 순서대로 돌리면서 새 모델이 추천한 아이템이 로그에 실제로 노출됐던 아이템과 일치하는 항목만 남긴다. 일치하는 항목에서는 로그에 적힌 실제 클릭 여부를 새 모델의 결과인 것처럼 그대로 사용하고 일치하지 않는 항목은 평가에서 제외한다.</p>
+<p>이 방법이 성립하려면 원래 로그를 만든 노출 정책이 무작위성을 갖고 있어야 한다. 노출 정책이 완전히 결정적이었다면 새 모델이 다른 아이템을 추천하는 경우 일치하는 로그가 거의 남지 않아 추정치의 분산이 커진다. 반대로 일정 확률로 무작위 아이템을 섞어 노출했던 로그일수록 다양한 추천에 대해 일치하는 표본을 더 많이 확보할 수 있다.</p>
+<p>A/B 테스트처럼 실제 트래픽에 새 모델을 노출하지 않고도 오프라인에서 계산할 수 있다는 것이 가장 큰 장점이다. 다만 일치하는 로그만 남기기 때문에 원래 로그 양이 충분히 많아야 하고 새 모델이 기존 정책과 크게 다른 아이템을 추천할수록 남는 표본이 줄어 추정치가 불안정해진다는 한계가 있다.</p>`,
+    related: [{ label: "지표 괴리", slug: "offline-online-metric-gap" }, { label: "Interleaving", slug: "interleaving" }],
+    sections: []
+  },
+  "two-stage-serving": {
+    title: String.raw`2단계 구조: 후보생성으로 줄이고 랭킹으로 정밀 계산하기`,
+    domain: "recsys",
+    subLabel: String.raw`대규모 서빙 아키텍처`,
+    intuition: String.raw`<p>아이템이 수백만 개인 서비스에서 사용자 한 명에게 추천을 보여줄 때마다 모든 아이템에 대해 정교한 모델을 다 돌리면 응답 시간이 감당이 안 된다. 그래서 실제 서비스는 보통 두 단계로 나눈다. 먼저 빠르고 단순한 방법으로 후보를 수백 개 수준으로 확 줄이고 그 다음 줄어든 후보에만 무거운 모델을 적용해 정밀하게 순위를 매긴다.</p>
+<p>넓은 그물로 일단 크게 건져 올린 다음 그 안에서 좋은 것만 세밀하게 골라내는 두 단계 낚시에 가깝다.</p>`,
+    explanation: String.raw`<p>첫 단계인 후보생성은 전체 카탈로그에서 사용자와 관련 있을 법한 아이템 수백 개에서 수천 개를 빠르게 골라낸다. 흔히 사용자와 아이템을 같은 임베딩 공간에 넣고 내적이나 코사인 유사도로 근사최근접 검색을 하거나 간단한 규칙 기반 필터를 함께 쓴다. 이 단계의 목표는 정밀도가 아니라 재현율이다. 진짜 좋은 후보를 놓치지 않는 것이 우선이고 순위 자체는 대략적이어도 된다.</p>
+<p>두 번째 단계인 랭킹은 후보생성이 줄여준 수백 개 아이템에만 적용된다. 이 단계는 사용자, 아이템, 문맥 특징을 모두 입력으로 쓰는 무거운 모델인 그래디언트 부스팅 트리나 딥러닝 랭커로 정밀한 점수를 매긴다. 전체 카탈로그가 아니라 이미 추려진 후보에만 계산을 집중하기 때문에 무거운 모델을 써도 응답 시간을 감당할 수 있다.</p>
+<p>연산량을 대략 비교하면 전체 아이템 수를 $N$, 후보생성 후 남는 후보 수를 $K$($K \ll N$), 랭킹 모델 한 번 평가에 드는 비용을 $c$라 할 때 단일 단계로 전부 정밀 계산하면 비용이 $N \cdot c$에 비례하지만 2단계 구조는 후보생성 비용에 $K \cdot c$만 더해진다. $K$가 $N$보다 몇 자릿수 작으므로 전체 지연시간이 크게 줄어든다. 서비스 규모가 커질수록 후보생성과 랭킹 사이에 중간 단계를 하나 더 끼워 넣는 3단계, 4단계 구조로 확장하기도 한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="70" width="140" height="80" class="dg-dim"/>
+<text x="90" y="60" text-anchor="middle" font-size="12">전체 카탈로그 N</text>
+<polygon points="160,70 300,95 300,125 160,150" class="dg-dim"/>
+<text x="230" y="112" text-anchor="middle" font-size="11">후보생성</text>
+<rect x="300" y="85" width="150" height="55" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="375" y="108" text-anchor="middle" font-size="12">후보 K개</text>
+<text x="375" y="125" text-anchor="middle" font-size="11" class="dg-dim">랭킹 모델 적용</text>
+<polygon points="450,95 540,105 540,120 450,130" class="dg-accent"/>
+<rect x="540" y="98" width="80" height="30" class="dg-accent"/>
+<text x="580" y="118" text-anchor="middle" font-size="11">Top-N</text>
+</svg>`,
+    diagramCaption: String.raw`후보생성이 대상을 크게 줄이면 랭킹은 줄어든 후보에만 정밀 모델을 적용한다.`,
+    example: String.raw`<p>아이템이 500만 개, 랭킹 모델 한 번 평가에 2밀리초가 걸린다고 하자. 모든 아이템에 랭킹 모델을 직접 적용하면 사용자 한 명당 500만 × 2밀리초로 거의 3시간이 걸려 서비스가 불가능하다. 후보생성이 500개로 추린 뒤 그 500개에만 랭킹 모델을 적용하면 500 × 2밀리초 = 1초 수준으로 줄어들고 후보생성 자체의 ANN 검색 비용까지 더해도 전체 응답 시간을 1초 안팎으로 유지할 수 있다.</p>`,
+    related: [{ label: "실시간 피처 스토어", slug: "real-time-feature-store" }, { label: "ANN 인덱스 갱신", slug: "ann-index-refresh" }],
+    sections: []
+  },
+  "real-time-feature-store": {
+    title: String.raw`실시간 피처 스토어: 서빙 순간 최신 피처를 빠르게 조회하기`,
+    domain: "recsys",
+    subLabel: String.raw`대규모 서빙 아키텍처`,
+    intuition: String.raw`<p>추천 모델은 사용자가 방금 클릭한 아이템, 지금 시간대, 최근 몇 분간의 행동 같은 최신 정보를 반영할수록 더 정확해진다. 하지만 이런 피처를 요청이 들어올 때마다 데이터베이스를 뒤져 처음부터 계산하면 응답이 느려진다. 실시간 피처 스토어는 자주 바뀌는 피처를 미리 계산해 아주 빠르게 조회할 수 있는 저장소에 따로 관리한다.</p>
+<p>학습할 때 쓰는 피처와 서빙할 때 쓰는 피처가 같은 정의와 같은 값을 갖도록 맞추는 것도 이 저장소의 중요한 역할이다.</p>`,
+    explanation: String.raw`<p>피처 스토어는 보통 두 갈래로 나뉜다. 오프라인 스토어는 대량의 과거 데이터를 배치로 처리해 학습용 피처를 만들고 저장한다. 온라인 스토어는 서빙 순간에 밀리초 단위로 응답해야 하는 조회를 담당하며 지연시간이 짧은 키-값 저장소를 쓴다. 사용자 아이디나 아이템 아이디를 키로 두고 최신 피처 값을 값으로 저장해 하나의 조회로 바로 꺼내 쓴다.</p>
+<p>피처는 갱신 주기에 따라 성격이 다르다. 사용자의 인구통계 정보처럼 거의 바뀌지 않는 피처는 배치로 하루에 한 번만 갱신해도 되지만 방금 클릭한 아이템이나 최근 5분간 조회수처럼 빠르게 바뀌는 피처는 스트리밍 파이프라인으로 실시간에 가깝게 갱신해야 한다. 실시간 피처 스토어는 이런 스트리밍 갱신을 받아 온라인 스토어에 즉시 반영하는 역할까지 포함하는 경우가 많다.</p>
+<p>가장 신경 써야 할 문제는 학습-서빙 왜곡이다. 학습 때는 과거 로그를 배치로 계산한 피처 값을 쓰고 서빙 때는 실시간으로 계산한 값을 쓰는데 두 계산 로직이 미묘하게 다르면 모델이 학습 때 보지 못한 분포의 입력을 서빙 때 받게 되어 성능이 떨어진다. 피처 스토어는 같은 피처 정의를 오프라인과 온라인 양쪽에서 공유하도록 강제해 이 왜곡을 줄이는 것을 핵심 설계 목표로 삼는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="30" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="60" text-anchor="middle" font-size="12">배치 처리</text>
+<text x="95" y="45" text-anchor="middle" font-size="11" class="dg-dim">과거 로그</text>
+<rect x="20" y="110" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="140" text-anchor="middle" font-size="12">스트리밍</text>
+<text x="95" y="125" text-anchor="middle" font-size="11" class="dg-dim">실시간 이벤트</text>
+<line x1="170" y1="55" x2="270" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="135" x2="270" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="270" y="70" width="150" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="345" y="95" text-anchor="middle" font-size="12">온라인 피처 스토어</text>
+<text x="345" y="112" text-anchor="middle" font-size="11" class="dg-dim">키-값 저장소</text>
+<line x1="420" y1="100" x2="480" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="480" y="75" width="140" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="550" y="105" text-anchor="middle" font-size="12">서빙 요청</text>
+<text x="550" y="90" text-anchor="middle" font-size="11" class="dg-dim">밀리초 조회</text>
+</svg>`,
+    diagramCaption: String.raw`배치와 스트리밍으로 갱신된 피처를 온라인 스토어에 모아 서빙 순간 빠르게 조회한다.`,
+    related: [{ label: "2단계 구조", slug: "two-stage-serving" }, { label: "ANN 인덱스 갱신", slug: "ann-index-refresh" }],
+    sections: []
+  },
+  "ann-index-refresh": {
+    title: String.raw`ANN 인덱스 갱신: 최신성을 지키려면 색인을 다시 만들어야 한다`,
+    domain: "recsys",
+    subLabel: String.raw`대규모 서빙 아키텍처`,
+    intuition: String.raw`<p>후보생성 단계에서 쓰는 근사최근접 검색은 아이템 임베딩을 미리 색인으로 만들어두고 그 색인에서 빠르게 유사한 아이템을 찾는다. 문제는 새 아이템이 계속 추가되고 기존 아이템의 임베딩도 모델이 업데이트되면서 바뀐다는 점이다. 색인을 그대로 두면 새 아이템은 검색되지 않고 오래된 임베딩 기준으로 결과가 나오게 된다.</p>
+<p>그래서 ANN 인덱스는 한 번 만들고 끝나는 것이 아니라 주기적으로 다시 만들어야 한다.</p>`,
+    explanation: String.raw`<p>ANN 인덱스는 임베딩 벡터를 미리 그래프나 클러스터 구조로 정리해두고 질의가 들어오면 전체를 다 비교하지 않고도 가까운 벡터를 빠르게 찾도록 만든 자료구조다. 대표적으로 HNSW나 IVF 같은 방식을 쓴다. 이 구조를 만드는 데는 계산 비용이 들기 때문에 매 요청마다 새로 만들 수 없고 한 번 만든 색인을 한동안 재사용한다.</p>
+<p>하지만 그 사이에 신규 아이템이 계속 들어오고 추천 모델이 재학습되면서 기존 아이템의 임베딩 좌표 자체도 달라진다. 색인이 오래될수록 색인 안 벡터 위치와 최신 모델이 계산하는 실제 임베딩 위치 사이의 차이가 커지고 검색 결과의 재현율이 점점 떨어진다. 신규 아이템은 색인에 아예 없으니 아무리 관련성이 높아도 후보로 뽑히지 않는다.</p>
+<p>대응 방법은 두 갈래다. 하나는 전체 임베딩으로 색인을 처음부터 다시 만드는 풀 리빌드를 정해진 주기마다 도는 것이다. 다른 하나는 신규 아이템의 임베딩만 기존 색인에 점진적으로 추가하는 증분 업데이트로 리빌드 사이 공백을 메우는 것이다. 대개 두 방법을 함께 쓴다. 증분 업데이트로 신규 아이템의 최소한의 검색 가능성을 보장하고 주기적인 풀 리빌드로 임베딩 전체가 흐트러지는 것을 바로잡는다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg">
+<text x="320" y="20" text-anchor="middle" font-size="12" class="dg-dim">색인이 오래될수록 신규 아이템이 검색되지 않는 정도가 커진다</text>
+<line x1="40" y1="150" x2="600" y2="150" class="dg-line" stroke-width="1.5"/>
+<path d="M60,140 C150,120 200,90 260,60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="260" y1="60" x2="260" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="260" y="168" text-anchor="middle" font-size="11">풀 리빌드</text>
+<path d="M260,140 C350,120 400,90 460,60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="460" y1="60" x2="460" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="460" y="168" text-anchor="middle" font-size="11">풀 리빌드</text>
+<path d="M460,140 C520,125 560,110 590,95" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+</svg>`,
+    diagramCaption: String.raw`리빌드 직후 격차는 초기화되지만 시간이 지날수록 다시 벌어진다.`,
+    related: [{ label: "2단계 구조", slug: "two-stage-serving" }, { label: "실시간 피처 스토어", slug: "real-time-feature-store" }],
+    sections: []
+  },
+  "data-parallelism": {
+    title: String.raw`데이터 병렬: 같은 모델을 배치만 나눠 학습하기`,
+    domain: "mlops",
+    subLabel: String.raw`분산학습`,
+    intuition: String.raw`<p>학습 데이터가 수백만 건이면 GPU 한 장으로는 한 번의 에폭을 도는 데도 오랜 시간이 걸립니다. 가장 단순한 해법은 같은 모델을 GPU 여러 장에 똑같이 복사해두고 각 GPU에게 배치의 일부만 맡기는 것입니다. GPU가 늘어난 만큼 한 번에 처리하는 데이터양도 늘어나 학습이 빨라집니다.</p>
+<p>다만 모델을 통째로 복사하는 방식이라 GPU 한 장에 모델과 옵티마이저 상태가 다 들어가야 한다는 전제가 붙습니다. 모델 자체가 GPU 메모리보다 큰 경우에는 이 방식만으로는 해결되지 않습니다.</p>`,
+    explanation: String.raw`<p>데이터 병렬은 모델 파라미터를 GPU마다 동일하게 복제해두고 미니배치를 GPU 수만큼 쪼개 각 GPU가 서로 다른 부분 배치로 순전파와 역전파를 독립적으로 수행합니다. 이 시점까지는 GPU마다 서로 다른 그래디언트를 갖게 됩니다.</p>
+<p>다음 단계가 핵심입니다. 각 GPU가 계산한 그래디언트를 평균 내어 모든 GPU에 같은 값으로 맞춰주는 동기화 과정이 필요합니다. 이를 올리듀스(all-reduce)라 부르며 GPU를 고리 형태로 연결해 통신량을 줄이는 링 올리듀스가 널리 쓰입니다. 동기화가 끝나면 모든 GPU가 동일한 그래디언트로 옵티마이저를 갱신하므로 모델 복사본들은 계속 같은 값을 유지합니다.</p>
+<p>GPU가 $N$대이고 GPU 하나가 처리하는 배치 크기가 $b$라면 한 번의 스텝에서 실제로 소비되는 유효 배치 크기는 $Nb$가 됩니다. 배치가 커지면 한 스텝의 그래디언트 추정이 더 안정적이지만 학습률도 함께 조정해줘야 하는 경우가 많습니다. 데이터 병렬은 구현이 비교적 단순하고 GPU를 늘릴수록 처리량이 거의 선형으로 늘어난다는 장점이 있지만 모델과 옵티마이저 상태를 GPU마다 통째로 복제하기 때문에 메모리 사용은 전혀 줄지 않습니다. 모델이 GPU 메모리를 넘어서는 순간부터는 모델 병렬이나 ZeRO 같은 방법이 필요해집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="110" y1="40" x2="530" y2="40" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="110" y1="40" x2="110" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="320" y1="40" x2="320" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="530" y1="40" x2="530" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="28" text-anchor="middle" font-size="12">그래디언트 동기화 (all-reduce)</text>
+<rect x="40" y="70" width="140" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="250" y="70" width="140" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="460" y="70" width="140" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="110" y="100" text-anchor="middle" font-size="13">GPU 1</text>
+<text x="110" y="122" text-anchor="middle" font-size="12" class="dg-dim">모델 복사본</text>
+<text x="320" y="100" text-anchor="middle" font-size="13">GPU 2</text>
+<text x="320" y="122" text-anchor="middle" font-size="12" class="dg-dim">모델 복사본</text>
+<text x="530" y="100" text-anchor="middle" font-size="13">GPU 3</text>
+<text x="530" y="122" text-anchor="middle" font-size="12" class="dg-dim">모델 복사본</text>
+<rect x="40" y="180" width="140" height="34" class="dg-accent"/>
+<rect x="250" y="180" width="140" height="34" class="dg-accent"/>
+<rect x="460" y="180" width="140" height="34" class="dg-accent"/>
+<text x="110" y="202" text-anchor="middle" font-size="12">배치 1/3</text>
+<text x="320" y="202" text-anchor="middle" font-size="12">배치 2/3</text>
+<text x="530" y="202" text-anchor="middle" font-size="12">배치 3/3</text>
+</svg>`,
+    diagramCaption: String.raw`각 GPU가 배치 일부만 학습하고 그래디언트를 동기화해 모델을 동일하게 유지합니다.`,
+    related: [{ label: "모델 병렬", slug: "model-parallelism" }, { label: "ZeRO", slug: "zero-optimizer" }],
+    sections: []
+  },
+  "model-parallelism": {
+    title: String.raw`모델 병렬: 모델 자체를 여러 장비에 나눠 담기`,
+    domain: "mlops",
+    subLabel: String.raw`분산학습`,
+    intuition: String.raw`<p>모델이 너무 커서 GPU 한 장의 메모리에 다 올라가지 않는 경우가 있습니다. 데이터 병렬은 모델을 GPU마다 통째로 복사하는 방식이라 이 문제를 풀지 못합니다. 모델 병렬은 발상을 바꿔서 모델 자체를 여러 장비에 나눠 담습니다. 한 GPU는 모델의 앞부분만, 다른 GPU는 뒷부분만 갖고 있는 식입니다.</p>
+<p>대신 GPU끼리 계산 중간 결과를 주고받아야 합니다. 앞 GPU가 계산을 끝내야 뒤 GPU가 이어받을 수 있기 때문에 GPU 사이의 통신과 대기 시간을 얼마나 줄이느냐가 관건이 됩니다.</p>`,
+    explanation: String.raw`<p>모델 병렬은 크게 두 방식으로 나뉩니다. 파이프라인 병렬은 모델을 층 단위로 잘라 GPU마다 몇 개 층씩 맡기는 방식입니다. 입력이 GPU1의 층을 통과하면 그 출력이 GPU2로 넘어가 다음 층을 통과하는 식으로 이어집니다. 텐서 병렬은 층 하나를 자르는 대신 층 안의 행렬 연산 자체를 여러 GPU에 나눠 각자 일부 계산을 맡고 결과를 합칩니다. Megatron-LM이 트랜스포머의 어텐션과 피드포워드 행렬을 이렇게 쪼갠 대표 사례입니다.</p>
+<p>파이프라인 병렬의 약점은 유휴 시간입니다. GPU2는 GPU1의 출력이 도착할 때까지 기다려야 하고 역전파도 같은 순서를 거꾸로 거쳐야 하므로 앞뒤 GPU가 서로를 기다리는 구간이 생깁니다. 이를 파이프라인 버블이라 부릅니다. 배치를 여러 개의 작은 마이크로배치로 쪼개 GPU들이 최대한 겹쳐서 일하게 만드는 것이 이 버블을 줄이는 핵심 기법입니다.</p>
+<p>데이터 병렬과 모델 병렬은 풀고자 하는 문제가 다릅니다. 데이터 병렬은 모델은 한 GPU에 들어가지만 학습을 더 빠르게 하고 싶을 때 쓰고 모델 병렬은 모델 자체가 한 GPU에 안 들어갈 때 씁니다. 실제로 대형 모델을 학습할 때는 두 방식을 함께 씁니다. 모델을 여러 GPU 그룹으로 병렬 분할하고 그 그룹을 다시 데이터 병렬로 복제하는 식으로 조합해 GPU 수백 장 규모까지 확장합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="70" width="160" height="80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="110" y="100" text-anchor="middle" font-size="13">GPU 1</text>
+<text x="110" y="122" text-anchor="middle" font-size="12" class="dg-dim">층 1, 2</text>
+<rect x="240" y="70" width="160" height="80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="320" y="100" text-anchor="middle" font-size="13">GPU 2</text>
+<text x="320" y="122" text-anchor="middle" font-size="12" class="dg-dim">층 3, 4</text>
+<rect x="450" y="70" width="160" height="80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="530" y="100" text-anchor="middle" font-size="13">GPU 3</text>
+<text x="530" y="122" text-anchor="middle" font-size="12" class="dg-dim">층 5, 6</text>
+<line x1="190" y1="110" x2="240" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="240,110 228,104 228,116" class="dg-accent"/>
+<line x1="400" y1="110" x2="450" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="450,110 438,104 438,116" class="dg-accent"/>
+<text x="215" y="95" text-anchor="middle" font-size="11" class="dg-dim">중간 결과</text>
+<text x="425" y="95" text-anchor="middle" font-size="11" class="dg-dim">중간 결과</text>
+</svg>`,
+    diagramCaption: String.raw`모델을 층 단위로 나눠 GPU마다 일부 층만 맡고 중간 결과를 다음 GPU로 넘깁니다.`,
+    related: [{ label: "데이터 병렬", slug: "data-parallelism" }, { label: "ZeRO", slug: "zero-optimizer" }],
+    sections: []
+  },
+  "zero-optimizer": {
+    title: String.raw`ZeRO: 옵티마이저 상태와 그래디언트도 나눠 저장하기`,
+    domain: "mlops",
+    subLabel: String.raw`분산학습`,
+    intuition: String.raw`<p>데이터 병렬은 GPU마다 모델과 그래디언트뿐 아니라 옵티마이저 상태까지 통째로 복제합니다. Adam처럼 파라미터마다 모멘텀과 분산을 따로 저장하는 옵티마이저는 이 상태만으로도 모델 파라미터 자체보다 메모리를 더 많이 잡아먹습니다. GPU 8장이 있어도 각 GPU가 같은 옵티마이저 상태를 8번 중복해서 들고 있는 셈이니 메모리가 낭비됩니다.</p>
+<p>ZeRO는 이 중복을 없앱니다. 옵티마이저 상태와 그래디언트, 필요하면 파라미터까지 GPU마다 일부씩만 나눠 갖게 하고 계산이 필요한 순간에만 잠깐 모아 씁니다. 데이터 병렬처럼 동작하면서도 메모리는 모델 병렬에 가깝게 아낍니다.</p>`,
+    explanation: String.raw`<p>혼합정밀도로 Adam을 쓰는 일반적인 데이터 병렬 학습에서 파라미터 수가 $\Psi$개라면 GPU 한 장이 들고 있어야 하는 메모리는 대략 $16\Psi$바이트입니다. fp16 파라미터와 그래디언트가 각각 $2\Psi$바이트, 옵티마이저가 들고 있는 fp32 파라미터 사본과 모멘텀과 분산이 각각 $4\Psi$바이트씩이라 합이 $16\Psi$가 됩니다. 이 전체를 GPU마다 그대로 복제하는 것이 표준 데이터 병렬입니다.</p>
+<p>ZeRO는 이 메모리를 세 단계로 나눠 GPU $N_d$대에 분산시킵니다. 1단계($P_{os}$)는 옵티마이저 상태만 나눠 GPU당 메모리가 대략 $4\Psi + 12\Psi/N_d$로 줄어들어 $N_d$가 커질수록 4배 절감에 가까워집니다. 2단계($P_{os+g}$)는 그래디언트까지 나눠 $2\Psi + 14\Psi/N_d$가 되어 8배 절감에 가까워집니다. 3단계($P_{os+g+p}$)는 파라미터 자체도 나눠 GPU당 메모리가 $16\Psi/N_d$로 GPU 수에 정비례해서 줄어듭니다.</p>
+<p>파라미터를 나눠 가진 상태로도 순전파와 역전파는 문제없이 돌아갑니다. 특정 층을 계산할 차례가 되면 그 층을 갖고 있는 GPU가 나머지 GPU에 잠깐 파라미터를 뿌려주고(all-gather) 계산이 끝나면 다시 지워버립니다. 통신량은 늘지만 GPU마다 항상 전체 파라미터를 들고 있을 필요는 없어집니다. 결과적으로 데이터 병렬과 같은 학습 로직을 유지하면서도 GPU 수를 늘릴수록 GPU 한 장에 필요한 메모리는 계속 줄어드는 구조를 얻습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="220" x2="600" y2="220" class="dg-line" stroke-width="1.5"/>
+<rect x="80" y="60" width="80" height="160" class="dg-dim"/>
+<rect x="220" y="165" width="80" height="55" class="dg-accent"/>
+<rect x="360" y="182" width="80" height="38" class="dg-accent"/>
+<rect x="500" y="200" width="80" height="20" class="dg-accent"/>
+<text x="120" y="50" text-anchor="middle" font-size="12">16Ψ</text>
+<text x="260" y="155" text-anchor="middle" font-size="12">4Ψ + 12Ψ/N</text>
+<text x="400" y="172" text-anchor="middle" font-size="12">2Ψ + 14Ψ/N</text>
+<text x="540" y="190" text-anchor="middle" font-size="12">16Ψ/N</text>
+<text x="120" y="238" text-anchor="middle" font-size="12">기본 DP</text>
+<text x="260" y="238" text-anchor="middle" font-size="12">1단계</text>
+<text x="400" y="238" text-anchor="middle" font-size="12">2단계</text>
+<text x="540" y="238" text-anchor="middle" font-size="12">3단계</text>
+</svg>`,
+    diagramCaption: String.raw`단계가 올라갈수록 옵티마이저 상태, 그래디언트, 파라미터까지 차례로 GPU에 나눠 저장합니다.`,
+    example: String.raw`<p>파라미터 70억 개짜리 모델을 생각해보면 $\Psi = 7 \times 10^9$이므로 표준 데이터 병렬에서는 GPU 한 장에 $16\Psi \approx 112$GB가 필요합니다. 80GB급 GPU 한 장에는 애초에 다 올라가지 않습니다. GPU 8장으로 ZeRO 3단계를 쓰면 GPU당 메모리는 대략 $16\Psi / 8 \approx 14$GB로 줄어들어 같은 모델을 여유 있게 올릴 수 있습니다.</p>`,
+    related: [{ label: "데이터 병렬", slug: "data-parallelism" }, { label: "모델 병렬", slug: "model-parallelism" }],
+    sections: []
+  },
+  "hyperparameter-search": {
+    title: String.raw`하이퍼파라미터 탐색: 그리드부터 베이지안까지`,
+    domain: "mlops",
+    subLabel: String.raw`실험관리`,
+    intuition: String.raw`<p>학습률이나 배치 크기, 정규화 강도 같은 값은 데이터로부터 학습되지 않고 사람이 미리 정해야 합니다. 값을 잘못 고르면 아무리 좋은 모델 구조를 써도 성능이 안 나옵니다. 문제는 후보가 하나가 아니라 여러 개이고 각 조합을 실제로 학습시켜봐야 결과를 알 수 있다는 점입니다. 학습 한 번에 몇 시간씩 걸리는 모델이라면 무작정 모든 조합을 다 시도할 수는 없습니다.</p>
+<p>그래서 어떤 조합을 시도할지 자체를 전략적으로 정하는 방법들이 나왔습니다. 격자를 촘촘히 훑는 방법도 있고 무작위로 찍는 방법도 있고 지금까지의 결과를 보고 다음 시도를 더 똑똑하게 고르는 방법도 있습니다.</p>`,
+    explanation: String.raw`<p>그리드서치는 각 하이퍼파라미터마다 후보 값을 몇 개씩 정해두고 가능한 모든 조합을 전부 학습시켜 비교합니다. 하이퍼파라미터가 $d$개이고 각각 후보가 $k$개씩이면 시도해야 할 조합은 $k^d$개로 늘어나 하이퍼파라미터가 조금만 늘어도 학습 횟수가 감당하기 어려울 정도로 커집니다.</p>
+<p>랜덤서치는 격자를 다 훑는 대신 정해둔 범위 안에서 조합을 무작위로 뽑아 정해진 횟수만큼만 시도합니다. 하이퍼파라미터마다 성능에 미치는 영향의 크기가 다른 경우가 많은데 그리드서치는 영향이 작은 하이퍼파라미터에도 격자를 똑같이 촘촘히 배분하는 반면 랜덤서치는 중요한 하이퍼파라미터의 값 공간을 더 다양하게 훑게 되어 같은 시도 횟수로도 더 나은 조합을 찾는 경우가 많습니다.</p>
+<p>베이지안 최적화는 한 걸음 더 나갑니다. 지금까지 시도한 조합과 그 결과를 바탕으로 하이퍼파라미터와 성능 사이의 관계를 대리모델(주로 가우시안 프로세스)로 추정하고 다음에는 어디를 시도해야 성능이 좋을 가능성이 높은지, 또는 아직 불확실성이 커서 정보 가치가 높은지를 계산해 다음 시도 지점을 고릅니다. 매 시도마다 이전 결과를 반영하기 때문에 그리드서치나 랜덤서치보다 적은 시도 횟수로 좋은 조합에 도달하는 경우가 많지만 대리모델 갱신 자체에 계산 비용이 들어 시도 한 번의 비용이 매우 작을 때는 오히려 랜덤서치가 더 효율적일 수 있습니다.</p>`,
+    example: String.raw`<p>하이퍼파라미터 3개를 각각 후보 4가지로 그리드서치하면 $4^3 = 64$번 학습해야 합니다. 후보를 6가지로 늘리면 $6^3 = 216$번으로 늘어나 하이퍼파라미터를 하나만 더 추가해도 $6^4 = 1296$번까지 치솟습니다. 반면 랜덤서치나 베이지안 최적화는 하이퍼파라미터 개수와 무관하게 예산을 정해두고 예를 들어 30번으로 시도 횟수를 고정할 수 있습니다.</p>`,
+    related: [{ label: "실험추적", slug: "experiment-tracking" }],
+    sections: []
+  },
+  "experiment-tracking": {
+    title: String.raw`실험추적: 지표와 아티팩트를 버전으로 관리하기`,
+    domain: "mlops",
+    subLabel: String.raw`실험관리`,
+    intuition: String.raw`<p>모델 하나를 완성하기까지 학습을 수십 번, 많으면 수백 번 반복하게 됩니다. 그때마다 하이퍼파라미터를 조금씩 바꾸고 데이터 전처리를 손보고 코드도 수정합니다. 시간이 지나면 어떤 설정으로 어떤 결과가 나왔는지 기억에 의존해서는 관리가 안 됩니다. 실험추적은 이런 실행 하나하나를 자동으로 기록해두는 장치입니다.</p>
+<p>기록이 없으면 지난주에 성능이 가장 좋았던 모델을 다시 만들어보려 해도 그때 어떤 조합을 썼는지부터 다시 찾아야 합니다. 실험추적 시스템이 있으면 그 실행의 코드 버전과 하이퍼파라미터와 결과 지표를 그대로 다시 불러올 수 있습니다.</p>`,
+    explanation: String.raw`<p>실험추적 도구는 학습 실행 하나를 런(run)이라는 단위로 취급합니다. 런이 시작되면 고유한 식별자가 부여되고 학습 도중의 손실이나 정확도 같은 지표를 스텝마다 기록하고 학습이 끝나면 모델 가중치 파일이나 시각화 이미지 같은 아티팩트를 함께 저장합니다. 여기에 어떤 하이퍼파라미터로 실행했는지, 어떤 코드 커밋에서 실행했는지, 어떤 버전의 데이터를 썼는지까지 같이 남깁니다.</p>
+<p>이렇게 쌓인 런들은 대시보드에서 나란히 비교할 수 있습니다. 학습률을 바꿔가며 실행한 여러 런의 손실 곡선을 한 화면에 겹쳐 보거나 정확도 기준으로 런을 정렬해 가장 좋은 조합을 바로 찾아낼 수 있습니다. 하이퍼파라미터 탐색과 함께 쓰면 탐색 과정에서 시도한 모든 조합과 결과가 자동으로 기록되어 어떤 영역이 유망한지 눈으로 확인하기도 쉬워집니다.</p>
+<p>실험추적이 중요한 또 다른 이유는 재현성입니다. 좋은 결과가 나온 런의 기록을 보면 그 시점의 코드와 데이터와 설정을 그대로 복원할 수 있어야 합니다. 기록이 불완전하면 나중에 같은 결과를 다시 만들어내지 못하는 일이 생깁니다. 그래서 실험추적 시스템은 지표를 그래프로 보여주는 도구를 넘어 모델이 프로덕션에 올라가기 전 근거 자료로도 쓰입니다.</p>`,
+    related: [{ label: "하이퍼파라미터 탐색", slug: "hyperparameter-search" }],
+    sections: []
+  },
+  "batch-inference": {
+    title: String.raw`배치추론: 지연시간보다 처리량이 우선일 때`,
+    domain: "mlops",
+    subLabel: String.raw`모델 서빙`,
+    intuition: String.raw`<p>추천 모델이 사용자 전체에게 매일 새벽 추천 목록을 미리 계산해둔다고 하면 그 계산이 사용자 한 명당 0.5초가 걸리든 5초가 걸리든 사용자는 신경 쓰지 않습니다. 새벽 안에 전체 계산만 끝내면 됩니다. 이런 상황에서는 요청 하나하나에 빨리 답하는 것보다 한 번에 얼마나 많은 데이터를 처리할 수 있는지가 훨씬 중요합니다. 배치추론은 이런 문제에 맞춘 방식입니다.</p>
+<p>데이터를 큰 묶음으로 모아서 한꺼번에 모델에 통과시키면 GPU를 훨씬 효율적으로 쓸 수 있습니다. 요청이 올 때마다 하나씩 계산하는 것보다 같은 시간에 훨씬 많은 데이터를 처리하게 됩니다.</p>`,
+    explanation: String.raw`<p>GPU는 한 번의 연산에 데이터를 하나만 실어 보내는 것보다 여러 개를 한 번에 실어 보낼 때 훨씬 효율적으로 동작합니다. 행렬 곱셈 하나를 실행하는 데 드는 오버헤드는 배치 크기와 무관하게 어느 정도 고정되어 있는데 배치가 클수록 이 오버헤드가 더 많은 데이터에 나눠 분산되기 때문입니다. 그래서 배치추론은 가능한 한 큰 배치를 모아 GPU 연산 하나에 최대한 많은 입력을 실어 보내는 방향으로 설계됩니다.</p>
+<p>실행 방식도 다릅니다. 배치추론은 대개 정해진 시각에 실행되는 배치 작업으로 돌아갑니다. 하루치 로그나 전체 사용자 목록처럼 이미 확정된 입력 집합을 한 번에 읽어 처리하고 결과를 데이터베이스나 캐시에 저장해두면 실제 서비스는 그 저장된 결과를 조회만 하면 됩니다. 계산과 서빙이 시간상으로 분리되어 있는 셈입니다.</p>
+<p>배치추론의 한계는 결과가 즉시 반영되지 않는다는 점입니다. 사용자의 행동이 방금 바뀌었어도 다음 배치가 돌 때까지는 예전 결과가 그대로 노출됩니다. 실시간성이 중요한 요청은 온라인서빙으로 처리하고 대량이지만 즉시성이 필요 없는 계산은 배치추론으로 나눠 처리하는 것이 일반적인 조합입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="62" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="94" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="126" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="158" y="70" width="26" height="26" class="dg-dim"/>
+<text x="107" y="55" text-anchor="middle" font-size="12">쌓인 요청들</text>
+<line x1="195" y1="83" x2="250" y2="83" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="250,83 238,77 238,89" class="dg-accent"/>
+<rect x="260" y="55" width="130" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="325" y="90" text-anchor="middle" font-size="13">큰 배치 하나</text>
+<line x1="390" y1="83" x2="445" y2="83" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="445,83 433,77 433,89" class="dg-accent"/>
+<rect x="455" y="55" width="80" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="495" y="90" text-anchor="middle" font-size="13">GPU 1회</text>
+<line x1="535" y1="83" x2="580" y2="83" class="dg-line" stroke-width="1.5"/>
+<text x="600" y="88" text-anchor="middle" font-size="12">저장</text>
+</svg>`,
+    diagramCaption: String.raw`요청을 모아 큰 배치로 만든 뒤 한 번의 연산으로 처리하고 결과를 저장해둡니다.`,
+    related: [{ label: "온라인서빙", slug: "online-serving" }, { label: "오토스케일링", slug: "mlops-autoscaling" }],
+    sections: []
+  },
+  "online-serving": {
+    title: String.raw`온라인서빙: 요청 하나하나에 즉시 응답하기`,
+    domain: "mlops",
+    subLabel: String.raw`모델 서빙`,
+    intuition: String.raw`<p>검색창에 입력하는 순간 추천 검색어가 뜨거나 결제 순간에 사기 여부를 판단해야 하는 상황에서는 다음 배치를 기다릴 여유가 없습니다. 요청이 들어온 그 순간에 바로 답을 내놓아야 합니다. 온라인서빙은 이런 요청 하나하나를 즉시 처리하는 방식입니다.</p>
+<p>배치추론이 처리량을 최대화하는 데 집중한다면 온라인서빙은 반대로 요청 한 건이 얼마나 빨리 끝나는지에 집중합니다. 사용자는 결과를 기다리고 있으므로 지연시간이 곧 서비스 품질입니다.</p>`,
+    explanation: String.raw`<p>온라인서빙은 모델을 항상 메모리에 올려둔 서버가 요청을 받을 때마다 즉시 순전파를 수행해 응답합니다. 배치를 최대로 키우는 배치추론과 달리 요청이 도착한 순간부터 정해진 지연시간 예산 안에 답을 내야 하므로 배치를 무한정 키울 수 없습니다. 그래서 아주 짧은 시간(수 밀리초에서 수십 밀리초) 동안만 들어온 요청을 모아 작은 배치로 묶어 처리하는 동적 배칭을 절충안으로 씁니다.</p>
+<p>온라인서빙에서는 평균 지연시간보다 꼬리 지연시간이 더 중요하게 다뤄집니다. 대부분의 요청이 빨라도 100번 중 1번(p99 기준)이 몇 초씩 걸리면 사용자는 그 느린 경험을 서비스 전체의 인상으로 기억합니다. 그래서 온라인서빙 시스템은 평균값뿐 아니라 p95, p99 지연시간을 별도로 추적하고 목표치를 정해둡니다.</p>
+<p>요청량은 시간대에 따라 크게 출렁이기 때문에 온라인서빙 서버는 대개 여러 대로 복제해두고 앞단에 로드밸런서를 두어 요청을 나눠 받습니다. 트래픽이 몰릴 때는 서버를 늘리고 한산할 때는 줄이는 오토스케일링과 결합해 지연시간 목표를 지키면서 비용도 관리합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="90" r="16" class="dg-dim"/>
+<text x="60" y="130" text-anchor="middle" font-size="12">요청 1건</text>
+<line x1="80" y1="90" x2="180" y2="90" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="180,90 168,84 168,96" class="dg-accent"/>
+<rect x="190" y="60" width="120" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="250" y="95" text-anchor="middle" font-size="13">모델 서버</text>
+<line x1="310" y1="90" x2="410" y2="90" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="410,90 398,84 398,96" class="dg-accent"/>
+<circle cx="450" cy="90" r="16" class="dg-accent"/>
+<text x="450" y="130" text-anchor="middle" font-size="12">즉시 응답</text>
+<text x="250" y="160" text-anchor="middle" font-size="12" class="dg-dim">지연시간 예산 안에서 처리</text>
+</svg>`,
+    diagramCaption: String.raw`요청이 도착하면 짧은 시간 안에 모델을 통과해 바로 응답을 돌려줍니다.`,
+    related: [{ label: "배치추론", slug: "batch-inference" }, { label: "오토스케일링", slug: "mlops-autoscaling" }],
+    sections: []
+  },
+  "mlops-autoscaling": {
+    title: String.raw`오토스케일링: 트래픽에 맞춰 서빙 자원을 자동으로 조절하기`,
+    domain: "mlops",
+    subLabel: String.raw`모델 서빙`,
+    intuition: String.raw`<p>온라인서빙 서버를 항상 최대 트래픽 기준으로 켜두면 한산한 시간에는 자원이 놀고 비용만 나갑니다. 반대로 평소 트래픽 기준으로만 켜두면 트래픽이 몰리는 순간 요청을 감당하지 못해 지연시간이 치솟습니다. 오토스케일링은 이 사이에서 자동으로 균형을 잡아줍니다. 트래픽 지표를 지켜보다가 부하가 오르면 서버를 더 띄우고 부하가 내리면 줄입니다.</p>
+<p>모델 서빙에서 오토스케일링은 일반 웹 서버보다 까다로운 지점이 하나 있습니다. 새 서버가 트래픽을 받으려면 모델 가중치를 메모리나 GPU에 올리는 예열 과정이 필요한데 이 과정이 초 단위로 오래 걸릴 수 있습니다.</p>`,
+    explanation: String.raw`<p>일반 웹 서버의 오토스케일링은 대개 CPU 사용률을 기준 지표로 씁니다. 그런데 모델 서빙 서버는 병목이 CPU가 아니라 GPU인 경우가 많습니다. GPU 연산이 이미 꽉 차 있어도 CPU 사용률은 낮게 보일 수 있어 CPU 사용률만 보면 실제로는 포화 상태인 서버를 한가하다고 잘못 판단하게 됩니다. 그래서 모델 서빙에서는 GPU 사용률이나 아직 처리되지 못하고 쌓여 있는 요청의 대기열 길이를 기준 지표로 삼는 경우가 많습니다. 대기열 길이가 늘어난다는 것은 서버가 들어오는 요청을 실시간으로 다 처리하지 못하고 있다는 직접적인 신호입니다.</p>
+<p>여기에 모델 서빙만의 제약이 하나 더 있습니다. 새 서버가 트래픽을 받으려면 큰 모델 가중치를 GPU 메모리에 올리는 예열 시간이 필요한데 수십 초에서 몇 분까지 걸릴 수 있습니다. 트래픽이 몰린 뒤에 서버를 늘리기 시작하면 이미 늦기 때문에 여유를 두고 미리 스케일 아웃을 시작하거나 예열이 끝난 인스턴스를 최소한으로 항상 켜둡니다. 반대로 스케일 인은 신중하게 이뤄집니다. 트래픽이 잠깐 줄었다고 바로 서버를 줄이면 다시 트래픽이 튈 때 예열 시간만큼 응답이 느려질 위험이 있어 스케일 아웃은 빠르게, 스케일 인은 느리게 하는 비대칭 정책이 흔히 쓰입니다. GPU 서버는 대수 자체가 비용에 크게 영향을 주기 때문에 응답성과 비용 사이의 균형을 어디서 잡을지가 운영의 핵심 판단이 됩니다.</p>`,
+    related: [{ label: "온라인서빙", slug: "online-serving" }, { label: "배치추론", slug: "batch-inference" }],
+    sections: []
+  },
+  "quantization": {
+    title: String.raw`양자화: 가중치 정밀도를 낮춰 가볍게 만들기`,
+    domain: "mlops",
+    subLabel: String.raw`모델 압축`,
+    intuition: String.raw`<p>모델 가중치는 보통 32비트 부동소수점으로 저장됩니다. 값 하나하나를 아주 세밀하게 표현할 수 있지만 그만큼 메모리도 많이 차지하고 계산할 때도 비트 수만큼 자원을 씁니다. 그런데 추론 단계에서는 가중치를 그렇게까지 세밀하게 표현하지 않아도 결과가 크게 달라지지 않는 경우가 많습니다. 양자화는 가중치를 더 적은 비트수로 표현해 모델을 가볍게 만드는 방법입니다.</p>
+<p>비유하자면 소수점 아래 여섯 자리까지 정확히 재던 값을 소수점 아래 한두 자리로 반올림해 쓰는 것과 비슷합니다. 정밀도는 조금 떨어지지만 저장 공간과 계산량은 크게 줄어듭니다.</p>`,
+    explanation: String.raw`<p>양자화는 연속적인 실수 값을 정해진 간격의 정수 값으로 매핑합니다. 실수 범위를 스케일 $s$와 영점 $z$로 나눠 정수 $q = \mathrm{round}(x/s) + z$로 변환하고 다시 쓸 때는 $x \approx s(q - z)$로 되돌립니다. 값의 범위를 텐서 전체에 대해 하나로 잡을 수도 있고(퍼텐서) 채널마다 따로 잡을 수도 있는데(퍼채널) 채널별로 나누면 값의 분포가 채널마다 다를 때 정밀도 손실을 줄일 수 있습니다.</p>
+<p>비트수를 줄이면 메모리는 그 비율만큼 정확히 줄어듭니다. 32비트를 8비트로 낮추면 $32/8=4$배, 4비트로 낮추면 8배 절감됩니다. 16비트에서 8비트로만 낮춰도 2배가 줄어듭니다. 계산 속도도 함께 빨라지는데 저비트 정수 연산을 지원하는 하드웨어에서는 같은 시간에 더 많은 연산을 처리할 수 있기 때문입니다.</p>
+<p>양자화 방식은 크게 두 가지입니다. 학습이 끝난 모델을 사후에 양자화하는 방식(post-training quantization)은 빠르고 간단하지만 정밀도 손실이 클 수 있습니다. 학습 과정 자체에 양자화를 흉내 낸 연산을 끼워 넣어 모델이 낮은 정밀도에 적응하도록 학습하는 방식(quantization-aware training)은 추가 학습이 필요하지만 정확도 손실을 더 줄일 수 있습니다. 값의 분포에 극단적으로 크거나 작은 이상치가 섞여 있으면 양자화 구간이 그 이상치에 맞춰 넓어져 나머지 값들의 정밀도가 오히려 나빠지는 문제가 있어 이상치를 따로 다루는 기법들도 함께 쓰입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="60" x2="600" y2="60" class="dg-line" stroke-width="1.5"/>
+<circle cx="100" cy="60" r="5" class="dg-dim"/>
+<circle cx="150" cy="60" r="5" class="dg-dim"/>
+<circle cx="210" cy="60" r="5" class="dg-dim"/>
+<circle cx="280" cy="60" r="5" class="dg-dim"/>
+<circle cx="330" cy="60" r="5" class="dg-dim"/>
+<circle cx="400" cy="60" r="5" class="dg-dim"/>
+<circle cx="460" cy="60" r="5" class="dg-dim"/>
+<circle cx="520" cy="60" r="5" class="dg-dim"/>
+<circle cx="560" cy="60" r="5" class="dg-dim"/>
+<text x="60" y="40" font-size="12">FP32 원본 값(촘촘한 실수)</text>
+<line x1="60" y1="170" x2="600" y2="170" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="150" y1="160" x2="150" y2="180" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="330" y1="160" x2="330" y2="180" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="520" y1="160" x2="520" y2="180" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="150" cy="170" r="6" class="dg-accent"/>
+<circle cx="330" cy="170" r="6" class="dg-accent"/>
+<circle cx="520" cy="170" r="6" class="dg-accent"/>
+<text x="60" y="200" font-size="12">INT8 양자화 값(정해진 구간)</text>
+<line x1="100" y1="65" x2="150" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="210" y1="65" x2="150" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="280" y1="65" x2="330" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="400" y1="65" x2="330" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="460" y1="65" x2="520" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="560" y1="65" x2="520" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+</svg>`,
+    diagramCaption: String.raw`촘촘한 실수 값들을 정해진 간격의 정수 구간으로 반올림해 표현합니다.`,
+    example: String.raw`<p>파라미터 70억 개짜리 모델을 FP32로 저장하면 $7 \times 10^9 \times 4$바이트, 즉 약 28GB가 필요합니다. INT8로 양자화하면 $7 \times 10^9 \times 1$바이트, 즉 약 7GB로 줄어들어 정확히 4분의 1이 됩니다. GPU 메모리가 부족해 못 올리던 모델이 양자화 이후에는 올라가는 경우가 흔한 이유입니다.</p>`,
+    related: [{ label: "프루닝", slug: "pruning" }, { label: "지식증류", slug: "knowledge-distillation" }],
+    sections: []
+  },
+  "pruning": {
+    title: String.raw`프루닝: 중요도 낮은 파라미터 잘라내기`,
+    domain: "mlops",
+    subLabel: String.raw`모델 압축`,
+    intuition: String.raw`<p>학습이 끝난 모델을 들여다보면 결과에 거의 영향을 주지 않는 가중치가 상당히 많이 섞여 있습니다. 값이 0에 가깝거나 다른 가중치와 하는 일이 겹치는 경우입니다. 프루닝은 이런 중요도 낮은 가중치를 잘라내서 모델을 더 작고 빠르게 만드는 방법입니다. 나무의 불필요한 가지를 쳐내는 것과 같은 발상입니다.</p>
+<p>중요한 점은 아무 가중치나 자르는 게 아니라 어떤 기준으로 중요도를 판단하고 얼마나 잘라도 성능이 크게 안 떨어지는지를 확인해가며 진행한다는 것입니다.</p>`,
+    explanation: String.raw`<p>가장 단순한 기준은 크기 기반 프루닝입니다. 절댓값이 작은 가중치일수록 출력에 미치는 영향이 작다고 보고 임계값 이하인 가중치를 0으로 만듭니다. 한 번에 다 자르기보다는 조금씩 잘라내고 남은 가중치로 다시 미세조정을 거치는 과정을 반복하는 것이 일반적입니다. 한꺼번에 많이 자르면 성능이 크게 떨어지지만 자르고 재학습하는 과정을 반복하면 남은 가중치들이 빈자리를 메우며 성능을 상당 부분 회복합니다.</p>
+<p>프루닝은 어떤 단위로 자르느냐에 따라 결과가 크게 달라집니다. 비구조적 프루닝은 개별 가중치 하나하나를 기준으로 골라내기 때문에 정확도는 잘 유지되지만 결과로 남는 것은 군데군데 구멍이 뚫린 희소 행렬입니다. 일반적인 GPU 연산은 이런 불규칙한 희소 패턴을 그대로는 빠르게 처리하지 못해 전용 하드웨어나 라이브러리가 없으면 속도 이득으로 이어지지 않을 수 있습니다. 구조적 프루닝은 채널이나 필터, 어텐션 헤드처럼 통째로 잘라도 되는 단위로 제거합니다. 정확도 손실은 비구조적 방식보다 클 수 있지만 잘라낸 만큼 행렬 크기 자체가 줄어들어 별도의 하드웨어 지원 없이도 실제 속도 향상으로 이어집니다.</p>
+<p>양자화가 값 하나하나를 표현하는 정밀도를 낮추는 방법이라면 프루닝은 값 자체를 아예 없애는 방법입니다. 둘은 서로 다른 축에서 모델을 가볍게 만들기 때문에 실무에서는 프루닝으로 불필요한 파라미터를 먼저 제거하고 남은 파라미터를 양자화로 다시 압축하는 식으로 함께 적용하는 경우가 많습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="120" y1="60" x2="480" y2="60" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="120" y1="60" x2="480" y2="130" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="120" y1="60" x2="480" y2="200" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="120" y1="130" x2="480" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="120" y1="130" x2="480" y2="130" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="120" y1="130" x2="480" y2="200" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="120" y1="200" x2="480" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="120" y1="200" x2="480" y2="130" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="120" y1="200" x2="480" y2="200" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="120" cy="60" r="14" class="dg-dim"/>
+<circle cx="120" cy="130" r="14" class="dg-dim"/>
+<circle cx="120" cy="200" r="14" class="dg-dim"/>
+<circle cx="480" cy="60" r="14" class="dg-dim"/>
+<circle cx="480" cy="130" r="14" class="dg-dim"/>
+<circle cx="480" cy="200" r="14" class="dg-dim"/>
+<text x="120" y="225" text-anchor="middle" font-size="12">입력층</text>
+<text x="480" y="225" text-anchor="middle" font-size="12">출력층</text>
+<text x="300" y="30" text-anchor="middle" font-size="12">점선은 제거된 연결, 실선은 남은 연결</text>
+</svg>`,
+    diagramCaption: String.raw`중요도가 낮은 연결을 제거해도 남은 연결만으로 비슷한 출력을 낼 수 있습니다.`,
+    related: [{ label: "양자화", slug: "quantization" }, { label: "지식증류", slug: "knowledge-distillation" }],
+    sections: []
+  },
+  "knowledge-distillation": {
+    title: String.raw`지식증류: 큰 모델의 지식을 작은 모델로 옮기기`,
+    domain: "mlops",
+    subLabel: String.raw`모델 압축`,
+    intuition: String.raw`<p>정확도가 높은 큰 모델을 그대로 서비스에 올리기에는 느리고 비용이 많이 드는 경우가 많습니다. 그렇다고 작은 모델을 정답 라벨만으로 처음부터 학습시키면 큰 모델만큼의 성능이 잘 나오지 않습니다. 지식증류는 이미 학습된 큰 모델(교사)이 내놓는 출력을 작은 모델(학생)이 흉내 내도록 학습시켜 이 간극을 줄이는 방법입니다.</p>
+<p>정답 라벨은 고양이 사진에 대해 고양이라는 답 하나만 알려주지만 교사 모델은 고양이일 확률이 90퍼센트, 개일 확률이 8퍼센트, 자동차일 확률이 0.01퍼센트라는 식으로 더 풍부한 정보를 담은 확률 분포를 내놓습니다. 학생은 이 분포까지 함께 배우면서 정답 라벨만으로는 얻을 수 없던 힌트를 얻습니다.</p>`,
+    explanation: String.raw`<p>지식증류는 교사 모델의 출력을 그대로 정답처럼 쓰지 않고 온도(temperature) $T$로 부드럽게 만든 소프트맥스를 씁니다. 클래스 $i$의 확률은 다음과 같이 계산됩니다.</p>$$p_i = \frac{\exp(z_i/T)}{\sum_j \exp(z_j/T)}$$<p>$T=1$이면 보통의 소프트맥스와 같지만 $T$를 키우면 확률 분포가 평평해져 1등 클래스뿐 아니라 2등, 3등 클래스의 상대적인 크기 차이까지 잘 드러납니다. 이렇게 드러나는 클래스 간 유사성 정보를 흔히 다크 날리지(dark knowledge)라 부릅니다.</p>
+<p>학생 모델의 손실함수는 두 항으로 구성됩니다. 하나는 정답 라벨과 비교하는 일반적인 교차 엔트로피이고 다른 하나는 같은 온도로 부드럽게 만든 학생의 출력과 교사의 출력 사이의 차이(주로 KL 발산)입니다. 두 항을 가중합해 학생이 정답도 맞히면서 동시에 교사의 확률 분포 형태도 따라가도록 학습시킵니다.</p>
+<p>지식증류는 모델 구조를 바꾸지 않는 양자화나 프루닝과 달리 아예 더 작은 구조를 가진 별도의 학생 모델을 새로 학습시킨다는 점이 다릅니다. 그래서 세 방법은 종종 함께 쓰입니다. 큰 교사 모델의 지식을 작은 학생 구조로 증류한 뒤 그 학생 모델을 다시 양자화하거나 프루닝해 더 가볍게 만드는 식입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="50" width="150" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="105" y="115" text-anchor="middle" font-size="13">교사 모델</text>
+<text x="105" y="135" text-anchor="middle" font-size="12" class="dg-dim">크고 정확함</text>
+<line x1="180" y1="120" x2="250" y2="120" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="250,120 238,114 238,126" class="dg-accent"/>
+<rect x="270" y="80" width="24" height="90" class="dg-accent"/>
+<rect x="304" y="120" width="24" height="50" class="dg-dim"/>
+<rect x="338" y="160" width="24" height="10" class="dg-dim"/>
+<text x="316" y="185" text-anchor="middle" font-size="11">부드러운 확률 분포</text>
+<line x1="370" y1="120" x2="440" y2="120" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="440,120 428,114 428,126" class="dg-accent"/>
+<rect x="450" y="85" width="130" height="70" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="515" y="115" text-anchor="middle" font-size="13">학생 모델</text>
+<text x="515" y="133" text-anchor="middle" font-size="12" class="dg-dim">작고 빠름</text>
+</svg>`,
+    diagramCaption: String.raw`교사 모델이 내놓는 부드러운 확률 분포를 학생 모델이 함께 학습합니다.`,
+    related: [{ label: "양자화", slug: "quantization" }, { label: "프루닝", slug: "pruning" }],
+    sections: []
+  },
+  "feature-consistency": {
+    title: String.raw`온라인/오프라인 피처 일관성: 학습 때 본 값과 서빙 때 값이 같아야 한다`,
+    domain: "mlops",
+    subLabel: String.raw`피처스토어`,
+    intuition: String.raw`<p>모델은 학습할 때 본 피처 값과 실제 서비스에서 받는 피처 값이 같은 방식으로 계산됐다는 전제 위에서 동작합니다. 그런데 학습 파이프라인은 대개 배치 작업으로 과거 데이터를 한꺼번에 처리하고 서빙 파이프라인은 실시간으로 하나의 요청에 대해 즉시 계산합니다. 같은 피처라도 두 파이프라인의 코드가 다르면 계산 결과가 미묘하게 달라질 수 있습니다.</p>
+<p>이 차이를 학습-서빙 스큐(training-serving skew)라 부릅니다. 모델 자체는 그대로인데 서빙 시점에 들어오는 피처 값이 학습 때 본 값과 다른 분포를 갖게 되어 예측 성능이 조용히 나빠집니다. 별다른 에러 없이 벌어지는 문제라서 발견하기가 특히 어렵습니다.</p>`,
+    explanation: String.raw`<p>피처스토어는 이 문제를 오프라인 스토어와 온라인 스토어를 나누되 같은 정의를 공유하게 만드는 방식으로 접근합니다. 오프라인 스토어는 대량의 과거 데이터를 대상으로 피처를 배치로 계산해 학습 데이터셋을 만드는 데 쓰이고 온라인 스토어는 서빙 요청이 들어왔을 때 밀리초 단위로 값을 즉시 조회할 수 있는 키값 저장소입니다. 두 스토어가 같은 피처 정의(변환 로직)를 공유하도록 만들어 학습 때 쓴 계산식과 서빙 때 쓰는 계산식이 어긋나지 않게 하는 것이 핵심입니다.</p>
+<p>오프라인 스토어에서 학습 데이터를 만들 때는 시점 정합(point-in-time correctness)이 특히 중요합니다. 특정 시점의 학습 샘플에 피처를 붙일 때 그 샘플이 실제로 존재했던 시점까지의 데이터만 사용해야지 나중에 갱신된 값을 앞당겨 쓰면 미래 정보가 새어 들어가는 라벨 누수(leakage)가 생깁니다. 서빙 시점에는 반대로 항상 최신 값을 조회하면 되지만 학습용 데이터를 만들 때는 각 샘플의 시점 기준으로 그 시점에 알 수 있었던 값만 골라내야 합니다.</p>
+<p>같은 피처를 학습 파이프라인은 배치 작업으로, 서빙 파이프라인은 별도의 실시간 서비스 코드로 각각 따로 구현하면 두 코드가 시간이 지나며 조금씩 어긋나기 쉽습니다. 피처 정의를 한 곳에 선언해두고 배치 계산과 실시간 계산 양쪽에서 같은 정의를 실행하는 구조를 쓰면 이런 어긋남을 원천적으로 줄일 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="230" y="20" width="180" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="50" text-anchor="middle" font-size="13">피처 정의(공유 로직)</text>
+<line x1="280" y1="70" x2="150" y2="120" class="dg-line" stroke-width="1.5"/>
+<line x1="360" y1="70" x2="490" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="120" width="180" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="150" y="150" text-anchor="middle" font-size="12">오프라인 배치 계산</text>
+<rect x="400" y="120" width="180" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="490" y="150" text-anchor="middle" font-size="12">온라인 스토어 조회</text>
+<line x1="150" y1="170" x2="150" y2="210" class="dg-line" stroke-width="1.5"/>
+<line x1="490" y1="170" x2="490" y2="210" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="210" width="180" height="36" class="dg-dim"/>
+<text x="150" y="233" text-anchor="middle" font-size="12">학습 데이터</text>
+<rect x="400" y="210" width="180" height="36" class="dg-dim"/>
+<text x="490" y="233" text-anchor="middle" font-size="12">서빙 응답</text>
+</svg>`,
+    diagramCaption: String.raw`오프라인 배치 계산과 온라인 실시간 계산이 같은 피처 정의를 공유해야 값이 어긋나지 않습니다.`,
+    example: String.raw`<p>최근 7일간 구매 합계라는 피처가 있다고 하면 학습 파이프라인은 어제까지 완결된 7일치 데이터를 기준으로 128,400원을 계산해 학습 데이터에 붙입니다. 그런데 서빙 파이프라인이 아직 어제 데이터를 반영하지 못한 온라인 스토어에서 값을 읽어오면 같은 시점인데도 96,200원처럼 다른 값이 조회될 수 있습니다. 모델은 128,400원 근방의 값들로 학습됐는데 실제 서빙에서는 계속 더 낮은 값을 받게 되어 예측이 조금씩 어긋납니다.</p>`,
+    sections: []
+  },
+  "data-lineage": {
+    title: String.raw`데이터 리니지: 이 데이터가 어디서 왔는지 추적하기`,
+    domain: "mlops",
+    subLabel: String.raw`데이터 버저닝`,
+    intuition: String.raw`<p>예측이 이상해졌을 때 원인을 찾으려면 그 모델을 학습시킨 데이터가 어디서 왔는지부터 알아야 한다. 원본 로그 테이블이 바뀐 건지 전처리 스크립트가 바뀐 건지 피처 정의가 바뀐 건지 모르면 손 놓고 추측만 하게 된다.</p>
+<p>데이터 리니지는 이 데이터가 어떤 원본에서 어떤 변환을 거쳐 지금 이 형태로 왔는지 기록해두는 것이다. 문제가 생겼을 때 화살표를 거꾸로 따라가면서 원인을 좁혀갈 수 있다.</p>`,
+    explanation: String.raw`<p>데이터 리니지는 그래프로 표현한다. 노드는 원본 테이블 전처리 스크립트 파생 피처 최종 학습 데이터셋이고 간선은 어떤 노드가 어떤 노드로부터 만들어졌는지를 나타낸다. 노드마다 버전과 생성 시각을 같이 남겨두면 특정 시점에 학습된 모델이 정확히 어떤 데이터 스냅샷을 봤는지 재구성할 수 있다.</p>
+<p>리니지가 없는 파이프라인에서는 원본 데이터가 조용히 바뀌어도 아무도 모른다. 상류 테이블 스키마가 바뀌거나 결측치 처리 로직이 수정되면 그 변화가 몇 단계 아래 학습 데이터에 그대로 흘러들지만 추적할 방법이 없으면 모델 성능이 왜 떨어졌는지 원인 후보만 나열하다 끝난다. 리니지 그래프가 있으면 문제가 생긴 피처 하나에서 시작해 그 피처가 의존하는 원본 테이블까지 역추적해 정확히 어디서 변화가 생겼는지 좁힐 수 있다.</p>
+<p>실무에서는 피처스토어나 워크플로우 오케스트레이션 도구가 이 그래프를 자동으로 기록한다. 스크립트가 어떤 입력 테이블을 읽고 어떤 출력 테이블을 쓰는지만 선언하면 도구가 나머지 의존관계를 이어붙인다. 규제가 있는 도메인에서는 리니지가 감사 요건이기도 하다. 어떤 모델이 어떤 데이터로 학습됐는지 설명할 수 있어야 하기 때문이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="80" width="110" height="42" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="75" y="105" font-size="12" text-anchor="middle">원본 로그 테이블</text>
+<line x1="130" y1="101" x2="185" y2="101" class="dg-line" stroke-width="1.5"/>
+<polygon points="185,101 175,96 175,106" class="dg-dim"/>
+<rect x="190" y="80" width="110" height="42" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="245" y="105" font-size="12" text-anchor="middle">전처리 스크립트</text>
+<line x1="300" y1="101" x2="355" y2="101" class="dg-line" stroke-width="1.5"/>
+<polygon points="355,101 345,96 345,106" class="dg-dim"/>
+<rect x="360" y="80" width="110" height="42" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="415" y="105" font-size="12" text-anchor="middle">파생 피처 테이블</text>
+<line x1="470" y1="101" x2="525" y2="101" class="dg-line" stroke-width="1.5"/>
+<polygon points="525,101 515,96 515,106" class="dg-dim"/>
+<rect x="530" y="70" width="100" height="62" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="580" y="95" font-size="12" text-anchor="middle">학습 데이터셋</text>
+<text x="580" y="113" font-size="11" text-anchor="middle" class="dg-dim">스냅샷 v7</text>
+<text x="330" y="30" font-size="12" text-anchor="middle">화살표를 거꾸로 따라가면 원인을 좁힐 수 있다</text>
+</svg>`,
+    diagramCaption: String.raw`원본 테이블부터 학습 데이터셋까지 변환 이력을 그래프로 남긴다.`,
+    related: [{ label: "재현성", slug: "experiment-reproducibility" }, { label: "모델 CI", slug: "model-ci" }, { label: "데이터 드리프트", slug: "data-drift" }],
+    sections: []
+  },
+  "experiment-reproducibility": {
+    title: String.raw`재현성: 같은 입력이면 항상 같은 결과가 나와야 한다`,
+    domain: "mlops",
+    subLabel: String.raw`데이터 버저닝`,
+    intuition: String.raw`<p>실험을 두 번 돌렸는데 성능이 다르게 나오면 어떤 변화가 진짜 개선인지 우연인지 구분할 수 없다. 같은 코드 같은 데이터로 실행했는데 결과가 다르면 그 실험은 신뢰할 수 없다.</p>
+<p>재현성은 동일한 입력을 넣었을 때 항상 동일한 결과가 나오도록 실험 환경 전체를 고정하는 원칙이다. 코드 데이터 하이퍼파라미터뿐 아니라 난수 시드와 라이브러리 버전까지 전부 포함된다.</p>`,
+    explanation: String.raw`<p>재현성을 깨뜨리는 원인은 크게 두 갈래다. 하나는 난수다. 가중치 초기화 데이터 셔플 순서 드롭아웃 마스크처럼 학습 곳곳에 무작위성이 들어가 있어서 시드를 고정하지 않으면 같은 코드를 두 번 돌려도 다른 가중치가 나온다. 다른 하나는 실행 환경이다. 라이브러리 버전이 다르거나 GPU 연산 라이브러리의 병렬 축소 순서가 다르면 부동소수점 연산 순서가 바뀌어 아주 작은 오차가 쌓인다. 이 두 원인을 각각 시드 고정과 환경 고정으로 다룬다.</p>
+<p>완전한 재현성은 비트 단위로 동일한 결과를 요구하지만 실무에서는 그 정도까지 보장하기 어려울 때가 많다. GPU 비결정적 커널이나 분산 학습의 통신 순서는 시드를 고정해도 완전히 결정론적으로 만들기 어렵다. 그래서 현실적인 목표는 통계적 재현성이다. 여러 번 반복 실행했을 때 성능 지표가 무시할 만한 범위 안에서 흔들리는 정도로 타협하는 것이다.</p>
+<p>데이터 리니지가 어떤 데이터를 썼는지 추적하는 것이라면 재현성은 그 데이터와 코드를 다시 실행했을 때 같은 결과가 나오는지를 보장하는 것이다. 두 개념은 서로를 보완한다. 리니지 기록이 있어야 어떤 스냅샷을 다시 실행해야 하는지 알 수 있고 재현성이 보장돼야 그 재실행이 의미가 있다.</p>`,
+    example: String.raw`<p>동일한 설정으로 다섯 번 반복 실행했을 때 정확도가 $91.2\%$ $91.3\%$ $91.1\%$ $91.4\%$ $91.2\%$로 나왔다면 평균 $91.24\%$에 흔들림이 $0.1$퍼센트포인트 안팎이라 사실상 재현된 것으로 본다. 반대로 시드를 고정하지 않은 채 같은 코드를 돌려서 정확도가 $88\%$에서 $94\%$ 사이를 오간다면 그 실험은 어떤 값을 대표값으로 삼아야 할지조차 정할 수 없다.</p>`,
+    related: [{ label: "시드 고정", slug: "seed-fixing" }, { label: "환경 고정", slug: "environment-pinning" }, { label: "데이터 리니지", slug: "data-lineage" }],
+    sections: []
+  },
+  "data-drift": {
+    title: String.raw`데이터 드리프트: 입력 분포가 학습 시점과 달라지는 것`,
+    domain: "mlops",
+    subLabel: String.raw`모니터링`,
+    intuition: String.raw`<p>모델은 학습할 때 본 데이터 분포를 전제로 패턴을 배운다. 서비스가 오래 운영되면 사용자층이 바뀌거나 계절이 바뀌거나 새로운 상품이 추가되면서 실제로 들어오는 입력이 학습 때와는 점점 달라진다. 모델 코드나 가중치는 그대로인데 입력이 달라지면 예측 품질도 조용히 떨어진다.</p>
+<p>데이터 드리프트는 이렇게 서비스 입력 분포가 학습 데이터 분포에서 멀어지는 현상을 가리킨다. 코드에 에러가 나는 게 아니라서 로그만 봐서는 눈치채기 어렵고 분포를 직접 비교해야 알 수 있다.</p>`,
+    explanation: String.raw`<p>드리프트는 크게 두 종류로 나뉜다. 공변량 드리프트는 입력 피처의 분포 $P(X)$ 자체가 바뀌는 경우고 컨셉 드리프트는 입력과 정답 사이의 관계 $P(Y \mid X)$가 바뀌는 경우다. 전자는 입력 분포만 비교하면 잡을 수 있지만 후자는 정답 라벨이 뒤늦게 들어와야 확인할 수 있어 탐지가 더 어렵다.</p>
+<p>분포 차이를 숫자로 재는 대표적인 방법이 KL divergence다. 학습 시점 분포 $P$와 현재 분포 $Q$ 사이의 차이를 $D_{KL}(P \parallel Q) = \sum_x P(x) \log \dfrac{P(x)}{Q(x)}$로 정의한다. 다만 KL divergence는 비대칭이라 실무 모니터링에서는 population stability index PSI처럼 대칭적이고 해석하기 쉬운 지표를 더 자주 쓴다. 피처를 구간으로 나눈 뒤 각 구간의 비중 차이를 합산하는 방식으로 계산하며 관례적으로 PSI가 $0.1$ 미만이면 안정 $0.1$에서 $0.25$ 사이면 주의 $0.25$를 넘으면 유의미한 드리프트로 본다.</p>
+<p>KL divergence 자체는 확률분포를 비교하는 순수한 수학적 도구지만 데이터 드리프트 모니터링은 그 도구를 매일 매시간 자동으로 돌려서 경보를 울리는 운영 시스템으로 만든 것이라는 점이 다르다. 피처마다 이 값을 정기적으로 계산해 대시보드에 쌓아두고 임계값을 넘는 피처가 나오면 담당자에게 알린다. 드리프트가 감지됐다고 곧바로 모델을 다시 학습시키는 건 아니다. 실제 성능 지표가 같이 떨어지는지 확인한 뒤 재학습 여부를 판단하는 것이 일반적이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="560" y2="180" class="dg-line" stroke-width="1.5"/>
+<path d="M60,180 C120,180 140,40 200,40 C260,40 280,180 340,180" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M180,180 C240,180 260,60 320,60 C380,60 400,180 460,180" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="150" y="30" font-size="12" text-anchor="middle">학습 시점 분포 P</text>
+<text x="390" y="50" font-size="12" text-anchor="middle" class="dg-accent">현재 분포 Q</text>
+<text x="300" y="205" font-size="12" class="dg-dim" text-anchor="middle">입력값</text>
+</svg>`,
+    diagramCaption: String.raw`서비스 입력 분포가 학습 시점 분포에서 점점 벗어난다.`,
+    example: String.raw`<p>학습 데이터에서 20대 비중이 $40\%$였는데 현재 서비스 로그에서는 $15\%$라고 하자. 이 구간 하나만으로도 비중 차이가 크게 벌어진 것이고 여러 구간의 차이를 합산한 PSI가 $0.25$를 넘으면 드리프트 경보가 뜬다. 코드는 그대로인데 사용자층이 바뀌었을 뿐이라는 뜻이다.</p>`,
+    related: [{ label: "성능 저하 감지", slug: "model-performance-degradation" }, { label: "데이터 리니지", slug: "data-lineage" }],
+    sections: []
+  },
+  "model-performance-degradation": {
+    title: String.raw`모델 성능 저하 감지: 실시간으로 품질이 떨어지는 걸 잡아내기`,
+    domain: "mlops",
+    subLabel: String.raw`모니터링`,
+    intuition: String.raw`<p>모델을 배포하고 나면 오프라인 테스트셋에서 좋았던 성능이 실제 서비스에서도 유지되는지 계속 지켜봐야 한다. 정답 라벨이 실시간으로 오지 않는 경우가 많아서 정확도를 바로 계산할 수 없을 때가 많고 그래서 대신 볼 수 있는 대리 신호들을 찾아야 한다.</p>
+<p>성능 저하 감지는 이런 대리 신호를 실시간으로 추적해서 모델 품질이 떨어지는 순간을 사람이 알아채기 전에 시스템이 먼저 알려주는 장치다.</p>`,
+    explanation: String.raw`<p>정답 라벨이 즉시 도착하는 상황이라면 정확도나 오차를 그대로 실시간 지표로 쓸 수 있다. 하지만 사기 탐지처럼 정답이 며칠 뒤에나 확정되는 경우에는 예측 신뢰도 분포 예측 클래스 비율 입력 데이터 드리프트처럼 라벨 없이도 관찰 가능한 대리 지표를 대신 모니터링한다. 평소에는 특정 클래스로 $60\%$가 예측되던 모델이 갑자기 $90\%$로 쏠린다면 정답을 몰라도 뭔가 잘못됐다는 신호로 볼 수 있다.</p>
+<p>지표는 시간창 단위로 집계해 이전 기간과 비교한다. 최근 한 시간 평균이 지난 일주일 평균 대비 표준편차 몇 배를 벗어나면 경보를 울리는 식이다. 시간창이 너무 짧으면 트래픽이 적은 시간대에 노이즈만으로도 경보가 울리고 너무 길면 실제 저하를 늦게 알아챈다. 이 둘 사이의 균형이 모니터링 설계의 핵심이다.</p>
+<p>데이터 드리프트가 원인 쪽 신호라면 성능 저하 감지는 결과 쪽 신호다. 드리프트가 감지됐는데 성능 지표는 멀쩡하다면 아직은 지켜봐도 되는 변화일 수 있고 반대로 드리프트 없이 성능만 떨어졌다면 데이터가 아니라 서빙 파이프라인 자체의 버그를 의심해야 한다. 두 신호를 같이 봐야 원인을 좁힐 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="190" x2="600" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="190" x2="40" y2="30" class="dg-line" stroke-width="1.5"/>
+<rect x="40" y="60" width="560" height="40" class="dg-dim" opacity="0.3" stroke="none"/>
+<text x="50" y="55" font-size="11" class="dg-dim">정상 범위</text>
+<path d="M40,80 L120,75 L200,82 L280,78 L360,150 L440,160 L520,155 L600,150" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="360" y1="30" x2="360" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="365" y="45" font-size="12">경보 발생</text>
+<text x="300" y="210" font-size="12" text-anchor="middle" class="dg-dim">시간</text>
+</svg>`,
+    diagramCaption: String.raw`지표가 정상 범위를 벗어나는 순간 경보가 울린다.`,
+    related: [{ label: "데이터 드리프트", slug: "data-drift" }, { label: "자동 롤백 트리거", slug: "auto-rollback-trigger" }, { label: "SLO와 오차예산", slug: "slo-error-budget" }],
+    sections: []
+  },
+  "canary-deployment": {
+    title: String.raw`카나리 배포: 일부 트래픽에만 먼저 새 모델을 보여주기`,
+    domain: "mlops",
+    subLabel: String.raw`신뢰성`,
+    intuition: String.raw`<p>새 모델을 전체 트래픽에 한번에 내보냈다가 문제가 있으면 모든 사용자가 그 문제를 겪는다. 광부들이 유독가스를 미리 감지하려고 카나리아 새를 탄광에 데려간 것처럼 새 모델도 전체 트래픽 중 아주 작은 일부에게만 먼저 보여주고 문제가 없는지 확인한 뒤 점점 넓혀가는 방식이 안전하다.</p>`,
+    explanation: String.raw`<p>카나리 배포는 새 버전을 기존 버전과 함께 동시에 띄워두고 트래픽 비율을 나눠서 보낸다. 처음에는 $5\%$ 정도만 새 버전으로 보내고 지표를 지켜본 뒤 문제가 없으면 $20\%$ $50\%$ $100\%$로 점점 늘려간다. 각 단계마다 오류율 지연시간 핵심 비즈니스 지표를 구버전과 비교해 유의미하게 나빠지지 않는지 확인한다.</p>
+<p>블루그린 배포와 자주 비교되는데 차이는 전환 방식에 있다. 블루그린은 한번에 전체 트래픽을 새 버전으로 스위치하기 때문에 문제가 생기면 전체 사용자가 영향을 받지만 롤백도 트래픽을 다시 스위치 하나로 되돌리면 끝난다. 카나리는 점진적으로 노출을 늘리기 때문에 문제가 생겨도 피해 범위가 작은 일부 트래픽으로 제한되지만 그만큼 전체 전환까지 시간이 걸리고 트래픽을 라우팅으로 나누는 인프라가 추가로 필요하다.</p>
+<p>어떤 사용자를 새 버전으로 보낼지 무작위로 정할 수도 있고 특정 사용자군이나 지역만 골라서 보낼 수도 있다. 어느 쪽이든 같은 사용자가 요청마다 다른 버전을 왔다갔다하지 않도록 세션 단위로 버전을 고정하는 것이 일반적이다. 그래야 지표를 비교할 때도 같은 사용자 집단끼리 일관되게 비교할 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="110" r="16" class="dg-dim" stroke="none"/>
+<text x="50" y="145" font-size="12" text-anchor="middle">트래픽</text>
+<line x1="66" y1="105" x2="180" y2="60" class="dg-line" stroke-width="1.5"/>
+<line x1="66" y1="115" x2="180" y2="160" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="35" width="150" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="255" y="65" font-size="12" text-anchor="middle">새 버전 5%</text>
+<rect x="180" y="135" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="255" y="165" font-size="12" text-anchor="middle">기존 버전 95%</text>
+<text x="420" y="60" font-size="12">지표 이상 없으면</text>
+<text x="420" y="78" font-size="12">비율을 점점 늘림</text>
+</svg>`,
+    diagramCaption: String.raw`새 버전에는 처음엔 아주 작은 비율만 보내고 점차 넓힌다.`,
+    example: String.raw`<p>1일차에 $5\%$ 3일차에 $25\%$ 5일차에 $100\%$로 넓히는 일정을 잡을 수 있다. 각 단계 사이에는 최소 하루씩 지표를 관찰하는 시간을 둬서 낮은 트래픽에서 미처 못 본 문제가 드러날 시간을 확보한다.</p>`,
+    related: [{ label: "블루그린 배포", slug: "blue-green-deployment" }, { label: "롤백 전략", slug: "rollback-strategy" }, { label: "자동 롤백 트리거", slug: "auto-rollback-trigger" }],
+    sections: []
+  },
+  "rollback-strategy": {
+    title: String.raw`롤백 전략: 문제가 생기면 즉시 이전 버전으로`,
+    domain: "mlops",
+    subLabel: String.raw`신뢰성`,
+    intuition: String.raw`<p>아무리 배포 전에 테스트를 철저히 해도 실제 트래픽에서만 드러나는 문제는 항상 있다. 문제를 발견한 뒤에 원인을 분석하고 고치는 데 시간을 쓰는 동안 서비스는 계속 나쁜 상태로 남아있게 된다. 롤백 전략은 원인 분석은 나중에 하더라도 우선 이전에 잘 작동하던 버전으로 즉시 되돌려서 피해를 멈추는 것을 목표로 한다.</p>`,
+    explanation: String.raw`<p>롤백이 빠르려면 이전 버전을 다시 배포하는 게 아니라 이미 떠 있는 이전 버전으로 트래픽만 돌리는 구조가 필요하다. 옛 버전 컨테이너나 엔드포인트를 바로 내리지 않고 일정 기간 함께 띄워둔 채로 로드밸런서나 라우팅 규칙만 바꾸면 새로 빌드하고 배포하는 시간 없이 몇 초 안에 되돌릴 수 있다.</p>
+<p>롤백 판단은 수동으로 사람이 지표를 보고 결정할 수도 있고 자동 롤백 트리거처럼 미리 정한 조건을 만족하면 시스템이 스스로 되돌릴 수도 있다. 수동 롤백은 오탐으로 인한 불필요한 롤백을 줄일 수 있지만 사람이 알아채고 판단하는 시간만큼 피해가 누적된다. 자동 롤백은 반응은 빠르지만 조건을 너무 민감하게 잡으면 일시적인 노이즈에도 롤백이 발동해 배포 자체가 불안정해진다.</p>
+<p>롤백 대상이 모델 가중치뿐 아니라 피처 파이프라인이나 전처리 코드까지 포함될 수 있다는 점도 중요하다. 모델은 그대로인데 피처 계산 로직이 잘못 배포됐다면 모델을 롤백해도 소용없고 피처 파이프라인을 같이 되돌려야 한다. 그래서 롤백 단위를 모델 하나로 좁게 잡지 않고 모델과 그 모델이 의존하는 피처 버전을 묶어서 함께 관리하는 것이 안전하다.</p>`,
+    related: [{ label: "카나리 배포", slug: "canary-deployment" }, { label: "자동 롤백 트리거", slug: "auto-rollback-trigger" }, { label: "블루그린 배포", slug: "blue-green-deployment" }],
+    sections: []
+  },
+  "slo-error-budget": {
+    title: String.raw`SLO와 오차예산: 얼마나 실패해도 괜찮은지 미리 정해두기`,
+    domain: "mlops",
+    subLabel: String.raw`신뢰성`,
+    intuition: String.raw`<p>모든 요청을 완벽하게 처리하는 시스템을 만들려고 하면 비용도 개발 속도도 감당할 수 없을 만큼 커진다. 사이트 신뢰성 엔지니어링 관점에서는 애초에 완벽을 목표로 삼지 않는다. 대신 사용자가 만족할 수 있는 수준의 목표를 숫자로 정해두고 그 안에서는 실패를 허용한다.</p>
+<p>SLO는 이 목표를 나타내는 숫자고 오차예산은 그 목표 안에서 허용되는 실패의 총량이다. 오차예산이 남아있는 동안은 새 기능을 공격적으로 배포해도 되고 오차예산을 다 써버리면 안정화가 우선이라는 신호가 된다.</p>`,
+    explanation: String.raw`<p>SLO(Service Level Objective)는 예를 들어 이번 달 요청의 $99.9\%$는 정상 응답을 반환한다처럼 구체적인 목표치로 표현한다. 오차예산은 $\text{Error Budget} = 1 - \text{SLO}$로 정의한다. SLO가 $99.9\%$면 오차예산은 $0.1\%$고 이는 특정 기간 동안 허용되는 실패 요청 비율 또는 다운타임 비율을 뜻한다.</p>
+<p>오차예산은 단순한 숫자가 아니라 조직 안에서 배포 속도를 조절하는 신호로 쓰인다. 오차예산이 넉넉히 남아있으면 팀은 새로운 모델 버전이나 기능을 더 자주 더 과감하게 배포할 수 있다. 반대로 오차예산을 이미 다 소진했다면 다음 릴리스는 잠시 멈추고 안정성 개선에 집중하자는 합의가 자동으로 성립한다. SRE 관행에서는 이 규칙을 명문화해서 오차예산 소진 시 배포 동결 같은 정책으로 운영한다.</p>
+<p>ML 서빙에 적용할 때는 SLO를 지연시간이나 가용성뿐 아니라 예측 품질 관련 지표로도 잡을 수 있다. 예를 들어 예측 신뢰도가 일정 기준 이하인 응답의 비율이 특정 임계값을 넘지 않아야 한다는 식이다. 다만 예측 품질 지표는 인프라 가용성보다 측정이 늦고 애매할 수 있어 실무에서는 먼저 지연시간과 오류율 같은 인프라성 SLO부터 잡고 품질 SLO는 점진적으로 추가하는 경우가 많다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="25" font-size="13">이번 달 오차예산 (SLO 99.9%)</text>
+<rect x="40" y="40" width="520" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="40" width="340" height="30" class="dg-dim" stroke="none"/>
+<rect x="380" y="40" width="180" height="30" class="dg-accent" opacity="0.5"/>
+<line x1="380" y1="30" x2="380" y2="80" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="380" y="98" font-size="11" text-anchor="middle" class="dg-dim">오늘</text>
+<text x="210" y="60" font-size="11" text-anchor="middle">이미 소진</text>
+<text x="470" y="60" font-size="11" text-anchor="middle">남은 예산</text>
+<text x="300" y="150" font-size="12" text-anchor="middle" class="dg-dim">오차예산은 1에서 SLO를 뺀 값</text>
+</svg>`,
+    diagramCaption: String.raw`목표 기간 안에서 허용된 실패량 중 이미 쓴 만큼과 남은 만큼을 보여준다.`,
+    example: String.raw`<p>한 달을 30일로 잡으면 전체 시간은 $30 \times 24 \times 60 = 43200$분이다. 오차예산이 $0.1\%$면 허용되는 다운타임은 $43200 \times 0.001 = 43.2$분이다. 이번 달에 이미 30분을 장애로 썼다면 남은 오차예산은 13분 남짓이라 이후 배포는 훨씬 신중해져야 한다.</p>`,
+    related: [{ label: "성능 저하 감지", slug: "model-performance-degradation" }, { label: "롤백 전략", slug: "rollback-strategy" }],
+    sections: []
+  },
+  "model-ci": {
+    title: String.raw`모델 CI: 데이터나 코드가 바뀌면 파이프라인을 자동으로 재검증하기`,
+    domain: "mlops",
+    subLabel: String.raw`파이프라인 자동화`,
+    intuition: String.raw`<p>일반 소프트웨어는 코드를 고치면 테스트가 자동으로 돌아가서 뭔가 깨졌는지 바로 알려준다. 그런데 ML 파이프라인은 코드뿐 아니라 데이터도 계속 바뀐다. 코드는 그대로인데 새로 들어온 데이터가 이상하면 학습이 조용히 망가질 수 있다. 모델 CI는 코드가 바뀌든 데이터가 바뀌든 상관없이 학습 파이프라인 전체를 자동으로 다시 돌려서 문제를 미리 잡아내는 장치다.</p>`,
+    explanation: String.raw`<p>전통적인 CI(Continuous Integration)는 코드 변경을 트리거로 삼아 빌드와 테스트를 자동 실행한다. 모델 CI는 여기에 두 번째 트리거를 더한다. 학습 데이터셋의 새 버전이 들어오는 것도 파이프라인을 다시 돌릴 이유가 된다. 코드 커밋이든 데이터 버전 갱신이든 둘 중 하나만 바뀌어도 전체 학습 파이프라인이 자동으로 재실행된다.</p>
+<p>재실행되는 파이프라인은 단순히 에러 없이 끝까지 도는지만 확인하지 않는다. 학습이 끝난 뒤 검증셋 성능이 이전 모델 대비 일정 기준 이하로 떨어지지 않는지 데이터 스키마가 기대한 형태를 유지하는지 피처 분포가 급격히 튀지 않는지까지 자동으로 체크한다. 이 체크를 통과해야만 모델이 레지스트리에 등록되고 다음 단계인 배포 파이프라인으로 넘어간다.</p>
+<p>데이터 리니지와 재현성이 모델 CI를 실질적으로 가능하게 만드는 토대다. 어떤 데이터 스냅샷이 파이프라인을 트리거했는지 리니지로 알 수 있어야 하고 같은 스냅샷과 같은 코드로 다시 돌렸을 때 같은 결과가 나온다는 재현성이 보장돼야 CI 결과를 신뢰할 수 있다. 이 셋이 갖춰지면 사람이 매번 수동으로 재학습을 챙기지 않아도 데이터와 코드 변화에 맞춰 모델이 계속 최신 상태로 검증된다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="30" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="55" font-size="12" text-anchor="middle">코드 변경</text>
+<rect x="20" y="150" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="175" font-size="12" text-anchor="middle">데이터 갱신</text>
+<line x1="140" y1="50" x2="220" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="170" x2="220" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="220" y="85" width="140" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="290" y="106" font-size="12" text-anchor="middle">학습 파이프라인</text>
+<text x="290" y="124" font-size="12" text-anchor="middle">자동 재실행</text>
+<line x1="360" y1="110" x2="430" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="430" y="85" width="140" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="500" y="106" font-size="12" text-anchor="middle">성능 · 스키마 검증</text>
+<text x="500" y="124" font-size="12" text-anchor="middle">통과시 레지스트리 등록</text>
+</svg>`,
+    diagramCaption: String.raw`코드나 데이터 중 하나만 바뀌어도 학습 파이프라인이 자동으로 다시 돌고 검증을 거친다.`,
+    related: [{ label: "데이터 리니지", slug: "data-lineage" }, { label: "재현성", slug: "experiment-reproducibility" }, { label: "블루그린 배포", slug: "blue-green-deployment" }],
+    sections: []
+  },
+  "blue-green-deployment": {
+    title: String.raw`블루그린 배포: 새 버전을 완전히 준비한 뒤 한번에 전환하기`,
+    domain: "mlops",
+    subLabel: String.raw`배포 전략`,
+    intuition: String.raw`<p>기존에 잘 돌아가는 버전을 내리면서 새 버전을 올리면 그 교체 순간에 서비스가 불안정해질 위험이 있다. 블루그린 배포는 이 위험을 피하려고 새 버전을 기존 버전과 완전히 별개로 통째로 띄워서 충분히 준비를 마친 다음 트래픽을 한번에 스위치하는 방식이다.</p>`,
+    explanation: String.raw`<p>블루 환경은 지금 실제 트래픽을 받고 있는 기존 버전이고 그린 환경은 그 옆에 새로 띄운 신규 버전이다. 그린 환경은 실제 사용자 트래픽을 받기 전까지는 독립적으로 헬스체크와 스모크 테스트를 거친다. 준비가 끝나면 로드밸런서나 라우팅 설정을 바꿔서 트래픽을 블루에서 그린으로 한번에 옮긴다. 이 전환은 보통 몇 초 안에 끝난다.</p>
+<p>전환 뒤 문제가 발견되면 라우팅을 다시 블루로 돌리기만 하면 되므로 롤백도 똑같이 빠르다. 블루 환경을 트래픽 전환 이후 바로 없애지 않고 일정 시간 그대로 남겨두는 것이 이 빠른 롤백을 가능하게 하는 핵심이다. 대신 두 환경을 동시에 띄워둬야 하는 기간에는 인프라 비용이 두 배로 든다는 단점이 있다.</p>
+<p>카나리 배포와 비교하면 전환 방식의 철학이 다르다. 카나리는 위험을 트래픽 비율로 나눠서 점진적으로 노출하고 블루그린은 위험을 시간으로 나눠서 그린 환경이 충분히 검증된 뒤 한번에 전체 트래픽을 넘긴다. 그린 환경에서 사전 테스트로 걸러지지 않는 문제 예를 들어 실제 트래픽 패턴에서만 드러나는 부하 문제는 블루그린 방식으로는 늦게 발견될 수 있다는 점이 카나리 대비 약점이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="110" r="16" class="dg-dim" stroke="none"/>
+<text x="50" y="145" font-size="12" text-anchor="middle">트래픽</text>
+<line x1="66" y1="110" x2="180" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="180" y="45" width="150" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="255" y="75" font-size="12" text-anchor="middle">블루 (기존 버전)</text>
+<rect x="180" y="130" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="255" y="150" font-size="12" text-anchor="middle">그린 (신규 버전)</text>
+<text x="255" y="168" font-size="11" text-anchor="middle" class="dg-dim">사전 검증 중</text>
+<text x="420" y="90" font-size="12">검증 완료시</text>
+<text x="420" y="108" font-size="12">라우팅을 한번에 전환</text>
+</svg>`,
+    diagramCaption: String.raw`그린 환경이 준비를 마치면 트래픽 전체가 한번에 옮겨간다.`,
+    related: [{ label: "카나리 배포", slug: "canary-deployment" }, { label: "자동 롤백 트리거", slug: "auto-rollback-trigger" }, { label: "롤백 전략", slug: "rollback-strategy" }],
+    sections: []
+  },
+  "auto-rollback-trigger": {
+    title: String.raw`자동 롤백 트리거: 지표가 기준 밑으로 떨어지면 자동으로 되돌리기`,
+    domain: "mlops",
+    subLabel: String.raw`배포 전략`,
+    intuition: String.raw`<p>새 버전을 배포한 직후 문제가 생겼을 때 담당자가 알림을 보고 판단해서 수동으로 롤백하기까지는 시간이 걸린다. 그 사이에도 나쁜 응답은 계속 나간다. 자동 롤백 트리거는 사람의 판단을 기다리지 않고 미리 정해둔 조건을 지표가 넘는 순간 시스템이 스스로 이전 버전으로 되돌리게 만드는 장치다.</p>`,
+    explanation: String.raw`<p>트리거 조건은 보통 오류율 지연시간 같은 인프라 지표와 예측 신뢰도 분포 같은 모델 지표를 함께 본다. 예를 들어 최근 5분간 5xx 오류율이 $2\%$를 넘거나 P99 지연시간이 기준치의 두 배를 넘으면 자동으로 롤백을 발동하는 식이다. 조건은 배포 직후에만 활성화하고 일정 시간이 지나 안정성이 확인되면 해제하는 것이 보통이다.</p>
+<p>트리거를 너무 민감하게 잡으면 일시적인 트래픽 튐이나 네트워크 노이즈에도 롤백이 발동해서 오히려 배포 자체가 불안정해진다. 반대로 너무 둔감하게 잡으면 진짜 문제가 생겨도 늦게 반응한다. 그래서 실무에서는 단발성 스파이크에 반응하지 않도록 일정 시간 동안 조건이 지속될 때만 발동하게 하거나 여러 지표가 동시에 나빠질 때만 발동하도록 조건을 조합한다.</p>
+<p>자동 롤백이 실제로 빠르게 작동하려면 블루그린이나 카나리처럼 이전 버전으로 트래픽만 돌리면 되는 배포 구조가 전제돼야 한다. 트리거 자체는 조건을 감시하는 로직일 뿐이고 그 조건이 발동했을 때 실제로 되돌릴 수 있는 인프라가 없다면 트리거는 경보만 울리고 끝난다. 롤백 전략에서 옛 버전을 바로 내리지 않고 남겨두는 관행이 여기서도 그대로 필요하다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="170" x2="560" y2="170" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="170" x2="40" y2="30" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="90" x2="560" y2="90" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="45" y="83" font-size="11" class="dg-dim">임계값</text>
+<path d="M40,140 L150,135 L260,130 L340,80 L420,60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="340" cy="80" r="5" class="dg-accent"/>
+<line x1="340" y1="80" x2="340" y2="30" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="345" y="25" font-size="12">자동 롤백 발동</text>
+<text x="470" y="150" font-size="12" text-anchor="middle" class="dg-dim">시간</text>
+</svg>`,
+    diagramCaption: String.raw`지표가 임계값을 넘는 순간 사람 개입 없이 롤백이 실행된다.`,
+    related: [{ label: "블루그린 배포", slug: "blue-green-deployment" }, { label: "롤백 전략", slug: "rollback-strategy" }, { label: "성능 저하 감지", slug: "model-performance-degradation" }],
+    sections: []
+  },
+  "seed-fixing": {
+    title: String.raw`시드 고정: 같은 코드가 항상 같은 결과를 내도록 하기`,
+    domain: "mlops",
+    subLabel: String.raw`환경 고정`,
+    intuition: String.raw`<p>딥러닝 학습에는 무작위성이 곳곳에 숨어있다. 가중치 초기값 데이터를 섞는 순서 드롭아웃으로 꺼지는 뉴런까지 전부 난수로 정해진다. 이 난수를 어떻게 뽑을지 정하는 시작값을 고정해두지 않으면 완전히 같은 코드를 두 번 돌려도 결과가 매번 달라진다.</p>
+<p>시드 고정은 이 난수의 출발점을 특정 숫자로 못박아서 같은 코드를 몇 번을 돌리든 같은 순서로 같은 난수가 나오게 만드는 것이다.</p>`,
+    explanation: String.raw`<p>난수 생성기는 실제로는 완전한 무작위가 아니라 시드라는 시작값에서 출발해 정해진 규칙으로 다음 값을 계산하는 결정론적 알고리즘이다. 같은 시드에서 시작하면 같은 순서의 숫자열이 나온다. 딥러닝 코드에서는 이 시드를 파이썬 표준 난수 넘파이 그리고 파이토치나 텐서플로 같은 프레임워크 각각에 따로 심어줘야 한다. 라이브러리마다 독립된 난수 생성기를 쓰기 때문에 하나만 고정하고 나머지를 빼먹으면 여전히 결과가 흔들린다.</p>
+<p>시드를 고정해도 완전한 결정론이 보장되지 않는 경우가 있다. GPU 위에서 도는 일부 병렬 연산은 스레드가 끝나는 순서에 따라 덧셈 순서가 달라질 수 있고 부동소수점 덧셈은 순서가 바뀌면 결과가 미세하게 달라진다. 완전한 결정론을 원한다면 프레임워크가 제공하는 결정론적 연산 모드를 추가로 켜야 하는데 이 모드는 보통 속도를 희생하는 대가를 치른다. 그래서 실무에서는 완전한 비트 단위 재현보다 여러 시드로 반복 실행해 성능 지표의 흔들림이 무시할 만한 수준인지를 확인하는 쪽으로 타협하는 경우가 많다.</p>
+<p>시드 고정은 재현성을 만드는 두 축 중 하나일 뿐이다. 코드 안의 무작위성은 시드로 잡아도 코드가 돌아가는 라이브러리 버전이나 하드웨어가 다르면 여전히 결과가 달라질 수 있다. 그 부분을 다루는 것이 환경 고정이다.</p>`,
+    related: [{ label: "환경 고정", slug: "environment-pinning" }, { label: "재현성", slug: "experiment-reproducibility" }],
+    sections: []
+  },
+  "environment-pinning": {
+    title: String.raw`환경 고정: 라이브러리 버전까지 얼려서 재현성을 지키기`,
+    domain: "mlops",
+    subLabel: String.raw`환경 고정`,
+    intuition: String.raw`<p>시드를 고정해도 실행하는 컴퓨터의 라이브러리 버전이 지난달과 다르면 결과가 달라질 수 있다. 넘파이나 파이토치 같은 패키지는 버전이 올라가면서 내부 연산 방식이나 기본값이 바뀌기도 한다. 환경 고정은 코드가 도는 주변 환경 즉 라이브러리 버전 파이썬 버전 심지어 운영체제 수준까지 통째로 얼려서 언제 다시 실행해도 같은 환경에서 돌아가게 만드는 것이다.</p>`,
+    explanation: String.raw`<p>가장 기본적인 방법은 lock file이다. requirements.txt에 버전 범위를 느슨하게 적어두면 나중에 설치할 때 그 범위 안에서 최신 버전이 새로 깔릴 수 있다. conda나 poetry 같은 도구의 lock file은 실제로 설치됐던 정확한 버전과 그 하위 의존성 버전까지 통째로 기록해서 언제 다시 설치해도 완전히 같은 패키지 조합이 깔리게 한다.</p>
+<p>패키지 버전만으로는 부족한 경우도 있다. CUDA 드라이버 버전이나 시스템 라이브러리처럼 파이썬 패키지 매니저가 다루지 않는 영역이 결과에 영향을 줄 수 있기 때문이다. Docker 이미지는 운영체제부터 시스템 라이브러리 파이썬 버전 패키지까지 전체 스택을 하나의 불변 이미지로 굳혀서 이 문제를 해결한다. 이미지 태그 하나만 기록해두면 몇 달 뒤에도 그 이미지를 그대로 다시 띄워서 동일한 환경을 재현할 수 있다.</p>
+<p>시드 고정이 코드 실행 안의 무작위성을 잡는 것이라면 환경 고정은 코드 바깥의 실행 조건을 잡는 것이다. 둘 중 하나만 해서는 재현성이 완성되지 않는다. 시드를 고정해도 라이브러리 버전이 바뀌면 결과가 달라지고 환경을 고정해도 시드가 다르면 결과가 달라진다. 실험을 기록할 때 시드값과 환경 이미지 태그를 데이터 버전과 함께 남겨두는 것이 재현성을 실무에서 완성하는 방법이다.</p>`,
+    related: [{ label: "시드 고정", slug: "seed-fixing" }, { label: "재현성", slug: "experiment-reproducibility" }, { label: "모델 CI", slug: "model-ci" }],
+    sections: []
+  },
+  "experiment-metadata": {
+    title: String.raw`실험 메타데이터: 데이터 버전과 코드 버전을 함께 기록하기`,
+    domain: "mlops",
+    subLabel: String.raw`실험 기록`,
+    intuition: String.raw`<p>실험 하나를 재현하려면 코드만 있어서는 부족합니다. 어제 쓴 학습 데이터와 오늘 쓴 학습 데이터가 한 줄이라도 다르면 똑같은 코드를 돌려도 다른 모델이 나옵니다. 실험 메타데이터는 그 실험을 만들어낸 데이터 버전과 코드 버전을 항상 짝지어 기록해두는 습관입니다.</p>
+<p>몇 주 전에 좋은 성능을 낸 모델을 다시 만들어보려는데 그때 어떤 데이터셋을 썼는지 코드가 어느 시점이었는지 기억나지 않는 상황을 떠올려 보면 이 기록이 왜 필요한지 바로 이해됩니다.</p>`,
+    explanation: String.raw`<p>실험 하나를 완전히 재현하려면 최소한 세 가지가 필요합니다. 코드가 어느 커밋이었는지 학습에 쓴 데이터가 정확히 어느 스냅샷이었는지 그리고 하이퍼파라미터 값이 무엇이었는지입니다. 코드 버전은 깃 커밋 해시로 쉽게 남길 수 있지만 데이터 버전은 따로 챙기지 않으면 흔적이 사라집니다. 데이터셋은 계속 갱신되고 잘못된 라벨이 고쳐지고 새 행이 추가되기 때문에 같은 이름의 데이터셋이라도 시점마다 내용이 다릅니다.</p>
+<p>실험 추적 도구는 실행 하나마다 코드 커밋 해시와 데이터 스냅샷 식별자와 하이퍼파라미터와 결과 지표를 한 레코드로 묶어 저장합니다. 이렇게 하면 실행 하나는 코드 버전과 데이터 버전과 하이퍼파라미터 조합으로 유일하게 식별되고 나중에 그 조합을 그대로 다시 실행하면 같은 결과를 재현할 수 있습니다.</p>
+<p>이 기록이 없을 때 벌어지는 일이 더 와닿는 설명입니다. 지난달 리더보드 1등이었던 모델을 다시 학습시켰는데 성능이 떨어졌다면 원인이 코드 변경 때문인지 데이터가 바뀌었기 때문인지 구분할 방법이 없습니다. 데이터 버전을 코드 버전과 별도로 기록해두면 두 축을 각각 되돌려보면서 원인을 좁혀나갈 수 있습니다.</p>`,
+    related: [{ label: "모델 버저닝", slug: "model-versioning" }, { label: "데이터 품질 체크", slug: "data-quality-check" }],
+    sections: []
+  },
+  "model-versioning": {
+    title: String.raw`모델 버저닝: 버전 번호로 변경 이력을 명확히 하기`,
+    domain: "mlops",
+    subLabel: String.raw`레지스트리`,
+    intuition: String.raw`<p>모델을 여러 번 다시 학습시키다 보면 어느 파일이 최신이고 무엇이 얼마나 바뀌었는지 이름만 봐서는 알 수 없어집니다. final_v2_real 같은 파일명이 반복되는 이유입니다. 모델 버저닝은 이름 대신 규칙이 있는 번호를 붙여서 변경의 크기를 번호만 보고 짐작할 수 있게 만드는 방법입니다.</p>
+<p>같은 아키텍처에 데이터만 새로 넣어 다시 학습한 모델과 입력 형식 자체가 바뀐 모델을 같은 방식으로 부르면 서빙 쪽에서 둘을 구분하지 못하고 사고로 이어질 수 있습니다.</p>`,
+    explanation: String.raw`<p>소프트웨어에서 널리 쓰는 semantic versioning 규칙을 모델에 그대로 가져올 수 있습니다. 버전을 MAJOR.MINOR.PATCH 세 자리로 쓰고 자리마다 의미를 다르게 둡니다. MAJOR는 입력 피처 구성이나 출력 형식이 바뀌어 기존 서빙 코드가 그대로 못 쓰는 하위 호환이 깨지는 변경입니다. MINOR는 같은 인터페이스를 유지하면서 재학습이나 구조 개선으로 성능이 달라진 변경입니다. PATCH는 버그 수정이나 아주 작은 미세조정처럼 성능 차이가 거의 없는 변경입니다.</p>
+<p>버전 번호만으로 구분이 안 되는 부분은 모델 레지스트리에 함께 남기는 메타데이터가 채웁니다. 어느 버전이 어떤 학습 데이터와 코드로 만들어졌는지 어떤 지표에서 얼마의 성능을 냈는지를 버전 번호에 매달아 기록해두면 번호만 보고도 무엇이 달라졌는지 짐작할 수 있고 필요하면 상세 기록까지 확인할 수 있습니다.</p>
+<p>번호 체계가 없으면 서빙 시스템이 특히 위험해집니다. MAJOR급 변경인데 이전과 같은 이름으로 배포하면 입력 스키마가 다른 모델을 기존 클라이언트가 그대로 호출하다가 예외를 던지거나 조용히 틀린 값을 뱉는 사고로 이어집니다. 번호 체계가 있으면 클라이언트 쪽에서 자신이 기대하는 MAJOR 버전만 받아들이도록 방어적으로 코드를 짤 수 있습니다.</p>`,
+    related: [{ label: "모델 카드", slug: "model-card" }, { label: "승인 워크플로우", slug: "approval-workflow" }, { label: "실험 메타데이터", slug: "experiment-metadata" }],
+    sections: []
+  },
+  "model-card": {
+    title: String.raw`모델 카드: 성능과 한계, 의도된 쓰임새를 적어두는 설명서`,
+    domain: "mlops",
+    subLabel: String.raw`레지스트리`,
+    intuition: String.raw`<p>모델이 어떤 상황에서 잘 작동하고 어떤 상황에서 못 미더운지는 만든 사람 머릿속에만 있는 경우가 많습니다. 시간이 지나 담당자가 바뀌면 그 지식은 통째로 사라집니다. 모델 카드는 이런 정보를 모델과 함께 다니는 설명서 형태로 남겨두는 문서입니다.</p>
+<p>가전제품 사용설명서가 어떤 환경에서 쓰라고 알려주고 어떤 상황에서 쓰면 안 되는지 경고하는 것처럼 모델 카드도 이 모델을 어디에 써야 하고 어디에 쓰면 안 되는지를 적어둡니다.</p>`,
+    explanation: String.raw`<p>모델 카드에는 몇 가지 구획이 반복됩니다. 학습에 쓴 데이터와 그 출처 · 평가에 쓴 지표와 데이터셋별 성능 · 알려진 한계와 실패 사례 · 의도된 사용처와 의도되지 않은 사용처 그리고 공정성이나 편향 관련 점검 결과입니다. 성능 수치 하나만 덜렁 적어두는 대신 어떤 하위 집단에서 성능이 떨어지는지까지 나눠서 보여주는 것이 핵심입니다.</p>
+<p>모델 카드가 없으면 모델을 가져다 쓰는 다른 팀은 전체 정확도 하나만 보고 판단하게 됩니다. 전체 정확도가 높아도 특정 언어권이나 특정 이미지 조건에서 성능이 크게 떨어지는 모델일 수 있는데 이런 정보가 문서화되어 있지 않으면 실제 서비스에 투입한 뒤에야 문제를 발견하게 됩니다.</p>
+<p>모델 카드는 모델 버저닝과 짝을 이룹니다. 버전이 올라갈 때마다 카드도 함께 갱신되어야 카드가 실제 배포된 모델과 어긋나지 않습니다. 레지스트리에 모델을 등록할 때 카드 작성을 필수 항목으로 걸어두는 팀이 많은 이유입니다.</p>`,
+    related: [{ label: "모델 버저닝", slug: "model-versioning" }, { label: "승인 워크플로우", slug: "approval-workflow" }],
+    sections: []
+  },
+  "approval-workflow": {
+    title: String.raw`승인 워크플로우: 스테이징 검증 후 프로덕션으로 승격하기`,
+    domain: "mlops",
+    subLabel: String.raw`거버넌스`,
+    intuition: String.raw`<p>학습이 끝난 모델을 곧바로 실제 서비스에 올리면 학습 데이터에서는 안 보이던 문제가 실제 트래픽에서 처음 드러날 수 있습니다. 승인 워크플로우는 새 모델을 진짜 서비스로 내보내기 전에 사람이나 자동화된 기준이 한 번 더 검증하는 절차를 끼워 넣는 방법입니다.</p>
+<p>실제와 거의 같은 스테이징 환경에서 먼저 확인하고 기준을 통과한 모델만 프로덕션으로 올린다는 점에서 소프트웨어 배포에서 오래 써온 절차를 모델에도 그대로 적용한 것입니다.</p>`,
+    explanation: String.raw`<p>전형적인 흐름은 학습이 끝난 모델을 우선 스테이징 환경에 올리는 것으로 시작합니다. 스테이징은 실제 서비스와 같은 구성으로 돌아가지만 실제 사용자 트래픽에는 영향을 주지 않는 격리된 환경입니다. 여기서 정해둔 평가 데이터셋으로 성능 지표를 확인하고 지연 시간과 자원 사용량 같은 운영 지표까지 함께 점검합니다.</p>
+<p>기준을 통과하면 승인 단계로 넘어갑니다. 승인은 담당자가 카드와 지표를 검토하고 승인하는 수동 방식일 수도 있고 정해둔 지표 기준을 자동으로 통과하면 다음 단계로 넘어가는 자동화 방식일 수도 있습니다. 규제가 엄격한 도메인일수록 사람이 직접 확인하는 수동 승인을 요구하는 경우가 많습니다.</p>
+<p>승인 워크플로우가 없으면 학습 코드에서 곧바로 프로덕션 엔드포인트로 모델이 흘러들어가는 구조가 됩니다. 학습 스크립트의 사소한 버그나 평가 데이터셋 선택 실수가 그대로 실제 사용자에게 노출되고 문제를 알아차렸을 때는 이미 많은 요청이 잘못된 응답을 받은 뒤일 수 있습니다. 승인 단계는 이런 사고가 퍼지기 전에 멈추는 마지막 검문소 역할을 합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="85" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="115" text-anchor="middle" font-size="12">학습 완료 모델</text>
+<line x1="140" y1="110" x2="190" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="190" y="85" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="250" y="108" text-anchor="middle" font-size="12">스테이징</text>
+<text x="250" y="124" text-anchor="middle" font-size="12">검증</text>
+<line x1="310" y1="110" x2="360" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="360,110 400,80 440,110 400,140" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="400" y="107" text-anchor="middle" font-size="11">기준</text>
+<text x="400" y="121" text-anchor="middle" font-size="11">통과?</text>
+<line x1="440" y1="110" x2="500" y2="60" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="470" y="55" font-size="11">예</text>
+<rect x="500" y="35" width="120" height="50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="560" y="58" text-anchor="middle" font-size="12">프로덕션</text>
+<text x="560" y="74" text-anchor="middle" font-size="12">승격</text>
+<line x1="400" y1="140" x2="400" y2="185" class="dg-line" stroke-width="1.5"/>
+<text x="415" y="165" font-size="11">아니오</text>
+<rect x="340" y="185" width="120" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="400" y="205" text-anchor="middle" font-size="11">반려 · 재학습</text>
+</svg>`,
+    diagramCaption: String.raw`스테이징 검증을 통과한 모델만 프로덕션으로 승격됩니다.`,
+    related: [{ label: "모델 카드", slug: "model-card" }, { label: "모델 버저닝", slug: "model-versioning" }],
+    sections: []
+  },
+  "data-contract": {
+    title: String.raw`데이터 계약: 업스트림이 스키마를 바꾸기 전에 미리 알기`,
+    domain: "mlops",
+    subLabel: String.raw`데이터 계약`,
+    intuition: String.raw`<p>업스트림 팀이 로그 이벤트에서 필드 하나를 조용히 이름만 바꿔서 내보내면 그 데이터를 받아쓰는 파이프라인은 필드가 사라진 것처럼 보이고 어디서부터 잘못됐는지 한참 뒤에야 알아차리게 됩니다. 데이터 계약은 이런 사고를 막기 위해 업스트림과 다운스트림이 데이터 형태에 대해 미리 합의하고 그 합의를 코드로 강제하는 장치입니다.</p>
+<p>API 계약이 요청과 응답의 형태를 문서와 검증 코드로 못 박아두듯 데이터 계약도 어떤 필드가 있고 각 필드의 타입과 null 허용 여부가 무엇인지를 명시적으로 적어두고 어긴 순간 바로 알림이 오게 만듭니다.</p>`,
+    explanation: String.raw`<p>데이터 계약은 보통 스키마 정의 파일 형태로 존재합니다. 각 필드의 이름과 타입 · null을 허용하는지 · 값의 범위나 허용되는 집합이 무엇인지를 적어둡니다. 업스트림 팀이 새 코드를 배포하기 전에 이 계약을 어기는 변경인지를 자동으로 검사하는 CI 단계를 두면 스키마가 깨지는 배포 자체를 사전에 막을 수 있습니다.</p>
+<p>계약이 없는 상태에서 업스트림이 필드 이름을 바꾸거나 이전에는 항상 값이 있던 필드에 null을 섞어 내보내기 시작하면 다운스트림 파이프라인은 오류를 내지 않고 조용히 잘못된 집계를 만들어내는 경우가 많습니다. 코드가 죽지 않고 그냥 결측치를 0으로 채우거나 조인에 실패한 행을 조용히 버리기 때문입니다. 문제는 대시보드 숫자가 이상하다는 걸 누군가 발견할 때야 드러나고 그 시점에는 이미 며칠 치 집계가 오염된 뒤입니다.</p>
+<p>데이터 계약은 이 실패 시점을 앞당깁니다. 업스트림이 계약을 어기는 변경을 배포하려는 순간 CI에서 막히거나 최소한 변경 사실이 다운스트림 팀에 자동으로 통보됩니다. 계약을 지키면서 필드를 늘리거나 줄이는 방법은 스키마 진화 관리가 다루는 영역으로 이어집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="85" width="130" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="95" y="115" text-anchor="middle" font-size="12">업스트림</text>
+<line x1="160" y1="110" x2="220" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="220" y="70" width="160" height="80" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="98" text-anchor="middle" font-size="12">데이터 계약</text>
+<text x="300" y="116" text-anchor="middle" font-size="11" class="dg-dim">필드 · 타입 · null 검증</text>
+<text x="300" y="134" text-anchor="middle" font-size="11" class="dg-accent">위반 시 배포 차단</text>
+<line x1="380" y1="110" x2="450" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="450" y="85" width="150" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="525" y="115" text-anchor="middle" font-size="12">다운스트림</text>
+<text x="300" y="180" text-anchor="middle" font-size="11" class="dg-dim">필드 이름 변경 · 타입 변경은 여기서 걸러짐</text>
+</svg>`,
+    diagramCaption: String.raw`업스트림과 다운스트림 사이에서 계약이 스키마 위반을 걸러냅니다.`,
+    related: [{ label: "스키마 진화 관리", slug: "schema-evolution" }, { label: "데이터 품질 체크", slug: "data-quality-check" }],
+    sections: []
+  },
+  "schema-evolution": {
+    title: String.raw`스키마 진화 관리: 필드가 늘거나 줄어도 하위 시스템이 안 깨지게 하기`,
+    domain: "mlops",
+    subLabel: String.raw`데이터 계약`,
+    intuition: String.raw`<p>데이터 계약이 있어도 시간이 지나면 필드는 늘어나거나 줄어들기 마련입니다. 새 기능을 위해 필드를 추가하고 더는 안 쓰는 필드를 정리하는 일 자체는 자연스럽습니다. 문제는 그 변화가 이미 필드를 읽고 있는 다운스트림 코드를 깨뜨리지 않고 지나가야 한다는 점입니다.</p>
+<p>스키마 진화 관리는 필드를 추가하거나 삭제할 때 지켜야 할 순서와 규칙을 정해서 변경이 하위 시스템에 조용히 전파되게 만드는 방법입니다.</p>`,
+    explanation: String.raw`<p>안전한 진화의 기본 규칙은 하위 호환을 유지하는 변경과 깨는 변경을 구분하는 것입니다. 새 필드를 선택적으로 추가하는 것은 대체로 안전합니다. 기존 코드는 그 필드를 몰라도 계속 동작합니다. 반면 필드 이름을 바꾸거나 타입을 바꾸거나 필수였던 필드를 삭제하는 것은 깨는 변경입니다. 이런 변경은 한 번에 밀어넣지 않고 새 필드를 먼저 추가해 두고 옛 필드와 한동안 병행 제공한 다음 모든 소비자가 새 필드로 옮겨간 뒤에야 옛 필드를 제거하는 단계적 절차를 거칩니다.</p>
+<p>이 절차 없이 필드를 즉시 삭제하면 그 필드를 참조하던 다운스트림 코드가 예외를 던지거나 해당 컬럼이 없다는 이유로 파이프라인 전체가 실패합니다. 반대로 필수 필드를 아무 공지 없이 추가하면 기존 데이터를 읽던 코드는 문제없이 동작하지만 새로 그 필드를 필요로 하는 소비자 입장에서는 과거 데이터에 그 필드가 비어 있어 처리 로직을 분기해야 하는 부담이 생깁니다.</p>
+<p>스키마 레지스트리를 두고 버전마다 스키마를 등록하며 새 버전이 이전 버전과 호환되는지를 자동으로 검사하는 방식이 널리 쓰입니다. 호환성 검사를 통과하지 못하는 변경은 배포 자체가 막히기 때문에 데이터 계약이 정적으로 정의한 규칙을 실제 배포 과정에서 지속적으로 강제하는 역할을 합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="100" x2="600" y2="100" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="100" cy="100" r="6" class="dg-dim" stroke="none"/>
+<text x="100" y="130" text-anchor="middle" font-size="11">기존 필드만 존재</text>
+<circle cx="280" cy="100" r="6" class="dg-accent" stroke="none"/>
+<text x="280" y="80" text-anchor="middle" font-size="11">새 필드 추가</text>
+<text x="280" y="130" text-anchor="middle" font-size="10" class="dg-dim">옛 필드와 병행 제공</text>
+<circle cx="440" cy="100" r="6" class="dg-accent" stroke="none"/>
+<text x="440" y="80" text-anchor="middle" font-size="11">모든 소비자 이전 완료</text>
+<circle cx="580" cy="100" r="6" class="dg-dim" stroke="none"/>
+<text x="580" y="130" text-anchor="middle" font-size="11">옛 필드 제거</text>
+</svg>`,
+    diagramCaption: String.raw`새 필드는 옛 필드와 병행 제공된 뒤 모든 소비자가 옮겨가야 제거됩니다.`,
+    related: [{ label: "데이터 계약", slug: "data-contract" }, { label: "데이터 품질 체크", slug: "data-quality-check" }],
+    sections: []
+  },
+  "data-quality-check": {
+    title: String.raw`데이터 품질 체크: null 비율과 분포 이상을 자동으로 잡아내기`,
+    domain: "mlops",
+    subLabel: String.raw`품질 검증`,
+    intuition: String.raw`<p>파이프라인에 들어오는 데이터가 어제와 같은 형태라고 그냥 믿고 넘어가면 null 값이 갑자기 늘어나거나 값의 분포가 이상하게 치우쳐도 누구도 알아채지 못한 채 그 데이터로 모델이 다시 학습됩니다. 데이터 품질 체크는 데이터가 파이프라인을 통과하기 전에 정해둔 규칙에 맞는지를 자동으로 검사하는 단계입니다.</p>
+<p>사람이 매번 데이터를 눈으로 훑어볼 수는 없으니 null 비율이나 값의 범위처럼 숫자로 확인 가능한 규칙을 정해두고 그 규칙을 기계가 대신 확인하게 만드는 것입니다.</p>`,
+    explanation: String.raw`<p>가장 기본적인 체크는 각 컬럼의 null 비율이 평소 범위를 벗어나지 않는지 보는 것입니다. 특정 컬럼의 null 비율이 평소 $1\%$ 미만이었는데 어느 날 $20\%$로 뛰었다면 업스트림에서 뭔가 바뀌었다는 강한 신호입니다. 여기에 값의 범위 검사 즉 나이 컬럼에 음수나 200이 넘는 값이 없는지 카테고리 컬럼에 정의되지 않은 새 값이 섞여 있지 않은지를 함께 확인합니다.</p>
+<p>더 나아가면 분포 자체의 변화를 감지하는 검사로 확장됩니다. 값의 평균이나 표준편차가 과거 기록과 비교해 크게 벗어나는지를 통계적으로 검사하거나 두 시점의 분포 차이를 정량화하는 지표로 드리프트를 감지합니다. 개별 값은 규칙을 어기지 않아도 전체 분포가 서서히 옮겨가는 경우는 null 검사나 범위 검사만으로는 잡히지 않기 때문에 분포 비교가 따로 필요합니다.</p>
+<p>이런 체크가 파이프라인에 없으면 품질이 나쁜 데이터가 아무 제지 없이 학습 데이터로 흘러들어가고 모델 성능이 서서히 나빠지는 원인을 데이터 쪽에서 찾기까지 오래 걸립니다. 체크를 파이프라인 중간에 게이트로 걸어두면 규칙을 어긴 배치는 다음 단계로 넘어가지 못하고 멈추기 때문에 문제를 원인이 되는 배치 단위까지 좁혀서 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="75" width="120" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="105" text-anchor="middle" font-size="12">입력 배치</text>
+<line x1="150" y1="100" x2="210" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="210" y="55" width="200" height="90" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="310" y="78" text-anchor="middle" font-size="12">품질 체크 게이트</text>
+<text x="310" y="96" text-anchor="middle" font-size="11" class="dg-dim">null 비율</text>
+<text x="310" y="112" text-anchor="middle" font-size="11" class="dg-dim">값 범위</text>
+<text x="310" y="128" text-anchor="middle" font-size="11" class="dg-dim">분포 이상</text>
+<line x1="410" y1="80" x2="470" y2="50" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="450" y="40" font-size="11">통과</text>
+<rect x="470" y="20" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="530" y="44" text-anchor="middle" font-size="11">다음 단계</text>
+<line x1="410" y1="120" x2="470" y2="150" class="dg-line" stroke-width="1.5"/>
+<text x="450" y="170" font-size="11">위반</text>
+<rect x="470" y="140" width="120" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="530" y="164" text-anchor="middle" font-size="11">격리 · 알림</text>
+</svg>`,
+    diagramCaption: String.raw`입력 배치는 품질 게이트를 통과해야 다음 단계로 넘어갑니다.`,
+    related: [{ label: "데이터 계약", slug: "data-contract" }, { label: "스키마 진화 관리", slug: "schema-evolution" }],
+    sections: []
+  },
+  "gpu-utilization-monitoring": {
+    title: String.raw`GPU 활용률 모니터링: 할당한 GPU가 정말 일하고 있는가`,
+    domain: "mlops",
+    subLabel: String.raw`자원 관리`,
+    intuition: String.raw`<p>GPU 여러 대를 할당받았다고 해서 그 GPU들이 실제로 계산을 하고 있는 것은 아닙니다. 데이터 로딩이 느려서 GPU가 다음 배치를 기다리며 놀고 있는 시간이 상당히 길 수도 있습니다. GPU 활용률 모니터링은 할당된 GPU가 정말로 일하고 있는지를 숫자로 확인하는 습관입니다.</p>
+<p>비싼 GPU를 팀 단위로 예약해두고 정작 절반도 안 쓰고 있다면 다른 팀은 자원이 없다고 기다리는 동안 GPU는 놀고 있는 상황이 벌어집니다.</p>`,
+    explanation: String.raw`<p>가장 널리 보는 지표는 GPU 사용률로 특정 구간 동안 GPU 연산 코어가 실제로 작업 중이었던 시간의 비율입니다. 활용률 $u$는 대략 관측 구간 동안 GPU가 연산을 수행한 시간을 전체 구간 시간으로 나눈 값 $u = t_{busy} / t_{total}$로 이해할 수 있습니다. 여기에 GPU 메모리 사용량을 함께 보는데 연산 사용률은 낮은데 메모리만 꽉 찬 경우는 배치 크기를 무리하게 키워놓고 정작 연산은 데이터 로딩을 기다리며 멈춰 있는 상황을 의심해볼 수 있습니다.</p>
+<p>활용률이 낮은 원인은 대개 GPU 자체의 연산 속도 문제가 아니라 그 앞뒤 병목입니다. 디스크나 네트워크에서 데이터를 읽어오는 속도가 GPU 연산 속도를 못 따라가면 GPU는 다음 배치를 받을 때까지 대기 상태로 남습니다. 여러 GPU를 쓰는 분산 학습에서는 GPU끼리 그래디언트를 주고받는 통신 구간에도 연산이 멈춥니다. 활용률 그래프에서 주기적으로 뚝뚝 떨어지는 구간이 보인다면 이런 병목을 의심하고 데이터 파이프라인이나 통신 방식을 먼저 점검하게 됩니다.</p>
+<p>이 모니터링이 없으면 벌어지는 일은 단순합니다. 활용률이 나쁜 채로 방치된 작업도 GPU를 점유하고 있다는 이유만으로 자원 요청 목록에서는 다 쓰고 있는 것처럼 보입니다. 팀들은 실제로는 절반도 못 쓰는 GPU를 붙잡고 있으면서 부족하다고 새 GPU를 더 요청하고 클러스터 전체의 실질 자원 효율은 계속 떨어집니다. 활용률을 추적하면 이런 저활용 작업을 찾아내 스케줄링이나 배치 크기 조정으로 실제 처리량을 끌어올릴 여지를 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="20" x2="50" y2="190" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="50" y1="190" x2="600" y2="190" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="20" y="25" font-size="11" class="dg-dim">100%</text>
+<text x="20" y="192" font-size="11" class="dg-dim">0%</text>
+<text x="300" y="215" text-anchor="middle" font-size="12">시간</text>
+<path d="M50,60 L100,60 L110,150 L140,150 L150,55 L220,55 L230,150 L260,150 L270,50 L350,50 L360,150 L390,150 L400,55 L480,55 L490,150 L520,150 L530,50 L600,50" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="125" y="205" text-anchor="middle" font-size="10" class="dg-dim">데이터 대기</text>
+<text x="245" y="205" text-anchor="middle" font-size="10" class="dg-dim">데이터 대기</text>
+<text x="375" y="205" text-anchor="middle" font-size="10" class="dg-dim">데이터 대기</text>
+</svg>`,
+    diagramCaption: String.raw`GPU 활용률이 데이터 대기 구간마다 주기적으로 떨어지는 모습입니다.`,
+    example: String.raw`<p>어떤 학습 작업이 GPU 8대를 일주일 동안 점유하면서 평균 활용률이 $40\%$였다고 하면 실질적으로 쓴 연산 시간은 전체 점유 시간의 $40\%$뿐이고 나머지 $60\%$는 GPU가 대기 상태로 낭비된 시간입니다. 데이터 로딩 파이프라인을 병렬화해서 평균 활용률을 $85\%$까지 끌어올리면 같은 작업을 마치는 데 필요한 실제 GPU 점유 시간이 크게 줄어듭니다.</p>`,
+    related: [{ label: "멀티테넌시", slug: "multi-tenancy-gpu" }, { label: "잡 스케줄링", slug: "job-scheduling" }, { label: "유휴 자원 탐지", slug: "idle-resource-detection" }],
+    sections: []
+  },
+  "multi-tenancy-gpu": {
+    title: String.raw`멀티테넌시: 여러 팀이 클러스터를 나눠 쓸 때 자원을 격리하기`,
+    domain: "mlops",
+    subLabel: String.raw`자원 관리`,
+    intuition: String.raw`<p>GPU 클러스터 하나를 여러 팀이 나눠 쓰다 보면 한 팀의 작업이 너무 많은 메모리를 잡아먹거나 무한루프에 빠져서 다른 팀 작업까지 영향을 주는 상황이 생길 수 있습니다. 멀티테넌시는 여러 팀이 같은 물리적 자원을 공유하면서도 서로의 작업이 서로를 침범하지 못하도록 자원을 나누고 경계를 긋는 방법입니다.</p>
+<p>아파트 한 동을 여러 세대가 나눠 쓰지만 각 세대 안에서 일어나는 일이 옆집에 그대로 새어나가지 않도록 벽과 배관을 나누는 것과 비슷합니다.</p>`,
+    explanation: String.raw`<p>격리는 몇 단계로 이루어집니다. 물리 GPU 한 장을 통째로 한 작업에 배정하는 방식이 가장 단순하지만 작업이 GPU 성능을 다 못 쓰면 나머지가 낭비됩니다. 이를 보완하려고 GPU 하나를 여러 파티션으로 나눠 각 파티션을 독립된 GPU처럼 보이게 만드는 기능을 쓰거나 컨테이너 오케스트레이션 레벨에서 GPU 메모리와 연산 시간에 상한을 걸어 한 작업이 그 상한을 넘지 못하게 막습니다.</p>
+<p>격리가 없으면 한 팀의 실험이 GPU 메모리를 예상보다 많이 잡아먹는 순간 같은 물리 GPU를 공유하던 다른 팀 작업이 메모리 부족으로 그대로 죽습니다. 네트워크나 스토리지 대역폭도 마찬가지로 한 작업이 과도하게 쓰면 같은 노드의 다른 작업 처리 속도가 떨어집니다. 클러스터 단위로 자원을 미리 나눠주는 쿼터와 각 팀 작업이 그 쿼터를 넘지 못하게 강제하는 격리 장치가 함께 있어야 이런 간섭을 막을 수 있습니다.</p>
+<p>대개는 네임스페이스나 프로젝트 단위로 쿼터를 배정하고 스케줄러가 그 쿼터 안에서만 자원을 할당합니다. 우선순위가 높은 팀에게 더 많은 쿼터를 주고 낮은 우선순위 팀의 작업은 자원이 부족할 때 먼저 대기열에 머무르게 하는 정책은 잡 스케줄링과 맞물려 작동합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="40" width="560" height="150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="30" font-size="12">GPU 클러스터</text>
+<line x1="230" y1="40" x2="230" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="40" x2="420" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="60" width="150" height="110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="135" y="80" text-anchor="middle" font-size="12">팀 A</text>
+<text x="135" y="98" text-anchor="middle" font-size="11" class="dg-dim">쿼터 40%</text>
+<rect x="250" y="60" width="150" height="110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="325" y="80" text-anchor="middle" font-size="12">팀 B</text>
+<text x="325" y="98" text-anchor="middle" font-size="11" class="dg-dim">쿼터 35%</text>
+<rect x="440" y="60" width="140" height="110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="510" y="80" text-anchor="middle" font-size="12">팀 C</text>
+<text x="510" y="98" text-anchor="middle" font-size="11" class="dg-dim">쿼터 25%</text>
+</svg>`,
+    diagramCaption: String.raw`쿼터로 나뉜 구역 안에서만 각 팀이 자원을 할당받습니다.`,
+    related: [{ label: "잡 스케줄링", slug: "job-scheduling" }, { label: "GPU 활용률 모니터링", slug: "gpu-utilization-monitoring" }],
+    sections: []
+  },
+  "job-scheduling": {
+    title: String.raw`잡 스케줄링: 우선순위와 선점으로 작업 순서를 정하기`,
+    domain: "mlops",
+    subLabel: String.raw`스케줄링`,
+    intuition: String.raw`<p>GPU가 100장뿐인데 학습 작업 요청이 200개 들어오면 누가 먼저 쓸지 순서를 정해야 합니다. 잡 스케줄링은 이 순서를 사람이 매번 판단하는 대신 규칙으로 자동화하는 부분입니다.</p>
+<p>급한 작업이 뒤늦게 들어왔는데 앞서 시작한 덜 급한 작업이 자원을 오래 붙잡고 있다면 우선순위와 선점이라는 두 가지 도구로 순서를 조정합니다.</p>`,
+    explanation: String.raw`<p>우선순위 큐는 작업마다 중요도 점수를 매기고 자원이 빌 때 점수가 높은 작업부터 먼저 배정하는 방식입니다. 프로덕션 서빙에 바로 영향을 주는 급한 재학습은 높은 우선순위를 주고 밤새 돌려도 되는 탐색성 실험은 낮은 우선순위를 주는 식으로 정책을 정합니다.</p>
+<p>우선순위만으로는 이미 실행 중인 낮은 우선순위 작업이 자원을 오래 붙잡고 있는 문제를 풀 수 없습니다. 선점형 스케줄링은 더 높은 우선순위 작업이 도착했을 때 실행 중이던 낮은 우선순위 작업을 중단시키고 그 자원을 넘겨받는 방식입니다. 중단된 작업은 체크포인트에서 다시 이어서 돌거나 대기열 맨 앞으로 돌아가 다음 기회를 기다립니다. 체크포인트 없이 무작정 중단시키면 그동안의 학습 진행이 통째로 날아가기 때문에 선점형 스케줄링은 보통 주기적인 체크포인트 저장과 함께 쓰입니다.</p>
+<p>스케줄링 정책이 없으면 클러스터는 먼저 요청한 순서대로만 자원을 내주는 단순 대기열이 됩니다. 급한 작업이 사소한 탐색성 작업 뒤에서 몇 시간을 기다리는 일이 자주 벌어지고 결국 사람이 수동으로 다른 작업을 죽이고 자원을 빼앗는 임기응변이 반복됩니다. 우선순위와 선점 규칙을 스케줄러에 명시해두면 이런 개입 없이도 급한 작업이 합리적인 시간 안에 자원을 받을 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="130" y="24" text-anchor="middle" font-size="12">대기열 (우선순위 순)</text>
+<rect x="40" y="40" width="180" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="130" y="61" text-anchor="middle" font-size="11">높음: 긴급 재학습</text>
+<rect x="40" y="84" width="180" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="105" text-anchor="middle" font-size="11">중간: 정기 학습</text>
+<rect x="40" y="128" width="180" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="149" text-anchor="middle" font-size="11">낮음: 탐색 실험</text>
+<line x1="220" y1="57" x2="330" y2="57" class="dg-stroke-accent" stroke-width="1.5"/>
+<rect x="330" y="40" width="150" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="405" y="61" text-anchor="middle" font-size="11">GPU 즉시 배정</text>
+<path d="M330,150 C 280,180 280,180 220,150" class="dg-stroke-accent" stroke-width="1.5" fill="none"/>
+<rect x="330" y="130" width="150" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="405" y="151" text-anchor="middle" font-size="11">실행 중 낮은 작업</text>
+<text x="270" y="195" text-anchor="middle" font-size="10" class="dg-dim">선점되어 대기열로 복귀</text>
+</svg>`,
+    diagramCaption: String.raw`높은 우선순위 작업이 도착하면 낮은 우선순위 작업을 선점하고 대기열로 되돌립니다.`,
+    related: [{ label: "GPU 활용률 모니터링", slug: "gpu-utilization-monitoring" }, { label: "멀티테넌시", slug: "multi-tenancy-gpu" }],
+    sections: []
+  },
+  "spot-instance-usage": {
+    title: String.raw`스팟 인스턴스 활용: 중단될 수 있지만 훨씬 저렴한 컴퓨트`,
+    domain: "mlops",
+    subLabel: String.raw`컴퓨트 비용`,
+    intuition: String.raw`<p>클라우드 업체는 남는 컴퓨팅 자원을 정가보다 훨씬 싸게 내놓는 대신 다른 고객이 정가를 내고 그 자원을 요청하면 언제든 회수해갈 수 있다는 조건을 붙입니다. 스팟 인스턴스는 이 조건을 받아들이는 대신 훨씬 낮은 가격에 컴퓨팅을 빌리는 방식입니다.</p>
+<p>중간에 갑자기 꺼질 수 있다는 위험만 감당할 수 있다면 같은 예산으로 몇 배 더 많은 실험을 돌릴 수 있는 셈이라 학습 작업처럼 중단해도 이어서 재개할 수 있는 워크로드에 잘 맞습니다.</p>`,
+    explanation: String.raw`<p>스팟 인스턴스 가격은 수요와 공급에 따라 계속 바뀌고 온디맨드 가격 대비 흔히 $60\%$에서 $90\%$ 정도 낮은 수준에서 형성됩니다. 대신 클라우드 업체가 그 자원을 다시 필요로 하면 짧은 유예 시간만 주고 인스턴스를 회수해갑니다. 유예 시간은 보통 수십 초에서 수 분 수준이라 그 안에 작업 상태를 저장하고 안전하게 종료해야 합니다.</p>
+<p>이 회수를 감당하려면 학습 작업이 주기적으로 체크포인트를 저장해야 합니다. 회수 신호를 받으면 마지막 체크포인트 이후 진행분만 손해를 보고 새 인스턴스가 배정되는 즉시 그 체크포인트에서 이어서 학습을 재개합니다. 체크포인트 주기가 너무 길면 회수될 때마다 잃는 진행분이 커지고 너무 짧으면 저장 자체가 오버헤드가 되므로 작업 특성에 맞게 균형을 잡아야 합니다.</p>
+<p>체크포인트 없이 스팟 인스턴스를 쓰면 회수될 때마다 처음부터 다시 학습해야 해서 싼 가격이 무색하게 실질 비용과 시간이 오히려 늘어날 수 있습니다. 반대로 체크포인트와 자동 재시작 로직을 갖춰두면 온디맨드보다 훨씬 낮은 가격에 같은 학습을 마칠 수 있고 이 조합이 대규모 하이퍼파라미터 탐색처럼 작업 개수가 많고 개별 작업 중단에 관대한 워크로드에서 특히 유리한 이유입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<text x="130" y="20" text-anchor="middle" font-size="12">시간당 비용</text>
+<rect x="60" y="30" width="60" height="100" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="145" text-anchor="middle" font-size="11">온디맨드</text>
+<text x="90" y="45" text-anchor="middle" font-size="10" class="dg-dim">100%</text>
+<rect x="160" y="100" width="60" height="30" class="dg-accent" stroke="none"/>
+<rect x="160" y="100" width="60" height="30" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="190" y="145" text-anchor="middle" font-size="11">스팟</text>
+<text x="190" y="115" text-anchor="middle" font-size="10" class="dg-dim">10~40%</text>
+<line x1="280" y1="70" x2="280" y2="160" class="dg-line" stroke-width="1"/>
+<text x="450" y="20" text-anchor="middle" font-size="12">스팟 인스턴스 생명주기</text>
+<rect x="320" y="50" width="90" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="365" y="71" text-anchor="middle" font-size="11">학습 실행</text>
+<line x1="410" y1="67" x2="450" y2="67" class="dg-line" stroke-width="1.5"/>
+<rect x="450" y="50" width="90" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="495" y="71" text-anchor="middle" font-size="11">회수 경고</text>
+<line x1="495" y1="84" x2="495" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="450" y="120" width="90" height="34" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="495" y="141" text-anchor="middle" font-size="10">체크포인트 저장</text>
+<line x1="450" y1="137" x2="410" y2="137" class="dg-line" stroke-width="1.5"/>
+<rect x="320" y="120" width="90" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="365" y="141" text-anchor="middle" font-size="11">인스턴스 회수</text>
+<line x1="365" y1="154" x2="365" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="320" y="190" width="220" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="430" y="211" text-anchor="middle" font-size="11">새 인스턴스에서 체크포인트부터 재개</text>
+</svg>`,
+    diagramCaption: String.raw`회수 경고를 받으면 체크포인트를 저장하고 새 인스턴스에서 이어서 재개합니다.`,
+    example: String.raw`<p>온디맨드 인스턴스가 시간당 3달러이고 스팟 할인율이 $70\%$라면 스팟 요금은 시간당 약 0.9달러 수준입니다. 같은 작업에 인스턴스 시간이 100시간 필요하다면 온디맨드로는 300달러가 들지만 스팟으로는 90달러 안팎이면 됩니다. 다만 중간에 회수되어 재시작이 몇 차례 필요하면 실제 소요 시간과 비용은 이보다 다소 늘어날 수 있습니다.</p>`,
+    related: [{ label: "오토스케일링과 비용의 트레이드오프", slug: "autoscaling-cost-tradeoff" }, { label: "유휴 자원 탐지", slug: "idle-resource-detection" }],
+    sections: []
+  },
+  "autoscaling-cost-tradeoff": {
+    title: String.raw`오토스케일링과 비용의 트레이드오프: 응답성과 지출 사이 균형점 찾기`,
+    domain: "mlops",
+    subLabel: String.raw`컴퓨트 비용`,
+    intuition: String.raw`<p>트래픽이 몰릴 때를 대비해 서버를 항상 넉넉하게 켜두면 응답은 빠르지만 한가한 시간에도 비용이 그대로 나갑니다. 반대로 서버를 최소한만 켜두면 비용은 아끼지만 트래픽이 갑자기 몰릴 때 새 서버가 뜨는 동안 사용자는 느린 응답을 견뎌야 합니다. 오토스케일링은 이 둘 사이에서 자동으로 서버 대수를 조절하는 장치지만 그 조절 규칙을 어떻게 정하느냐에 따라 응답성과 비용 중 어느 쪽으로 기울지가 갈립니다.</p>`,
+    explanation: String.raw`<p>오토스케일링 정책은 보통 CPU 사용률이나 요청 큐 길이 같은 지표를 보고 그 지표가 기준치를 넘으면 인스턴스를 늘리고 기준치 아래로 떨어지면 줄입니다. 여기서 핵심 변수는 목표 지표의 기준값과 새 인스턴스가 준비되기까지 걸리는 시간입니다. 기준값을 낮게 잡으면 여유 있게 미리 늘어나서 응답 지연은 줄지만 평균적으로 더 많은 인스턴스를 켜두게 되어 비용이 올라갑니다. 기준값을 높게 잡으면 그 반대입니다.</p>
+<p>새 인스턴스가 트래픽 처리를 시작하기까지는 부팅과 모델 로딩 시간이 걸리는데 이 시간 동안은 기존 인스턴스가 늘어난 트래픽을 그대로 떠안습니다. 이 부팅 지연이 길수록 스케일링이 트래픽 증가를 따라잡지 못하고 그 사이에 응답 지연이 튀는 구간이 생깁니다. 이를 줄이려고 최소 인스턴스 수를 여유 있게 잡아두는 워밍 버퍼를 두기도 하는데 이 자체가 다시 상시 비용으로 돌아옵니다.</p>
+<p>정답은 워크로드 특성에 달려 있습니다. 트래픽이 예측 가능하게 주기적으로 변하는 서비스라면 과거 패턴을 미리 반영해 스케일링 시점을 앞당기는 예측 기반 정책으로 응답성을 지키면서 비용도 아낄 수 있습니다. 반대로 트래픽이 불규칙한 서비스라면 지표 기반 반응형 정책에 의존할 수밖에 없고 이때는 응답성과 비용 사이 기준값을 얼마나 보수적으로 잡을지가 곧 서비스 품질과 인프라 지출 사이의 직접적인 트레이드오프가 됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="20" x2="50" y2="190" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="50" y1="190" x2="600" y2="190" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="300" y="215" text-anchor="middle" font-size="12">시간</text>
+<path d="M50,150 L200,150 L260,50 L400,50 L460,150 L600,150" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="120" y="170" font-size="10" class="dg-dim">트래픽</text>
+<path d="M50,160 L230,160 L290,60 L420,60 L480,160 L600,160" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="470" y="145" font-size="10" class="dg-accent">인스턴스 수</text>
+<text x="255" y="35" font-size="10" class="dg-dim">지연 구간</text>
+</svg>`,
+    diagramCaption: String.raw`인스턴스 수가 트래픽 변화를 뒤늦게 따라가면서 지연이 튀는 구간이 생깁니다.`,
+    related: [{ label: "스팟 인스턴스 활용", slug: "spot-instance-usage" }, { label: "유휴 자원 탐지", slug: "idle-resource-detection" }, { label: "GPU 활용률 모니터링", slug: "gpu-utilization-monitoring" }],
+    sections: []
+  },
+  "idle-resource-detection": {
+    title: String.raw`유휴 자원 탐지: 쓰이지 않는 인스턴스를 자동으로 찾아내기`,
+    domain: "mlops",
+    subLabel: String.raw`낭비 제거`,
+    intuition: String.raw`<p>실험이 끝난 뒤 인스턴스를 끄는 걸 깜빡하거나 한 번 만들어두고 다시는 안 쓰는 스토리지 볼륨을 그대로 방치하는 일은 어느 팀에서나 생깁니다. 유휴 자원 탐지는 이렇게 켜져 있지만 실제로는 아무 일도 안 하고 있는 자원을 자동으로 찾아내는 절차입니다.</p>
+<p>사람이 매달 자원 목록을 일일이 훑어보는 대신 사용량 지표를 기준으로 오래 쓰이지 않은 자원을 자동으로 걸러내면 청구서를 받고서야 뒤늦게 알아차리는 일을 줄일 수 있습니다.</p>`,
+    explanation: String.raw`<p>탐지 방식은 자원 종류별로 다르지만 원리는 비슷합니다. 컴퓨팅 인스턴스는 최근 일정 기간 CPU나 GPU 사용률이 낮은 상태로 지속되었는지를 봅니다. 스토리지는 최근 접근 로그가 없는 볼륨이나 오브젝트를 찾습니다. 연결이 끊긴 네트워크 자원이나 아무 인스턴스도 연결되지 않은 볼륨처럼 애초에 쓰임새가 사라진 자원도 흔한 대상입니다.</p>
+<p>탐지된 자원은 곧바로 삭제하기보다 태그를 붙이거나 담당자에게 알려서 확인할 시간을 준 뒤 일정 기간이 지나도 반응이 없으면 자동으로 정리하는 단계적 절차를 두는 경우가 많습니다. 실험용으로 임시로 켜둔 자원과 앞으로 쓸 예정이라 미리 준비해둔 자원을 구분하기 어렵기 때문에 탐지와 삭제 사이에 확인 절차를 두는 것이 안전합니다.</p>
+<p>이런 탐지가 없으면 유휴 자원은 눈에 띄지 않게 쌓입니다. 개별 인스턴스 하나의 비용은 크지 않아 보여도 실험이 끝날 때마다 정리를 깜빡한 자원이 수십 개씩 쌓이면 그 합계가 실제 사용 중인 자원의 지출을 넘어서는 경우도 드물지 않습니다. 정기적인 탐지는 이런 누적 낭비를 초기에 잘라내는 가장 손쉬운 비용 절감 수단입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="24" font-size="12">인스턴스 · 볼륨별 최근 사용률</text>
+<text x="40" y="55" font-size="11">인스턴스 A</text>
+<rect x="150" y="44" width="400" height="16" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="150" y="44" width="320" height="16" class="dg-dim" stroke="none"/>
+<text x="40" y="90" font-size="11">인스턴스 B</text>
+<rect x="150" y="79" width="400" height="16" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="150" y="79" width="260" height="16" class="dg-dim" stroke="none"/>
+<text x="40" y="125" font-size="11">인스턴스 C</text>
+<rect x="150" y="114" width="400" height="16" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<rect x="150" y="114" width="15" height="16" class="dg-accent" stroke="none"/>
+<text x="560" y="127" font-size="11" class="dg-accent">회수 대상</text>
+<text x="40" y="160" font-size="11">스토리지 볼륨 X</text>
+<rect x="150" y="149" width="400" height="16" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<rect x="150" y="149" width="8" height="16" class="dg-accent" stroke="none"/>
+<text x="560" y="162" font-size="11" class="dg-accent">회수 대상</text>
+</svg>`,
+    diagramCaption: String.raw`사용률이 낮은 인스턴스와 접근이 없는 볼륨이 회수 대상으로 표시됩니다.`,
+    related: [{ label: "스팟 인스턴스 활용", slug: "spot-instance-usage" }, { label: "오토스케일링과 비용의 트레이드오프", slug: "autoscaling-cost-tradeoff" }],
+    sections: []
+  },
 };

@@ -260,13 +260,13 @@
     <div class="sub-block">
       <p class="sub-title">분산학습</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-a)"><p class="name">데이터 병렬</p><p class="formula">같은 모델을 배치만 나눠 병렬 학습</p></div><div class="chip-card" style="--chip-c:var(--c-ml-a)"><p class="name">모델 병렬</p><p class="formula">모델 자체를 장비에 나눠 배치</p></div><div class="chip-card" style="--chip-c:var(--c-ml-a)"><p class="name">ZeRO</p><p class="formula">옵티마이저 상태 · 그래디언트 분산 저장</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=data-parallelism" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-a)"><p class="name">데이터 병렬</p><p class="formula">같은 모델을 배치만 나눠 병렬 학습</p></a><a class="chip-card" href="../concepts/index.html?c=model-parallelism" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-a)"><p class="name">모델 병렬</p><p class="formula">모델 자체를 장비에 나눠 배치</p></a><a class="chip-card" href="../concepts/index.html?c=zero-optimizer" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-a)"><p class="name">ZeRO</p><p class="formula">옵티마이저 상태 · 그래디언트 분산 저장</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">실험관리</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-a)"><p class="name">하이퍼파라미터 탐색</p><p class="formula">그리드/베이지안 탐색</p></div><div class="chip-card" style="--chip-c:var(--c-ml-a)"><p class="name">실험추적</p><p class="formula">지표 · 아티팩트 버전관리</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=hyperparameter-search" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-a)"><p class="name">하이퍼파라미터 탐색</p><p class="formula">그리드/베이지안 탐색</p></a><a class="chip-card" href="../concepts/index.html?c=experiment-tracking" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-a)"><p class="name">실험추적</p><p class="formula">지표 · 아티팩트 버전관리</p></a>
       </div>
     </div>
   </div>
@@ -277,13 +277,13 @@
     <div class="sub-block">
       <p class="sub-title">모델 서빙</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-b)"><p class="name">배치추론</p><p class="formula">지연시간보다 처리량 우선</p></div><div class="chip-card" style="--chip-c:var(--c-ml-b)"><p class="name">온라인서빙</p><p class="formula">요청단위 저지연 응답</p></div><div class="chip-card" style="--chip-c:var(--c-ml-b)"><p class="name">오토스케일링</p><p class="formula">트래픽에 따른 자원 자동 조절</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=batch-inference" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-b)"><p class="name">배치추론</p><p class="formula">지연시간보다 처리량 우선</p></a><a class="chip-card" href="../concepts/index.html?c=online-serving" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-b)"><p class="name">온라인서빙</p><p class="formula">요청단위 저지연 응답</p></a><a class="chip-card" href="../concepts/index.html?c=mlops-autoscaling" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-b)"><p class="name">오토스케일링</p><p class="formula">트래픽에 따른 자원 자동 조절</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">모델 압축</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-b)"><p class="name">양자화</p><p class="formula">가중치 정밀도를 낮춰 경량화</p></div><div class="chip-card" style="--chip-c:var(--c-ml-b)"><p class="name">프루닝</p><p class="formula">중요도 낮은 파라미터 제거</p></div><div class="chip-card" style="--chip-c:var(--c-ml-b)"><p class="name">지식증류</p><p class="formula">큰 모델의 지식을 작은 모델로 전달</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=quantization" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-b)"><p class="name">양자화</p><p class="formula">가중치 정밀도를 낮춰 경량화</p></a><a class="chip-card" href="../concepts/index.html?c=pruning" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-b)"><p class="name">프루닝</p><p class="formula">중요도 낮은 파라미터 제거</p></a><a class="chip-card" href="../concepts/index.html?c=knowledge-distillation" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-b)"><p class="name">지식증류</p><p class="formula">큰 모델의 지식을 작은 모델로 전달</p></a>
       </div>
     </div>
   </div>
@@ -294,13 +294,13 @@
     <div class="sub-block">
       <p class="sub-title">피처스토어</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-c)"><p class="name">온라인/오프라인 피처 일관성</p><p class="formula">학습 · 서빙 시점 피처값 정합</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=feature-consistency" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-c)"><p class="name">온라인/오프라인 피처 일관성</p><p class="formula">학습 · 서빙 시점 피처값 정합</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">데이터 버저닝</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-c)"><p class="name">데이터 리니지</p><p class="formula">데이터가 어디서 왔는지 추적</p></div><div class="chip-card" style="--chip-c:var(--c-ml-c)"><p class="name">재현성</p><p class="formula">동일 입력이면 동일 결과 보장</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=data-lineage" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-c)"><p class="name">데이터 리니지</p><p class="formula">데이터가 어디서 왔는지 추적</p></a><a class="chip-card" href="../concepts/index.html?c=experiment-reproducibility" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-c)"><p class="name">재현성</p><p class="formula">동일 입력이면 동일 결과 보장</p></a>
       </div>
     </div>
   </div>
@@ -311,13 +311,13 @@
     <div class="sub-block">
       <p class="sub-title">모니터링</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-d)"><p class="name">데이터 드리프트</p><p class="formula">입력분포가 학습시점과 달라짐 감지</p></div><div class="chip-card" style="--chip-c:var(--c-ml-d)"><p class="name">모델 성능 저하 감지</p><p class="formula">실시간 성능 지표 추적</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=data-drift" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-d)"><p class="name">데이터 드리프트</p><p class="formula">입력분포가 학습시점과 달라짐 감지</p></a><a class="chip-card" href="../concepts/index.html?c=model-performance-degradation" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-d)"><p class="name">모델 성능 저하 감지</p><p class="formula">실시간 성능 지표 추적</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">신뢰성</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-d)"><p class="name">카나리 배포</p><p class="formula">일부 트래픽에만 새 모델 우선 노출</p></div><div class="chip-card" style="--chip-c:var(--c-ml-d)"><p class="name">롤백 전략</p><p class="formula">문제 발생시 이전 버전 즉시 복귀</p></div><div class="chip-card" style="--chip-c:var(--c-ml-d)"><p class="name">SLO</p><p class="formula">서비스 수준 목표와 오차예산</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=canary-deployment" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-d)"><p class="name">카나리 배포</p><p class="formula">일부 트래픽에만 새 모델 우선 노출</p></a><a class="chip-card" href="../concepts/index.html?c=rollback-strategy" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-d)"><p class="name">롤백 전략</p><p class="formula">문제 발생시 이전 버전 즉시 복귀</p></a><a class="chip-card" href="../concepts/index.html?c=slo-error-budget" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-d)"><p class="name">SLO</p><p class="formula">서비스 수준 목표와 오차예산</p></a>
       </div>
     </div>
   </div>
@@ -352,13 +352,13 @@
     <div class="sub-block">
       <p class="sub-title">파이프라인 자동화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-f)"><p class="name">모델 CI</p><p class="formula">데이터 · 코드가 바뀌면 학습 파이프라인을 자동으로 재실행해 검증</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=model-ci" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-f)"><p class="name">모델 CI</p><p class="formula">데이터 · 코드가 바뀌면 학습 파이프라인을 자동으로 재실행해 검증</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">배포 전략</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-f)"><p class="name">블루그린 배포</p><p class="formula">새 버전을 완전히 준비한 뒤 트래픽 전체를 한번에 전환</p></div><div class="chip-card" style="--chip-c:var(--c-ml-f)"><p class="name">자동 롤백 트리거</p><p class="formula">지표가 기준 이하로 떨어지면 자동으로 이전 버전 복귀</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=blue-green-deployment" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-f)"><p class="name">블루그린 배포</p><p class="formula">새 버전을 완전히 준비한 뒤 트래픽 전체를 한번에 전환</p></a><a class="chip-card" href="../concepts/index.html?c=auto-rollback-trigger" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-f)"><p class="name">자동 롤백 트리거</p><p class="formula">지표가 기준 이하로 떨어지면 자동으로 이전 버전 복귀</p></a>
       </div>
     </div>
   </div>
@@ -369,13 +369,13 @@
     <div class="sub-block">
       <p class="sub-title">환경 고정</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-g)"><p class="name">시드 고정</p><p class="formula">random seed를 고정해 같은 코드가 같은 결과를 내도록 함</p></div><div class="chip-card" style="--chip-c:var(--c-ml-g)"><p class="name">환경 고정</p><p class="formula">Docker · conda lock file로 라이브러리 버전까지 동결</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=seed-fixing" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-g)"><p class="name">시드 고정</p><p class="formula">random seed를 고정해 같은 코드가 같은 결과를 내도록 함</p></a><a class="chip-card" href="../concepts/index.html?c=environment-pinning" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-g)"><p class="name">환경 고정</p><p class="formula">Docker · conda lock file로 라이브러리 버전까지 동결</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">실험 기록</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-g)"><p class="name">실험 메타데이터</p><p class="formula">데이터 버전과 코드 버전 조합을 함께 기록</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=experiment-metadata" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-g)"><p class="name">실험 메타데이터</p><p class="formula">데이터 버전과 코드 버전 조합을 함께 기록</p></a>
       </div>
     </div>
   </div>
@@ -386,13 +386,13 @@
     <div class="sub-block">
       <p class="sub-title">레지스트리</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-h)"><p class="name">모델 버저닝</p><p class="formula">semantic versioning으로 모델 변경 이력을 명확히 구분</p></div><div class="chip-card" style="--chip-c:var(--c-ml-h)"><p class="name">모델 카드</p><p class="formula">성능 · 한계 · 의도된 사용처를 문서화한 모델 설명서</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=model-versioning" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-h)"><p class="name">모델 버저닝</p><p class="formula">semantic versioning으로 모델 변경 이력을 명확히 구분</p></a><a class="chip-card" href="../concepts/index.html?c=model-card" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-h)"><p class="name">모델 카드</p><p class="formula">성능 · 한계 · 의도된 사용처를 문서화한 모델 설명서</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">거버넌스</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-h)"><p class="name">승인 워크플로우</p><p class="formula">스테이징에서 검증 후 프로덕션으로 승격하는 절차</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=approval-workflow" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-h)"><p class="name">승인 워크플로우</p><p class="formula">스테이징에서 검증 후 프로덕션으로 승격하는 절차</p></a>
       </div>
     </div>
   </div>
@@ -403,13 +403,13 @@
     <div class="sub-block">
       <p class="sub-title">데이터 계약</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-i)"><p class="name">데이터 계약</p><p class="formula">업스트림 스키마 변경을 사전에 감지하는 명시적 약속</p></div><div class="chip-card" style="--chip-c:var(--c-ml-i)"><p class="name">스키마 진화 관리</p><p class="formula">필드 추가 · 삭제가 하위 시스템을 깨지 않도록 관리</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=data-contract" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-i)"><p class="name">데이터 계약</p><p class="formula">업스트림 스키마 변경을 사전에 감지하는 명시적 약속</p></a><a class="chip-card" href="../concepts/index.html?c=schema-evolution" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-i)"><p class="name">스키마 진화 관리</p><p class="formula">필드 추가 · 삭제가 하위 시스템을 깨지 않도록 관리</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">품질 검증</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-i)"><p class="name">데이터 품질 체크</p><p class="formula">null 비율 · 분포 이상을 자동으로 검증</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=data-quality-check" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-i)"><p class="name">데이터 품질 체크</p><p class="formula">null 비율 · 분포 이상을 자동으로 검증</p></a>
       </div>
     </div>
   </div>
@@ -420,13 +420,13 @@
     <div class="sub-block">
       <p class="sub-title">자원 관리</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-j)"><p class="name">GPU 활용률 모니터링</p><p class="formula">할당된 GPU가 실제로 얼마나 쓰이는지 추적</p></div><div class="chip-card" style="--chip-c:var(--c-ml-j)"><p class="name">멀티테넌시</p><p class="formula">여러 팀이 클러스터를 공유할 때 자원을 격리</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=gpu-utilization-monitoring" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-j)"><p class="name">GPU 활용률 모니터링</p><p class="formula">할당된 GPU가 실제로 얼마나 쓰이는지 추적</p></a><a class="chip-card" href="../concepts/index.html?c=multi-tenancy-gpu" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-j)"><p class="name">멀티테넌시</p><p class="formula">여러 팀이 클러스터를 공유할 때 자원을 격리</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">스케줄링</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-j)"><p class="name">잡 스케줄링</p><p class="formula">우선순위 큐와 선점형 스케줄링으로 작업 순서 조정</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=job-scheduling" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-j)"><p class="name">잡 스케줄링</p><p class="formula">우선순위 큐와 선점형 스케줄링으로 작업 순서 조정</p></a>
       </div>
     </div>
   </div>
@@ -437,13 +437,13 @@
     <div class="sub-block">
       <p class="sub-title">컴퓨트 비용</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-k)"><p class="name">스팟 인스턴스 활용</p><p class="formula">중단될 수 있지만 훨씬 저렴한 컴퓨트로 비용 절감</p></div><div class="chip-card" style="--chip-c:var(--c-ml-k)"><p class="name">오토스케일링과 비용의 트레이드오프</p><p class="formula">응답성과 지출 사이에서 스케일링 정책 조정</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=spot-instance-usage" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-k)"><p class="name">스팟 인스턴스 활용</p><p class="formula">중단될 수 있지만 훨씬 저렴한 컴퓨트로 비용 절감</p></a><a class="chip-card" href="../concepts/index.html?c=autoscaling-cost-tradeoff" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-k)"><p class="name">오토스케일링과 비용의 트레이드오프</p><p class="formula">응답성과 지출 사이에서 스케일링 정책 조정</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">낭비 제거</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-ml-k)"><p class="name">유휴 자원 탐지</p><p class="formula">쓰이지 않는 인스턴스 · 스토리지를 자동으로 찾아냄</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=idle-resource-detection" target="_blank" rel="noopener" style="--chip-c:var(--c-ml-k)"><p class="name">유휴 자원 탐지</p><p class="formula">쓰이지 않는 인스턴스 · 스토리지를 자동으로 찾아냄</p></a>
       </div>
     </div>
   </div>

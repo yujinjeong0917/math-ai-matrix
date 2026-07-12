@@ -186,6 +186,9 @@
   }
   .chip-card .name { font-size: 13px; font-weight: 700; margin: 0 0 3px; }
   .chip-card .formula { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+  a.chip-card { display: block; text-decoration: none; color: inherit; cursor: pointer; }
+  a.chip-card:hover, a.chip-card:focus-visible { border-color: var(--chip-c, var(--ink-faint)); }
+  a.chip-card:hover .name, a.chip-card:focus-visible .name { text-decoration: underline; text-decoration-color: var(--highlight); }
 
   footer {
     margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line-soft);
@@ -237,13 +240,13 @@
     <div class="sub-block">
       <p class="sub-title">협업필터링</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">Matrix Factorization</p><p class="formula">사용자-아이템 평점행렬을 저랭크로 분해</p></div><div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">ALS</p><p class="formula">Alternating Least Squares로 인수분해 최적화</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=matrix-factorization" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-a)"><p class="name">Matrix Factorization</p><p class="formula">사용자-아이템 평점행렬을 저랭크로 분해</p></a><a class="chip-card" href="../concepts/index.html?c=als-recsys" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-a)"><p class="name">ALS</p><p class="formula">Alternating Least Squares로 인수분해 최적화</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">임베딩기반 검색</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">Two-Tower 모델</p><p class="formula">사용자탑 · 아이템탑을 별도 임베딩</p></div><div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">ANN 검색</p><p class="formula">근사최근접 이웃으로 대규모 후보 검색</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=two-tower-model" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-a)"><p class="name">Two-Tower 모델</p><p class="formula">사용자탑 · 아이템탑을 별도 임베딩</p></a><a class="chip-card" href="../concepts/index.html?c=ann-search" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-a)"><p class="name">ANN 검색</p><p class="formula">근사최근접 이웃으로 대규모 후보 검색</p></a>
       </div>
     </div>
   </div>
@@ -254,13 +257,13 @@
     <div class="sub-block">
       <p class="sub-title">랭킹 모델</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">GBDT 랭킹</p><p class="formula">그래디언트 부스팅 트리 기반 순위화</p></div><div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">LambdaMART</p><p class="formula">Learning to Rank의 대표 알고리즘</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=gbdt-ranking" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-b)"><p class="name">GBDT 랭킹</p><p class="formula">그래디언트 부스팅 트리 기반 순위화</p></a><a class="chip-card" href="../concepts/index.html?c=lambdamart" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-b)"><p class="name">LambdaMART</p><p class="formula">Learning to Rank의 대표 알고리즘</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">딥러닝 랭킹</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">Wide&Deep</p><p class="formula">기억(Wide)과 일반화(Deep)를 함께 학습</p></div><div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">DIN</p><p class="formula">사용자 과거 행동에 어텐션을 적용</p></div><div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">Transformer 기반 랭킹</p><p class="formula">시퀀스 전체 문맥을 어텐션으로 반영</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=wide-and-deep" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-b)"><p class="name">Wide&Deep</p><p class="formula">기억(Wide)과 일반화(Deep)를 함께 학습</p></a><a class="chip-card" href="../concepts/index.html?c=din-attention" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-b)"><p class="name">DIN</p><p class="formula">사용자 과거 행동에 어텐션을 적용</p></a><a class="chip-card" href="../concepts/index.html?c=transformer-ranking" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-b)"><p class="name">Transformer 기반 랭킹</p><p class="formula">시퀀스 전체 문맥을 어텐션으로 반영</p></a>
       </div>
     </div>
   </div>
@@ -271,13 +274,13 @@
     <div class="sub-block">
       <p class="sub-title">오프라인 평가</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">NDCG</p><p class="formula">순위에 할인 가중치를 준 누적 이득</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">MAP</p><p class="formula">평균 정밀도</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">Recall@K</p><p class="formula">상위 K개 안의 재현율</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ndcg" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-c)"><p class="name">NDCG</p><p class="formula">순위에 할인 가중치를 준 누적 이득</p></a><a class="chip-card" href="../concepts/index.html?c=map-metric" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-c)"><p class="name">MAP</p><p class="formula">평균 정밀도</p></a><a class="chip-card" href="../concepts/index.html?c=recall-at-k" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-c)"><p class="name">Recall@K</p><p class="formula">상위 K개 안의 재현율</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">온라인 평가</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">CTR</p><p class="formula">클릭률</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">체류시간</p><p class="formula">노출 이후 실제 소비 시간</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">A/B테스트 연계</p><p class="formula">오프라인 지표와 실제 효과의 괴리 검증</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=ctr" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-c)"><p class="name">CTR</p><p class="formula">클릭률</p></a><a class="chip-card" href="../concepts/index.html?c=dwell-time" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-c)"><p class="name">체류시간</p><p class="formula">노출 이후 실제 소비 시간</p></a><a class="chip-card" href="../concepts/index.html?c=ab-test-alignment" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-c)"><p class="name">A/B테스트 연계</p><p class="formula">오프라인 지표와 실제 효과의 괴리 검증</p></a>
       </div>
     </div>
   </div>
@@ -288,13 +291,13 @@
     <div class="sub-block">
       <p class="sub-title">밴딧 기반 추천</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">Contextual Bandit</p><p class="formula">문맥에 따라 팔을 선택하는 탐색-활용</p></div><div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">Thompson Sampling</p><p class="formula">사후분포 샘플링으로 탐색</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=contextual-bandit" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-d)"><p class="name">Contextual Bandit</p><p class="formula">문맥에 따라 팔을 선택하는 탐색-활용</p></a><a class="chip-card" href="../concepts/index.html?c=thompson-sampling" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-d)"><p class="name">Thompson Sampling</p><p class="formula">사후분포 샘플링으로 탐색</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">강화학습 추천</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">슬레이트 최적화</p><p class="formula">한 화면 전체 아이템 조합을 최적화</p></div><div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">장기보상 최적화</p><p class="formula">즉각 클릭이 아닌 장기 리텐션을 보상으로</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=slate-optimization" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-d)"><p class="name">슬레이트 최적화</p><p class="formula">한 화면 전체 아이템 조합을 최적화</p></a><a class="chip-card" href="../concepts/index.html?c=long-term-reward-optimization" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-d)"><p class="name">장기보상 최적화</p><p class="formula">즉각 클릭이 아닌 장기 리텐션을 보상으로</p></a>
       </div>
     </div>
   </div>
@@ -305,13 +308,13 @@
     <div class="sub-block">
       <p class="sub-title">콜드스타트 대응</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">신규 사용자 콜드스타트</p><p class="formula">행동 데이터가 없을 때 인구통계·온보딩 응답 정보로 대체</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">신규 아이템 콜드스타트</p><p class="formula">상호작용 데이터가 없을 때 콘텐츠 기반 특징으로 임시 대체</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">하이브리드 방식</p><p class="formula">협업필터링과 콘텐츠 기반을 결합해 데이터 부족을 보완</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=new-user-cold-start" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-e)"><p class="name">신규 사용자 콜드스타트</p><p class="formula">행동 데이터가 없을 때 인구통계·온보딩 응답 정보로 대체</p></a><a class="chip-card" href="../concepts/index.html?c=new-item-cold-start" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-e)"><p class="name">신규 아이템 콜드스타트</p><p class="formula">상호작용 데이터가 없을 때 콘텐츠 기반 특징으로 임시 대체</p></a><a class="chip-card" href="../concepts/index.html?c=hybrid-recommendation" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-e)"><p class="name">하이브리드 방식</p><p class="formula">협업필터링과 콘텐츠 기반을 결합해 데이터 부족을 보완</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">콘텐츠 기반 필터링</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">특징 벡터화</p><p class="formula">TF-IDF나 임베딩으로 아이템의 텍스트·메타데이터를 수치화</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">콘텐츠 유사도 추천</p><p class="formula">사용자가 선호한 아이템과 특징이 비슷한 아이템을 추천</p></div><div class="chip-card" style="--chip-c:var(--c-rs-e)"><p class="name">협업필터링과의 비교</p><p class="formula">콜드스타트에 강하지만 새로운 취향 발견력은 상대적으로 약함</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=feature-vectorization" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-e)"><p class="name">특징 벡터화</p><p class="formula">TF-IDF나 임베딩으로 아이템의 텍스트·메타데이터를 수치화</p></a><a class="chip-card" href="../concepts/index.html?c=content-similarity-recommendation" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-e)"><p class="name">콘텐츠 유사도 추천</p><p class="formula">사용자가 선호한 아이템과 특징이 비슷한 아이템을 추천</p></a><a class="chip-card" href="../concepts/index.html?c=cf-vs-content-comparison" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-e)"><p class="name">협업필터링과의 비교</p><p class="formula">콜드스타트에 강하지만 새로운 취향 발견력은 상대적으로 약함</p></a>
       </div>
     </div>
   </div>
@@ -322,13 +325,13 @@
     <div class="sub-block">
       <p class="sub-title">다양성 · 공정성 · 탐색</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">필터버블</p><p class="formula">추천이 좁은 취향에 갇혀 다양성이 줄어드는 현상</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">노출 공정성</p><p class="formula">인기 아이템 쏠림을 막고 아이템 노출 기회를 고르게 배분</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">Exploration-Exploitation</p><p class="formula">알려진 선호만 활용하면 새 취향을 못 찾아 탐색을 병행하는 이유</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=filter-bubble" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-f)"><p class="name">필터버블</p><p class="formula">추천이 좁은 취향에 갇혀 다양성이 줄어드는 현상</p></a><a class="chip-card" href="../concepts/index.html?c=exposure-fairness" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-f)"><p class="name">노출 공정성</p><p class="formula">인기 아이템 쏠림을 막고 아이템 노출 기회를 고르게 배분</p></a><a class="chip-card" href="../concepts/index.html?c=exploration-exploitation-recsys" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-f)"><p class="name">Exploration-Exploitation</p><p class="formula">알려진 선호만 활용하면 새 취향을 못 찾아 탐색을 병행하는 이유</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">세션 기반 추천</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">세션 기반 추천</p><p class="formula">로그인 없이 현재 세션 행동만으로 다음 아이템을 추천</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">GRU4Rec</p><p class="formula">RNN으로 세션 내 클릭 순서를 학습하는 순차 추천 모델</p></div><div class="chip-card" style="--chip-c:var(--c-rs-f)"><p class="name">Next-item Prediction</p><p class="formula">세션에서 다음에 클릭할 아이템을 예측하는 과제</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=session-based-recommendation" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-f)"><p class="name">세션 기반 추천</p><p class="formula">로그인 없이 현재 세션 행동만으로 다음 아이템을 추천</p></a><a class="chip-card" href="../concepts/index.html?c=gru4rec" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-f)"><p class="name">GRU4Rec</p><p class="formula">RNN으로 세션 내 클릭 순서를 학습하는 순차 추천 모델</p></a><a class="chip-card" href="../concepts/index.html?c=next-item-prediction" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-f)"><p class="name">Next-item Prediction</p><p class="formula">세션에서 다음에 클릭할 아이템을 예측하는 과제</p></a>
       </div>
     </div>
   </div>
@@ -339,13 +342,13 @@
     <div class="sub-block">
       <p class="sub-title">오프라인-온라인 지표 괴리</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">지표 괴리</p><p class="formula">NDCG 등 오프라인 지표가 좋아도 온라인 성과로 이어지지 않는 경우가 있음</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">Interleaving</p><p class="formula">두 랭킹을 섞어 보여주고 실제 클릭으로 우열을 비교</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">Replay 평가</p><p class="formula">과거 로그를 재생해 오프라인에서 온라인에 가까운 성과를 추정</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=offline-online-metric-gap" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-g)"><p class="name">지표 괴리</p><p class="formula">NDCG 등 오프라인 지표가 좋아도 온라인 성과로 이어지지 않는 경우가 있음</p></a><a class="chip-card" href="../concepts/index.html?c=interleaving" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-g)"><p class="name">Interleaving</p><p class="formula">두 랭킹을 섞어 보여주고 실제 클릭으로 우열을 비교</p></a><a class="chip-card" href="../concepts/index.html?c=replay-evaluation" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-g)"><p class="name">Replay 평가</p><p class="formula">과거 로그를 재생해 오프라인에서 온라인에 가까운 성과를 추정</p></a>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">대규모 서빙 아키텍처</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">2단계 구조</p><p class="formula">후보생성으로 대상을 줄인 뒤 랭킹으로 정밀 계산해 연산량을 절감</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">실시간 피처 스토어</p><p class="formula">서빙 시점에 최신 사용자·아이템 피처를 빠르게 조회</p></div><div class="chip-card" style="--chip-c:var(--c-rs-g)"><p class="name">ANN 인덱스 갱신</p><p class="formula">근사최근접 검색 인덱스를 주기적으로 재구축해 최신성 유지</p></div>
+        <a class="chip-card" href="../concepts/index.html?c=two-stage-serving" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-g)"><p class="name">2단계 구조</p><p class="formula">후보생성으로 대상을 줄인 뒤 랭킹으로 정밀 계산해 연산량을 절감</p></a><a class="chip-card" href="../concepts/index.html?c=real-time-feature-store" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-g)"><p class="name">실시간 피처 스토어</p><p class="formula">서빙 시점에 최신 사용자·아이템 피처를 빠르게 조회</p></a><a class="chip-card" href="../concepts/index.html?c=ann-index-refresh" target="_blank" rel="noopener" style="--chip-c:var(--c-rs-g)"><p class="name">ANN 인덱스 갱신</p><p class="formula">근사최근접 검색 인덱스를 주기적으로 재구축해 최신성 유지</p></a>
       </div>
     </div>
   </div>
