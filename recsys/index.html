@@ -217,69 +217,69 @@
   <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-rs-a)"></span>후보생성</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-a)"></span>후보생성</p>
     <p class="group-desc">전체 아이템 중 보여줄 만한 후보군을 빠르게 좁히는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">협업필터링</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">Matrix Factorization</p><p class="formula">사용자-아이템 평점행렬을 저랭크로 분해</p></div><div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">ALS</p><p class="formula">Alternating Least Squares로 인수분해 최적화</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">Matrix Factorization</p><p class="formula">사용자-아이템 평점행렬을 저랭크로 분해</p></div><div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">ALS</p><p class="formula">Alternating Least Squares로 인수분해 최적화</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">임베딩기반 검색</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">Two-Tower 모델</p><p class="formula">사용자탑 · 아이템탑을 별도 임베딩</p></div><div class="chip-card" style="--chip-c:var(c-rs-a)"><p class="name">ANN 검색</p><p class="formula">근사최근접 이웃으로 대규모 후보 검색</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">Two-Tower 모델</p><p class="formula">사용자탑 · 아이템탑을 별도 임베딩</p></div><div class="chip-card" style="--chip-c:var(--c-rs-a)"><p class="name">ANN 검색</p><p class="formula">근사최근접 이웃으로 대규모 후보 검색</p></div>
       </div>
     </div>
   </div>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-rs-b)"></span>랭킹</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-b)"></span>랭킹</p>
     <p class="group-desc">좁혀진 후보를 정밀하게 순서 매기는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">랭킹 모델</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">GBDT 랭킹</p><p class="formula">그래디언트 부스팅 트리 기반 순위화</p></div><div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">LambdaMART</p><p class="formula">Learning to Rank의 대표 알고리즘</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">GBDT 랭킹</p><p class="formula">그래디언트 부스팅 트리 기반 순위화</p></div><div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">LambdaMART</p><p class="formula">Learning to Rank의 대표 알고리즘</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">딥러닝 랭킹</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">Wide&Deep</p><p class="formula">기억(Wide)과 일반화(Deep)를 함께 학습</p></div><div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">DIN</p><p class="formula">사용자 과거 행동에 어텐션을 적용</p></div><div class="chip-card" style="--chip-c:var(c-rs-b)"><p class="name">Transformer 기반 랭킹</p><p class="formula">시퀀스 전체 문맥을 어텐션으로 반영</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">Wide&Deep</p><p class="formula">기억(Wide)과 일반화(Deep)를 함께 학습</p></div><div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">DIN</p><p class="formula">사용자 과거 행동에 어텐션을 적용</p></div><div class="chip-card" style="--chip-c:var(--c-rs-b)"><p class="name">Transformer 기반 랭킹</p><p class="formula">시퀀스 전체 문맥을 어텐션으로 반영</p></div>
       </div>
     </div>
   </div>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-rs-c)"></span>평가지표</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-c)"></span>평가지표</p>
     <p class="group-desc">추천이 실제로 좋은지 재는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">오프라인 평가</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">NDCG</p><p class="formula">순위에 할인 가중치를 준 누적 이득</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">MAP</p><p class="formula">평균 정밀도</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">Recall@K</p><p class="formula">상위 K개 안의 재현율</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">NDCG</p><p class="formula">순위에 할인 가중치를 준 누적 이득</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">MAP</p><p class="formula">평균 정밀도</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">Recall@K</p><p class="formula">상위 K개 안의 재현율</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">온라인 평가</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">CTR</p><p class="formula">클릭률</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">체류시간</p><p class="formula">노출 이후 실제 소비 시간</p></div><div class="chip-card" style="--chip-c:var(c-rs-c)"><p class="name">A/B테스트 연계</p><p class="formula">오프라인 지표와 실제 효과의 괴리 검증</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">CTR</p><p class="formula">클릭률</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">체류시간</p><p class="formula">노출 이후 실제 소비 시간</p></div><div class="chip-card" style="--chip-c:var(--c-rs-c)"><p class="name">A/B테스트 연계</p><p class="formula">오프라인 지표와 실제 효과의 괴리 검증</p></div>
       </div>
     </div>
   </div>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-rs-d)"></span>개인화 · 강화학습</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-rs-d)"></span>개인화 · 강화학습</p>
     <p class="group-desc">추천을 단발성이 아니라 장기 상호작용으로 보는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">밴딧 기반 추천</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">Contextual Bandit</p><p class="formula">문맥에 따라 팔을 선택하는 탐색-활용</p></div><div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">Thompson Sampling</p><p class="formula">사후분포 샘플링으로 탐색</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">Contextual Bandit</p><p class="formula">문맥에 따라 팔을 선택하는 탐색-활용</p></div><div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">Thompson Sampling</p><p class="formula">사후분포 샘플링으로 탐색</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">강화학습 추천</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">슬레이트 최적화</p><p class="formula">한 화면 전체 아이템 조합을 최적화</p></div><div class="chip-card" style="--chip-c:var(c-rs-d)"><p class="name">장기보상 최적화</p><p class="formula">즉각 클릭이 아닌 장기 리텐션을 보상으로</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">슬레이트 최적화</p><p class="formula">한 화면 전체 아이템 조합을 최적화</p></div><div class="chip-card" style="--chip-c:var(--c-rs-d)"><p class="name">장기보상 최적화</p><p class="formula">즉각 클릭이 아닌 장기 리텐션을 보상으로</p></div>
       </div>
     </div>
   </div>

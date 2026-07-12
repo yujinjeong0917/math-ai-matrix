@@ -27,6 +27,8 @@
     --c-pd-b: #6a5a2f;
     --c-pd-c: #7d2f4f;
     --c-pd-d: #3f7d2f;
+    --c-pd-e: #a1327d;
+    --c-pd-e: #a1327d;
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -42,6 +44,8 @@
       --c-pd-b: #c9b06e;
       --c-pd-c: #d47ea1;
       --c-pd-d: #8fc46e;
+    --c-pd-e: #d98fc4;
+      --c-pd-e: #d98fc4;
     }
   }
   :root[data-theme="dark"] {
@@ -213,80 +217,104 @@
     <span class="legend-item"><span class="dot" style="background:var(--c-pd-b)"></span>지표설계</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-pd-c)"></span>어트리뷰션 · 귀속</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-pd-d)"></span>성장 · 리텐션</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-pd-e)"></span>마케팅 지표 공식</span>
   </div>
   <p class="hint">대분류 안에 중분류, 그 안에 구체 기법 카드가 있는 구조입니다. 아직 빈칸 증명 페이지는 없고 개념 정리 단계입니다.</p>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-pd-a)"></span>실험설계</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-a)"></span>실험설계</p>
     <p class="group-desc">새 기능이 실제로 효과가 있는지 검증하는 층입니다. 심화 매트릭스의 인과추론과 바로 이어집니다.</p>
     <div class="sub-block">
       <p class="sub-title">A/B 테스트</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">표본크기 산정</p><p class="formula">검정력 기반 최소 표본 계산</p></div><div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">순차검정</p><p class="formula">중간에 계속 봐도 안전한 검정 설계</p></div><div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">Multi-armed Bandit</p><p class="formula">탐색과 수익을 동시에 최적화</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">표본크기 산정</p><p class="formula">검정력 기반 최소 표본 계산</p></div><div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">순차검정</p><p class="formula">중간에 계속 봐도 안전한 검정 설계</p></div><div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">Multi-armed Bandit</p><p class="formula">탐색과 수익을 동시에 최적화</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">실험 함정</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">Novelty Effect</p><p class="formula">새로움 자체로 인한 일시적 효과</p></div><div class="chip-card" style="--chip-c:var(c-pd-a)"><p class="name">SRM</p><p class="formula">표본비율불일치, 실험 파이프라인 결함 신호</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">Novelty Effect</p><p class="formula">새로움 자체로 인한 일시적 효과</p></div><div class="chip-card" style="--chip-c:var(--c-pd-a)"><p class="name">SRM</p><p class="formula">표본비율불일치, 실험 파이프라인 결함 신호</p></div>
       </div>
     </div>
   </div>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-pd-b)"></span>지표설계</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-b)"></span>지표설계</p>
     <p class="group-desc">무엇을 보고 성공을 판단할지 정하는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">북극성지표 · OMTM</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">North Star Metric</p><p class="formula">조직 전체가 보는 단일 핵심지표</p></div><div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">가드레일 지표</p><p class="formula">북극성지표를 해치지 않는지 감시</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">North Star Metric</p><p class="formula">조직 전체가 보는 단일 핵심지표</p></div><div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">가드레일 지표</p><p class="formula">북극성지표를 해치지 않는지 감시</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">퍼널 · 코호트</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">퍼널분석</p><p class="formula">단계별 이탈률 추적</p></div><div class="chip-card" style="--chip-c:var(c-pd-b)"><p class="name">코호트 리텐션 곡선</p><p class="formula">가입시점별 잔존율 비교</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">퍼널분석</p><p class="formula">단계별 이탈률 추적</p></div><div class="chip-card" style="--chip-c:var(--c-pd-b)"><p class="name">코호트 리텐션 곡선</p><p class="formula">가입시점별 잔존율 비교</p></div>
       </div>
     </div>
   </div>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-pd-c)"></span>어트리뷰션 · 귀속</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-c)"></span>어트리뷰션 · 귀속</p>
     <p class="group-desc">결과를 어떤 채널 · 어떤 행동의 공로로 돌릴지 정하는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">마케팅 어트리뷰션</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">라스트클릭 어트리뷰션</p><p class="formula">마지막 접점에 전액 귀속</p></div><div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">샤플리 기반 어트리뷰션</p><p class="formula">채널별 한계기여도 배분</p></div><div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">MMM</p><p class="formula">Marketing Mix Model, 채널간 상호작용 회귀</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">라스트클릭 어트리뷰션</p><p class="formula">마지막 접점에 전액 귀속</p></div><div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">샤플리 기반 어트리뷰션</p><p class="formula">채널별 한계기여도 배분</p></div><div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">MMM</p><p class="formula">Marketing Mix Model, 채널간 상호작용 회귀</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">인과적 임팩트 측정</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">Uplift Modeling</p><p class="formula">처치 효과가 큰 사용자군 식별</p></div><div class="chip-card" style="--chip-c:var(c-pd-c)"><p class="name">Synthetic Control</p><p class="formula">가상의 대조군을 합성해 비교</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">Uplift Modeling</p><p class="formula">처치 효과가 큰 사용자군 식별</p></div><div class="chip-card" style="--chip-c:var(--c-pd-c)"><p class="name">Synthetic Control</p><p class="formula">가상의 대조군을 합성해 비교</p></div>
       </div>
     </div>
   </div>
 
   <div class="group-block">
-    <p class="group-title"><span class="dot" style="background:var(c-pd-d)"></span>성장 · 리텐션</p>
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-d)"></span>성장 · 리텐션</p>
     <p class="group-desc">장기적인 사용자 가치를 예측하고 키우는 층입니다.</p>
     <div class="sub-block">
       <p class="sub-title">LTV · 이탈예측</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">LTV 모델링</p><p class="formula">고객 생애가치 추정</p></div><div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">Churn 예측</p><p class="formula">이탈 확률 조기 감지</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">LTV 모델링</p><p class="formula">고객 생애가치 추정</p></div><div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">Churn 예측</p><p class="formula">이탈 확률 조기 감지</p></div>
       </div>
     </div>
     <div class="sub-block">
       <p class="sub-title">추천 · 개인화</p>
       <div class="chip-row">
-        <div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">개인화 랭킹</p><p class="formula">사용자별 노출 순서 최적화</p></div><div class="chip-card" style="--chip-c:var(c-pd-d)"><p class="name">밴딧 기반 추천</p><p class="formula">실시간 탐색-활용 균형</p></div>
+        <div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">개인화 랭킹</p><p class="formula">사용자별 노출 순서 최적화</p></div><div class="chip-card" style="--chip-c:var(--c-pd-d)"><p class="name">밴딧 기반 추천</p><p class="formula">실시간 탐색-활용 균형</p></div>
       </div>
     </div>
   </div>
 
 
+  <div class="group-block">
+    <p class="group-title"><span class="dot" style="background:var(--c-pd-e)"></span>마케팅 지표 공식</p>
+    <p class="group-desc">캠페인 성과를 숫자로 판단할 때 실제로 쓰는 계산식 모음입니다.</p>
+    <div class="sub-block">
+      <p class="sub-title">획득 지표</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CAC</p><p class="formula">CAC = 마케팅비용 / 신규고객수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CPA</p><p class="formula">CPA = 광고비 / 전환수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CPM</p><p class="formula">CPM = 광고비 / (노출수/1000)</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">수익성 지표</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">LTV:CAC 비율</p><p class="formula">LTV / CAC, 통상 3 이상을 건강한 기준으로 봄</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">ROAS</p><p class="formula">ROAS = 광고 매출 / 광고비</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">Payback Period</p><p class="formula">CAC / 고객당 월평균 매출</p></div>
+      </div>
+    </div>
+    <div class="sub-block">
+      <p class="sub-title">전환 · 참여 지표</p>
+      <div class="chip-row">
+        <div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CTR</p><p class="formula">CTR = 클릭수 / 노출수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">CVR</p><p class="formula">CVR = 전환수 / 방문수</p></div><div class="chip-card" style="--chip-c:var(--c-pd-e)"><p class="name">K-factor(바이럴계수)</p><p class="formula">K = 초대수 × 초대당 전환율, K&gt;1이면 자발적 확산</p></div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <span>대분류 4 × 중분류 8 — 실험설계부터 리텐션까지 프로덕트 애널리틱스</span>
+    <span>대분류 5 × 중분류 11 — 실험설계부터 리텐션까지 프로덕트 애널리틱스</span>
     <span>2026.07.12</span>
   </footer>
 </div>
