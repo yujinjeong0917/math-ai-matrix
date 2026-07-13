@@ -2936,6 +2936,13 @@ $$F(\theta)^{-1}\nabla J(\theta)=\begin{pmatrix}1/4&0\\0&1\end{pmatrix}\begin{pm
 <text x="330" y="176" font-size="12">신뢰도 = Pr(Object)·IoU</text>
 </svg>`,
     diagramCaption: String.raw`물체 중심이 속한 칸이 그 물체의 박스와 클래스를 예측한다.`,
+    example: String.raw`<p>표준 설정인 $S=7$, $B=2$, $C=20$을 그대로 넣어 YOLOv1의 출력 텐서 크기를 직접 계산해본다. 박스 하나는 중심 좌표 $x, y$와 크기 $w, h$ 그리고 신뢰도 하나까지 5개 값을 가지므로 박스 두 개면 $2 \times 5 = 10$개 값이 필요하다. 여기에 클래스 확률 20개를 더하면 칸 하나가 내놓는 값은 $10 + 20 = 30$개다. 격자 칸은 $7 \times 7 = 49$개이므로 전체 출력 텐서는 $7 \times 7 \times 30 = 1470$개의 숫자로 이루어진다.</p>
+<p>이 중 행 $i=2$ 열 $j=5$인 칸 하나를 예로 들어 그 칸이 내놓는 30개 값이 실제로 무엇을 뜻하는지 살펴본다. 입력 이미지가 $448 \times 448$이면 칸 하나의 한 변은 $448 / 7 = 64$ 픽셀이다.</p>
+<p>이 칸의 첫 번째 박스는 $x=0.3,\ y=0.6,\ w=0.4,\ h=0.5$를 예측했고 신뢰도는 $0.8$이었다. 두 번째 박스는 $x=0.5,\ y=0.5,\ w=0.6,\ h=0.3$을 예측했고 신뢰도는 $0.4$였다. 여기서 $x$와 $y$는 칸 안에서의 상대 위치이고 $w$와 $h$는 이미지 전체 크기에 대한 비율이다. 클래스 확률 20개 중 가장 높은 값이 개 클래스에서 $0.7$이었다면 첫 번째 박스의 클래스별 최종 점수는 $0.7 \times 0.8 = 0.56$이 된다.</p>
+<p>첫 번째 박스의 중심을 실제 이미지 좌표로 바꾸려면 칸의 위치를 더한 뒤 칸 크기를 곱하면 된다.</p>
+$$x_{\text{center}} = (5 + 0.3) \times 64 = 339.2, \quad y_{\text{center}} = (2 + 0.6) \times 64 = 166.4$$
+$$w_{\text{pixel}} = 0.4 \times 448 = 179.2, \quad h_{\text{pixel}} = 0.5 \times 448 = 224$$
+<p>따라서 이 박스의 좌상단은 $(339.2 - 89.6,\ 166.4 - 112) = (249.6,\ 54.4)$이고 우하단은 $(339.2 + 89.6,\ 166.4 + 112) = (428.8,\ 278.4)$다. 칸 하나가 내놓은 상대 좌표 몇 개가 이렇게 이미지 전체의 실제 사각형 좌표로 복원된다.</p>`,
     related: [{ label: "YOLOv3", slug: "yolov3" }, { label: "IoU와 NMS", slug: "iou-nms" }, { label: "Focal Loss", slug: "focal-loss" }],
     sections: []
   },
@@ -2972,6 +2979,15 @@ $$F(\theta)^{-1}\nabla J(\theta)=\begin{pmatrix}1/4&0\\0&1\end{pmatrix}\begin{pm
 <text x="470" y="185" font-size="12" text-anchor="middle">52×52 (작은 물체)</text>
 </svg>`,
     diagramCaption: String.raw`세 해상도의 특징맵이 각각 크기가 다른 물체를 담당한다.`,
+    example: String.raw`<p>입력 이미지가 $416 \times 416$일 때 세 스케일의 격자 크기를 스트라이드로부터 직접 구해본다. 가장 굵은 스케일은 스트라이드 32를 쓰므로 격자 한 변은 $416 / 32 = 13$이다. 같은 방식으로 스트라이드 16에서는 $416 / 16 = 26$이 나오고 스트라이드 8에서는 $416 / 8 = 52$가 나온다. 그래서 특징맵은 $13 \times 13$, $26 \times 26$, $52 \times 52$ 세 크기로 만들어진다.</p>
+<p>세로로 긴 물체 하나를 예로 들어 앵커 매칭이 실제로 어떻게 계산되는지 본다. 정답 박스의 크기가 폭 80 높이 160이라고 하자. 이 박스의 넓이는 $80 \times 160 = 12800$이다. 후보 앵커를 세 개 준비한다. 가로로 넓은 앵커 A는 폭 150 높이 60이고 정사각형에 가까운 앵커 B는 폭 90 높이 90이며 세로로 긴 앵커 C는 폭 70 높이 140이다. YOLOv3는 앵커를 정답 박스와 같은 중심에 겹쳐두고 폭과 높이만으로 IoU를 계산해 어떤 앵커가 이 물체를 책임질지 정한다.</p>
+<p>앵커 A와의 IoU부터 구해본다. 두 박스를 같은 중심에 겹치면 겹치는 영역의 폭은 두 폭 중 작은 값인 $\min(80,150)=80$이고 겹치는 영역의 높이는 두 높이 중 작은 값인 $\min(160,60)=60$이므로 교집합 넓이는 $80 \times 60 = 4800$이다. 합집합 넓이는 두 박스 넓이의 합에서 교집합을 뺀 $12800 + 9000 - 4800 = 17000$이다.</p>
+$$\mathrm{IoU}_A = \frac{4800}{17000} \approx 0.282$$
+<p>같은 방식으로 앵커 B는 교집합이 $\min(80,90)\times\min(160,90)=80\times90=7200$이고 합집합은 $12800+8100-7200=13700$이 된다.</p>
+$$\mathrm{IoU}_B = \frac{7200}{13700} \approx 0.526$$
+<p>앵커 C는 폭 70과 높이 140이 정답 박스의 폭 80 높이 160보다 둘 다 작아서 앵커 전체가 정답 박스 안에 통째로 들어간다. 그래서 교집합은 앵커 C의 넓이 그대로인 $70 \times 140 = 9800$이 되고 합집합은 $12800+9800-9800=12800$이 된다.</p>
+$$\mathrm{IoU}_C = \frac{9800}{12800} = 0.765625$$
+<p>세 IoU를 비교하면 $0.282 < 0.526 < 0.765625$이므로 세로 비율이 정답 박스와 가장 비슷한 앵커 C가 이 물체를 책임지는 앵커로 선택된다. 앵커 모양이 물체의 실제 형태와 가까울수록 매칭 IoU가 높아지고 그 앵커가 학습 신호를 받는다는 걸 숫자로 확인할 수 있다.</p>`,
     related: [{ label: "YOLOv1", slug: "yolov1" }, { label: "YOLOX/v8", slug: "yolo-x-v8" }, { label: "IoU와 NMS", slug: "iou-nms" }],
     sections: []
   },
@@ -3010,6 +3026,15 @@ $$F(\theta)^{-1}\nabla J(\theta)=\begin{pmatrix}1/4&0\\0&1\end{pmatrix}\begin{pm
 <text x="505" y="182" font-size="11" text-anchor="middle">박스</text>
 </svg>`,
     diagramCaption: String.raw`분류와 회귀를 하나의 브랜치로 묶던 구조가 두 개로 분리되었다.`,
+    example: String.raw`<p>앵커프리 방식이 실제로 박스를 어떻게 복원하는지 구체적인 숫자로 확인해본다. 스트라이드 8인 특징맵에서 행 $i=10$ 열 $j=15$인 격자점을 하나 고른다. 이 격자점이 원본 이미지에서 가리키는 실제 좌표는 격자 위치에 $0.5$를 더한 뒤 스트라이드를 곱해서 구한다.</p>
+$$p_x = (15+0.5)\times 8 = 124, \quad p_y = (10+0.5)\times 8 = 84$$
+<p>이 지점에서 네트워크가 왼쪽 거리 $l=20$ 위쪽 거리 $t=15$ 오른쪽 거리 $r=35$ 아래쪽 거리 $b=45$를 예측했다고 하자. 앵커박스 없이 이 네 거리만으로 바운딩박스의 네 변을 바로 복원할 수 있다.</p>
+$$x_{\min} = 124-20=104, \quad y_{\min}=84-15=69, \quad x_{\max}=124+35=159, \quad y_{\max}=84+45=129$$
+<p>이렇게 복원한 박스의 폭은 $159-104=55$이고 높이는 $129-69=60$이다. 앵커기반 방식이라면 이 크기와 가장 가까운 앵커를 미리 골라두고 그 앵커 대비 보정값을 예측해야 하지만 앵커프리 방식은 사전에 정의된 박스 모양 없이 거리 네 개만으로 곧바로 박스를 만들어낸다.</p>
+<p>헤드를 커플드와 디커플드로 나눴을 때 파라미터 수가 실제로 어떻게 달라지는지 작은 예로 비교해본다. 입력 채널이 256인 특징맵을 받아 $3\times3$ 합성곱으로 한 번 더 특징을 다듬은 뒤 $1\times1$ 합성곱으로 최종 출력을 뽑는 구조를 가정하고 클래스 수는 COCO 기준 80개를 쓴다.</p>
+<p>커플드 헤드는 하나의 $3\times3$ 합성곱과 하나의 $1\times1$ 합성곱만 가진다. $3\times3$ 합성곱의 파라미터 수는 $256\times256\times3\times3+256=590080$이다. 마지막 $1\times1$ 합성곱은 박스 4개 값과 신뢰도 1개와 클래스 80개를 합쳐 채널 85개를 내놓으므로 파라미터 수는 $256\times85+85=21845$다. 두 층을 합치면 커플드 헤드의 파라미터 수는 $590080+21845=611925$다.</p>
+<p>디커플드 헤드는 같은 크기의 $3\times3$ 합성곱을 분류용과 회귀용으로 따로 하나씩 둔다. 분류 브랜치의 $3\times3$ 합성곱은 커플드와 같은 $590080$개 파라미터를 쓰고 마지막 $1\times1$ 합성곱은 클래스 80개만 내놓으므로 $256\times80+80=20560$이다. 회귀 브랜치도 $3\times3$ 합성곱에 $590080$개를 쓰고 마지막 $1\times1$ 합성곱은 박스 4개와 신뢰도 1개를 합친 채널 5개만 내놓으므로 $256\times5+5=1285$다. 네 층을 모두 합치면 디커플드 헤드의 파라미터 수는 $590080+20560+590080+1285=1202005$다.</p>
+<p>두 마지막 층의 파라미터 수만 따로 더해보면 $20560+1285=21845$로 커플드 헤드의 마지막 층 파라미터 수와 정확히 같다. 클래스와 박스를 한 층에서 같이 뽑든 두 층으로 나눠 뽑든 출력 채널 수를 나누는 산수 자체는 바뀌지 않기 때문이다. 디커플드 헤드가 실제로 더 무거워지는 이유는 출력층이 아니라 분류와 회귀가 각자 가지는 $3\times3$ 합성곱이 하나 더 늘어나기 때문이며 이 예에서는 그 차이로 전체 파라미터 수가 $611925$에서 $1202005$로 늘어난다.</p>`,
     related: [{ label: "YOLOv3", slug: "yolov3" }, { label: "IoU와 NMS", slug: "iou-nms" }, { label: "Focal Loss", slug: "focal-loss" }],
     sections: []
   },
@@ -3093,6 +3118,30 @@ $$\mathrm{CE}(0.1) = -\log(0.1) \approx 2.303, \quad \mathrm{FL}(0.1) = (0.9)^2 
 <text x="530" y="75" font-size="12">출력</text>
 </svg>`,
     diagramCaption: String.raw`쿼리와 키의 유사도로 값을 가중평균하는 것이 셀프어텐션의 전부다.`,
+    example: String.raw`<p>토큰 3개짜리 아주 작은 문장으로 셀프어텐션 서브레이어부터 FFN 서브레이어까지 층 전체를 따라가본다. 모델 차원은 $d_{\mathrm{model}}=4$로 두고 쿼리와 키의 내적 차원은 $d_k=2$, 값 벡터 차원은 $d_v=4$로 둔다. 위에서 다룬 $\sqrt{d}$ 스케일링의 분산 증명은 이미 다른 문서에서 다뤘으므로 여기서는 그 스케일링이 실제 층 하나 안에서 어떤 숫자로 이어지는지, 그리고 어텐션 다음에 오는 residual과 레이어정규화와 피드포워드까지 전체 흐름이 어떻게 이어지는지에 초점을 둔다.</p>
+<p>세 토큰의 쿼리와 키 벡터를 다음처럼 둔다.</p>
+$$q_1=(1,0),\quad q_2=(0,1),\quad q_3=(1,1)$$
+$$k_1=(1,0),\quad k_2=(0,1),\quad k_3=(1,-1)$$
+<p>값 벡터는 다음처럼 둔다.</p>
+$$v_1=(1,0,0,0),\quad v_2=(0,1,0,0),\quad v_3=(0,0,1,1)$$
+<p>먼저 $QK^T$를 구한다. 각 원소는 해당 쿼리와 키의 내적이다.</p>
+$$QK^T=\begin{pmatrix}1 & 0 & 1\\ 0 & 1 & -1\\ 1 & 1 & 0\end{pmatrix}$$
+<p>$d_k=2$이므로 $\sqrt{d_k}=\sqrt2\approx1.4142$로 나눈다.</p>
+$$\frac{QK^T}{\sqrt{d_k}}\approx\begin{pmatrix}0.7071 & 0 & 0.7071\\ 0 & 0.7071 & -0.7071\\ 0.7071 & 0.7071 & 0\end{pmatrix}$$
+<p>행마다 소프트맥스를 취한다. 첫 번째 행은 $e^{0.7071}\approx2.0281$이고 $e^{0}=1$이라 분모가 $2.0281+1+2.0281=5.0562$이며 소프트맥스 값은 $(0.4011,\ 0.1978,\ 0.4011)$이다. 두 번째 행은 $e^{0.7071}\approx2.0281$과 $e^{-0.7071}\approx0.4931$을 써서 분모가 $1+2.0281+0.4931=3.5212$가 되고 값은 $(0.2840,\ 0.5760,\ 0.1400)$이다. 세 번째 행은 첫 번째 행과 같은 두 값이 자리만 바뀌어 $(0.4011,\ 0.4011,\ 0.1978)$이다.</p>
+<p>이 가중치로 $V$를 가중평균하면 각 토큰의 어텐션 출력이 나온다.</p>
+$$\mathrm{Attn}_1\approx(0.4011,\ 0.1978,\ 0.4011,\ 0.4011)$$
+$$\mathrm{Attn}_2\approx(0.2840,\ 0.5760,\ 0.1400,\ 0.1400)$$
+$$\mathrm{Attn}_3\approx(0.4011,\ 0.4011,\ 0.1978,\ 0.1978)$$
+<p>여기까지가 셀프어텐션 서브레이어의 출력이다. 세 토큰 모두 $d_{\mathrm{model}}=4$ 차원 벡터로 나왔다. 이제 이 서브레이어를 감싸는 residual과 레이어정규화를 적용한다. 원래 입력 임베딩을 $x_1=(1,0,1,0)$, $x_2=(0,1,0,1)$, $x_3=(1,1,0,0)$이라 하면 residual 합 $z_i=x_i+\mathrm{Attn}_i$는 다음과 같다.</p>
+$$z_1\approx(1.4011,\ 0.1978,\ 1.4011,\ 0.4011)$$
+$$z_2\approx(0.2840,\ 1.5760,\ 0.1400,\ 1.1400)$$
+$$z_3\approx(1.4011,\ 1.4011,\ 0.1978,\ 0.1978)$$
+<p>첫 번째 토큰만 레이어정규화까지 계산해본다. $z_1$의 네 성분 평균은 $0.8503$이다. 각 성분에서 평균을 뺀 뒤 제곱해 평균 내면 분산은 약 $0.3086$이고 표준편차는 약 $0.5555$다. 감마를 1, 베타를 0으로 두고 정규화하면 $z_1$은 대략 다음과 같다.</p>
+$$h_1\approx(0.9916,\ -1.1746,\ 0.9916,\ -0.8086)$$
+<p>나머지 두 토큰도 각자의 평균과 표준편차로 같은 방식으로 정규화되고 결과는 여전히 4차원 벡터다.</p>
+<p>정규화된 벡터 $h_i$는 이제 position-wise FFN으로 들어간다. FFN은 $\mathrm{FFN}(h)=W_2\,\mathrm{ReLU}(W_1h+b_1)+b_2$ 형태이고 $W_1$은 $16\times4$ 행렬, $W_2$는 $4\times16$ 행렬이다. 4차원으로 들어온 벡터가 $W_1$을 지나며 순간적으로 $d_{\mathrm{ff}}=16$차원으로 부풀었다가 $W_2$를 지나며 다시 4차원으로 눌린다. 이 확장과 축소는 토큰마다 완전히 동일한 $W_1,W_2$가 독립적으로 적용되는 연산이라 이 단계에서 토큰 사이의 정보 교환은 전혀 일어나지 않는다. FFN 출력도 다시 residual로 더해지고 레이어정규화를 한 번 더 거치는데 이때도 벡터 차원은 그대로 4다.</p>
+<p>정리하면 세 토큰짜리 입력 텐서는 층을 통과하는 내내 $(3,4)$라는 모양을 유지한다. 어텐션도 FFN도 중간에 자기만의 내부 차원인 $d_k=2$, $d_v=4$, $d_{\mathrm{ff}}=16$을 잠깐 쓰지만 서브레이어를 나올 때는 항상 $d_{\mathrm{model}}=4$로 되돌아온다. 이 덕분에 같은 모양의 층을 몇 개든 그대로 이어붙일 수 있다.</p>`,
     related: [{ label: "ViT", slug: "vit" }, { label: "GPT 계열", slug: "gpt-family" }, { label: "KV Cache", slug: "kv-cache" }],
     sections: []
   },
@@ -3126,6 +3175,15 @@ $$\mathrm{CE}(0.1) = -\log(0.1) \approx 2.303, \quad \mathrm{FL}(0.1) = (0.9)^2 
 <text x="470" y="105" font-size="12" text-anchor="middle">Transformer Encoder</text>
 </svg>`,
     diagramCaption: String.raw`이미지를 패치로 잘라 CLS 토큰과 함께 시퀀스로 넣는다.`,
+    example: String.raw`<p>실제 ViT-Base 설정과 같은 자릿수로 패치화 과정을 직접 계산해본다. 입력 이미지 크기는 $224\times224\times3$이고 패치 한 변의 길이는 $P=16$이다.</p>
+$$\frac{224}{16}=14$$
+<p>가로 세로 각각 14개씩 패치가 나오므로 전체 패치 개수는 다음과 같다.</p>
+$$14\times14=196$$
+<p>패치 하나를 펼치면 다음만큼의 픽셀 값이 나온다.</p>
+$$16\times16\times3=768$$
+<p>이 768차원 벡터를 학습 가능한 선형변환 하나로 사영해 $D=768$차원 패치 임베딩을 얻는다. ViT-Base는 우연히 펼친 원래 차원과 사영한 차원이 둘 다 768로 같다. 여기에 분류용 CLS 토큰 하나를 맨 앞에 추가하면 시퀀스 길이는 다음처럼 늘어난다.</p>
+$$196+1=197$$
+<p>따라서 이 이미지 한 장이 Transformer 인코더에 들어가는 최종 입력 텐서의 모양은 $197\times768$이다. 197개 단어짜리 문장을 768차원 임베딩으로 표현한 시퀀스와 형태가 정확히 같다. 이후 인코더의 모든 셀프어텐션과 FFN 연산은 이 $197\times768$ 텐서 위에서 그대로 동작하며 패치 개수가 늘어나면 시퀀스 길이만 늘어날 뿐 인코더 구조 자체는 바뀌지 않는다.</p>`,
     related: [{ label: "Transformer(2017)", slug: "transformer-2017" }, { label: "GPT 계열", slug: "gpt-family" }],
     sections: []
   },
@@ -3149,6 +3207,14 @@ $$\mathrm{CE}(0.1) = -\log(0.1) \approx 2.303, \quad \mathrm{FL}(0.1) = (0.9)^2 
 <text x="170" y="60" font-size="12">마스킹됨</text>
 </svg>`,
     diagramCaption: String.raw`각 토큰은 자기 이전 토큰까지만 참조할 수 있다.`,
+    example: String.raw`<p>토큰 4개짜리 시퀀스 $x_1,x_2,x_3,x_4$로 인과적 마스크가 실제로 어떤 모양인지 확인해본다. 마스크 행렬의 행은 쿼리 위치, 열은 키 위치를 나타낸다. 값이 0이면 그 위치를 볼 수 있다는 뜻이고 $-\infty$면 소프트맥스 전에 막혀서 그 위치를 전혀 볼 수 없다는 뜻이다.</p>
+$$M=\begin{pmatrix}0 & -\infty & -\infty & -\infty\\ 0 & 0 & -\infty & -\infty\\ 0 & 0 & 0 & -\infty\\ 0 & 0 & 0 & 0\end{pmatrix}$$
+<p>세 번째 행을 보면 열 1 2 3은 0이고 열 4만 $-\infty$다. 위치 3의 토큰은 위치 1 2 3까지는 attention을 계산할 수 있지만 위치 4는 미리 볼 수 없다. $-\infty$가 더해진 자리는 소프트맥스를 통과하면 확률이 정확히 0이 되므로 그 위치의 값은 결과에 전혀 반영되지 않는다.</p>
+<p>이 마스크가 강제하는 조건은 학습 목표인 확률의 연쇄법칙 분해와 정확히 대응한다. 전체 시퀀스의 결합확률은 다음처럼 분해된다.</p>
+$$p(x_1,x_2,x_3,x_4)=p(x_1)\,p(x_2\mid x_1)\,p(x_3\mid x_1,x_2)\,p(x_4\mid x_1,x_2,x_3)$$
+<p>각 조건부 확률을 $p(x_1)=0.5$, $p(x_2\mid x_1)=0.3$, $p(x_3\mid x_1,x_2)=0.4$, $p(x_4\mid x_1,x_2,x_3)=0.2$라 하면 결합확률은 다음처럼 계산된다.</p>
+$$0.5\times0.3\times0.4\times0.2=0.012$$
+<p>모델이 위치 3에서 다음 토큰을 예측할 때 참고할 수 있는 정보는 정확히 $x_1,x_2,x_3$까지로 제한된다. 이것이 바로 인과적 마스크의 역할이다. 이 제한 덕분에 네 위치의 예측을 한 번의 순전파에서 동시에 계산해도 $p(x_3\mid x_1,x_2)$ 항이 미래 토큰 $x_4$를 몰래 참고하는 일이 생기지 않는다. 그래서 한 토큰씩 순서대로 생성하지 않고도 전체 시퀀스에 대한 로그우도를 한 번의 병렬 순전파로 학습할 수 있다.</p>`,
     related: [{ label: "Transformer(2017)", slug: "transformer-2017" }, { label: "KV Cache", slug: "kv-cache" }, { label: "스케일링 법칙", slug: "scaling-laws" }],
     sections: []
   },
@@ -3203,6 +3269,20 @@ $$2 \times 32 \times 4096 \times 2048 \times 1 \times 2 = 1073741824 \text{ byte
 <text x="240" y="216" font-size="11">log 모델 크기 N</text>
 </svg>`,
     diagramCaption: String.raw`로그 축에서 손실은 모델 크기에 대해 거의 직선으로 감소한다.`,
+    example: String.raw`<p>Kaplan 등(2020)이 보고한 것과 비슷한 자릿수의 상수로 $L(N)=(N_c/N)^{\alpha}$의 값을 직접 계산해본다. $\alpha=0.076$, $N_c=8.8\times10^{13}$으로 둔다.</p>
+<p>파라미터 수 $N=10^8$일 때와 $N=10^{10}$일 때를 비교한다.</p>
+$$\frac{N_c}{10^8}=8.8\times10^{5},\qquad \frac{N_c}{10^{10}}=8.8\times10^{3}$$
+<p>각각을 $0.076$ 제곱하면 다음과 같다.</p>
+$$L(10^8)\approx(8.8\times10^{5})^{0.076}\approx2.83$$
+$$L(10^{10})\approx(8.8\times10^{3})^{0.076}\approx1.99$$
+<p>모델을 100배 키웠더니 파라미터 수가 $10^8$에서 $10^{10}$으로 늘면서 손실은 $2.83$에서 $1.99$로 줄었다. 비율로 보면 다음과 같다.</p>
+$$\frac{L(10^8)}{L(10^{10})}\approx1.42$$
+<p>손실이 약 30퍼센트 줄어드는 셈이다. 지수 $\alpha$가 $0.076$처럼 작을수록 파라미터를 아무리 키워도 손실은 완만하게만 줄어든다. 실제로 지수가 이렇게 작기 때문에 모델을 100배 키워도 손실이 절반이 되는 것이 아니라 30퍼센트 남짓만 줄어든다.</p>
+<p>이 거듭제곱 관계는 연산량이 고정되어 있을 때 $N$과 $D$를 어떻게 나눠 배분할지 정하는 데도 쓰인다. 학습 연산량을 흔히 쓰는 근사식 $C\approx6ND$로 잡고 $C=6\times10^{23}$ 플롭스로 고정한다. $N=10^{10}$이면 필요한 데이터 토큰 수는 다음과 같다.</p>
+$$D=\frac{C}{6N}=\frac{6\times10^{23}}{6\times10^{10}}=10^{13}$$
+<p>같은 연산량 예산 안에서 모델을 10배 더 키워 $N=10^{11}$로 잡으면 데이터는 다음처럼 10배 줄어야 같은 $C$가 유지된다.</p>
+$$D=\frac{6\times10^{23}}{6\times10^{11}}=10^{12}$$
+<p>고정된 연산량 안에서 모델을 키우면 그만큼 데이터를 줄여야 하고 반대로 데이터를 늘리려면 모델을 줄여야 한다. 이 맞교환이 Chinchilla가 정리한 compute-optimal 배분의 핵심이다.</p>`,
     related: [{ label: "GPT 계열", slug: "gpt-family" }, { label: "KV Cache", slug: "kv-cache" }],
     sections: []
   },
@@ -3232,6 +3312,12 @@ $$2 \times 32 \times 4096 \times 2048 \times 1 \times 2 = 1073741824 \text{ byte
 <text x="480" y="95" font-size="12">전역특징</text>
 </svg>`,
     diagramCaption: String.raw`점마다 같은 MLP를 적용한 뒤 최댓값으로 모으면 순서에 무관한 표현이 된다.`,
+    example: String.raw`<p>순열불변성을 작은 숫자로 직접 확인해본다. 점 4개로 이루어진 점군을 생각한다. $p_1=(1,2)$, $p_2=(3,1)$, $p_3=(0,4)$, $p_4=(2,0)$이다. 공유 함수 $h$를 $h(x,y)=(x+y,\,x-y)$로 정한다. 이 함수를 각 점에 독립적으로 적용하면 다음과 같다.</p>
+$$h(p_1)=(3,-1),\quad h(p_2)=(4,2),\quad h(p_3)=(4,-4),\quad h(p_4)=(2,2)$$
+<p>이제 채널별로 4개 점에 대해 최댓값을 뽑는다. 첫 번째 채널의 값은 $3,4,4,2$이다. 최댓값은 $4$다. 두 번째 채널의 값은 $-1,2,-4,2$이다. 최댓값은 $2$다. 따라서 전역특징은 $(4,2)$가 된다.</p>
+<p>이번에는 입력 순서를 $p_3, p_1, p_4, p_2$로 완전히 뒤섞어서 같은 계산을 반복한다.</p>
+$$h(p_3)=(4,-4),\quad h(p_1)=(3,-1),\quad h(p_4)=(2,2),\quad h(p_2)=(4,2)$$
+<p>첫 번째 채널의 값은 $4,3,2,4$이다. 최댓값은 여전히 $4$다. 두 번째 채널의 값은 $-4,-1,2,2$이다. 최댓값은 여전히 $2$다. 점의 순서를 완전히 바꾸었는데도 전역특징은 정확히 같은 $(4,2)$로 나온다. 각 점에 같은 함수 $h$를 적용하고 그 결과를 최댓값이라는 순서에 무관한 연산으로 모으기 때문에 이런 순열불변성이 입력 순서와 상관없이 항상 성립한다.</p>`,
     related: [{ label: "복셀 기반 3D CNN", slug: "voxel-cnn" }, { label: "NeRF", slug: "nerf" }],
     sections: []
   },
@@ -3259,6 +3345,13 @@ $$2 \times 32 \times 4096 \times 2048 \times 1 \times 2 = 1073741824 \text{ byte
 <text x="220" y="140" font-size="12">빈 복셀은 대부분 계산 낭비</text>
 </svg>`,
     diagramCaption: String.raw`점을 담은 칸만 점유되고 나머지는 대부분 빈 칸으로 남는다.`,
+    example: String.raw`<p>한 변의 길이가 2인 정육면체 공간을 $4\times4\times4$ 격자로 나누는 경우를 계산해본다. 격자 한 칸의 크기는 $2/4=0.5$다. 점 4개의 좌표는 $p_1=(0.3,0.3,0.3)$, $p_2=(1.2,0.7,1.9)$, $p_3=(1.6,1.6,0.4)$, $p_4=(0.9,1.1,1.4)$다. 각 좌표를 칸 크기 $0.5$로 나눈 뒤 내림(floor)하면 그 점이 속한 복셀의 인덱스 $(i,j,k)$가 나온다.</p>
+$$p_1 \to \left(\lfloor 0.3/0.5\rfloor,\lfloor 0.3/0.5\rfloor,\lfloor 0.3/0.5\rfloor\right)=(0,0,0)$$
+$$p_2 \to \left(\lfloor 1.2/0.5\rfloor,\lfloor 0.7/0.5\rfloor,\lfloor 1.9/0.5\rfloor\right)=(2,1,3)$$
+$$p_3 \to \left(\lfloor 1.6/0.5\rfloor,\lfloor 1.6/0.5\rfloor,\lfloor 0.4/0.5\rfloor\right)=(3,3,0)$$
+$$p_4 \to \left(\lfloor 0.9/0.5\rfloor,\lfloor 1.1/0.5\rfloor,\lfloor 1.4/0.5\rfloor\right)=(1,2,2)$$
+<p>결과적으로 점유(occupied)로 표시되는 칸은 $(0,0,0)$, $(2,1,3)$, $(3,3,0)$, $(1,2,2)$ 네 칸뿐이다. 전체 칸 수는 $4^3=64$개다. 나머지 60개 칸은 모두 점유되지 않은 0으로 남는다.</p>
+<p>해상도를 두 배로 올려 $8\times8\times8$ 격자로 나누면 칸 크기는 $2/8=0.25$로 더 세밀해진다. 하지만 전체 칸 수는 $8^3=512$개로 늘어난다. 같은 점군을 담는데도 메모리는 $512/64=8$배로 커진다. 반대로 격자를 더 성기게 두면 메모리는 아끼지만 한 칸 안에 서로 다른 여러 점이 뭉뚱그려져 세부 형상 정보가 뭉개질 위험이 커진다.</p>`,
     related: [{ label: "PointNet", slug: "pointnet" }, { label: "NeRF", slug: "nerf" }],
     sections: []
   },
@@ -3291,6 +3384,17 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
 <text x="470" y="130" font-size="11">→ 픽셀 색 합성</text>
 </svg>`,
     diagramCaption: String.raw`카메라 광선을 따라 샘플링한 점들을 신경망에 넣고 색을 쌓아 픽셀 값을 만든다.`,
+    example: String.raw`<p>카메라 광선 위에 세 개의 샘플 점을 놓고 볼륨렌더링 적분을 이산합으로 계산해본다. 샘플 위치는 $t_1=1.0$, $t_2=2.0$, $t_3=3.0$이다. 인접 샘플 사이 간격은 모두 $\delta_1=\delta_2=\delta_3=1.0$으로 둔다. 각 샘플의 밀도와 색상 값은 $\sigma_1=0.5,\,c_1=0.2$, $\sigma_2=1.0,\,c_2=0.5$, $\sigma_3=2.0,\,c_3=0.9$로 정한다.</p>
+<p>먼저 각 구간에서 빛이 흡수되는 정도를 나타내는 $\alpha_i=1-\exp(-\sigma_i\delta_i)$를 구한다.</p>
+$$\alpha_1=1-e^{-0.5}\approx0.3935,\quad \alpha_2=1-e^{-1.0}\approx0.6321,\quad \alpha_3=1-e^{-2.0}\approx0.8647$$
+<p>다음으로 각 샘플까지 광선이 아무것도 만나지 않고 도달할 누적투과율 $T_i=\exp\left(-\sum_{j<i}\sigma_j\delta_j\right)$를 구한다.</p>
+$$T_1=e^{0}=1,\quad T_2=e^{-0.5}\approx0.6065,\quad T_3=e^{-1.5}\approx0.2231$$
+<p>이제 각 항 $T_i\alpha_ic_i$를 계산해서 모두 더하면 픽셀 색이 나온다.</p>
+$$T_1\alpha_1c_1\approx1\times0.3935\times0.2\approx0.0787$$
+$$T_2\alpha_2c_2\approx0.6065\times0.6321\times0.5\approx0.1917$$
+$$T_3\alpha_3c_3\approx0.2231\times0.8647\times0.9\approx0.1736$$
+$$C(r)\approx0.0787+0.1917+0.1736\approx0.4440$$
+<p>세 항의 가중치 $T_i\alpha_i$만 따로 더하면 $0.3935+0.3834+0.1929\approx0.9698$이다. 광선이 세 샘플을 모두 지나 더 멀리까지 투과할 확률은 $T_3e^{-\sigma_3\delta_3}\approx0.0302$다. 이 둘을 더하면 $1$에 매우 가까운 값이 나온다. 각 샘플이 기여하는 가중치와 남은 투과율을 모두 합치면 전체 확률이 1이 되어야 한다는 조건과 잘 맞아떨어지는 것을 확인할 수 있다.</p>`,
     related: [{ label: "PointNet", slug: "pointnet" }, { label: "복셀 기반 3D CNN", slug: "voxel-cnn" }],
     sections: []
   },
@@ -3321,6 +3425,20 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
       <text x="518" y="145">h(t)</text>
     </svg>`,
     diagramCaption: String.raw`셀상태가 곱셈이 아닌 덧셈으로만 갱신되어 정보가 오래 남는 통로를 보여줍니다.`,
+    example: String.raw`<p>구체적인 숫자로 LSTM 셀 한 스텝을 계산해본다. 이전 은닉상태와 셀상태를 $h_{t-1}=1$, $c_{t-1}=0.5$로 둔다. 현재 입력은 $x_t=1$로 둔다. 게이트마다 가중치와 편향을 아주 단순하게 골라서 계산 과정을 손으로 따라갈 수 있게 만든다.</p>
+<p>망각게이트는 $W_f=(1,1)$, $b_f=0$을 쓴다.</p>
+$$f_t = \sigma(1\times h_{t-1} + 1\times x_t + b_f) = \sigma(1+1+0) = \sigma(2) \approx 0.8808$$
+<p>입력게이트는 $W_i=(1,-1)$, $b_i=0$을 쓴다. 두 항이 서로 상쇄된다.</p>
+$$i_t = \sigma(1\times h_{t-1} - 1\times x_t + b_i) = \sigma(1-1+0) = \sigma(0) = 0.5$$
+<p>후보 셀상태는 $W_C=(0.5,0.5)$, $b_C=0$을 쓴다.</p>
+$$\tilde C_t = \tanh(0.5\times h_{t-1} + 0.5\times x_t + b_C) = \tanh(0.5+0.5) = \tanh(1) \approx 0.7616$$
+<p>이 세 값으로 새 셀상태를 갱신한다.</p>
+$$C_t = f_t \odot C_{t-1} + i_t \odot \tilde C_t = 0.8808\times0.5 + 0.5\times0.7616 = 0.4404+0.3808=0.8212$$
+<p>출력게이트는 $W_o=(1,1)$, $b_o=0$으로 망각게이트와 같은 형태를 쓴다.</p>
+$$o_t = \sigma(1\times h_{t-1}+1\times x_t+b_o) = \sigma(2) \approx 0.8808$$
+<p>마지막으로 새 은닉상태를 구한다.</p>
+$$h_t = o_t \odot \tanh(C_t) = 0.8808\times\tanh(0.8212) \approx 0.8808\times0.6757 \approx 0.5952$$
+<p>셀상태가 이전 값 $0.5$에서 $0.8212$로 커지는 동안 은닉상태는 $0.5952$가 되어 다음 스텝으로 전달된다. 망각게이트 값이 $0.8808$로 1에 가까워 이전 셀상태의 정보 대부분이 남았다. 입력게이트가 $0.5$라서 새 후보값의 절반 정도만 더해졌다는 것을 숫자로 확인할 수 있다.</p>`,
     related: [{ label: "TCN", slug: "tcn" }, { label: "시계열 Transformer", slug: "time-series-transformer" }],
     sections: []
   },
@@ -3354,6 +3472,49 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     subLabel: String.raw`시계열`,
     intuition: String.raw`<p>Transformer는 문장 속 모든 단어 쌍의 관계를 어텐션으로 한 번에 계산하기 때문에 순서 정보가 구조 안에 자동으로 들어있지 않다. 단어를 아무렇게나 섞어 넣어도 어텐션 계산 자체는 똑같이 돌아간다. 문장에서는 이게 위치인코딩으로 해결되는데 시계열에서도 똑같은 문제가 생긴다.</p><p>시계열에 Transformer를 쓰려면 각 시점이 몇 번째인지, 하루 중 몇 시인지나 요일 같은 주기적 정보까지 모델에 직접 알려줘야 한다. 그래야 어텐션이 모든 과거 시점을 한 번에 보면서도 시간 순서와 주기성을 놓치지 않는다.</p>`,
     explanation: String.raw`<p>RNN 계열은 한 스텝씩 순서대로 처리하기 때문에 순서 정보가 계산 구조 자체에 들어있다. 반면 셀프어텐션은 시퀀스의 모든 시점 쌍 사이의 관련도를 병렬로 한 번에 계산하는 집합 연산에 가깝다. 그래서 입력에 위치정보를 별도로 더해주지 않으면 시점의 순서를 전혀 구분하지 못한다.</p><p>시계열 Transformer는 사인 코사인 함수로 만든 고정 위치인코딩이나 학습되는 위치임베딩을 입력에 더해서 이 문제를 해결한다. 여기에 더해 요일이나 시간대처럼 주기적으로 반복되는 달력 정보를 별도의 임베딩으로 추가하는 경우도 많다. 이렇게 만든 입력을 셀프어텐션에 넣으면 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d_k})V$ 계산을 통해 과거의 모든 시점을 한 번에 참고하면서 예측에 중요한 시점에 더 큰 가중치를 준다.</p><p>순수한 셀프어텐션은 시퀀스 길이 $n$에 대해 $O(n^2)$의 연산량과 메모리가 필요해서 아주 긴 시계열에는 그대로 쓰기 어렵다. Informer나 Autoformer 같은 후속 모델들은 어텐션 계산을 희소하게 줄이거나 시계열의 추세와 계절성을 먼저 분해한 뒤 어텐션을 적용하는 식으로 이 문제를 완화한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="25" font-size="12">표준 Transformer: 정수 위치 인덱스</text>
+<line x1="90" y1="45" x2="330" y2="45" class="dg-line" stroke-width="1.5"/>
+<line x1="90" y1="40" x2="90" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="40" x2="170" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="250" y1="40" x2="250" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="330" y1="40" x2="330" y2="50" class="dg-line" stroke-width="1.5"/>
+<text x="86" y="63" font-size="12">0</text>
+<text x="166" y="63" font-size="12">1</text>
+<text x="246" y="63" font-size="12">2</text>
+<text x="322" y="63" font-size="12">3</text>
+<text x="20" y="95" font-size="12">시계열: 실제 타임스탬프 (불규칙 간격)</text>
+<line x1="90" y1="115" x2="330" y2="115" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="90" y1="110" x2="90" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="135" y1="110" x2="135" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="150" y1="110" x2="150" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<circle cx="150" cy="115" r="4" class="dg-accent"/>
+<line x1="240" y1="110" x2="240" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="78" y="133" font-size="12">t=0</text>
+<text x="118" y="133" font-size="12">t=1.5</text>
+<text x="138" y="133" font-size="12">t=2.0</text>
+<text x="226" y="133" font-size="12">t=5.0</text>
+<line x1="90" y1="120" x2="90" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="135" y1="120" x2="135" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="120" x2="150" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="120" x2="240" y2="160" class="dg-line" stroke-width="1.5"/>
+<rect x="65" y="160" width="210" height="45" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="187" font-size="12">시간 인식 위치인코딩 PE(Δt)</text>
+<line x1="275" y1="182" x2="330" y2="182" class="dg-line" stroke-width="1.5"/>
+<rect x="330" y="160" width="150" height="45" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="352" y="187" font-size="12">셀프어텐션</text>
+<text x="65" y="225" font-size="12">예: t=2.0 지점은 직전 관측과 Δt=0.5 차이</text>
+</svg>`,
+    diagramCaption: String.raw`실제 시각 간격 Δt를 표준 정수 위치 대신 위치인코딩에 직접 반영해 셀프어텐션에 넣는 과정을 보여준다.`,
+    example: String.raw`<p>Transformer는 셀프어텐션 자체에 순서 개념이 없어서 위치정보를 따로 더해줘야 한다. 표준 Transformer는 단어가 몇 번째인지 나타내는 정수 위치 $pos=0,1,2,3,\dots$을 그대로 사인 코사인 함수에 넣는다.</p>
+<p>그런데 시계열은 관측 간격이 일정하지 않은 경우가 흔하다. 예를 들어 네 번의 관측이 각각 $t=0, 1.5, 2.0, 5.0$이라는 실제 시각에 이뤄졌다고 하자. 표준 방식대로라면 이 네 시점에 그냥 정수 위치 $pos=0,1,2,3$을 매겨서 마치 매 시점이 균일한 간격으로 벌어진 것처럼 취급하게 된다.</p>
+<p>시간 인식 위치인코딩은 정수 위치 대신 직전 관측과의 실제 시간 간격 $\Delta t_k = t_k - t_{k-1}$을 인코딩 함수에 직접 넣는다. 위 시계열에서 각 시점의 간격은 다음과 같다.</p>
+$$\Delta t = [\,0,\ 1.5,\ 0.5,\ 3.0\,]$$
+<p>모델 차원 $d_{\mathrm{model}}=4$, $i=0$인 성분 하나만 계산해본다. 이 경우 $10000^{2i/d_{\mathrm{model}}}=10000^0=1$이므로 인코딩은 그대로 $\Delta t_k$의 사인 코사인 값이 된다. 세 번째 관측인 $k=3$은 실제 간격이 $\Delta t_3=0.5$이고 이때 값은 다음과 같다.</p>
+$$PE(\Delta t_3, 0) = \sin(0.5) \approx 0.4794, \quad PE(\Delta t_3, 1) = \cos(0.5) \approx 0.8776$$
+<p>같은 성분을 표준 방식의 정수 위치 $pos=2$로 계산하면 값이 완전히 달라진다. 이 위치는 세 번째 토큰을 0부터 세었을 때의 인덱스다.</p>
+$$PE(2, 0) = \sin(2) \approx 0.9093, \quad PE(2, 1) = \cos(2) \approx -0.4161$$
+<p>정수 위치는 세 번째 관측이 항상 두 시간 단위만큼 지나서 도착한 것처럼 인코딩한다. 하지만 실제로는 직전 관측과 $0.5$ 시간 단위밖에 떨어져 있지 않았다. 시간 인식 인코딩은 이 차이를 그대로 반영해서 촘촘하게 몰린 관측과 듬성듬성 떨어진 관측을 어텐션이 구분할 수 있게 해준다.</p>`,
     related: [{ label: "TCN", slug: "tcn" }, { label: "LSTM/GRU", slug: "lstm-gru" }],
     sections: []
   },
@@ -3363,6 +3524,53 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     subLabel: String.raw`CNN 백본 계보`,
     intuition: String.raw`<p>이미지를 그대로 완전연결층에 넣으면 픽셀 수만큼 파라미터가 폭발적으로 늘어나고 물체가 조금만 움직여도 완전히 다른 입력으로 취급된다. 합성곱 신경망은 작은 필터를 이미지 전체에 반복해서 적용해서 이 문제를 해결한다. 같은 필터가 어디서든 같은 모양을 찾아내기 때문에 파라미터도 적게 쓰고 물체의 위치가 조금 바뀌어도 잘 인식한다.</p><p>LeNet과 AlexNet은 이 아이디어를 실제로 작동하는 신경망으로 처음 증명한 모델들이다. LeNet은 손글씨 숫자를 읽는 작은 문제에서, AlexNet은 수백만 장의 실제 사진을 분류하는 훨씬 큰 문제에서 합성곱 구조가 통한다는 걸 보여줬다.</p>`,
     explanation: String.raw`<p>LeNet-5는 1998년 얀 르쿤이 우편번호 숫자 인식을 위해 설계한 구조다. 합성곱층과 풀링층을 번갈아 쌓고 마지막에 완전연결층을 붙이는 지금도 익숙한 골격을 처음 제시했다. 활성함수로는 시그모이드나 tanh를 썼고 층 수도 몇 개 되지 않는 작은 네트워크였다.</p><p>AlexNet은 2012년 이미지넷 대회에서 기존의 손으로 설계한 특징 추출 방식을 큰 차이로 이기면서 딥러닝이 컴퓨터비전의 주류가 되는 계기를 만들었다. LeNet과 기본 골격은 비슷하지만 층을 훨씬 깊고 넓게 쌓았고 시그모이드 대신 학습이 훨씬 빠른 ReLU 활성함수를 썼다. 또 과적합을 막기 위해 드롭아웃을 도입했고 GPU 두 대를 병렬로 써서 그 정도 규모의 네트워크를 현실적인 시간 안에 학습시켰다.</p><p>두 모델이 공통으로 보여준 교훈은 이미지를 다루는 데는 필터를 지역적으로 공유하는 구조가 유리하다는 것과 데이터와 연산량이 충분히 커지면 신경망이 사람이 손으로 설계한 특징보다 더 나은 특징을 스스로 찾아낸다는 것이다. 이 두 교훈이 이후 이어지는 모든 CNN 백본 설계의 출발점이 됐다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="20" font-size="13">LeNet-5 계층별 크기 변화</text>
+<rect x="10" y="80" width="60" height="100" class="dg-dim"/>
+<rect x="90" y="86" width="60" height="88" class="dg-dim"/>
+<rect x="170" y="100" width="60" height="60" class="dg-dim"/>
+<rect x="250" y="107" width="60" height="46" class="dg-dim"/>
+<rect x="330" y="115" width="60" height="30" class="dg-dim"/>
+<rect x="420" y="95" width="20" height="70" class="dg-dim"/>
+<rect x="500" y="105" width="20" height="50" class="dg-dim"/>
+<rect x="580" y="120" width="20" height="20" class="dg-accent"/>
+<line x1="70" y1="130" x2="90" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="130" x2="170" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="230" y1="130" x2="250" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="310" y1="130" x2="330" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="390" y1="130" x2="420" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="440" y1="130" x2="500" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="520" y1="130" x2="580" y2="130" class="dg-line" stroke-width="1.5"/>
+<text x="40" y="45" font-size="12" text-anchor="middle">입력</text>
+<text x="120" y="45" font-size="12" text-anchor="middle">합성곱1</text>
+<text x="200" y="45" font-size="12" text-anchor="middle">풀링1</text>
+<text x="280" y="45" font-size="12" text-anchor="middle">합성곱2</text>
+<text x="360" y="45" font-size="12" text-anchor="middle">풀링2</text>
+<text x="430" y="45" font-size="12" text-anchor="middle">완전연결1</text>
+<text x="510" y="45" font-size="12" text-anchor="middle">완전연결2</text>
+<text x="590" y="45" font-size="12" text-anchor="middle">출력</text>
+<text x="40" y="205" font-size="12" text-anchor="middle">32x32x1</text>
+<text x="120" y="205" font-size="12" text-anchor="middle">28x28x6</text>
+<text x="200" y="205" font-size="12" text-anchor="middle">14x14x6</text>
+<text x="280" y="205" font-size="12" text-anchor="middle">10x10x16</text>
+<text x="360" y="205" font-size="12" text-anchor="middle">5x5x16</text>
+<text x="430" y="205" font-size="12" text-anchor="middle">400 to 120</text>
+<text x="510" y="205" font-size="12" text-anchor="middle">120 to 84</text>
+<text x="590" y="205" font-size="12" text-anchor="middle">84 to 10</text>
+<text x="10" y="230" font-size="12" class="dg-dim">out = floor((W-F+2P)/S) + 1</text>
+</svg>`,
+    diagramCaption: String.raw`합성곱과 풀링을 거칠 때마다 공간 크기가 줄고 마지막에는 완전연결층으로 이어집니다.`,
+    example: String.raw`<p>LeNet-5의 각 층에서 공간 크기가 어떻게 바뀌는지 합성곱 출력 크기 공식으로 직접 따라가본다. 필터 크기 $F$ 패딩 $P$ 스트라이드 $S$일 때 출력 한 변의 크기는 다음과 같다.</p>
+$$\text{out} = \left\lfloor \frac{W - F + 2P}{S} \right\rfloor + 1$$
+<p>입력은 $32\times32\times1$ 크기의 흑백 이미지다. 첫 번째 합성곱은 $5\times5$ 필터를 패딩 없이 스트라이드 $1$로 적용한다.</p>
+$$\text{out} = \left\lfloor \frac{32 - 5 + 0}{1} \right\rfloor + 1 = 27 + 1 = 28$$
+<p>필터가 $6$개이므로 이 단계의 출력은 $28\times28\times6$이다. 다음은 $2\times2$ 필터를 스트라이드 $2$로 적용하는 풀링이다.</p>
+$$\text{out} = \left\lfloor \frac{28 - 2}{2} \right\rfloor + 1 = 13 + 1 = 14$$
+<p>출력은 $14\times14\times6$이 된다. 두 번째 합성곱도 $5\times5$ 필터를 패딩 없이 스트라이드 $1$로 적용한다.</p>
+$$\text{out} = \left\lfloor \frac{14 - 5}{1} \right\rfloor + 1 = 9 + 1 = 10$$
+<p>필터가 $16$개이므로 출력은 $10\times10\times16$이다. 이어지는 두 번째 풀링도 $2\times2$ 필터에 스트라이드 $2$다.</p>
+$$\text{out} = \left\lfloor \frac{10 - 2}{2} \right\rfloor + 1 = 4 + 1 = 5$$
+<p>출력은 $5\times5\times16$이 된다. 이 텐서를 한 줄로 펼치면 $5\times5\times16=400$개의 값이 된다. 이후로는 완전연결층이 이어져서 $400$개 입력이 $120$개로 그다음 $84$개로 줄고 마지막에 클래스 수인 $10$개로 줄어든다.</p>`,
     related: [{ label: "ResNet", slug: "resnet" }, { label: "EfficientNet", slug: "efficientnet" }],
     sections: []
   },
@@ -3391,6 +3599,21 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
       <text x="470" y="198" font-size="12">y = F(x) + x</text>
     </svg>`,
     diagramCaption: String.raw`입력이 층을 건너뛰어 그대로 더해지는 지름길연결을 보여줍니다.`,
+    example: String.raw`<p>잔차블록이 실제로 어떤 숫자를 만들어내는지 작은 예로 확인해본다. 입력을 $x=(1, 2, -1)$로 둔다.</p>
+<p>첫 번째 선형층은 각 성분을 $0.5$배로 줄이는 대각행렬이라고 하자. 편향은 없다.</p>
+$$z_1 = 0.5x = (0.5,\ 1.0,\ -0.5)$$
+<p>여기에 ReLU를 적용하면 음수 성분이 $0$으로 바뀐다.</p>
+$$h = \mathrm{ReLU}(z_1) = (0.5,\ 1.0,\ 0)$$
+<p>두 번째 선형층은 각 성분을 $0.4$배로 줄이고 편향 $0.1$을 더한다.</p>
+$$F(x) = 0.4h + 0.1 = (0.4\times0.5+0.1,\ 0.4\times1.0+0.1,\ 0.4\times0+0.1) = (0.3,\ 0.5,\ 0.1)$$
+<p>지름길연결을 더해 최종 출력을 만든다.</p>
+$$y = F(x) + x = (0.3+1,\ 0.5+2,\ 0.1-1) = (1.3,\ 2.5,\ -0.9)$$
+<p>이제 두 선형층의 가중치와 편향을 $0$에 아주 가깝게 두면 어떤 일이 생기는지 본다. 가중치를 $0.01$배로 편향을 $0.001$로 두면 다음과 같다.</p>
+$$z_1' = 0.01x = (0.01,\ 0.02,\ -0.01) \quad h' = \mathrm{ReLU}(z_1') = (0.01,\ 0.02,\ 0)$$
+$$F'(x) = 0.01h' + 0.001 = (0.0011,\ 0.0012,\ 0.001)$$
+<p>$F'(x)$는 거의 $0$에 가깝다. 이때 출력은 다음과 같다.</p>
+$$y' = F'(x) + x = (1.0011,\ 2.0012,\ -0.999) \approx (1,\ 2,\ -1) = x$$
+<p>층의 가중치가 항등함수에 가까워지면 출력도 입력을 거의 그대로 보존한다는 안전장치가 숫자로 확인된다.</p>`,
     related: [{ label: "LeNet/AlexNet", slug: "lenet-alexnet" }, { label: "EfficientNet", slug: "efficientnet" }],
     sections: []
   },
@@ -3446,6 +3669,19 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
       <text x="500" y="20" font-size="12">ε(x_t, t)</text>
     </svg>`,
     diagramCaption: String.raw`인코더에서 압축한 정보를 스킵연결로 디코더에 그대로 건네주는 구조입니다.`,
+    example: String.raw`<p>U-Net이 다루는 실제 텐서 크기 변화를 구체적인 숫자로 따라가본다. 입력은 $64\times64\times3$ 크기의 이미지다.</p>
+<p>첫 번째 인코더 블록은 해상도는 $64\times64$로 유지한 채 채널만 $3$에서 $64$로 늘린다. 이 결과를 $E_1$이라 하면 크기는 $64\times64\times64$다.</p>
+<p>다음 다운샘플링에서는 해상도를 절반으로 줄이고 채널을 두 배로 늘린다. 해상도는 $64\to32$ 채널은 $64\to128$이 되어 $E_2$의 크기는 $32\times32\times128$이다.</p>
+<p>한 번 더 다운샘플링하면 해상도는 $32\to16$ 채널은 $128\to256$이 되어 $E_3$의 크기는 $16\times16\times256$이다.</p>
+<p>마지막 다운샘플링에서 해상도는 $16\to8$ 채널은 $256\to512$가 되고 이 지점이 병목이다. 병목 텐서의 크기는 $8\times8\times512$다.</p>
+<p>디코더는 병목에서부터 반대 순서로 해상도를 키우고 채널을 절반으로 줄인다. 첫 업샘플링에서 해상도는 $8\to16$ 채널은 $512\to256$이 되어 $D_3$의 크기는 $16\times16\times256$이다.</p>
+<p>이 지점에서 인코더의 같은 해상도 결과인 $E_3$을 이어붙이는 스킵연결이 들어간다. $E_3$의 채널 $256$과 $D_3$의 채널 $256$을 이어붙이면 $16\times16\times512$가 되고 뒤따르는 합성곱이 이를 다시 $16\times16\times256$으로 줄인다.</p>
+<p>두 번째 업샘플링에서는 해상도가 $16\to32$ 채널은 $256\to128$이 되어 $D_2$의 크기는 $32\times32\times128$이다.</p>
+<p>바로 이 지점의 스킵연결을 자세히 보면 인코더 쪽 $E_2$의 채널 $128$과 디코더 쪽 $D_2$의 채널 $128$을 이어붙여 $32\times32\times256$을 만든다.</p>
+$$128 + 128 = 256$$
+<p>채널 덧셈이 그대로 드러나는 지점이다. 뒤따르는 합성곱은 이 $256$개 채널을 다시 $128$개로 줄여서 다음 단계로 넘긴다.</p>
+<p>세 번째 업샘플링에서는 해상도가 $32\to64$ 채널은 $128\to64$가 되어 $D_1$의 크기는 $64\times64\times64$다. 이 지점에서도 인코더의 $E_1$과 채널 $64$씩을 이어붙여 $64\times64\times128$을 만든 뒤 합성곱으로 다시 $64\times64\times64$로 줄인다.</p>
+<p>마지막으로 출력합성곱이 채널을 $64$에서 입력과 같은 $3$으로 되돌려 최종 출력은 $64\times64\times3$ 크기의 예측 노이즈 $\epsilon_\theta(x_t,t)$가 된다.</p>`,
     related: [{ label: "Latent Diffusion", slug: "latent-diffusion" }, { label: "텍스트 조건화", slug: "text-conditioning" }],
     sections: []
   },
@@ -3455,6 +3691,38 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     subLabel: String.raw`Diffusion 아키텍처`,
     intuition: String.raw`<p>디퓨전 모델을 원본 이미지 픽셀 위에서 그대로 돌리면 512×512 같은 큰 해상도의 이미지 전체에 대해 노이즈를 예측하는 계산을 수백 번 반복해야 해서 비용이 매우 크다. 픽셀 하나하나에는 사람 눈에 중요하지 않은 미세한 정보도 많이 섞여 있는데 그런 정보까지 매번 다 처리하는 셈이다.</p><p>latent diffusion은 이미지를 먼저 훨씬 작은 잠재공간으로 압축한 뒤 그 압축된 표현 위에서만 노이즈를 넣고 제거하는 과정을 반복한다. 다 끝난 뒤에 압축을 푸는 디코더로 마지막에 한 번만 원래 크기의 이미지로 되돌린다. 같은 작업을 훨씬 작은 표현 위에서 하기 때문에 계산량이 크게 줄어든다.</p>`,
     explanation: String.raw`<p>latent diffusion은 먼저 오토인코더 계열의 인코더 $E$와 디코더 $D$를 학습시켜 이미지 $x$를 훨씬 낮은 차원의 잠재표현 $z=E(x)$로 압축하고 $D(z)\approx x$가 되도록 만든다. 예를 들어 512×512×3 크기의 이미지를 64×64×4 정도의 잠재표현으로 압축하면 공간 차원이 8분의 1로 줄어든다.</p><p>확산과 역확산 과정은 원본 픽셀 $x$가 아니라 이 잠재표현 $z$ 위에서 진행된다. U-Net 기반의 노이즈 예측 네트워크도 압축된 $z_t$를 입력으로 받아 그 안의 노이즈 $\epsilon_\theta(z_t,t)$를 예측한다. 노이즈 제거를 반복해서 얻은 최종 잠재표현 $z_0$은 마지막에 디코더 $D$를 한 번 통과해 실제 이미지로 복원된다.</p><p>이 구조 덕분에 반복적으로 노이즈를 예측해야 하는 무거운 연산이 전부 작은 잠재공간에서 이루어지고 큰 해상도로의 변환은 인코딩과 디코딩 각각 한 번씩만 필요하다. Stable Diffusion을 비롯한 널리 쓰이는 텍스트투이미지 모델들이 대부분 이 구조를 기본 골격으로 삼고 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="10" y="80" width="90" height="60" class="dg-dim"/>
+<text x="55" y="45" font-size="12" text-anchor="middle">픽셀 이미지</text>
+<text x="55" y="160" font-size="12" text-anchor="middle">512x512x3</text>
+<rect x="130" y="85" width="100" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="180" y="114" font-size="12" text-anchor="middle">VAE 인코더</text>
+<rect x="260" y="75" width="110" height="70" class="dg-accent"/>
+<text x="315" y="95" font-size="12" text-anchor="middle">잠재공간 z</text>
+<text x="315" y="112" font-size="12" text-anchor="middle">64x64x4</text>
+<text x="315" y="132" font-size="12" text-anchor="middle">노이즈 추가 제거 반복</text>
+<rect x="400" y="85" width="100" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="450" y="114" font-size="12" text-anchor="middle">VAE 디코더</text>
+<rect x="530" y="80" width="90" height="60" class="dg-dim"/>
+<text x="575" y="45" font-size="12" text-anchor="middle">픽셀 이미지</text>
+<text x="575" y="160" font-size="12" text-anchor="middle">512x512x3</text>
+<line x1="100" y1="110" x2="130" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="230" y1="110" x2="260" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="370" y1="110" x2="400" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="500" y1="110" x2="530" y2="110" class="dg-line" stroke-width="1.5"/>
+</svg>`,
+    diagramCaption: String.raw`이미지를 압축한 잠재공간 안에서만 노이즈를 넣고 빼는 확산 과정을 반복한 뒤 마지막에 픽셀로 복원합니다.`,
+    example: String.raw`<p>픽셀 공간에서 그대로 디퓨전을 돌릴 때와 압축된 잠재공간에서 돌릴 때의 계산량 차이를 숫자로 비교해본다.</p>
+<p>원본 이미지가 $512\times512\times3$ 크기라고 하자. 다운샘플링 비율이 $8$인 VAE 인코더를 쓰면 가로세로 해상도가 다음처럼 줄어든다.</p>
+$$512 / 8 = 64$$
+<p>채널은 보통 $4$개 정도로 맞춰지므로 잠재표현의 크기는 $64\times64\times4$가 된다.</p>
+<p>디퓨전의 U-Net이 매 스텝 처리해야 하는 원소 개수를 픽셀 공간과 잠재공간에서 각각 세어본다. 픽셀 공간에서는 다음만큼의 값을 처리해야 한다.</p>
+$$512 \times 512 \times 3 = 786432$$
+<p>잠재공간에서는 다음만큼의 값만 처리하면 된다.</p>
+$$64 \times 64 \times 4 = 16384$$
+<p>두 값의 비율을 구해본다.</p>
+$$786432 / 16384 = 48$$
+<p>같은 노이즈 예측 연산을 잠재공간에서 수행하면 원소 개수 기준으로 대략 $48$배 더 적은 값을 다루게 되는 셈이고 이는 그만큼 연산량과 메모리 사용량이 줄어든다는 뜻이다.</p>`,
     related: [{ label: "U-Net", slug: "unet-diffusion" }, { label: "텍스트 조건화", slug: "text-conditioning" }],
     sections: []
   },
@@ -3464,6 +3732,44 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     subLabel: String.raw`Diffusion 아키텍처`,
     intuition: String.raw`<p>디퓨전 모델이 그냥 노이즈에서 아무 이미지나 만들어내는 게 아니라 사용자가 입력한 프롬프트에 맞는 이미지를 만들게 하려면 텍스트의 의미를 이미지를 생성하는 네트워크 내부로 계속 흘려보내야 한다. 텍스트 임베딩 하나를 처음에 한 번 더해주는 정도로는 복잡한 문장의 세부 내용을 이미지 구석구석까지 반영하기 어렵다.</p><p>크로스어텐션은 이미지 쪽의 각 위치가 프롬프트 속 단어들 중 지금 자신에게 관련 있는 단어를 스스로 찾아서 참고하도록 만드는 장치다. 이미지의 서로 다른 영역이 문장 속 서로 다른 단어에 집중할 수 있어서 프롬프트의 세부 내용이 이미지 곳곳에 정확히 반영된다.</p>`,
     explanation: String.raw`<p>텍스트 조건화는 U-Net의 각 블록 사이에 크로스어텐션 층을 끼워 넣는 방식으로 구현된다. 이때 질의 $Q$는 현재 이미지 특징에서, 키 $K$와 값 $V$는 텍스트 인코더가 만든 단어별 임베딩 $\tau(y)$에서 만들어진다. 즉 $Q=W_Q\phi(z_t)$, $K=W_K\tau(y)$, $V=W_V\tau(y)$이고 어텐션은 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d})V$로 계산된다.</p><p>이 계산의 결과로 이미지 특징의 각 위치가 자신과 가장 관련 있는 단어들의 값 벡터를 가중합해서 가져온다. 그림 왼쪽 위 영역은 프롬프트 속 특정 물체를 가리키는 단어에, 배경에 해당하는 영역은 배경을 묘사하는 단어에 더 큰 가중치를 주는 식으로 자연스럽게 역할이 나뉜다.</p><p>텍스트 인코더로는 CLIP의 텍스트 인코더나 T5 같은 대형 언어모델이 흔히 쓰인다. 크로스어텐션 층은 U-Net의 여러 해상도 단계에 반복해서 삽입되기 때문에 거친 구조부터 세밀한 디테일까지 여러 수준에서 텍스트 조건을 반영할 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="15" y="22" font-size="12">이미지 특징 (질의 Q)</text>
+<text x="410" y="22" font-size="12">텍스트 토큰 (키/값 K,V)</text>
+<circle cx="80" cy="80" r="12" class="dg-accent"/>
+<text x="45" y="85" font-size="12">Q1</text>
+<circle cx="80" cy="180" r="12" class="dg-accent"/>
+<text x="45" y="185" font-size="12">Q2</text>
+<circle cx="520" cy="50" r="12" class="dg-dim"/>
+<text x="540" y="55" font-size="12">K1,V1</text>
+<circle cx="520" cy="140" r="12" class="dg-dim"/>
+<text x="540" y="145" font-size="12">K2,V2</text>
+<circle cx="520" cy="230" r="12" class="dg-dim"/>
+<text x="540" y="235" font-size="12">K3,V3</text>
+<line x1="92" y1="80" x2="508" y2="50" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="92" y1="80" x2="508" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="92" y1="80" x2="508" y2="230" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="92" y1="180" x2="508" y2="50" class="dg-line" stroke-width="1"/>
+<line x1="92" y1="180" x2="508" y2="140" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="92" y1="180" x2="508" y2="230" class="dg-stroke-accent" stroke-width="2"/>
+<text x="290" y="60" font-size="12">0.40</text>
+<text x="290" y="115" font-size="12">0.20</text>
+<text x="290" y="160" font-size="12">0.40</text>
+</svg>`,
+    diagramCaption: String.raw`굵은 선일수록 크로스어텐션 가중치가 큰 연결이며 이미지 위치마다 주목하는 텍스트 토큰이 다릅니다.`,
+    example: String.raw`<p>이미지 쪽 특징 두 위치를 질의로 문장 속 텍스트 토큰 세 개를 키와 값으로 둔 작은 크로스어텐션을 직접 계산해본다. 차원은 $2$로 둔다.</p>
+<p>질의는 이미지 위치 1의 $Q_1=(1, 0)$과 이미지 위치 2의 $Q_2=(0, 1)$이다. 텍스트 토큰 세 개의 키는 $K_1=(1, 0)$ $K_2=(0, 1)$ $K_3=(1, 1)$이고 그에 대응하는 값은 $V_1=(2, 0)$ $V_2=(0, 2)$ $V_3=(1, 1)$이다.</p>
+<p>먼저 이미지 위치 1의 질의 $Q_1$에 대한 내적 점수를 구한다.</p>
+$$Q_1\cdot K_1=1 \quad Q_1\cdot K_2=0 \quad Q_1\cdot K_3=1$$
+<p>차원이 $2$이므로 $\sqrt{2}\approx1.4142$로 나누면 점수는 각각 $0.7071$ $0$ $0.7071$이 된다. 소프트맥스를 적용하면 다음과 같다.</p>
+$$e^{0.7071}\approx2.028 \quad e^{0}=1 \quad \text{sum} = 2.028+1+2.028=5.056$$
+$$w_1\approx0.401 \quad w_2\approx0.198 \quad w_3\approx0.401$$
+<p>이 가중치로 값을 가중합하면 이미지 위치 1의 출력을 얻는다.</p>
+$$0.401\times(2,0)+0.198\times(0,2)+0.401\times(1,1)\approx(1.203,\ 0.797)$$
+<p>이미지 위치 2의 질의 $Q_2$도 같은 방식으로 계산한다.</p>
+$$Q_2\cdot K_1=0 \quad Q_2\cdot K_2=1 \quad Q_2\cdot K_3=1$$
+<p>점수는 $0$ $0.7071$ $0.7071$이고 소프트맥스 가중치는 $0.198$ $0.401$ $0.401$이 된다.</p>
+$$0.198\times(2,0)+0.401\times(0,2)+0.401\times(1,1)\approx(0.797,\ 1.203)$$
+<p>두 결과를 비교하면 이미지 위치 1은 토큰 1과 토큰 3에 더 큰 가중치를 주고 이미지 위치 2는 토큰 2와 토큰 3에 더 큰 가중치를 준다. 같은 텍스트 토큰들이라도 이미지 속 위치가 다르면 서로 다른 단어에 더 집중한다는 것이 숫자로 확인된다.</p>`,
     related: [{ label: "U-Net", slug: "unet-diffusion" }, { label: "크로스모달 어텐션", slug: "cross-modal-attention" }],
     sections: []
   },
@@ -3489,6 +3795,11 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
       <text x="520" y="65">y(t)</text>
     </svg>`,
     diagramCaption: String.raw`입력마다 Δ, B, C가 달라지는 선택적 상태 갱신을 보여줍니다.`,
+    example: String.raw`<p>연속시간 파라미터를 $A=-1$, $B=1$로 고정하고 상태 $h_0=0$에서 두 스텝을 진행하는 경우를 비교해보자. Mamba는 이산화 스텝 $\Delta_t$를 입력 $x_t$에 따라 정하는데 여기서는 이해를 돕기 위해 단순화한 규칙 $\Delta_t=0.5+0.5|x_t|$를 예로 쓴다.</p>
+<p>첫 스텝의 입력은 중요도가 낮은 $x_1=0.2$이고 두 번째 스텝의 입력은 중요도가 높은 $x_2=3.0$이라고 하자. 그러면 $\Delta_1=0.5+0.5\times0.2=0.6$이고 $\Delta_2=0.5+0.5\times3.0=2.0$이다. 이를 이산화하면 $\bar A_t=e^{-\Delta_t}$이고 $\bar B_t=1-e^{-\Delta_t}$이므로 $\bar A_1\approx0.549$, $\bar B_1\approx0.451$이고 $\bar A_2\approx0.135$, $\bar B_2\approx0.865$가 된다.</p>
+<p>선택적 순환식 $h_t=\bar A_t h_{t-1}+\bar B_t x_t$를 따라가면 $h_1\approx0.451\times0.2\approx0.090$이고 $h_2\approx0.135\times0.090+0.865\times3.0\approx0.012+2.595\approx2.607$이다. 중요한 입력 $x_2$에 대해 $\bar B_2$가 커지면서 그 정보가 상태에 강하게 반영된 것을 볼 수 있다.</p>
+<p>같은 두 입력을 고정된 파라미터를 쓰는 비선택적 상태공간모델에 넣으면 결과가 달라진다. $\Delta=1$로 고정하면 $\bar A\approx0.368$이고 $\bar B\approx0.632$가 두 스텝 모두에서 그대로 유지된다. 이 경우 $h_1'\approx0.632\times0.2\approx0.126$이고 $h_2'\approx0.368\times0.126+0.632\times3.0\approx0.047+1.896\approx1.943$이다.</p>
+<p>같은 두 입력을 넣었는데도 선택적 모델은 $h_2\approx2.607$까지 올라가고 고정 파라미터 모델은 $h_2'\approx1.943$에 그친다. 입력에 따라 갱신 강도를 바꾸는 선택성이 중요한 입력을 더 강하게 반영하고 중요하지 않은 입력은 더 빨리 흘려보내게 만든다는 차이를 이 작은 예에서도 확인할 수 있다.</p>`,
     related: [{ label: "S4", slug: "s4-model" }, { label: "SSM 추론 특성", slug: "ssm-inference-characteristics" }],
     sections: []
   },
@@ -3523,6 +3834,33 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     subLabel: String.raw`State-Space 모델`,
     intuition: String.raw`<p>챗봇이 긴 대화를 이어갈 때 Transformer 기반 모델은 지금까지 나온 모든 단어의 정보를 계속 저장해두고 새 단어를 만들 때마다 그 저장된 정보 전체를 다시 훑어본다. 대화가 길어질수록 저장해야 할 양도 계속 늘어나고 매번 훑어봐야 할 양도 늘어난다.</p><p>상태공간모델 계열은 이런 식으로 과거 전체를 따로 쌓아두지 않는다. 지금까지의 정보를 크기가 고정된 상태 벡터 하나에 압축해서 들고 다니다가 새 입력이 오면 그 상태 하나만 갱신한다. 그래서 대화가 아무리 길어져도 한 단어를 처리하는 데 드는 메모리와 시간이 거의 일정하게 유지된다.</p>`,
     explanation: String.raw`<p>Transformer 기반 모델이 추론할 때는 지금까지 나온 모든 토큰의 키와 값 벡터를 KV 캐시라는 형태로 저장해두고 매 스텝 새 토큰의 질의를 이 캐시 전체와 비교한다. 시퀀스 길이가 $n$이면 캐시에 저장해야 하는 양이 $n$에 비례해서 늘어나고 한 토큰을 생성하는 데 드는 연산량도 캐시 전체를 훑어야 하므로 $n$에 비례해서 늘어난다. 전체 시퀀스를 처리하는 데 드는 연산량을 합치면 $O(n^2)$이 된다.</p><p>상태공간모델은 구조상 순환식 $h_t=\bar A h_{t-1}+\bar B x_t$로 상태를 갱신한다. 이 상태 벡터의 크기는 시퀀스 길이와 무관하게 미리 정해진 고정된 차원이다. 그래서 추론 중에 저장해야 하는 메모리는 시퀀스가 아무리 길어져도 상태 벡터 하나만큼으로 일정하고 한 스텝을 처리하는 연산량도 상수시간이다.</p><p>다만 이 상수 메모리에는 대가가 있다. 상태 벡터의 크기가 고정되어 있다는 것은 과거 정보를 그 고정된 용량 안에 압축해서 담아야 한다는 뜻이다. Transformer는 필요하면 아주 오래된 토큰까지 정확히 다시 꺼내볼 수 있지만 상태공간모델은 압축 과정에서 세부 정보가 흐려질 수 있다. 그래서 정확한 장거리 참조가 중요한 과제에서는 Transformer가, 아주 긴 시퀀스를 빠르고 가볍게 처리해야 하는 상황에서는 상태공간모델 계열이 유리하다는 트레이드오프가 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="24" text-anchor="middle" font-size="13">Transformer KV 캐시</text>
+<line x1="50" y1="220" x2="270" y2="220" class="dg-line" stroke-width="1.5" />
+<line x1="50" y1="220" x2="50" y2="50" class="dg-line" stroke-width="1.5" />
+<rect x="70" y="205" width="30" height="15" class="dg-dim" />
+<rect x="140" y="160" width="30" height="60" class="dg-dim" />
+<rect x="210" y="60" width="30" height="160" class="dg-accent" />
+<text x="85" y="235" text-anchor="middle" font-size="12">n=1,000</text>
+<text x="155" y="235" text-anchor="middle" font-size="12">n=10,000</text>
+<text x="225" y="235" text-anchor="middle" font-size="12">n=100,000</text>
+<text x="18" y="45" font-size="12">메모리</text>
+<text x="470" y="24" text-anchor="middle" font-size="13">SSM 상태 크기</text>
+<line x1="370" y1="220" x2="590" y2="220" class="dg-line" stroke-width="1.5" />
+<line x1="370" y1="220" x2="370" y2="50" class="dg-line" stroke-width="1.5" />
+<line x1="390" y1="205" x2="570" y2="205" class="dg-stroke-accent" stroke-width="2" />
+<circle cx="390" cy="205" r="4" class="dg-accent" />
+<circle cx="480" cy="205" r="4" class="dg-accent" />
+<circle cx="570" cy="205" r="4" class="dg-accent" />
+<text x="390" y="235" text-anchor="middle" font-size="12">n=1,000</text>
+<text x="480" y="235" text-anchor="middle" font-size="12">n=10,000</text>
+<text x="570" y="235" text-anchor="middle" font-size="12">n=100,000</text>
+</svg>`,
+    diagramCaption: String.raw`시퀀스 길이가 늘어날수록 Transformer의 KV 캐시는 선형으로 커지지만 SSM의 상태 크기는 항상 일정합니다.`,
+    example: String.raw`<p>Transformer 계열이 추론 중에 유지해야 하는 KV 캐시 크기는 레이어 수 $L$, 모델 차원 $d_{\mathrm{model}}$, 시퀀스 길이 $n$, 배치 $b$, 값 하나당 바이트 수 $s$에 대해 대략 $2 \times L \times d_{\mathrm{model}} \times n \times b \times s$로 커진다. $L=12$, $d_{\mathrm{model}}=512$, $b=1$, FP16이라 $s=2$바이트인 모델을 예로 들어보자.</p>
+<p>토큰 하나 레이어 하나당 K와 V를 합쳐 $2\times512\times2=2048$바이트가 필요하고 레이어 12개를 곱하면 토큰 하나당 $2048\times12=24576$바이트가 든다. 시퀀스 길이가 $n=1000$이면 캐시 전체 크기는 $24576\times1000=24576000$바이트로 정확히 $24000$KiB 즉 $23.4375$MiB다. 시퀀스 길이가 $n=100000$으로 백 배 늘어나면 캐시 크기도 그대로 백 배 늘어난 $24576\times100000=2457600000$바이트 즉 $2400000$KiB 약 $2.29$GiB가 된다.</p>
+<p>같은 모델을 SSM 계열로 바꾸면 상태 크기는 $d_{\mathrm{state}}\times d_{\mathrm{model}}\times L\times s$로 정해지고 시퀀스 길이 $n$과는 무관하다. $d_{\mathrm{state}}=16$이라 하면 상태 크기는 $16\times512\times12\times2=196608$바이트로 정확히 $192$KiB다. 이 값은 $n=1000$일 때도 $n=100000$일 때도 똑같이 $192$KiB로 유지된다.</p>
+<p>두 값을 비교하면 $n=1000$에서는 Transformer 캐시가 SSM 상태보다 $24000/192=125$배 크고 $n=100000$에서는 그 격차가 $2400000/192=12500$배로 벌어진다. 시퀀스가 길어질수록 상수 메모리라는 장점이 점점 더 크게 벌어지는 것을 볼 수 있다.</p>`,
     related: [{ label: "Mamba", slug: "mamba" }, { label: "S4", slug: "s4-model" }],
     sections: []
   },
@@ -3576,6 +3914,9 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
       <text x="35" y="175" font-size="11">이미지 토큰 · · · 텍스트 토큰 시퀀스 → 언어모델</text>
     </svg>`,
     diagramCaption: String.raw`이미지 패치가 임베딩과 프로젝션을 거쳐 텍스트 토큰과 나란히 언어모델에 들어가는 흐름입니다.`,
+    example: String.raw`<p>이미지 크기를 $336\times336\times3$, 패치 크기를 $14\times14$라고 하자. 한 변에 들어가는 패치 수는 $336/14=24$이므로 전체 패치 수는 $24\times24=576$개다. 비전 인코더는 이 576개 패치 각각을 하나의 벡터로 바꾸므로 이미지 하나에서 576개의 이미지 토큰이 나온다.</p>
+<p>여기에 프롬프트로 들어가는 텍스트 토큰이 20개 있다고 하면 언어모델에 들어가는 전체 시퀀스 길이는 $576+20=596$이 된다. 이미지 토큰이 앞에 오고 텍스트 토큰이 뒤에 이어지는 배치라면 처음 576개 위치는 이미지에서 온 토큰이고 나머지 20개 위치는 텍스트에서 온 토큰인 셈이다.</p>
+<p>같은 방식을 ViT에 적용할 때도 패치 크기를 어떻게 고르느냐에 따라 토큰 수가 크게 달라진다. $224\times224$ 이미지에 패치 크기 $16\times16$을 쓰는 ViT-B/16은 한 변에 $224/16=14$개 패치가 들어가 전체 $14\times14=196$개 토큰을 만든다. 같은 이미지에 패치 크기 $32\times32$를 쓰는 ViT-B/32는 한 변에 $224/32=7$개 패치만 들어가 $7\times7=49$개 토큰으로 줄어든다. 패치를 잘게 자를수록 토큰 수는 늘고 그만큼 세밀한 정보를 담을 수 있지만 언어모델에 들어가는 시퀀스 길이도 함께 길어져서 연산량이 늘어나는 트레이드오프가 생긴다.</p>`,
     related: [{ label: "CLIP", slug: "clip-model" }, { label: "크로스모달 어텐션", slug: "cross-modal-attention" }],
     sections: []
   },
@@ -3585,6 +3926,48 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
     subLabel: String.raw`멀티모달 아키텍처`,
     intuition: String.raw`<p>셀프어텐션은 같은 문장 안의 단어끼리 서로 참고하게 만드는 장치다. 크로스모달 어텐션은 이 아이디어를 그대로 가져오되 참고하는 대상을 다른 모달리티로 바꾼다. 이미지 속 한 영역이 문장 속 어떤 단어를 참고하게 만드는 식이다.</p><p>질의를 어디서 가져오고 키와 값을 어디서 가져오는지만 바뀔 뿐 계산 방식 자체는 셀프어텐션과 똑같다. 이 단순한 아이디어 하나로 이미지와 텍스트, 음성과 텍스트처럼 형태가 전혀 다른 데이터들을 같은 어텐션 연산 안에서 서로 주고받게 만들 수 있다.</p>`,
     explanation: String.raw`<p>셀프어텐션에서는 질의 $Q$, 키 $K$, 값 $V$가 모두 같은 시퀀스에서 나온다. 크로스모달 어텐션은 이 셋 중 질의는 한 모달리티에서, 키와 값은 다른 모달리티에서 가져온다. 계산 자체는 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d_k})V$로 셀프어텐션과 동일하다.</p><p>이 구조는 이미 여러 곳에서 쓰이고 있다. 디퓨전 모델의 텍스트 조건화에서는 이미지 특징이 질의를, 텍스트 임베딩이 키와 값을 맡는다. Flamingo 같은 VLM에서는 텍스트 토큰이 질의가 되어 이미지 특징을 키와 값으로 참고하는 게이트가 달린 크로스어텐션층을 언어모델 블록 사이사이에 끼워 넣는다.</p><p>크로스모달 어텐션이 유용한 이유는 두 모달리티의 시퀀스 길이나 내부 구조가 서로 달라도 상관없다는 점이다. 이미지 패치가 몇 개든 문장의 단어가 몇 개든 어텐션 가중치 행렬의 크기만 그에 맞게 정해지면 되기 때문에 모달리티마다 자연스러운 표현 형태를 그대로 유지하면서도 서로 정보를 주고받을 수 있다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="24" text-anchor="middle" font-size="13">단방향 크로스어텐션</text>
+<circle cx="60" cy="90" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="60" cy="170" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="60" y="94" text-anchor="middle" font-size="12">A1</text>
+<text x="60" y="174" text-anchor="middle" font-size="12">A2</text>
+<text x="15" y="205" font-size="12">오디오 Q</text>
+<rect x="235" y="55" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<rect x="235" y="105" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<rect x="235" y="155" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="250" y="75" text-anchor="middle" font-size="12">I1</text>
+<text x="250" y="125" text-anchor="middle" font-size="12">I2</text>
+<text x="250" y="175" text-anchor="middle" font-size="12">I3</text>
+<text x="200" y="205" font-size="12">이미지 K,V</text>
+<line x1="235" y1="70" x2="74" y2="88" class="dg-line" stroke-width="1" />
+<line x1="235" y1="120" x2="74" y2="92" class="dg-line" stroke-width="1" />
+<line x1="235" y1="170" x2="74" y2="98" class="dg-line" stroke-width="1" />
+<line x1="235" y1="70" x2="74" y2="168" class="dg-line" stroke-width="1" />
+<line x1="235" y1="120" x2="74" y2="172" class="dg-line" stroke-width="1" />
+<line x1="235" y1="170" x2="74" y2="176" class="dg-line" stroke-width="1" />
+<text x="470" y="24" text-anchor="middle" font-size="13">양방향 크로스어텐션</text>
+<circle cx="380" cy="90" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="380" cy="170" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="380" y="94" text-anchor="middle" font-size="12">A1</text>
+<text x="380" y="174" text-anchor="middle" font-size="12">A2</text>
+<rect x="555" y="55" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<rect x="555" y="105" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<rect x="555" y="155" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="570" y="75" text-anchor="middle" font-size="12">I1</text>
+<text x="570" y="125" text-anchor="middle" font-size="12">I2</text>
+<text x="570" y="175" text-anchor="middle" font-size="12">I3</text>
+<line x1="394" y1="88" x2="555" y2="70" class="dg-line" stroke-width="1" />
+<line x1="394" y1="92" x2="555" y2="170" class="dg-line" stroke-width="1" />
+<path d="M555,120 Q470,150 394,98" fill="none" class="dg-stroke-accent" stroke-width="1.5" />
+<path d="M555,70 Q470,40 394,88" fill="none" class="dg-stroke-accent" stroke-width="1.5" />
+<path d="M555,170 Q470,200 394,172" fill="none" class="dg-stroke-accent" stroke-width="1.5" />
+</svg>`,
+    diagramCaption: String.raw`왼쪽은 오디오가 이미지만 참조하는 단방향 구조이고 오른쪽은 두 모달리티가 서로를 참조하는 양방향 구조입니다.`,
+    example: String.raw`<p>오디오 특징 두 개를 질의로 이미지 영역 임베딩 세 개를 키와 값으로 쓰는 크로스어텐션을 생각해보자. 차원은 $d_k=2$이고 질의는 $Q_1=[1,0]$, $Q_2=[0,1]$이다. 키는 $K_1=[1,0]$, $K_2=[0,1]$, $K_3=[1,1]$이고 값은 $V_1=[1,0]$, $V_2=[0,2]$, $V_3=[1,1]$이다.</p>
+<p>$Q_1$의 점수는 $Q_1\cdot K_1=1$, $Q_1\cdot K_2=0$, $Q_1\cdot K_3=1$이다. $\sqrt{d_k}=\sqrt2\approx1.414$로 나누면 각각 약 $0.707$, $0$, $0.707$이 된다. 소프트맥스를 취하면 $e^{0.707}\approx2.028$이고 $e^{0}=1$이므로 가중치는 각각 약 $0.401$, $0.198$, $0.401$이다.</p>
+<p>이 가중치로 값을 결합하면 $Q_1$의 출력은 $0.401V_1+0.198V_2+0.401V_3\approx[0.802,\,0.797]$이다. $K_1$과 $K_3$에 실린 이미지 영역이 거의 같은 비중으로 가장 크게 반영된 것을 볼 수 있다.</p>
+<p>$Q_2$의 점수는 $Q_2\cdot K_1=0$, $Q_2\cdot K_2=1$, $Q_2\cdot K_3=1$이고 나누면 $0$, $0.707$, $0.707$이 되어 가중치는 이번에는 약 $0.198$, $0.401$, $0.401$로 바뀐다. 출력은 $0.198V_1+0.401V_2+0.401V_3\approx[0.599,\,1.203]$이 되어 $Q_1$과는 다른 이미지 영역 조합에 주의를 기울이게 된다. 같은 이미지 영역 세 개라도 오디오 질의가 무엇이냐에 따라 서로 다른 조합으로 참고한다는 것을 보여준다.</p>`,
     related: [{ label: "CLIP", slug: "clip-model" }, { label: "텍스트 조건화", slug: "text-conditioning" }],
     sections: []
   },
