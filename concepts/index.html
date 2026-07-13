@@ -39,6 +39,9 @@
     --c-xai-bg: #efe6f5; --c-llm-bg: #e3f0ea; --c-product-bg: #f5e3ef;
     --c-mlops-bg: #e6eef5; --c-recsys-bg: #f5e8e3; --c-arch-bg: #f0eee0; --c-pm-bg: #f5e3ee;
 
+    --c-stat: #3d5a80; --c-causal: #bf5b4d; --c-disc2: #5f7a3d; --c-num2: #2d7d8a;
+    --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
+
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -58,6 +61,8 @@
       --c-mlops: #7eaad4; --c-recsys: #d69a7e; --c-arch: #cbc07e; --c-pm: #d67eb0;
       --c-xai-bg: #2a2233; --c-llm-bg: #1a2b26; --c-product-bg: #2e1f2a;
       --c-mlops-bg: #1c2733; --c-recsys-bg: #2e2119; --c-arch-bg: #28281a; --c-pm-bg: #2e1f29;
+      --c-stat: #8ba3c9; --c-causal: #e0917f; --c-disc2: #98b56e; --c-num2: #6fc1cc;
+      --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
     }
   }
   :root[data-theme="dark"] {
@@ -73,6 +78,8 @@
     --c-mlops: #7eaad4; --c-recsys: #d69a7e; --c-arch: #cbc07e; --c-pm: #d67eb0;
     --c-xai-bg: #2a2233; --c-llm-bg: #1a2b26; --c-product-bg: #2e1f2a;
     --c-mlops-bg: #1c2733; --c-recsys-bg: #2e2119; --c-arch-bg: #28281a; --c-pm-bg: #2e1f29;
+    --c-stat: #8ba3c9; --c-causal: #e0917f; --c-disc2: #98b56e; --c-num2: #6fc1cc;
+    --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -87,6 +94,8 @@
     --c-mlops: #2f5a7d; --c-recsys: #7d3f2f; --c-arch: #6a5a1f; --c-pm: #7d2f5a;
     --c-xai-bg: #efe6f5; --c-llm-bg: #e3f0ea; --c-product-bg: #f5e3ef;
     --c-mlops-bg: #e6eef5; --c-recsys-bg: #f5e8e3; --c-arch-bg: #f0eee0; --c-pm-bg: #f5e3ee;
+    --c-stat: #3d5a80; --c-causal: #bf5b4d; --c-disc2: #5f7a3d; --c-num2: #2d7d8a;
+    --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
   }
 
   * { box-sizing: border-box; }
@@ -292,13 +301,16 @@
     linalg: "선형대수", calc: "미적분 · 최적화", prob: "확률 · 통계",
     info: "정보이론", disc: "이산수학 · 그래프", numeric: "수치해석 · 기하",
     xai: "XAI · 해석가능성", llm: "LLM/Agent", product: "서비스 · 프로덕트 분석",
-    mlops: "MLOps · 인프라", recsys: "추천시스템 · 랭킹", arch: "모델 아키텍처 심화", pm: "Process Mining"
+    mlops: "MLOps · 인프라", recsys: "추천시스템 · 랭킹", arch: "모델 아키텍처 심화", pm: "Process Mining",
+    stat: "추론통계", causal: "인과추론", disc2: "이산수학 심화", num2: "수치해석 심화"
   };
 
   var BACK_HREF = {
     xai: "../xai/index.html", llm: "../llm/index.html", product: "../product/index.html",
     mlops: "../mlops/index.html", recsys: "../recsys/index.html", arch: "../architectures/index.html",
-    pm: "../process-mining/index.html"
+    pm: "../process-mining/index.html",
+    stat: "../advanced/index.html", causal: "../advanced/index.html",
+    disc2: "../advanced/index.html", num2: "../advanced/index.html"
   };
 
   function qs(name) {

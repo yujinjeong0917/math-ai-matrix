@@ -12056,4 +12056,1486 @@ $$\phi(q_2)\cdot S = 2\times70+4\times180 = 140+720 = 860$$
     ],
     related: [{ label: "√d로 나누는 어텐션 정규화", slug: "attention-scaling" }, { label: "유한 기저로 함수를 근사하는 발상", slug: "universal-approximation" }]
   },
+
+  // --- Wave 7: wave7_s1.js ---
+  "unbiased-estimator": {
+    title: String.raw`불편추정량: 평균적으로 참값을 맞히는 추정량`,
+    domain: "stat",
+    subLabel: String.raw`추정이론`,
+    explanation: String.raw`추정량 하나를 얻으면 그 값이 참값과 정확히 같기를 바라지만 현실에서는 표본마다 추정값이 달라집니다. 대신 우리가 바랄 수 있는 것은 이 추정량을 무수히 많은 표본에 대해 반복해서 계산했을 때 그 평균이 참값과 정확히 일치하는 것입니다. 이런 성질을 불편성이라고 부릅니다. 표본평균은 이 성질을 만족하지만 표본분산은 분모를 어떻게 잡느냐에 따라 만족하기도 하고 만족하지 않기도 합니다.<br><br><strong>명제.</strong> $X_1,\ldots,X_n$이 평균 $\mu$, 분산 $\sigma^2$인 분포에서 독립적으로 뽑힌 표본이라 하자. 표본평균 $\bar X=\frac{1}{n}\sum_{i=1}^n X_i$는 $\mu$의 불편추정량이다. 즉 $E[\bar X]=\mu$이다. 반면 $S_n^2=\frac{1}{n}\sum_{i=1}^n(X_i-\bar X)^2$는 $\sigma^2$의 불편추정량이 아니고 $E[S_n^2]=\frac{n-1}{n}\sigma^2$이며, 분모를 $n-1$로 바꾼 $S^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar X)^2$는 $\sigma^2$의 불편추정량이다.`,
+    example: String.raw`<p>불편성은 "이 추정량을 여러 번 반복해서 계산해 평균을 내면 참값이 나온다"는 뜻이므로, 가상의 모집단을 하나 정해 놓고 가능한 모든 표본을 실제로 나열해보면 그 의미가 분명해집니다.</p>
+<p>모집단이 $\{2,4,6\}$이고 각 값이 뽑힐 확률이 $1/3$로 같다고 합시다. 모평균은 $\mu=(2+4+6)/3=4$이고 모분산은 $\sigma^2=\frac{(2-4)^2+(4-4)^2+(6-4)^2}{3}=\frac{8}{3}$입니다.</p>
+<p>이 모집단에서 복원추출로 크기 $n=2$인 표본을 뽑는다고 하면 가능한 표본은 $(2,2),(2,4),(2,6),(4,2),(4,4),(4,6),(6,2),(6,4),(6,6)$의 9가지이고 각각 확률이 $1/9$로 같습니다.</p>
+<p>표본별로 $\bar X$, $S_n^2=\frac{1}{2}\sum(x_i-\bar x)^2$, $S^2=\sum(x_i-\bar x)^2$ 를 계산하면 다음과 같습니다. $(2,2)$: $\bar x=2$, $S_n^2=0$, $S^2=0$. $(2,4)$와 $(4,2)$: $\bar x=3$, $S_n^2=1$, $S^2=2$. $(2,6)$과 $(6,2)$: $\bar x=4$, $S_n^2=4$, $S^2=8$. $(4,4)$: $\bar x=4$, $S_n^2=0$, $S^2=0$. $(4,6)$과 $(6,4)$: $\bar x=5$, $S_n^2=1$, $S^2=2$. $(6,6)$: $\bar x=6$, $S_n^2=0$, $S^2=0$.</p>
+<p>9개 표본에 대해 $\bar X$의 평균을 내면 $(2+3+4+3+4+5+4+5+6)/9=36/9=4$로 정확히 $\mu=4$와 일치합니다. $S_n^2$의 평균은 $(0+1+4+1+0+1+4+1+0)/9=12/9=4/3$인데, 이는 $\sigma^2=8/3$이 아니라 $\frac{n-1}{n}\sigma^2=\frac{1}{2}\cdot\frac{8}{3}=4/3$과 정확히 일치합니다. 반면 $S^2$의 평균은 $(0+2+8+2+0+2+8+2+0)/9=24/9=8/3$으로 $\sigma^2$과 정확히 일치합니다.</p>
+<p>즉 $\bar X$와 $S^2$는 평균을 내면 참값이 나오지만 $S_n^2$는 체계적으로 참값보다 작은 값을 냅니다. 아래 증명은 이 관찰이 이 특정 모집단만의 우연이 아니라 임의의 분포에서 항상 성립하는 사실임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`추정량 $\hat\theta$의 편의(bias)는 $\mathrm{Bias}(\hat\theta)=E[\hat\theta]-\theta$로 정의된다. 이 값이 모든 $\theta$에 대해 $0$이면, 즉 $E[\hat\theta]=\theta$이면 $\hat\theta$를 $\theta$의 불편추정량이라 부른다. 이제 $\bar X$가 $\mu$의 불편추정량임을 먼저 보이고, 이어서 $S_n^2$과 $S^2$ 중 어느 쪽이 $\sigma^2$의 불편추정량인지를 확인한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$\bar X=\frac{1}{n}\sum_{i=1}^n X_i$이므로 기댓값의 선형성에 의해 $E[\bar X]=\frac{1}{n}\sum_{i=1}^n E[X_i]$이다. 모든 $X_i$가 같은 분포에서 뽑혔으므로 $E[X_i]=\mu$가 각 $i$에 대해 성립하고, 따라서 $E[\bar X]=\frac{1}{n}\cdot n\mu=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\mu`, why: String.raw`n개의 X_i를 모두 더한 기댓값은 nμ이고, 이를 표본크기 n으로 나누면 다시 μ가 됩니다. 이 값은 n과 무관하게 항상 모평균과 정확히 같으므로 표본평균은 불편추정량입니다.` }] },
+      { id: "s3", text: String.raw`이제 $S_n^2$의 기댓값을 구하기 위해 편차제곱합 $\sum_{i=1}^n(X_i-\bar X)^2$을 모평균 $\mu$ 중심으로 다시 쓴다. $X_i-\bar X=(X_i-\mu)-(\bar X-\mu)$이므로 이를 제곱해 모두 더하면 교차항이 $-2(\bar X-\mu)\sum_{i=1}^n(X_i-\mu)=-2n(\bar X-\mu)^2$로 정리되어, $\sum_{i=1}^n(X_i-\bar X)^2=\sum_{i=1}^n(X_i-\mu)^2-$[[blank:나]] 를 얻는다.`,
+        blanks: [{ id: "나", latex: String.raw`n(\bar X-\mu)^2`, why: String.raw`제곱하여 전개하면 Σ(X_i−μ)² 항, 교차항 −2(X̄−μ)Σ(X_i−μ), 그리고 n(X̄−μ)² 항 세 가지가 나옵니다. Σ(X_i−μ)=n(X̄−μ)이므로 교차항은 −2n(X̄−μ)²이 되고, 이를 남은 n(X̄−μ)² 항과 더하면 −n(X̄−μ)² 하나로 정리됩니다.` }] },
+      { id: "s4", text: String.raw`양변에 기댓값을 취하면 $E\left[\sum_{i=1}^n(X_i-\bar X)^2\right]=\sum_{i=1}^n E[(X_i-\mu)^2]-nE[(\bar X-\mu)^2]=n\sigma^2-n\cdot\mathrm{Var}(\bar X)$ 이다. $\mathrm{Var}(\bar X)=\sigma^2/n$ 이므로 이는 $n\sigma^2-n\cdot\frac{\sigma^2}{n}=$[[blank:다]] 로 정리된다.`,
+        blanks: [{ id: "다", latex: String.raw`(n-1)\sigma^2`, why: String.raw`nσ² 에서 σ² 을 빼면 (n−1)σ² 이 남습니다. 즉 편차제곱합의 기댓값은 σ² 이 아니라 그보다 σ² 만큼 작은 (n−1)σ² 입니다.` }] },
+      { id: "s5", text: String.raw`따라서 $E[S_n^2]=E\left[\frac{1}{n}\sum_{i=1}^n(X_i-\bar X)^2\right]=\frac{(n-1)\sigma^2}{n}$ 이고, $\sigma^2$과 비교하면 편의는 $E[S_n^2]-\sigma^2=\frac{n-1}{n}\sigma^2-\sigma^2=$[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`-\dfrac{\sigma^2}{n}`, why: String.raw`(n−1)/n − 1 = −1/n 이므로 σ² 을 곱하면 −σ²/n 이 됩니다. 이 값이 정확히 0이 아니므로 S_n² 은 σ² 을 항상 과소평가하는 편향된 추정량입니다.` }] },
+      { id: "s6", text: String.raw`반면 분모를 $n-1$로 바꾸어 $S^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar X)^2$로 정의하면, s4에서 구한 $E\left[\sum_{i=1}^n(X_i-\bar X)^2\right]=(n-1)\sigma^2$를 그대로 대입해 $E[S^2]=\frac{1}{n-1}\cdot(n-1)\sigma^2=$[[blank:마]] 를 얻는다.`,
+        blanks: [{ id: "마", latex: String.raw`\sigma^2`, why: String.raw`(n−1)로 나누고 다시 (n−1)을 곱하면 그대로 σ² 만 남습니다. 분모를 n−1로 잡은 덕분에 n으로 나눌 때 생기던 편향이 정확히 상쇄됩니다.` }] },
+      { id: "s7", text: String.raw`정리하면 표본평균 $\bar X$는 모평균 $\mu$의 불편추정량이고, 분모가 $n-1$인 표본분산 $S^2$ 역시 모분산 $\sigma^2$의 불편추정량이다. 그러나 분모가 $n$인 $S_n^2$은 $E[S_n^2]=\frac{n-1}{n}\sigma^2<\sigma^2$이므로 편향된 추정량이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "편향-분산 트레이드오프", slug: "bias-variance-tradeoff" }, { label: "크라메르-라오 하한", slug: "cramer-rao-lower-bound" }]
+  },
+
+  "mle-asymptotic-normality": {
+    title: String.raw`MLE의 점근적 정규성: 표본이 커지면 정규분포로 수렴한다`,
+    domain: "stat",
+    subLabel: String.raw`추정이론`,
+    explanation: String.raw`최대우도추정량은 표본이 유한할 때는 정확한 분포를 알기 어려운 경우가 많습니다. 그런데 표본크기가 충분히 커지면 놀라운 일이 벌어집니다. MLE는 참값 주위로 정규분포 모양을 그리며 흩어지고, 그 흩어짐의 정도(분산)는 피셔정보량의 역수로 정확히 결정됩니다. 이 사실 덕분에 대표본에서는 MLE의 신뢰구간과 검정을 정규분포 근사로 손쉽게 구성할 수 있습니다.<br><br><strong>명제.</strong> $X_1,\ldots,X_n$이 밀도(또는 확률질량) $f(x;\theta)$에서 독립적으로 뽑힌 표본이고 $\theta_0$가 참값이라 하자. 적절한 정칙조건(미분과 적분의 순서 교환 가능, 피셔정보량 $I(\theta)=E\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right]$이 존재하고 양수) 아래에서 MLE $\hat\theta_n$은 $\sqrt n(\hat\theta_n-\theta_0)\xrightarrow{d} N\!\left(0,\,I(\theta_0)^{-1}\right)$ 를 만족한다.`,
+    example: String.raw`<p>추상적인 테일러전개 논증에 들어가기 전에, 계산이 쉬운 베르누이 분포에서 피셔정보량과 점근분산이 실제로 무엇을 의미하는지 먼저 확인해봅니다.</p>
+<p>$X_i\sim\mathrm{Bernoulli}(p)$ 이면 로그가능도는 $\log f(x;p)=x\log p+(1-x)\log(1-p)$이고, 점수함수는 $s(x;p)=\frac{x}{p}-\frac{1-x}{1-p}$, 이를 한 번 더 미분하면 $s'(x;p)=-\frac{x}{p^2}-\frac{1-x}{(1-p)^2}$입니다.</p>
+<p>피셔정보량은 $I(p)=E[-s'(X;p)]=\frac{E[X]}{p^2}+\frac{E[1-X]}{(1-p)^2}=\frac{p}{p^2}+\frac{1-p}{(1-p)^2}=\frac{1}{p}+\frac{1}{1-p}=\frac{1}{p(1-p)}$입니다.</p>
+<p>$p=0.3$이라는 구체적인 값을 넣어보면 $I(0.3)=\frac{1}{0.3\times0.7}=\frac{1}{0.21}\approx4.762$이고, 명제에 따른 점근분산은 $I(0.3)^{-1}=0.21$입니다.</p>
+<p>실제로 베르누이 분포의 MLE는 표본평균 $\hat p=\bar X$이고, 중심극한정리에 의해 $\sqrt n(\bar X-p)\xrightarrow{d}N(0,p(1-p))$가 이미 알려져 있습니다. $p=0.3$일 때 $p(1-p)=0.21$로 방금 구한 $I(p)^{-1}$과 정확히 같습니다. 즉 이 경우 MLE의 점근적 정규성 정리는 익숙한 중심극한정리와 정확히 같은 결론을 줍니다. 아래 증명은 이 일치가 우연이 아니라 스코어함수의 테일러전개로부터 일반적으로 성립함을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 표본크기 $n$이 커질 때 MLE $\hat\theta_n$이 참값 $\theta_0$ 주위에서 어떻게 흩어지는지를 규명하는 것이다. 로그가능도를 $\ell_n(\theta)=\sum_{i=1}^n\log f(X_i;\theta)$라 하고, 개별 관측치의 점수함수(score function)를 $s(x;\theta)=\frac{\partial}{\partial\theta}\log f(x;\theta)$라 하자. MLE $\hat\theta_n$은 $\ell_n'(\hat\theta_n)=0$을 만족하는 값으로 정의된다.`, blanks: [] },
+      { id: "s2", text: String.raw`점수함수는 평균이 0이라는 중요한 성질을 가진다. 밀도의 적분이 항상 $1$이라는 사실 $\int f(x;\theta)\,dx=1$의 양변을 $\theta$로 미분하면 $\int\frac{\partial f}{\partial\theta}(x;\theta)\,dx=0$을 얻고, $\frac{\partial f}{\partial\theta}=f\cdot s$이므로 이는 $\int s(x;\theta)f(x;\theta)\,dx=E_\theta[s(X;\theta)]$와 같다. 따라서 $E_{\theta_0}[s(X;\theta_0)]=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`정칙조건 아래서는 적분과 미분의 순서를 바꿀 수 있어요. 밀도의 전체 적분은 항상 1로 고정되어 있으니 그 미분은 0이고, 이를 점수함수의 기댓값으로 바꿔 쓰면 정확히 0이 나옵니다.` }] },
+      { id: "s3", text: String.raw`점수함수의 분산을 피셔정보량이라 부르고 $I(\theta)=\mathrm{Var}_\theta(s(X;\theta))=E_\theta[s(X;\theta)^2]$로 정의한다 (평균이 0이므로 분산과 이차모멘트가 같다). 같은 정칙조건 아래서는 정보항등식(information identity) $I(\theta)=E_\theta[-s'(X;\theta)]$도 성립하는데, 이는 $\int f\,dx=1$을 $\theta$로 두 번 미분해서 얻을 수 있다. 이 두 사실은 아래에서 각각 중심극한정리와 큰수의법칙을 적용하는 데 쓰인다.`, blanks: [] },
+      { id: "s4", text: String.raw`$\hat\theta_n$은 $\ell_n'(\hat\theta_n)=0$을 만족하므로, $\ell_n'$을 $\theta_0$ 주위에서 1차까지 테일러전개하면 $0=\ell_n'(\hat\theta_n)\approx\ell_n'(\theta_0)+\ell_n''(\theta_0)(\hat\theta_n-\theta_0)$ 이다. 이를 $\hat\theta_n-\theta_0$에 대해 정리하면 $\hat\theta_n-\theta_0\approx$[[blank:나]] 를 얻는다.`,
+        blanks: [{ id: "나", latex: String.raw`-\dfrac{\ell_n'(\theta_0)}{\ell_n''(\theta_0)}`, why: String.raw`0 = ℓ_n'(θ₀) + ℓ_n''(θ₀)(θ̂_n−θ₀) 을 (θ̂_n−θ₀)에 대해 풀면, 양변에서 ℓ_n'(θ₀)을 이항하고 ℓ_n''(θ₀)으로 나누면 됩니다.` }] },
+      { id: "s5", text: String.raw`양변에 $\sqrt n$을 곱하면 $\sqrt n(\hat\theta_n-\theta_0)\approx\dfrac{\frac{1}{\sqrt n}\ell_n'(\theta_0)}{-\frac{1}{n}\ell_n''(\theta_0)}$ 이다. 분자를 보면 $\frac{1}{\sqrt n}\ell_n'(\theta_0)=\frac{1}{\sqrt n}\sum_{i=1}^n s(X_i;\theta_0)$인데, $s(X_i;\theta_0)$들은 독립이고 평균이 $0$, 분산이 $I(\theta_0)$인 항이므로 중심극한정리에 의해 $\frac{1}{\sqrt n}\sum_{i=1}^n s(X_i;\theta_0)\xrightarrow{d}$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`N(0,I(\theta_0))`, why: String.raw`평균 0, 분산 I(θ₀)인 독립동일분포 항들을 √n으로 나눈 합의 극한분포는 중심극한정리에 의해 평균 0, 분산이 원래 항의 분산과 같은 정규분포입니다.` }] },
+      { id: "s6", text: String.raw`분모를 보면 $-\frac{1}{n}\ell_n''(\theta_0)=-\frac{1}{n}\sum_{i=1}^n s'(X_i;\theta_0)$인데, 큰수의법칙에 의해 이는 $E_{\theta_0}[-s'(X;\theta_0)]$로 확률수렴하고, s3의 정보항등식에 의해 이 값은 $I(\theta_0)$와 같다. 즉 $-\frac{1}{n}\ell_n''(\theta_0)\xrightarrow{p}$[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`I(\theta_0)`, why: String.raw`큰수의법칙은 독립동일분포 항들의 평균이 그 기댓값으로 확률수렴한다고 말해줍니다. 그 기댓값이 바로 정보항등식에 의해 피셔정보량 I(θ₀)입니다.` }] },
+      { id: "s7", text: String.raw`분자는 $N(0,I(\theta_0))$로 분포수렴하고 분모는 상수 $I(\theta_0)$로 확률수렴하므로, Slutsky 정리에 의해 두 극한을 나눈 비율은 $\sqrt n(\hat\theta_n-\theta_0)\xrightarrow{d}\dfrac{N(0,I(\theta_0))}{I(\theta_0)}=N\!\left(0,\dfrac{I(\theta_0)}{I(\theta_0)^2}\right)=$[[blank:마]] 로 수렴한다. 따라서 명제가 성립한다.`,
+        blanks: [{ id: "마", latex: String.raw`N(0,I(\theta_0)^{-1})`, why: String.raw`정규분포를 상수 c로 나누면 분산은 c²로 나뉘어요. 여기서는 I(θ₀)로 나눈 것이니 분산이 I(θ₀)/I(θ₀)² = 1/I(θ₀)로 정리되어, 정확히 명제가 말하는 I(θ₀)⁻¹이 나옵니다.` }] }
+    ],
+    related: [{ label: "최대우도추정(MLE)", slug: "mle" }, { label: "크라메르-라오 하한", slug: "cramer-rao-lower-bound" }]
+  },
+
+  "sufficient-statistic": {
+    title: String.raw`충분통계량과 피셔-네이만 인수분해정리`,
+    domain: "stat",
+    subLabel: String.raw`추정이론`,
+    explanation: String.raw`표본 전체 $X_1,\ldots,X_n$을 저장하지 않고도 모수 $\theta$에 대한 정보를 하나도 잃지 않고 압축할 수 있다면 무척 편리할 것입니다. 그런 압축이 가능한 통계량을 충분통계량이라 부릅니다. 직관적으로 표현하면, 충분통계량의 값을 알고 난 뒤에는 원래 표본이 정확히 무엇이었는지를 몰라도 $\theta$에 대해 더 이상 알아낼 것이 없다는 뜻입니다. 이를 판정하는 실용적인 도구가 피셔-네이만 인수분해정리입니다.<br><br><strong>명제(정의).</strong> 통계량 $T(X)$가 $\theta$에 대해 충분하다는 것은 $X=(X_1,\ldots,X_n)$의 조건부분포 $P(X\mid T(X)=t)$가 $\theta$에 의존하지 않는다는 뜻이다.<br><br><strong>명제(인수분해정리).</strong> $T(X)$가 $\theta$의 충분통계량일 필요충분조건은 결합밀도(또는 확률질량함수) $f(x;\theta)$가 $f(x;\theta)=g(T(x),\theta)\,h(x)$ 로 인수분해되는 것이다. 여기서 $g$는 $T(x)$와 $\theta$에만 의존하고 $h$는 $\theta$에 의존하지 않는다.`,
+    example: String.raw`<p>인수분해정리를 추상적으로 다루기 전에 베르누이 표본에서 직접 확인해봅니다.</p>
+<p>$X_1,X_2,X_3\stackrel{iid}{\sim}\mathrm{Bernoulli}(p)$의 결합확률질량함수는 $f(x;p)=\prod_{i=1}^3 p^{x_i}(1-p)^{1-x_i}=p^{\sum x_i}(1-p)^{3-\sum x_i}$입니다. $T(x)=\sum x_i$로 두면 $f(x;p)=p^{T(x)}(1-p)^{3-T(x)}\cdot 1$이고, 이는 $g(T,p)=p^T(1-p)^{3-T}$와 $h(x)=1$로 정확히 인수분해되므로 $T(X)=\sum X_i$가 충분통계량이라는 것을 정리가 말해줍니다.</p>
+<p>이 사실을 정의 그대로 직접 확인해봅니다. $x=(1,0,1)$이면 $T(x)=2$이고 $P(X=(1,0,1))=p^2(1-p)$입니다. $T=2$가 되는 모든 표본은 $(1,1,0),(1,0,1),(0,1,1)$ 세 가지이고 각각의 확률은 모두 $p^2(1-p)$로 같으므로 $P(T=2)=3p^2(1-p)$입니다.</p>
+<p>따라서 $P(X=(1,0,1)\mid T=2)=\dfrac{p^2(1-p)}{3p^2(1-p)}=\dfrac{1}{3}$이고, 마찬가지로 $(1,1,0)$과 $(0,1,1)$도 조건부확률이 각각 $1/3$입니다. $p$가 완전히 약분되어 사라지므로 $T=2$라는 정보를 알고 나면 구체적으로 어느 표본이었는지에 대한 확률은 $p$와 무관합니다. 이것이 바로 충분성의 정의가 뜻하는 바입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`충분성을 직접 조건부분포로 확인하는 것은 매번 번거로우므로, 실무에서는 피셔-네이만 인수분해정리를 이용해 결합밀도의 형태만 보고 충분통계량을 찾아낸다. 여기서는 베르누이 표본에 이 정리를 적용해 $T(X)=\sum_{i=1}^n X_i$가 충분통계량임을 보이고, 정의를 이용해 이를 직접 검산한다.`, blanks: [] },
+      { id: "s2", text: String.raw`개별 관측치의 확률질량함수는 $x\in\{0,1\}$에 대해 $f(x;p)=p^x(1-p)^{1-x}$이다. 독립이므로 결합확률질량함수는 $f(x_1,\ldots,x_n;p)=\prod_{i=1}^n p^{x_i}(1-p)^{1-x_i}=p^{\sum_{i=1}^n x_i}(1-p)^{n-\sum_{i=1}^n x_i}$인데, $T(x)=\sum_{i=1}^n x_i$로 표기를 바꾸면 이는 $f(x;p)=$[[blank:가]] 로 다시 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`p^{T(x)}(1-p)^{n-T(x)}`, why: String.raw`지수 부분의 Σx_i를 T(x)라는 이름으로 그대로 바꿔 쓴 것뿐입니다. 값 자체는 달라지지 않고 표기만 T(x)를 강조하는 형태가 됩니다.` }] },
+      { id: "s3", text: String.raw`이 식은 $g(T,p)=p^T(1-p)^{n-T}$와 $h(x)=1$의 곱으로 볼 수 있는데, $h(x)$가 표본 $x$에만 의존하고 $p$를 전혀 포함하지 않는다는 점이 핵심이다. 따라서 $f(x;p)=g(T(x),p)\,h(x)$ 형태의 인수분해에서 $g(T(x),p)=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`p^{T(x)}(1-p)^{n-T(x)}`, why: String.raw`h(x)=1로 이미 전부를 g에 몰아넣었으므로 g(T(x),p)는 결합확률질량함수 전체와 같습니다.` }] },
+      { id: "s4", text: String.raw`$f(x;p)$가 $T(x)$와 $p$에만 의존하는 함수 $g(T(x),p)$와 $p$를 포함하지 않는 함수 $h(x)$의 곱으로 인수분해되었으므로, 피셔-네이만 인수분해정리에 의해 $T(X)=\sum_{i=1}^n X_i$는 $p$의 충분통계량이다.`, blanks: [] },
+      { id: "s5", text: String.raw`정의를 이용해 직접 검산해보자. $n=3$, $T=2$인 경우 $T=2$를 만족하는 표본은 $(1,1,0),(1,0,1),(0,1,1)$ 세 가지뿐이고 각각의 확률은 $p^2(1-p)$로 동일하다. 따라서 $P(T=2)=3p^2(1-p)$이고, 특정 표본 하나의 조건부확률은 $P(X=(1,0,1)\mid T=2)=\dfrac{p^2(1-p)}{3p^2(1-p)}=$[[blank:다]] 로, $p$가 완전히 소거된다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{1}{3}`, why: String.raw`분자와 분모에 있는 p²(1−p)가 정확히 약분되어 사라지고 상수 1/3만 남습니다. 이는 T=2라는 정보 이후에는 어느 표본이었는지가 p와 무관한 균등분포를 따른다는 뜻입니다.` }] },
+      { id: "s6", text: String.raw`조건부확률에서 $p$가 완전히 사라졌다는 것은 $T(X)$의 값을 안 뒤에는 표본에 대해 $p$에 관한 추가 정보가 전혀 남아있지 않다는 뜻이며, 이는 정확히 충분성의 정의다. 같은 논리는 일반적인 지수족 분포 $f(x;\theta)=h(x)\exp(\eta(\theta)T(x)-A(\theta))$에도 그대로 적용되어, 인수분해정리에 의해 $T(X)$가 항상 $\theta$의 충분통계량이 된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "최대우도추정(MLE)", slug: "mle" }]
+  },
+
+  "cramer-rao-lower-bound": {
+    title: String.raw`크라메르-라오 하한: 불편추정량 분산의 이론적 하한`,
+    domain: "stat",
+    subLabel: String.raw`추정이론`,
+    explanation: String.raw`불편추정량을 아무리 잘 설계해도 분산을 무한정 줄일 수는 없습니다. 데이터가 담고 있는 정보량 자체가 분산이 줄어들 수 있는 한계를 결정하기 때문입니다. 크라메르-라오 부등식은 이 한계를 피셔정보량으로 정확하게 못박아 줍니다. 이 하한을 알면 어떤 불편추정량이 더 이상 개선될 여지가 없는 "최적" 추정량인지도 판정할 수 있습니다.<br><br><strong>명제.</strong> $X\sim f(x;\theta)$이고 $T(X)$가 $\theta$의 불편추정량, 즉 $E_\theta[T(X)]=\theta$이며 정칙조건이 성립한다고 하자. $I(\theta)=E_\theta\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right]$을 피셔정보량이라 하면 $\mathrm{Var}_\theta(T(X))\ge\dfrac{1}{I(\theta)}$ 가 성립한다.`,
+    example: String.raw`<p>부등식이 실제로 등호를 이룰 수도 있다는 것을 정규분포 평균 추정 예제로 먼저 확인해봅니다.</p>
+<p>$X_1,\ldots,X_n\stackrel{iid}{\sim}N(\mu,\sigma^2)$이고 $\sigma^2$는 알려져 있다고 합시다. $\sigma^2=4$, $n=5$로 두면, 한 관측치의 피셔정보량은 $I_1(\mu)=1/\sigma^2=1/4$이고 $n$개 독립 관측치의 피셔정보량은 $I(\mu)=nI_1(\mu)=n/\sigma^2=5/4=1.25$입니다.</p>
+<p>크라메르-라오 하한은 $1/I(\mu)=1/1.25=0.8$입니다. 한편 $T(X)=\bar X$는 $\mu$의 불편추정량이고 $\mathrm{Var}(\bar X)=\sigma^2/n=4/5=0.8$입니다.</p>
+<p>즉 $\mathrm{Var}(\bar X)$가 하한과 정확히 $0.8=0.8$로 일치합니다. 표본평균은 정규분포 평균 추정에서 하한을 등호로 달성하는 효율적인 추정량인 것입니다. 아래 증명은 이 하한이 특정 분포만의 우연이 아니라 코시-슈바르츠 부등식으로부터 항상 성립하는 일반적인 사실임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$T(X)$가 $\theta$의 불편추정량이라는 조건 $E_\theta[T(X)]=\theta$는 모든 $\theta$에 대해 성립하는 항등식이다. 점수함수를 $s(x;\theta)=\frac{\partial}{\partial\theta}\log f(x;\theta)$라 하면, 앞선 항목들에서와 마찬가지로 정칙조건 아래 $E_\theta[s(X;\theta)]=0$이고 $I(\theta)=\mathrm{Var}_\theta(s(X;\theta))$이다.`, blanks: [] },
+      { id: "s2", text: String.raw`불편성 항등식 $E_\theta[T(X)]=\int T(x)f(x;\theta)\,dx=\theta$의 양변을 $\theta$로 미분하면, 좌변은 $\int T(x)\frac{\partial f}{\partial\theta}(x;\theta)\,dx=\int T(x)f(x;\theta)s(x;\theta)\,dx=E_\theta[T(X)s(X;\theta)]$가 되고 우변은 $1$이 된다. 즉 $E_\theta[T(X)s(X;\theta)]=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`1`, why: String.raw`θ를 θ로 미분하면 1이죠. 불편성 항등식의 우변이 θ 그 자체이므로 미분하면 1이 남습니다.` }] },
+      { id: "s3", text: String.raw`한편 $E_\theta[s(X;\theta)]=0$이므로 공분산은 $\mathrm{Cov}_\theta(T(X),s(X;\theta))=E_\theta[T(X)s(X;\theta)]-E_\theta[T(X)]E_\theta[s(X;\theta)]=E_\theta[T(X)s(X;\theta)]-0$이다. s2의 결과를 대입하면 $\mathrm{Cov}_\theta(T(X),s(X;\theta))=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`공분산 정의에서 두 번째 항이 E[s]=0이라 사라지고, 첫 번째 항 E[Ts]는 s2에서 이미 1로 구했으므로 공분산도 그대로 1입니다.` }] },
+      { id: "s4", text: String.raw`코시-슈바르츠 부등식에 의해 임의의 두 확률변수 $U,V$에 대해 $\mathrm{Cov}(U,V)^2\le\mathrm{Var}(U)\mathrm{Var}(V)$가 성립한다. $U=T(X)$, $V=s(X;\theta)$로 두면 $\mathrm{Cov}_\theta(T,s)^2\le\mathrm{Var}_\theta(T)\cdot\mathrm{Var}_\theta(s)$인데, 좌변은 $1^2=1$이고 $\mathrm{Var}_\theta(s)=I(\theta)$이므로 이는 $1\le$[[blank:다]] 로 정리된다.`,
+        blanks: [{ id: "다", latex: String.raw`\mathrm{Var}_\theta(T)\cdot I(\theta)`, why: String.raw`코시-슈바르츠 부등식의 우변 Var(U)Var(V)에 U=T, V=s를 대입하고 Var(s)=I(θ)라는 사실을 쓰면 Var(T)·I(θ)가 됩니다.` }] },
+      { id: "s5", text: String.raw`$I(\theta)>0$이므로 양변을 $I(\theta)$로 나누면 $\mathrm{Var}_\theta(T(X))\ge$[[blank:라]] 를 얻는다.`,
+        blanks: [{ id: "라", latex: String.raw`\dfrac{1}{I(\theta)}`, why: String.raw`1 ≤ Var(T)·I(θ) 의 양변을 I(θ)로 나누면 Var(T) ≥ 1/I(θ) 가 됩니다.` }] },
+      { id: "s6", text: String.raw`정리하면 임의의 불편추정량 $T(X)$의 분산은 $1/I(\theta)$보다 작아질 수 없다. 등호는 코시-슈바르츠 부등식의 등호조건, 즉 $T(X)-\theta$가 $s(X;\theta)$의 상수배일 때 성립하는데 정규분포 평균 추정의 표본평균이 바로 이 경우에 해당한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "불편추정량", slug: "unbiased-estimator" }, { label: "MLE의 점근적 정규성", slug: "mle-asymptotic-normality" }]
+  },
+
+  "consistent-estimator": {
+    title: String.raw`일치추정량: 표본이 커지면 확률적으로 참값에 다가간다`,
+    domain: "stat",
+    subLabel: String.raw`점근이론`,
+    explanation: String.raw`불편성은 표본 하나하나에 대한 평균적 정확성을 이야기하지만, 표본크기를 늘렸을 때 추정값이 실제로 참값에 가까워지는지는 별개의 문제입니다. 이를 보장하는 성질이 일치성입니다. 표본이 커질수록 추정값이 참값에서 벗어날 확률이 0으로 사라진다는 뜻입니다.<br><br><strong>명제(정의).</strong> 추정량열 $\hat\theta_n$이 $\theta$에 대해 일치추정량이라는 것은, 임의의 $\varepsilon>0$에 대해 $\lim_{n\to\infty}P(|\hat\theta_n-\theta|\ge\varepsilon)=0$ 이라는 뜻이며 이를 $\hat\theta_n\xrightarrow{p}\theta$로 표기한다. $X_1,\ldots,X_n$이 평균 $\mu$, 분산 $\sigma^2<\infty$인 분포에서 독립적으로 뽑힌 표본이면 표본평균 $\bar X_n$은 $\mu$의 일치추정량이다.`,
+    example: String.raw`<p>체비셰프 부등식이 주는 상한이 표본크기와 함께 실제로 얼마나 빨리 줄어드는지 숫자로 확인해봅니다.</p>
+<p>$\sigma^2=4$, 오차허용범위 $\varepsilon=1$이라 하면 체비셰프 부등식이 주는 상한은 $P(|\bar X_n-\mu|\ge1)\le\dfrac{\sigma^2}{n\varepsilon^2}=\dfrac{4}{n}$입니다.</p>
+<p>$n=100$이면 상한은 $4/100=0.04$이고, $n=10000$이면 상한은 $4/10000=0.0004$입니다. 표본크기를 100배 늘리자 확률의 상한이 100배 줄어들며 0에 가까워지는 것을 볼 수 있습니다.</p>
+<p>$\varepsilon$을 얼마나 작게 잡아도 $n$을 충분히 크게 하면 이 상한을 원하는 만큼 0에 가깝게 만들 수 있다는 것이 아래 증명의 핵심입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 임의로 작은 $\varepsilon>0$을 고정했을 때 $P(|\bar X_n-\mu|\ge\varepsilon)$이 $n\to\infty$에 따라 $0$으로 수렴함을 보이는 것이다. 이를 위해 체비셰프 부등식을 사용한다: 유한한 분산을 갖는 임의의 확률변수 $Y$와 $\varepsilon>0$에 대해 $P(|Y-E[Y]|\ge\varepsilon)\le\dfrac{\mathrm{Var}(Y)}{\varepsilon^2}$ 이 성립한다.`, blanks: [] },
+      { id: "s2", text: String.raw`이전 항목에서 확인했듯 $E[\bar X_n]=\mu$이고 독립성에 의해 $\mathrm{Var}(\bar X_n)=\mathrm{Var}\!\left(\frac{1}{n}\sum_{i=1}^n X_i\right)=\frac{1}{n^2}\sum_{i=1}^n\mathrm{Var}(X_i)=\frac{1}{n^2}\cdot n\sigma^2=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{\sigma^2}{n}`, why: String.raw`n²으로 나누고 nσ²을 곱하면 σ²/n이 남습니다. 표본평균의 분산은 개별 관측치 분산을 표본크기로 나눈 값입니다.` }] },
+      { id: "s3", text: String.raw`$Y=\bar X_n$에 체비셰프 부등식을 적용하면 $E[\bar X_n]=\mu$, $\mathrm{Var}(\bar X_n)=\sigma^2/n$이므로 $P(|\bar X_n-\mu|\ge\varepsilon)\le$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\dfrac{\sigma^2}{n\varepsilon^2}`, why: String.raw`체비셰프 부등식의 우변 Var(Y)/ε²에 Var(X̄_n)=σ²/n을 그대로 대입한 것입니다.` }] },
+      { id: "s4", text: String.raw`$\varepsilon$은 고정된 양수이고 $\sigma^2$도 고정된 상수이므로 $n\to\infty$일 때 $\dfrac{\sigma^2}{n\varepsilon^2}\to0$이다. 확률은 항상 $0$ 이상이므로 $0\le P(|\bar X_n-\mu|\ge\varepsilon)\le\dfrac{\sigma^2}{n\varepsilon^2}\to0$이고, 조임정리(squeeze theorem)에 의해 $\lim_{n\to\infty}P(|\bar X_n-\mu|\ge\varepsilon)=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`확률은 0과 그 자체로 0에 수렴하는 상한 사이에 끼어 있으므로 조임정리에 의해 극한도 0이 될 수밖에 없습니다.` }] },
+      { id: "s5", text: String.raw`이 논증은 임의의 $\varepsilon>0$에 대해 성립하므로 $\bar X_n\xrightarrow{p}\mu$이다. 따라서 표본평균은 모평균의 일치추정량이며 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "중심극한정리", slug: "clt" }, { label: "델타법", slug: "delta-method" }]
+  },
+
+  "delta-method": {
+    title: String.raw`델타법: 변환된 추정량의 점근분포`,
+    domain: "stat",
+    subLabel: String.raw`점근이론`,
+    explanation: String.raw`추정량 $\hat\theta_n$의 점근분포를 알고 있다고 해서 $g(\hat\theta_n)$처럼 이를 변환한 값의 점근분포까지 저절로 알 수 있는 것은 아닙니다. 그런데 $g$가 매끄러운 함수이기만 하면 국소적으로 직선(접선)에 가깝게 행동한다는 사실을 이용해, $\hat\theta_n$의 점근분산에 $g'(\theta)^2$만 곱해주면 $g(\hat\theta_n)$의 점근분산을 바로 구할 수 있습니다. 이것이 델타법입니다.<br><br><strong>명제.</strong> $\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,\sigma^2)$이고 $g$가 $\theta$에서 미분가능하며 $g'(\theta)\ne0$이라 하자. 그러면 $\sqrt n\big(g(\hat\theta_n)-g(\theta)\big)\xrightarrow{d}N\!\left(0,\,g'(\theta)^2\sigma^2\right)$ 이다.`,
+    example: String.raw`<p>추상적인 테일러전개 논증 전에, 변환함수 $g(p)=p^2$를 구체적인 숫자에 적용해 델타법이 무엇을 계산하는지 먼저 확인해봅니다.</p>
+<p>$X_1,\ldots,X_n\stackrel{iid}{\sim}\mathrm{Bernoulli}(p)$이면 중심극한정리에 의해 $\sqrt n(\bar X_n-p)\xrightarrow{d}N(0,p(1-p))$입니다. $p=0.3$이면 점근분산은 $p(1-p)=0.3\times0.7=0.21$입니다.</p>
+<p>이제 $g(p)=p^2$를 생각하면 $g'(p)=2p$이고 $p=0.3$에서 $g'(0.3)=0.6$입니다. 델타법에 따르면 $\sqrt n(\bar X_n^2-p^2)$의 점근분산은 $g'(p)^2\sigma^2=(0.6)^2\times0.21=0.36\times0.21=0.0756$입니다.</p>
+<p>즉 표본평균 대신 그것을 제곱한 값을 쓰더라도, 미분값 $g'(p)=0.6$만큼의 배율로 조정하면 여전히 정규근사를 쓸 수 있다는 것이 델타법이 말해주는 바입니다. 아래 증명은 이 배율 조정이 왜 $g'(\theta)$의 제곱으로 정확히 결정되는지를 테일러전개로 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $\sqrt n(\hat\theta_n-\theta)$의 극한분포로부터 $\sqrt n(g(\hat\theta_n)-g(\theta))$의 극한분포를 얻어내는 것이다. 핵심 도구는 $g$를 $\theta$ 근방에서 1차 테일러전개로 근사하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$g$가 $\theta$에서 미분가능하므로 $\hat\theta_n$이 $\theta$ 가까이에 있을 때 $g(\hat\theta_n)=g(\theta)+g'(\theta)(\hat\theta_n-\theta)+R_n$ 으로 쓸 수 있고, 여기서 나머지항 $R_n$은 $(\hat\theta_n-\theta)$보다 훨씬 빠르게 $0$에 가까워진다. 이 식을 $g(\hat\theta_n)-g(\theta)$에 대해 정리하면 $g(\hat\theta_n)-g(\theta)=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`g'(\theta)(\hat\theta_n-\theta)+R_n`, why: String.raw`테일러전개 식에서 양변에 g(θ)를 이항하면 좌변에 g(θ̂_n)−g(θ)가 남고 우변에는 1차항과 나머지항만 남습니다.` }] },
+      { id: "s3", text: String.raw`양변에 $\sqrt n$을 곱하면 $\sqrt n\big(g(\hat\theta_n)-g(\theta)\big)=g'(\theta)\sqrt n(\hat\theta_n-\theta)+\sqrt n R_n$ 이다. 정칙조건 아래서는 $\hat\theta_n\xrightarrow{p}\theta$이고 나머지항이 $(\hat\theta_n-\theta)$보다 더 빨리 사라지므로 $\sqrt n R_n\xrightarrow{p}$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`R_n은 (θ̂_n−θ)에 비해 고차의 작은 항이라, √n을 곱해도 θ̂_n이 θ로 확률수렴하는 속도를 이기지 못하고 결국 0으로 사라집니다.` }] },
+      { id: "s4", text: String.raw`$\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,\sigma^2)$이고 $g'(\theta)$는 상수이므로 $g'(\theta)\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,g'(\theta)^2\sigma^2)$이다. 여기에 $0$으로 확률수렴하는 $\sqrt n R_n$을 더해도 Slutsky 정리에 의해 극한분포는 바뀌지 않으므로 $\sqrt n\big(g(\hat\theta_n)-g(\theta)\big)\xrightarrow{d}$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`N(0,g'(\theta)^2\sigma^2)`, why: String.raw`정규분포에 상수 g'(θ)를 곱하면 분산은 g'(θ)² 배가 됩니다. 0으로 확률수렴하는 항을 더하는 것은 Slutsky 정리에 의해 분포의 극한을 바꾸지 않으므로 두 항의 합의 극한은 g'(θ)배 스케일된 정규분포 그대로입니다.` }] },
+      { id: "s5", text: String.raw`정리하면 $g$가 미분가능하고 $g'(\theta)\ne0$일 때 $\sqrt n(g(\hat\theta_n)-g(\theta))\xrightarrow{d}N(0,g'(\theta)^2\sigma^2)$이 성립한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "일치추정량", slug: "consistent-estimator" }, { label: "중심극한정리", slug: "clt" }, { label: "Slutsky 정리", slug: "slutsky-theorem" }]
+  },
+
+  "asymptotic-relative-efficiency": {
+    title: String.raw`점근적 상대효율(ARE): 표본평균과 표본중앙값 중 누가 더 효율적인가`,
+    domain: "stat",
+    subLabel: String.raw`점근이론`,
+    explanation: String.raw`같은 모수를 추정하는 두 일치추정량이 있다면, 어느 쪽이 더 적은 표본으로 더 정밀한 추정을 하는지 비교하고 싶어집니다. 두 추정량 모두 점근적으로 정규분포를 따른다면 점근분산의 비율이 바로 그 답을 줍니다. 점근분산이 작은 쪽이 더 효율적인 추정량입니다.<br><br><strong>명제(정의).</strong> $\sqrt n(\hat\theta_1-\theta)\xrightarrow{d}N(0,\sigma_1^2)$이고 $\sqrt n(\hat\theta_2-\theta)\xrightarrow{d}N(0,\sigma_2^2)$이면, $\hat\theta_1$의 $\hat\theta_2$에 대한 점근적 상대효율은 $\mathrm{ARE}(\hat\theta_1,\hat\theta_2)=\sigma_2^2/\sigma_1^2$로 정의한다. $\mathrm{ARE}>1$이면 $\hat\theta_1$이 더 효율적이다.<br><br><strong>명제(적용).</strong> $X_1,\ldots,X_n\stackrel{iid}{\sim}N(\mu,\sigma^2)$일 때 표본평균 $\bar X_n$과 표본중앙값 $\tilde M_n$을 비교하면 $\mathrm{ARE}(\bar X_n,\tilde M_n)=\pi/2\approx1.5708$이다.`,
+    example: String.raw`<p>일반적인 순서통계량 이론에 따르면, 모집단 밀도 $f$와 모집단 중앙값 $m$에 대해 표본중앙값은 $\sqrt n(\tilde M_n-m)\xrightarrow{d}N\!\left(0,\dfrac{1}{4f(m)^2}\right)$을 만족한다는 것이 알려져 있습니다 (이 결과 자체는 순서통계량의 점근론에서 유도되며 여기서는 주어진 사실로 사용합니다).</p>
+<p>표준정규분포 $N(0,1)$이라 하면 $\mu=m=0$이고 밀도값은 $f(0)=\dfrac{1}{\sqrt{2\pi}}\approx0.3989$입니다. 그러면 $f(0)^2=\dfrac{1}{2\pi}\approx0.1592$이고, 표본중앙값의 점근분산은 $\dfrac{1}{4f(0)^2}=\dfrac{1}{4\times0.1592}\approx\dfrac{1}{0.6366}\approx1.5708$입니다.</p>
+<p>표본평균의 점근분산은 중심극한정리에 의해 그냥 $\sigma^2=1$입니다. 따라서 $\mathrm{ARE}(\bar X_n,\tilde M_n)=\dfrac{1.5708}{1}\approx1.5708=\pi/2$로, 표본평균이 표본중앙값보다 약 $1.57$배 더 효율적입니다. 거꾸로 말하면 표본중앙값으로 표본평균과 같은 정밀도를 얻으려면 표본을 약 $1.57$배 더 모아야 합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`두 추정량의 점근적 상대효율을 비교하려면 각각의 점근분산을 알아야 한다. 표본평균의 점근분산은 중심극한정리로 바로 나오지만, 표본중앙값의 점근분산은 순서통계량 이론에서 유도되는 일반적인 결과를 가져다 쓴다: 모집단 밀도가 $f$이고 모집단 중앙값이 $m$일 때 $\sqrt n(\tilde M_n-m)\xrightarrow{d}N\!\left(0,\dfrac{1}{4f(m)^2}\right)$ 이다. 이 결과는 여기서 증명하지 않고 주어진 사실로 사용하며, 이를 정규분포에 적용해 두 추정량을 비교하는 것이 이 증명의 목표다.`, blanks: [] },
+      { id: "s2", text: String.raw`$X\sim N(\mu,\sigma^2)$의 밀도는 $f(x)=\dfrac{1}{\sigma\sqrt{2\pi}}\exp\!\left(-\dfrac{(x-\mu)^2}{2\sigma^2}\right)$이다. 정규분포는 대칭이므로 중앙값이 평균과 같아 $m=\mu$이고, 이 점에서 지수부가 $0$이 되어 $f(\mu)=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{1}{\sigma\sqrt{2\pi}}`, why: String.raw`x=μ를 대입하면 지수 안의 (x−μ)²이 0이 되어 exp(0)=1이 되고, 앞의 상수 1/(σ√(2π))만 남습니다.` }] },
+      { id: "s3", text: String.raw`$f(\mu)^2=\dfrac{1}{2\pi\sigma^2}$이므로 이를 일반 공식 $\dfrac{1}{4f(m)^2}$에 대입하면 표본중앙값의 점근분산은 $\dfrac{1}{4\cdot\frac{1}{2\pi\sigma^2}}=\dfrac{2\pi\sigma^2}{4}=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\dfrac{\pi\sigma^2}{2}`, why: String.raw`2πσ²을 4로 나누면 πσ²/2가 남습니다. 이것이 정규분포 아래 표본중앙값의 점근분산입니다.` }] },
+      { id: "s4", text: String.raw`한편 표본평균의 점근분산은 중심극한정리에 의해 $\sqrt n(\bar X_n-\mu)\xrightarrow{d}N(0,\sigma^2)$이므로 그냥 $\sigma^2$이다.`, blanks: [] },
+      { id: "s5", text: String.raw`정의에 따라 $\mathrm{ARE}(\bar X_n,\tilde M_n)=\dfrac{\text{중앙값의 점근분산}}{\text{평균의 점근분산}}=\dfrac{\pi\sigma^2/2}{\sigma^2}=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{\pi}{2}`, why: String.raw`분자와 분모의 σ²이 약분되어 사라지고 π/2만 남습니다. 모분산의 크기와 무관하게 두 추정량의 상대효율은 항상 π/2로 고정됩니다.` }] },
+      { id: "s6", text: String.raw`$\pi/2\approx1.5708>1$이므로 정규분포 아래에서는 표본평균이 표본중앙값보다 항상 더 효율적이다. 거꾸로 표본중앙값의 표본평균에 대한 상대효율은 $\mathrm{ARE}(\tilde M_n,\bar X_n)=2/\pi\approx0.6366$이며, 이는 극단값(이상치)에 덜 민감한 중앙값이 정규분포처럼 꼬리가 얇은 분포에서는 정보 손실의 대가를 치른다는 것을 보여준다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "일치추정량", slug: "consistent-estimator" }, { label: "중심극한정리", slug: "clt" }]
+  },
+
+  "slutsky-theorem": {
+    title: String.raw`Slutsky 정리: 분포수렴과 확률수렴을 결합하는 규칙`,
+    domain: "stat",
+    subLabel: String.raw`점근이론`,
+    explanation: String.raw`점근이론에서는 한쪽 항은 정규분포 등으로 분포수렴하고 다른 쪽 항은 상수로 확률수렴하는 상황이 자주 나옵니다. 예컨대 $\sqrt n(\bar X_n-\mu)/\sigma$는 정규분포로 수렴하지만 실제로는 모르는 $\sigma$ 대신 표본으로 추정한 $S_n$을 씁니다. 이때 두 극한을 마음대로 결합해도 되는지가 문제인데, Slutsky 정리가 이를 정당화해줍니다.<br><br><strong>명제.</strong> $X_n\xrightarrow{d}X$이고 $Y_n\xrightarrow{p}c$ (상수)이면 다음이 성립한다: (a) $X_n+Y_n\xrightarrow{d}X+c$, (b) $X_nY_n\xrightarrow{d}cX$, (c) $c\ne0$이면 $X_n/Y_n\xrightarrow{d}X/c$.`,
+    example: String.raw`<p>Slutsky 정리가 실무에서 가장 흔히 쓰이는 장면은 모표준편차 $\sigma$를 표본표준편차 $S_n$으로 대체하는 스튜던트화(studentization)입니다. 숫자로 그 효과를 먼저 확인해봅니다.</p>
+<p>$\mu=10$, $\sigma=2$인 모집단에서 $n=100$인 표본을 뽑았더니 $\bar X_n=10.3$, $S_n=2.05$가 나왔다고 합시다.</p>
+<p>$\sigma$를 알고 있다면 $X_n=\dfrac{\sqrt n(\bar X_n-\mu)}{\sigma}=\dfrac{10\times0.3}{2}=1.5$를 계산해 표준정규분포와 비교할 것입니다.</p>
+<p>그런데 실제로는 $\sigma$를 모르므로 $S_n=2.05$로 대체한 $\dfrac{\sqrt n(\bar X_n-\mu)}{S_n}=\dfrac{10\times0.3}{2.05}\approx1.463$을 대신 씁니다. $S_n$이 $\sigma$에 확률적으로 가까워질수록($n\to\infty$일 때 $S_n\xrightarrow{p}\sigma$) 두 값의 차이는 점점 작아지고, Slutsky 정리는 $n\to\infty$일 때 이 대체가 극한분포를 표준정규분포 그대로 유지한다는 것을 보장해줍니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $X_n\xrightarrow{d}X$와 $Y_n\xrightarrow{p}c$라는 두 가지 다른 종류의 수렴을 결합했을 때 합, 곱, 몫이 어떻게 수렴하는지를 보이는 것이다. 여기서는 (a) 합에 대한 증명을 CDF의 조임(sandwich) 논법으로 완전히 전개하고, (b)와 (c)는 유사한 논법으로 성립한다는 것만 언급한다.`, blanks: [] },
+      { id: "s2", text: String.raw`임의의 $\varepsilon>0$을 고정하자. 만약 $|Y_n-c|<\varepsilon$이면서 $X_n+Y_n\le x$라면 $X_n\le x-Y_n<x-c+\varepsilon$이 성립하므로, 사건 $\{X_n+Y_n\le x\}$는 $\{X_n\le x-c+\varepsilon\}$이거나 $\{|Y_n-c|\ge\varepsilon\}$인 경우에 포함된다. 따라서 확률의 부분가법성에 의해 $P(X_n+Y_n\le x)\le$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`P(X_n\le x-c+\varepsilon)+P(|Y_n-c|\ge\varepsilon)`, why: String.raw`사건이 두 사건의 합집합에 포함되면 그 확률은 두 사건 확률의 합보다 클 수 없습니다(부분가법성). 방금 확인한 포함관계를 그대로 확률에 옮긴 것입니다.` }] },
+      { id: "s3", text: String.raw`비슷하게 $|Y_n-c|<\varepsilon$이고 $X_n\le x-c-\varepsilon$이면 $X_n+Y_n<x-c-\varepsilon+c+\varepsilon=x$가 되어 $X_n+Y_n\le x$가 성립하므로, $\{X_n\le x-c-\varepsilon\}\cap\{|Y_n-c|<\varepsilon\}\subseteq\{X_n+Y_n\le x\}$이다. 여기서 확률을 취하면 $P(X_n+Y_n\le x)\ge$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`P(X_n\le x-c-\varepsilon)-P(|Y_n-c|\ge\varepsilon)`, why: String.raw`P(A∩B) ≥ P(A) − P(Bᶜ) 형태로 하한을 잡을 수 있습니다. 여기서 A={X_n ≤ x−c−ε}, Bᶜ={|Y_n−c|≥ε}로 두면 원하는 하한식이 나옵니다.` }] },
+      { id: "s4", text: String.raw`$Y_n\xrightarrow{p}c$이므로 $P(|Y_n-c|\ge\varepsilon)\to0$이고, $X_n\xrightarrow{d}X$이므로 $x-c\pm\varepsilon$이 $X$의 분포함수의 연속점일 때 $P(X_n\le x-c\pm\varepsilon)\to F_X(x-c\pm\varepsilon)$이다. s2, s3의 상한과 하한에서 $n\to\infty$ 극한을 취하면 $F_X(x-c-\varepsilon)\le\liminf_n P(X_n+Y_n\le x)\le\limsup_n P(X_n+Y_n\le x)\le$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`F_X(x-c+\varepsilon)`, why: String.raw`s2에서 구한 상한식의 첫 항이 F_X(x−c+ε)로 수렴하고 둘째 항은 0으로 사라지므로, limsup의 상계는 F_X(x−c+ε)가 됩니다.` }] },
+      { id: "s5", text: String.raw`이제 $\varepsilon\to0^+$을 취한다. $F_X$가 $x-c$에서 연속이라면(연속점이 아닌 곳은 셀 수 있을 만큼만 존재하므로 그런 점들을 피해 $\varepsilon$을 보내도 일반성을 잃지 않는다) $F_X(x-c-\varepsilon)$과 $F_X(x-c+\varepsilon)$이 모두 $F_X(x-c)$로 수렴하므로 조임정리에 의해 $\lim_n P(X_n+Y_n\le x)=$[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`F_X(x-c)`, why: String.raw`상한과 하한이 모두 같은 값 F_X(x−c)로 좁혀지므로 그 사이에 낀 극한도 정확히 F_X(x−c)로 고정됩니다.` }] },
+      { id: "s6", text: String.raw`그런데 $X+c\le x\iff X\le x-c$이므로 $F_X(x-c)=P(X\le x-c)=P(X+c\le x)$, 즉 $F_X(x-c)$는 정확히 $X+c$의 분포함수가 $x$에서 갖는 값이다. 따라서 $\lim_n P(X_n+Y_n\le x)=P(X+c\le x)$가 $X$의 분포함수의 모든 연속점에서 성립하므로 $X_n+Y_n\xrightarrow{d}X+c$이다. 곱과 몫에 대한 (b), (c)도 각각 $\{X_nY_n\le x\}$, $\{X_n/Y_n\le x\}$에 대해 완전히 같은 방식의 조임 논법을 적용하면 증명된다.`, blanks: [] },
+      { id: "s7", text: String.raw`이 세 규칙 덕분에 실무에서는 모르는 모수를 일치추정량으로 대체해도 극한분포가 바뀌지 않는다는 것이 보장된다. 예를 들어 $\sqrt n(\bar X_n-\mu)/\sigma\xrightarrow{d}N(0,1)$이고 $S_n\xrightarrow{p}\sigma$이면, (c)를 적용해 $\sqrt n(\bar X_n-\mu)/S_n\xrightarrow{d}N(0,1)/1=N(0,1)$이 그대로 성립한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "델타법", slug: "delta-method" }, { label: "중심극한정리", slug: "clt" }]
+  },
+
+  // --- Wave 7: wave7_s2.js ---
+  "neyman-pearson-lemma": {
+    title: String.raw`네이만-피어슨 보조정리: 최강력검정의 형태`,
+    domain: "stat",
+    subLabel: String.raw`가설검정 이론`,
+    explanation: String.raw`가설검정에서는 제1종 오류(귀무가설이 참인데 기각)를 일정 수준 $\alpha$ 이하로 묶어두면서, 제2종 오류를 최소화하고 싶습니다. 즉 검정력(대립가설이 참일 때 올바르게 기각할 확률)을 최대화하고 싶은 거예요. 우도비 $f_1(x)/f_0(x)$가 큰 표본일수록 대립가설이 더 그럴듯하니, 우도비에 임계값을 매겨 기각역을 정하는 게 직관적으로 최선일 것 같습니다. 네이만-피어슨 보조정리는 이 직관이 실제로 최적임을, 그것도 유일하게 최적임을 증명합니다.<br><br><strong>명제.</strong> 단순가설 $H_0:\theta=\theta_0$ vs $H_1:\theta=\theta_1$에서 밀도함수를 $f_0,f_1$이라 하자. 랜덤화 검정함수 $\phi:\mathcal X\to[0,1]$ 중 크기 $E_{\theta_0}[\phi]=\alpha$를 만족하는 것들 가운데 검정력 $E_{\theta_1}[\phi]$을 최대화하는 것은, 어떤 $k\ge0$에 대해 $f_1(x)>kf_0(x)$이면 $\phi(x)=1$, $f_1(x)<kf_0(x)$이면 $\phi(x)=0$인 우도비검정이다 (동률인 지점에서는 크기가 정확히 $\alpha$가 되도록 임의의 비율로 기각).`,
+    example: String.raw`<p>추상적 증명 전에 가장 단순한 정규분포 예제로 명제가 말하는 바를 확인해봅니다.</p>
+<p>$X\sim N(\theta,1)$에서 관측값 하나를 얻고 $H_0:\theta=0$ vs $H_1:\theta=1$을 유의수준 $\alpha=0.05$에서 검정한다고 합시다. 우도비는 다음과 같이 정리됩니다.</p>
+$$\Lambda(x)=\frac{f_1(x)}{f_0(x)}=\frac{\exp(-(x-1)^2/2)}{\exp(-x^2/2)}=\exp\!\Big(x-\frac12\Big)$$
+<p>$\Lambda(x)$는 $x$의 증가함수이므로 "$\Lambda(x)>k$"라는 조건은 결국 "$x>c$"라는 조건과 같습니다. 크기가 $\alpha=0.05$가 되려면 $H_0$ 하에서 $P(X>c)=0.05$, 즉 $c=z_{0.95}=1.645$로 잡으면 됩니다. 이때 검정력은 $P_{\theta=1}(X>1.645)=P(Z>0.645)=1-\Phi(0.645)\approx0.2595$ 입니다. 즉 우도비검정이 "$x$가 임계값보다 크면 기각"이라는, 흔히 쓰는 자연스러운 검정과 정확히 일치함을 확인할 수 있습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표를 정식화해봅니다. 크기 제약 $E_{\theta_0}[\phi]=\alpha$ 아래에서 검정력 $E_{\theta_1}[\phi]$를 최대화하는 문제는 등식 제약이 있는 최적화 문제이므로, 라그랑주 승수법으로 접근할 수 있습니다.`, blanks: [] },
+      { id: "s2", text: String.raw`라그랑주 함수를 $L(\phi,k)=\int \phi(x) f_1(x)\,dx - k($[[blank:가]]$)$ 로 쓸 수 있습니다. 여기서 괄호 안은 크기 제약 $\int\phi f_0\,dx=\alpha$가 등식으로 만족되는지를 0이 되는 식으로 나타낸 것이고, $k$가 바로 라그랑주 승수입니다.`,
+        blanks: [{ id: "가", latex: String.raw`\int \phi(x) f_0(x)\,dx - \alpha`, why: String.raw`등식 제약은 항상 "(제약식) = 0" 형태로 괄호 안에 넣습니다. 여기서는 크기가 정확히 $\alpha$라는 조건이므로 $\int\phi f_0\,dx-\alpha$가 그 자리에 들어갑니다.` }] },
+      { id: "s3", text: String.raw`$L(\phi,k)=\int \phi(x)\big(f_1(x)-kf_0(x)\big)\,dx + k\alpha$ 로 정리하면, $k\alpha$는 $\phi$와 무관한 상수이므로 $L$을 최대화하는 것은 $\int \phi(x)\big(f_1(x)-kf_0(x)\big)\,dx$를 최대화하는 것과 같습니다. $\phi(x)\in[0,1]$은 각 $x$마다 독립적으로 고를 수 있으므로, 계수 $f_1(x)-kf_0(x)$가 양수인 $x$에서는 $\phi(x)=1$로, 음수인 $x$에서는 $\phi(x)=$[[blank:나]]로 두어야 적분값이 최대가 됩니다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`피적분함수 $\phi(x)(f_1(x)-kf_0(x))$를 각 점에서 극대화하려면, 계수가 음수인 곳에서는 $\phi(x)$를 가능한 한 작게(즉 0으로) 두어야 그 항의 기여가 손실 없이 최소가 됩니다.` }] },
+      { id: "s4", text: String.raw`이렇게 pointwise로 정의된 검정을 $\phi_0$라 하자: $f_1(x)>kf_0(x)$이면 $\phi_0(x)=1$, $f_1(x)<kf_0(x)$이면 $\phi_0(x)=0$, 동률인 점에서는 크기가 정확히 $\alpha$가 되도록 $\phi_0(x)=\gamma\in[0,1]$을 조정한다. $f_0,f_1$이 연속형이면 이런 $k,\gamma$가 항상 존재한다.`, blanks: [] },
+      { id: "s5", text: String.raw`이제 $\phi_0$가 실제로 크기 $\alpha$인 모든 검정 중 최강력임을 직접 보입니다. 크기 $\alpha_\psi\le\alpha$인 임의의 다른 검정 $\psi$를 하나 잡자. $\phi_0$의 정의에 의해 모든 $x$에서 $(\phi_0(x)-\psi(x))(f_1(x)-kf_0(x))\ge$[[blank:다]]가 항상 성립한다 (두 인수의 부호가 항상 같거나 한쪽이 0이기 때문이다: $\phi_0=1$인 곳은 $f_1-kf_0>0$이면서 $\phi_0-\psi\ge0$, $\phi_0=0$인 곳은 $f_1-kf_0<0$이면서 $\phi_0-\psi\le0$).`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`두 인수 $(\phi_0(x)-\psi(x))$와 $(f_1(x)-kf_0(x))$는 $\phi_0$의 구성 방식 때문에 항상 같은 부호를 갖거나 둘 중 하나가 0입니다. 두 수의 곱이 항상 이런 관계이면 그 곱은 항상 0 이상입니다.` }] },
+      { id: "s6", text: String.raw`양변을 $x$에 대해 적분하면 $\int(\phi_0-\psi)f_1\,dx - k\int(\phi_0-\psi)f_0\,dx \ge 0$ 를 얻습니다. 좌변의 두 적분은 각각 검정력의 차 $\pi_{\phi_0}-\pi_\psi$와 크기의 차 $\alpha-\alpha_\psi$이므로, 정리하면 $\pi_{\phi_0}-\pi_\psi \ge$[[blank:라]]가 성립한다.`,
+        blanks: [{ id: "라", latex: String.raw`k(\alpha-\alpha_\psi)`, why: String.raw`$\int(\phi_0-\psi)f_1\,dx=\pi_{\phi_0}-\pi_\psi$이고 $\int(\phi_0-\psi)f_0\,dx=\alpha-\alpha_\psi$이므로, 앞의 부등식은 $(\pi_{\phi_0}-\pi_\psi) - k(\alpha-\alpha_\psi)\ge0$이 되고 이를 옮기면 이 식이 나옵니다.` }] },
+      { id: "s7", text: String.raw`$\psi$의 크기가 $\alpha$ 이하이므로 $\alpha-\alpha_\psi\ge0$이고, $k\ge0$이므로 우변 $k(\alpha-\alpha_\psi)\ge0$이다. 따라서 $\pi_{\phi_0}-\pi_\psi\ge0$, 즉 $\pi_{\phi_0}\ge\pi_\psi$가 크기 $\alpha$ 이하인 임의의 $\psi$에 대해 항상 성립한다. 따라서 명제가 성립한다: 우도비검정 $\phi_0$가 크기 $\alpha$에서 검정력을 최대화하는 최강력검정이다.`, blanks: [] }
+    ]
+  },
+
+  "likelihood-ratio-test": {
+    title: String.raw`우도비검정과 Wilks 정리: $-2\log\Lambda \to \chi^2$`,
+    domain: "stat",
+    subLabel: String.raw`가설검정 이론`,
+    explanation: String.raw`복잡한 모형에서 두 모형(제약된 귀무모형 vs 전체모형)의 적합도를 비교할 표준화된 척도가 필요합니다. 우도비 $\Lambda=\dfrac{\sup_{\theta\in\Theta_0}L(\theta)}{\sup_{\theta\in\Theta}L(\theta)}$는 이를 위한 자연스러운 지표예요. $\Lambda$가 1에 가까우면 제약이 데이터와 잘 맞고, 작을수록 잘 안 맞는다는 뜻입니다. 그런데 "$\Lambda$가 얼마나 작아야 유의한가"를 판단하려면 $\Lambda$의 분포를 알아야 하죠. Wilks 정리는 귀무가설 하에서 $-2\log\Lambda$가 표본이 커지면 카이제곱분포로 수렴한다는, 놀랍도록 일반적인 결과를 줍니다.<br><br><strong>명제.</strong> 정칙조건을 만족하는 모수 $\theta\in\mathbb R$의 로그우도 $\ell_n(\theta)$와 MLE $\hat\theta_n$에 대해, 단순귀무가설 $H_0:\theta=\theta_0$ 하에서 $n\to\infty$일 때 $$-2\log\Lambda_n = 2\big[\ell_n(\hat\theta_n)-\ell_n(\theta_0)\big] \xrightarrow{d} \chi^2_1$$ 이다 (모수가 $p$차원이고 $r$개의 제약이 있는 일반적인 경우에는 자유도가 $r$인 카이제곱분포로 일반화된다).`,
+    example: String.raw`<p>지수분포 관측값 $n=25$개, 표본평균 $\bar x=1.2$인 자료에서 $H_0:\lambda=1$을 검정한다고 합시다. 지수분포의 로그우도는 $\ell_n(\lambda)=n\log\lambda-\lambda n\bar x$이고, MLE는 $\hat\lambda_n=1/\bar x=1/1.2\approx0.8333$입니다.</p>
+<p>대입하면 $$\ell_n(\hat\lambda_n)-\ell_n(1)=n\big[\log\hat\lambda_n+\bar x(1-\hat\lambda_n)\big]=25\big[\log(0.8333)+1.2\times0.1667\big]$$</p>
+<p>$\log(0.8333)\approx-0.1823$, $1.2\times0.1667\approx0.2$이므로 대괄호 안은 약 $0.0177$이고, 전체는 $25\times0.0177\approx0.442$입니다. 따라서 $-2\log\Lambda_n\approx2\times0.442=0.885$인데, $\chi^2_1$의 5% 임계값은 $3.841$이므로 이 자료는 $H_0:\lambda=1$을 기각할 근거가 부족합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`로그우도 $\ell_n(\theta)$가 두 번 미분가능하고 $\hat\theta_n$이 스코어방정식 $\ell_n'(\hat\theta_n)=0$의 근으로 정의되는 MLE라고 하자. 목표는 $\ell_n(\theta_0)$을 $\hat\theta_n$ 근방에서 테일러전개해 $-2\log\Lambda_n$을 다루기 쉬운 이차형식으로 근사하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$\ell_n(\theta_0)$을 $\hat\theta_n$ 주변에서 2차항까지 전개하면 $\ell_n(\theta_0)=\ell_n(\hat\theta_n)+\ell_n'(\hat\theta_n)(\theta_0-\hat\theta_n)+\frac12\ell_n''(\hat\theta_n)(\theta_0-\hat\theta_n)^2+o_p(1)$ 인데, $\hat\theta_n$이 MLE이므로 $\ell_n'(\hat\theta_n)=$[[blank:가]]이고 따라서 1차항이 통째로 사라진다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`MLE $\hat\theta_n$은 정의상 스코어방정식 $\ell_n'(\hat\theta_n)=0$의 해입니다. 로그우도가 그 최댓값(내부점)에서 미분가능하면 1차 조건은 항상 0입니다.` }] },
+      { id: "s3", text: String.raw`1차항이 사라졌으므로 $\ell_n(\theta_0)-\ell_n(\hat\theta_n)\approx\frac12\ell_n''(\hat\theta_n)(\theta_0-\hat\theta_n)^2$ 이다. 관측정보를 $I_n(\theta)=$[[blank:나]]로 정의하면, 양변에 $-2$를 곱해 정리했을 때 $-2\log\Lambda_n=2[\ell_n(\hat\theta_n)-\ell_n(\theta_0)]\approx I_n(\hat\theta_n)(\hat\theta_n-\theta_0)^2$ 라는 이차형식을 얻는다.`,
+        blanks: [{ id: "나", latex: String.raw`-\ell_n''(\theta)`, why: String.raw`관측정보(observed information)는 로그우도의 음의 2차도함수로 정의됩니다. 이렇게 정의해야 $-2[\ell_n(\theta_0)-\ell_n(\hat\theta_n)]=-\ell_n''(\hat\theta_n)(\hat\theta_n-\theta_0)^2=I_n(\hat\theta_n)(\hat\theta_n-\theta_0)^2$ 로 부호가 맞아떨어집니다.` }] },
+      { id: "s4", text: String.raw`MLE의 점근적 정규성(별도로 증명되는 표준 결과)에 의해 $\sqrt n(\hat\theta_n-\theta_0)\xrightarrow{d}N(0,1/I_1(\theta_0))$ 이다 (여기서 $I_1$은 관측값 1개당 피셔정보). 또한 큰수의 법칙과 $\hat\theta_n\xrightarrow{p}\theta_0$(일치성)에 의해 $I_n(\hat\theta_n)/n\xrightarrow{p}I_1(\theta_0)$ 도 성립한다.`, blanks: [] },
+      { id: "s5", text: String.raw`이 두 사실을 결합해보자. $\sqrt{I_n(\hat\theta_n)}(\hat\theta_n-\theta_0)=\sqrt{I_n(\hat\theta_n)/n}\cdot\sqrt n(\hat\theta_n-\theta_0)$ 로 분해할 수 있는데, 슬러츠키 정리에 의해 앞 인수는 상수 $\sqrt{I_1(\theta_0)}$로 수렴하고 뒤 인수는 $N(0,1/I_1(\theta_0))$로 수렴하므로, 이 곱은 $N(0,$[[blank:다]]$)$로 수렴한다.`,
+        blanks: [{ id: "다", latex: String.raw`1`, why: String.raw`상수 $c=\sqrt{I_1(\theta_0)}$와 $N(0,\sigma^2)$ (여기서 $\sigma^2=1/I_1(\theta_0)$)의 곱은 $N(0,c^2\sigma^2)$로 수렴합니다. $c^2\sigma^2=I_1(\theta_0)\times1/I_1(\theta_0)=1$이므로 분산이 정확히 1인 표준정규분포가 됩니다.` }] },
+      { id: "s6", text: String.raw`즉 $\sqrt{I_n(\hat\theta_n)}(\hat\theta_n-\theta_0)\xrightarrow{d}N(0,1)$ 이다. 그런데 $-2\log\Lambda_n\approx I_n(\hat\theta_n)(\hat\theta_n-\theta_0)^2=\big[\sqrt{I_n(\hat\theta_n)}(\hat\theta_n-\theta_0)\big]^2$ 이고, 표준정규분포의 제곱은 정의상 자유도 1인 카이제곱분포이므로 $-2\log\Lambda_n\xrightarrow{d}$[[blank:라]]이다.`,
+        blanks: [{ id: "라", latex: String.raw`\chi^2_1`, why: String.raw`연속사상정리(continuous mapping theorem)에 의해 $Z_n\xrightarrow{d}N(0,1)$이면 $Z_n^2\xrightarrow{d}Z^2$ ($Z\sim N(0,1)$)이고, $Z^2$의 분포가 바로 카이제곱분포의 정의(자유도 1)입니다.` }] },
+      { id: "s7", text: String.raw`정리하면 단순귀무가설 하에서 $-2\log\Lambda_n\xrightarrow{d}\chi^2_1$이다. 모수가 $p$차원이고 귀무가설이 $r$개의 독립된 제약을 부과하는 일반적인 경우에도 같은 논증을 각 방향에 적용하면 자유도가 $r$인 카이제곱분포로 수렴함이 알려져 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "goodness-of-fit-test": {
+    title: String.raw`적합도 검정: 피어슨 카이제곱 통계량과 KL발산의 관계`,
+    domain: "stat",
+    subLabel: String.raw`가설검정 이론`,
+    explanation: String.raw`관찰빈도가 기대빈도에서 얼마나 벗어났는지를 재는 척도가 필요합니다. 정보이론적으로는 경험분포와 귀무가설 분포 사이의 쿨백-라이블러(KL) 발산이 가장 자연스러운 척도이지만, 로그가 들어가 손으로 계산하기 번거롭습니다. 반면 피어슨이 제안한 $(O-E)^2/E$ 형태의 통계량은 계산이 훨씬 간단하죠. 두 통계량이 사실은 같은 양의 서로 다른 근사라는 것을 2차 테일러전개로 보여보겠습니다.<br><br><strong>명제.</strong> $k$개 범주, 총 표본크기 $n$, 귀무가설 하 확률 $p_i$ ($i=1,\dots,k$, $\sum_i p_i=1$), 관측빈도 $O_i$, 기대빈도 $E_i=np_i$, 경험비율 $\hat p_i=O_i/n$이라 하자. 그러면 $H_0$ 하에서 $n\to\infty$일 때 (즉 $\hat p_i$가 $p_i$에 가까워질 때) $$X^2=\sum_{i=1}^k\frac{(O_i-E_i)^2}{E_i} = 2n\,D_{KL}(\hat p\,\|\,p)+o_p(1)$$ 이 성립한다. 여기서 $D_{KL}(\hat p\|p)=\sum_i\hat p_i\log(\hat p_i/p_i)$이다.`,
+    example: String.raw`<p>$k=3$개 범주, $n=100$, 귀무가설 확률 $p=(0.5,0.3,0.2)$이라 하고 관측빈도가 $O=(55,25,20)$이라 합시다. 기대빈도는 $E=(50,30,20)$입니다.</p>
+<p>피어슨 통계량은 $$X^2=\frac{5^2}{50}+\frac{(-5)^2}{30}+\frac{0^2}{20}=0.5+0.8333+0=1.3333$$</p>
+<p>한편 $\hat p=(0.55,0.25,0.20)$이므로 KL발산은 $$D_{KL}(\hat p\|p)=0.55\log\frac{0.55}{0.5}+0.25\log\frac{0.25}{0.3}+0.20\log\frac{0.20}{0.2}\approx0.55(0.0953)+0.25(-0.1823)+0=0.0068$$</p>
+<p>따라서 $2n\,D_{KL}(\hat p\|p)=200\times0.0068\approx1.368$이 되어, 피어슨 통계량 $1.333$과 매우 가깝습니다. $n$이 유한해서 생기는 작은 차이(고차항)를 빼면 두 값이 사실상 같은 양임을 확인할 수 있습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`편차 $\delta_i=\hat p_i-p_i$를 정의하자. $H_0$ 하에서 $\hat p_i\xrightarrow{p}p_i$이므로 $n$이 클 때 $\delta_i$는 작아지고, 확률의 정의상 $\sum_i\hat p_i=\sum_i p_i=1$이므로 항상 $\sum_i\delta_i=0$이 성립한다. 함수 $f(u)=u\log(u/p_i)$를 도입해 $D_{KL}(\hat p\|p)=\sum_i f(\hat p_i)$로 쓴 뒤, $f$를 $u=p_i$ 근방에서 테일러전개하는 것이 전략이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$f(u)=u\log u - u\log p_i$이므로 $f(p_i)=p_i\log1=0$, $f'(u)=\log(u/p_i)+1$이라 $f'(p_i)=1$, $f''(u)=1/u$이라 $f''(p_i)=1/p_i$이다. 이를 이용해 $f(\hat p_i)=f(p_i+\delta_i)$를 2차항까지 전개하면 $f(\hat p_i)\approx f(p_i)+f'(p_i)\delta_i+\frac12f''(p_i)\delta_i^2 = $[[blank:가]]이다.`,
+        blanks: [{ id: "가", latex: String.raw`\delta_i+\dfrac{\delta_i^2}{2p_i}`, why: String.raw`$f(p_i)=0$, $f'(p_i)=1$, $f''(p_i)=1/p_i$를 그대로 대입하면 $0+1\cdot\delta_i+\frac12\cdot\frac1{p_i}\delta_i^2=\delta_i+\dfrac{\delta_i^2}{2p_i}$가 됩니다.` }] },
+      { id: "s3", text: String.raw`이제 $i=1,\dots,k$에 대해 합을 취하면 $D_{KL}(\hat p\|p)=\sum_i f(\hat p_i)\approx\sum_i\delta_i+\frac12\sum_i\dfrac{\delta_i^2}{p_i}$ 인데, s1에서 확인했듯 확률의 정의상 $\sum_i\delta_i=$[[blank:나]]이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$\hat p_i$와 $p_i$ 모두 확률이라 합이 1이므로 $\sum_i\delta_i=\sum_i\hat p_i-\sum_i p_i=1-1=0$입니다.` }] },
+      { id: "s4", text: String.raw`$\sum_i\delta_i=0$이므로 1차항이 사라지고 $D_{KL}(\hat p\|p)\approx\frac12\sum_i\delta_i^2/p_i$ 만 남는다. 양변에 $2n$을 곱하면 $2n D_{KL}(\hat p\|p)\approx n\sum_i\dfrac{\delta_i^2}{p_i}=\sum_i\dfrac{(n\delta_i)^2}{np_i}$ 인데, $n\delta_i=n\hat p_i-np_i=O_i-E_i$이고 $np_i=E_i$이므로 이는 $\sum_i$[[blank:다]]와 같다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{(O_i-E_i)^2}{E_i}`, why: String.raw`$n\delta_i=O_i-E_i$, $np_i=E_i$를 대입하면 $\dfrac{(n\delta_i)^2}{np_i}=\dfrac{(O_i-E_i)^2}{E_i}$가 되고, 이를 $i$에 대해 합한 것이 바로 피어슨 통계량 $X^2$의 정의입니다.` }] },
+      { id: "s5", text: String.raw`따라서 $2nD_{KL}(\hat p\|p)\approx\sum_i(O_i-E_i)^2/E_i=X^2$, 즉 $X^2=2nD_{KL}(\hat p\|p)+o_p(1)$이다. 두 통계량이 점근적으로 같은 양이므로 동일한 극한분포(자유도 $k-1$인 카이제곱분포)를 따르며, 피어슨 검정과 우도비 기반의 KL발산 검정이 큰 표본에서 사실상 같은 검정임을 알 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "power-function": {
+    title: String.raw`검정력함수: $\beta(\theta)=P_\theta(\text{기각})$와 표본크기의 극한`,
+    domain: "stat",
+    subLabel: String.raw`가설검정 이론`,
+    explanation: String.raw`어떤 검정이 좋은 검정인지 판단하려면 그 검정이 각 모수값에서 얼마나 자주 귀무가설을 기각하는지를 모수의 함수로 봐야 합니다. 이것이 검정력함수예요. $\theta$가 귀무가설 영역에 있으면 이 값은 제1종 오류율이고, 대립가설 영역에 있으면 검정력(1에서 제2종 오류율을 뺀 값)이 됩니다. 좋은 검정이라면 표본이 많아질수록 대립가설 하에서 검정력함수가 1에 가까워져야겠죠. 정규분포 평균검정으로 이를 직접 확인해봅니다.<br><br><strong>명제.</strong> 검정함수 $\phi$의 검정력함수를 $\beta(\theta)=E_\theta[\phi(X)]=P_\theta(\text{기각})$라 하자. $X_1,\dots,X_n\stackrel{iid}\sim N(\theta,\sigma^2)$ ($\sigma^2$ 기지), $H_0:\theta=\theta_0$ vs $H_1:\theta>\theta_0$, 검정은 $Z=\sqrt n(\bar X-\theta_0)/\sigma>z_\alpha$이면 기각(유의수준 $\alpha$)한다고 하자. 그러면 $$\beta(\theta)=\Phi\!\left(\frac{\sqrt n(\theta-\theta_0)}{\sigma}-z_\alpha\right)$$ 이고, 고정된 $\theta>\theta_0$에 대해 $n\to\infty$일 때 $\beta(\theta)\to1$이다.`,
+    example: String.raw`<p>$\sigma=1$, $\theta_0=0$, $\alpha=0.05$ (그러면 $z_\alpha=1.645$), 실제로는 $\theta=0.5$인 상황을 생각해봅시다.</p>
+<p>$n=16$일 때: $\dfrac{\sqrt{16}\times0.5}{1}=2$ 이므로 $\beta(0.5)=\Phi(2-1.645)=\Phi(0.355)\approx0.639$</p>
+<p>$n=64$일 때: $\dfrac{\sqrt{64}\times0.5}{1}=4$ 이므로 $\beta(0.5)=\Phi(4-1.645)=\Phi(2.355)\approx0.991$</p>
+<p>표본이 16에서 64로 늘어나기만 해도 검정력이 0.639에서 0.991로 급격히 뛰어오르는 것을 볼 수 있습니다. $n$을 계속 키우면 $\beta(0.5)$는 1에 한없이 가까워집니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`검정의 기각규칙은 $Z=\sqrt n(\bar X-\theta_0)/\sigma>z_\alpha$이고, $z_\alpha$는 $H_0$ (즉 $\theta=\theta_0$) 하에서 $\bar X\sim N(\theta_0,\sigma^2/n)$이므로 $Z\sim N(0,1)$이 되어 $P(Z>z_\alpha)=\alpha$를 만족하도록 정한 상수다. 즉 $\beta(\theta_0)=\alpha$로, 이 검정의 크기가 정확히 $\alpha$임을 확인할 수 있다.`, blanks: [] },
+      { id: "s2", text: String.raw`이제 임의의 참값 $\theta$에서 $\beta(\theta)$를 구해보자. $\theta$ 기준으로 표준화된 통계량은 $\dfrac{\bar X-\theta}{\sigma/\sqrt n}\sim N(0,1)$ (참값이 $\theta$일 때 정확히 표준정규분포)이다. 기각조건 $\sqrt n(\bar X-\theta_0)/\sigma>z_\alpha$의 양변에서 $\sqrt n(\theta-\theta_0)/\sigma$를 빼서 이 표준화된 통계량에 대한 사건으로 바꾸면, $\dfrac{\bar X-\theta}{\sigma/\sqrt n}>$[[blank:가]]가 된다.`,
+        blanks: [{ id: "가", latex: String.raw`z_\alpha - \dfrac{\sqrt n(\theta-\theta_0)}{\sigma}`, why: String.raw`$\sqrt n(\bar X-\theta_0)/\sigma>z_\alpha$를 $\sqrt n(\bar X-\theta)/\sigma+\sqrt n(\theta-\theta_0)/\sigma>z_\alpha$로 다시 쓰고 우변으로 $\sqrt n(\theta-\theta_0)/\sigma$를 넘기면 이 식이 나옵니다.` }] },
+      { id: "s3", text: String.raw`$\dfrac{\bar X-\theta}{\sigma/\sqrt n}\sim N(0,1)$이므로 $\beta(\theta)=P\Big(N(0,1)>z_\alpha-\dfrac{\sqrt n(\theta-\theta_0)}{\sigma}\Big)=1-\Phi\Big(z_\alpha-\dfrac{\sqrt n(\theta-\theta_0)}{\sigma}\Big)$ 이다. 표준정규분포의 대칭성 $1-\Phi(-x)=\Phi(x)$를 이용하면 이는 $\beta(\theta)=$[[blank:나]]로 정리된다.`,
+        blanks: [{ id: "나", latex: String.raw`\Phi\!\left(\dfrac{\sqrt n(\theta-\theta_0)}{\sigma}-z_\alpha\right)`, why: String.raw`$1-\Phi(z_\alpha-x)$에서 $x=\sqrt n(\theta-\theta_0)/\sigma$로 두면 $1-\Phi(-(x-z_\alpha))=\Phi(x-z_\alpha)$가 되어, $x-z_\alpha=\sqrt n(\theta-\theta_0)/\sigma-z_\alpha$를 대입한 형태가 됩니다.` }] },
+      { id: "s4", text: String.raw`이제 $\theta>\theta_0$를 고정하고 $n\to\infty$인 극한을 본다. $\theta-\theta_0>0$은 $n$과 무관한 양의 상수이므로, $n$이 커질수록 $\dfrac{\sqrt n(\theta-\theta_0)}{\sigma}\to$[[blank:다]]로 발산한다.`,
+        blanks: [{ id: "다", latex: String.raw`\infty`, why: String.raw`$\sqrt n\to\infty$이고 $(\theta-\theta_0)/\sigma$는 양의 상수이므로, 둘의 곱은 $n\to\infty$일 때 한없이 커집니다.` }] },
+      { id: "s5", text: String.raw`$\Phi$는 표준정규분포의 누적분포함수이므로 $\Phi(t)\to1$ as $t\to\infty$이다. 앞 단계에서 $\Phi$의 인수 $\sqrt n(\theta-\theta_0)/\sigma-z_\alpha$ 전체가 $n\to\infty$일 때 $\infty$로 발산함을 보였으므로, $\beta(\theta)=\Phi\big(\sqrt n(\theta-\theta_0)/\sigma-z_\alpha\big)\to1$이다. 즉 고정된 대립가설 $\theta>\theta_0$에서는 표본을 충분히 늘리면 검정력이 항상 1로 수렴한다(일치검정). 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "wald-confidence-interval": {
+    title: String.raw`Wald 신뢰구간: MLE의 점근정규성에서 유도되는 커버리지`,
+    domain: "stat",
+    subLabel: String.raw`신뢰구간 · 순차분석`,
+    explanation: String.raw`점추정값 하나만으로는 불확실성을 표현할 수 없습니다. MLE가 점근적으로 정규분포를 따른다는 사실을 이용하면, "이 구간 안에 참값이 있을 확률이 대략 $1-\alpha$"라고 말할 수 있는 구간을 아주 자연스럽게 만들 수 있어요. 이것이 Wald 신뢰구간입니다. 핵심은 MLE의 표준화된 편차가 표준정규분포로 수렴한다는 사실 하나뿐입니다.<br><br><strong>명제.</strong> 정칙조건 하에서 MLE $\hat\theta_n$은 $\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,1/I_1(\theta))$를 만족한다 ($I_1$: 관측값 1개당 피셔정보). 추정된 표준오차를 $\widehat{SE}=1/\sqrt{nI_1(\hat\theta_n)}$로 두고 $$CI_n=\big[\hat\theta_n-z_{\alpha/2}\widehat{SE},\ \hat\theta_n+z_{\alpha/2}\widehat{SE}\big]$$ 라 하면, 커버리지 확률 $P_\theta(\theta\in CI_n)$은 $n\to\infty$일 때 $1-\alpha$로 수렴한다.`,
+    example: String.raw`<p>베르누이 모형 $X_i\sim\text{Bernoulli}(\theta)$, $n=100$, 표본비율 $\hat\theta=0.62$인 상황을 생각합시다. 베르누이의 피셔정보는 $I_1(\theta)=1/(\theta(1-\theta))$이므로 $$\widehat{SE}=\sqrt{\frac{\hat\theta(1-\hat\theta)}{n}}=\sqrt{\frac{0.62\times0.38}{100}}=\sqrt{0.002356}\approx0.0485$$</p>
+<p>95% 신뢰구간이면 $z_{0.025}=1.96$이므로 $$CI=0.62\pm1.96\times0.0485\approx0.62\pm0.095=(0.525,\ 0.715)$$</p>
+<p>표본크기 $n$이 커질수록 $\widehat{SE}$는 $1/\sqrt n$의 속도로 줄어들어 구간이 좁아지고, 아래에서 보일 논증에 의해 그 구간이 참값 $\theta$를 포함할 확률은 $n\to\infty$일 때 정확히 0.95로 수렴합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`Wald 통계량 $W_n=(\hat\theta_n-\theta)/\widehat{SE}$을 정의하자. 목표는 $W_n\xrightarrow{d}N(0,1)$임을 보여, 이로부터 커버리지 확률이 $1-\alpha$로 수렴함을 유도하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$\widehat{SE}=1/\sqrt{nI_1(\hat\theta_n)}$의 정의를 그대로 대입하면 $W_n=\dfrac{\hat\theta_n-\theta}{\widehat{SE}}=\sqrt n(\hat\theta_n-\theta)\cdot$[[blank:가]]로 다시 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`\sqrt{I_1(\hat\theta_n)}`, why: String.raw`$1/\widehat{SE}=\sqrt{nI_1(\hat\theta_n)}=\sqrt n\cdot\sqrt{I_1(\hat\theta_n)}$이므로, $(\hat\theta_n-\theta)/\widehat{SE}=\sqrt n(\hat\theta_n-\theta)\cdot\sqrt{I_1(\hat\theta_n)}$로 인수분해됩니다.` }] },
+      { id: "s3", text: String.raw`MLE의 일치성 $\hat\theta_n\xrightarrow{p}\theta$와 $I_1(\cdot)$의 연속성으로부터 연속사상정리에 의해 $I_1(\hat\theta_n)\xrightarrow{p}I_1(\theta)$가 성립하고, 명제의 가정에 의해 $\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,1/I_1(\theta))$이다. 이 둘에 슬러츠키 정리를 적용하면 $W_n=\sqrt n(\hat\theta_n-\theta)\cdot\sqrt{I_1(\hat\theta_n)}\xrightarrow{d}$[[blank:나]].`,
+        blanks: [{ id: "나", latex: String.raw`N(0,1)`, why: String.raw`슬러츠키 정리에 의해 $\sqrt{I_1(\hat\theta_n)}\xrightarrow{p}\sqrt{I_1(\theta)}$(상수)와 $N(0,1/I_1(\theta))$로 수렴하는 항의 곱은 $N(0,I_1(\theta)\times1/I_1(\theta))=N(0,1)$로 수렴합니다.` }] },
+      { id: "s4", text: String.raw`신뢰구간의 정의에 의해 $\theta\in CI_n \iff |\hat\theta_n-\theta|\le z_{\alpha/2}\widehat{SE} \iff$[[blank:다]]이다.`,
+        blanks: [{ id: "다", latex: String.raw`|W_n|\le z_{\alpha/2}`, why: String.raw`양변을 $\widehat{SE}$로 나누면 $|\hat\theta_n-\theta|/\widehat{SE}\le z_{\alpha/2}$가 되고, 좌변은 정확히 $|W_n|$의 정의입니다.` }] },
+      { id: "s5", text: String.raw`$W_n\xrightarrow{d}N(0,1)$이고 표준정규분포의 CDF는 연속함수이므로, $P(\theta\in CI_n)=P(|W_n|\le z_{\alpha/2})\to P(|Z|\le z_{\alpha/2})$ ($Z\sim N(0,1)$)이다. $z_{\alpha/2}$는 정의상 $P(|Z|\le z_{\alpha/2})=1-\alpha$를 만족하도록 정한 값이므로, 커버리지 확률은 $n\to\infty$일 때 $1-\alpha$로 수렴한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "bootstrap-confidence-interval": {
+    title: String.raw`부트스트랩 신뢰구간: 재표집 분포와 백분위수법`,
+    domain: "stat",
+    subLabel: String.raw`신뢰구간 · 순차분석`,
+    explanation: String.raw`MLE의 점근정규성처럼 표집분포를 분석적으로 유도하기 어려운 통계량도 많습니다(중앙값, 상관계수, 복잡한 함수 등). 부트스트랩은 알 수 없는 모분포 $F$ 대신, 표본이 만든 경험분포 $\hat F_n$에서 복원추출로 재표집(resampling)해 통계량의 표집분포를 컴퓨터로 근사합니다. "경험분포가 모분포를 잘 근사한다"는 사실 하나에 기대어, 분석적 유도 없이도 신뢰구간을 만들 수 있다는 것이 핵심 아이디어입니다.<br><br><strong>명제.</strong> $X_1,\dots,X_n\stackrel{iid}\sim F$, 통계량 $\hat\theta=T(X_1,\dots,X_n)$이라 하자. 경험분포 $\hat F_n$(각 관측값에 확률 $1/n$을 부여하는 분포)에서 복원추출로 크기 $n$인 재표집을 $B$번 반복해 얻은 $\hat\theta^*_1,\dots,\hat\theta^*_B$의 경험분포는, $B\to\infty$일 때 $\hat\theta$의 (조건부) 재표집분포 $P^*(T(X_1^*,\dots,X_n^*)\le t\mid\hat F_n)$로 수렴한다. 이 분포의 $\alpha/2$, $1-\alpha/2$ 분위수로 만든 구간(백분위수법)은, $\hat F_n$이 $F$를 잘 근사하는 한 근사적으로 신뢰수준 $1-\alpha$의 신뢰구간이 된다.`,
+    example: String.raw`<p>극단적으로 작은 표본으로 부트스트랩 절차를 손으로 완전히 재현해봅니다. 원자료가 $n=3$개, $\{2,4,9\}$이고 관심 통계량은 표본평균 $\hat\theta=(2+4+9)/3=5$라 합시다.</p>
+<p>복원추출로 크기 3인 재표집을 뽑는 경우의 수는 $3^3=27$가지이고 모두 동일 확률(각 $1/27$)입니다. 어떤 값을 몇 번 뽑았는지(중복 허용 조합)에 따라 평균이 정해지므로, 가능한 평균과 그 확률을 전부 나열할 수 있습니다.</p>
+<table style="border-collapse:collapse;margin:0.5em 0;">
+<tr><td style="padding:2px 10px;border-bottom:1px solid #8884;">재표집 평균</td><td style="padding:2px 10px;border-bottom:1px solid #8884;">확률</td><td style="padding:2px 10px;border-bottom:1px solid #8884;">누적확률</td></tr>
+<tr><td style="padding:2px 10px;">2</td><td style="padding:2px 10px;">1/27</td><td style="padding:2px 10px;">0.037</td></tr>
+<tr><td style="padding:2px 10px;">8/3≈2.667</td><td style="padding:2px 10px;">3/27</td><td style="padding:2px 10px;">0.148</td></tr>
+<tr><td style="padding:2px 10px;">10/3≈3.333</td><td style="padding:2px 10px;">3/27</td><td style="padding:2px 10px;">0.259</td></tr>
+<tr><td style="padding:2px 10px;">4</td><td style="padding:2px 10px;">1/27</td><td style="padding:2px 10px;">0.296</td></tr>
+<tr><td style="padding:2px 10px;">13/3≈4.333</td><td style="padding:2px 10px;">3/27</td><td style="padding:2px 10px;">0.407</td></tr>
+<tr><td style="padding:2px 10px;">5</td><td style="padding:2px 10px;">6/27</td><td style="padding:2px 10px;">0.630</td></tr>
+<tr><td style="padding:2px 10px;">17/3≈5.667</td><td style="padding:2px 10px;">3/27</td><td style="padding:2px 10px;">0.741</td></tr>
+<tr><td style="padding:2px 10px;">20/3≈6.667</td><td style="padding:2px 10px;">3/27</td><td style="padding:2px 10px;">0.852</td></tr>
+<tr><td style="padding:2px 10px;">22/3≈7.333</td><td style="padding:2px 10px;">3/27</td><td style="padding:2px 10px;">0.963</td></tr>
+<tr><td style="padding:2px 10px;">9</td><td style="padding:2px 10px;">1/27</td><td style="padding:2px 10px;">1.000</td></tr>
+</table>
+<p>90% 백분위수법 신뢰구간을 만들려면 누적확률이 처음 $0.05$를 넘는 값(하한)과 처음 $0.95$를 넘는 값(상한)을 찾으면 됩니다. 표를 보면 하한은 $8/3\approx2.667$(누적 0.148), 상한은 $22/3\approx7.333$(누적 0.963)이므로 $CI\approx(2.667,\ 7.333)$ 입니다. $n=3$이라 구간이 매우 거칠지만, 절차 자체는 $n$이 수백~수천이고 $B$가 커도 완전히 동일합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`부트스트랩의 원리부터 정의하자. 참 모분포 $F$는 알 수 없으므로, 대신 각 관측값에 확률 $1/n$씩을 부여하는 경험분포 $\hat F_n$을 사용한다. 재표집 $X_1^*,\dots,X_n^*$은 $\hat F_n$에서 iid로 뽑은 것으로, 이는 곧 원래 표본 $\{X_1,\dots,X_n\}$에서 복원추출로 $n$개를 뽑는 것과 같다. 재표집에 대해 계산한 통계량을 $\hat\theta^*=T(X_1^*,\dots,X_n^*)$라 한다.`, blanks: [] },
+      { id: "s2", text: String.raw`왜 $\hat F_n$이 $F$의 좋은 근사인가? Glivenko–Cantelli 정리에 의하면 $n\to\infty$일 때 $\sup_x|\hat F_n(x)-F(x)|\to$[[blank:가]](거의 확실히) 이다. 즉 표본이 커질수록 경험분포는 균등하게 참 분포에 수렴하므로, $\hat F_n$에서 재표집한 통계량의 분포는 $F$에서 직접 뽑았을 때의 참 표집분포에 점점 가까워진다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`Glivenko–Cantelli 정리(경험분포함수의 기본정리)는 경험분포함수가 참 분포함수에 균등하게(sup-norm으로) 거의 확실히 수렴한다는 것으로, 그 극한값이 0입니다.` }] },
+      { id: "s3", text: String.raw`실제 절차: $\hat F_n$에서 독립적으로 $B$번 재표집해 $\hat\theta^*_1,\dots,\hat\theta^*_B$를 얻고, 이를 오름차순으로 정렬해 $\hat\theta^*_{(1)}\le\cdots\le\hat\theta^*_{(B)}$를 만든다.`, blanks: [] },
+      { id: "s4", text: String.raw`백분위수법 신뢰구간은 이 정렬된 값들의 하위 $100(\alpha/2)\%$, 상위 $100(1-\alpha/2)\%$ 지점을 각각 하한과 상한으로 잡는다: $CI=[\hat\theta^*_{(\lceil B\alpha/2\rceil)},\ $[[blank:나]]$]$.`,
+        blanks: [{ id: "나", latex: String.raw`\hat\theta^*_{(\lceil B(1-\alpha/2)\rceil)}`, why: String.raw`하한이 하위 $\alpha/2$ 분위수라면, 대칭적으로 상한은 상위 $\alpha/2$, 즉 하위 $1-\alpha/2$ 분위수여야 전체 구간이 가운데 $1-\alpha$의 확률을 담게 됩니다.` }] },
+      { id: "s5", text: String.raw`이 구간이 왜 타당한가: $B\to\infty$이면 대수의 법칙(재표집값들에 대한 Glivenko–Cantelli)에 의해 정렬된 재표집값들의 경험분위수는 참 재표집분포 $P^*(\cdot\mid\hat F_n)$의 $\alpha/2$, $1-\alpha/2$ 분위수로 수렴한다. 그리고 s2에서 보인 대로 $n\to\infty$이면 이 재표집분포 자체가 $\hat\theta$의 참 표집분포로 수렴한다. 두 극한을 결합하면 백분위수 구간의 커버리지확률은 $[[blank:다]]$로 근사된다.`,
+        blanks: [{ id: "다", latex: String.raw`1-\alpha`, why: String.raw`재표집분포의 $\alpha/2$, $1-\alpha/2$ 분위수 사이의 구간은 그 분포 자체의 확률질량을 정확히 $1-\alpha$만큼 담고 있고, 그 분포가 참 표집분포에 수렴하므로 커버리지도 $1-\alpha$로 근사됩니다.` }] },
+      { id: "s6", text: String.raw`정리하면, 부트스트랩 백분위수법은 모분포나 통계량의 분포를 해석적으로 몰라도(정규성 등의 가정 없이) 컴퓨터 재표집만으로 근사 신뢰구간을 만들 수 있게 해준다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "profile-likelihood-confidence-interval": {
+    title: String.raw`프로파일우도 신뢰구간: 우도비의 반전`,
+    domain: "stat",
+    subLabel: String.raw`신뢰구간 · 순차분석`,
+    explanation: String.raw`여러 모수 중 하나($\psi$)에만 관심이 있고 나머지($\lambda$, 성가신모수)는 관심 밖일 때가 많습니다. $\lambda$를 어떻게든 "치워버리고" $\psi$만의 우도함수를 만들 수 있다면, 스칼라 모수 문제처럼 우도비검정을 반전(inversion)해서 신뢰구간을 만들 수 있어요. 프로파일우도는 각 $\psi$값에 대해 $\lambda$를 최적화해서 치워버린 함수입니다. 놀라운 점은, $\lambda$가 몇 차원이든 상관없이 관심모수 $\psi$가 1차원이면 반전된 신뢰구간의 점근적 신뢰수준이 여전히 정확히 맞아떨어진다는 것입니다.<br><br><strong>명제.</strong> $\theta=(\psi,\lambda)$, 프로파일 로그우도 $\ell_p(\psi)=\sup_\lambda\ell(\psi,\lambda)=\ell(\psi,\hat\lambda_\psi)$, 전역 MLE를 $(\hat\psi,\hat\lambda)$라 하자. 정칙조건 하에서 $H_0:\psi=\psi_0$ (단 $\lambda$는 자유) 하에서 $n\to\infty$일 때 $$-2\big[\ell_p(\psi_0)-\ell_p(\hat\psi)\big]\xrightarrow{d}\chi^2_1$$ 이 성립하며 (성가신모수의 차원과 무관하게 자유도는 관심모수의 차원인 1), 따라서 $$CI=\{\psi:-2[\ell_p(\psi)-\ell_p(\hat\psi)]\le\chi^2_{1,1-\alpha}\}$$ 는 근사 신뢰수준 $1-\alpha$의 신뢰구간이다.`,
+    example: String.raw`<p>$X_1,\dots,X_{10}\stackrel{iid}\sim N(\mu,\sigma^2)$에서 $\mu,\sigma^2$ 모두 미지이고 관심모수는 $\psi=\mu$, 성가신모수는 $\lambda=\sigma^2$라 합시다. 표본평균 $\bar x=5$, (MLE 기준, 분모 $n$인) 표본분산 $s^2=4$입니다.</p>
+<p>고정된 $\mu$에서 $\sigma^2$을 최적화하면 $\hat\sigma^2_\mu=\frac1n\sum(x_i-\mu)^2=s^2+(\bar x-\mu)^2$이고, 이를 로그우도에 대입해 정리하면 프로파일 로그우도의 차이는 깔끔한 닫힌 형태로 떨어집니다: $$\ell_p(\mu)-\ell_p(\bar x)=-\frac n2\log\!\Big(1+\frac{(\bar x-\mu)^2}{s^2}\Big)$$</p>
+<p>따라서 $-2[\ell_p(\mu_0)-\ell_p(\bar x)]=n\log\big(1+(\mu_0-\bar x)^2/s^2\big)$ 입니다. $\mu_0=3$을 대입하면 $n\log(1+4/4)=10\log2\approx6.93$인데, $\chi^2_{1,0.95}=3.841$보다 크므로 $\mu_0=3$은 95% 신뢰구간 밖입니다.</p>
+<p>경계는 $10\log(1+(\mu-5)^2/4)=3.841$을 풀면 되는데, $\log(1+(\mu-5)^2/4)=0.3841$, $(\mu-5)^2/4=e^{0.3841}-1\approx0.4684$, $(\mu-5)^2\approx1.874$, $\mu-5\approx\pm1.369$이므로 $$CI\approx(3.63,\ 6.37)$$ 이 됩니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`먼저 $\hat\lambda_\psi$의 정의부터 확인하자: 각 $\psi$에서 $\hat\lambda_\psi$는 $\lambda$에 대한 1차 조건 $\ell_\lambda(\psi,\hat\lambda_\psi)=0$을 만족하도록 정의된다. 연쇄법칙으로 $\ell_p'(\psi)=\ell_\psi(\psi,\hat\lambda_\psi)+\ell_\lambda(\psi,\hat\lambda_\psi)\cdot\dfrac{d\hat\lambda_\psi}{d\psi}$ 인데, 둘째 항의 계수는 $\hat\lambda_\psi$의 정의에 의해 $\ell_\lambda(\psi,\hat\lambda_\psi) = $[[blank:가]]이므로 둘째 항 전체가 사라지고 $\ell_p'(\psi)=\ell_\psi(\psi,\hat\lambda_\psi)$만 남는다 (포락선정리, envelope theorem).`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`$\hat\lambda_\psi$는 바로 $\ell_\lambda(\psi,\hat\lambda_\psi)=0$이 되도록 정의된 값이므로, 이 항은 $\dfrac{d\hat\lambda_\psi}{d\psi}$가 무엇이든 상관없이 항상 0입니다.` }] },
+      { id: "s2", text: String.raw`$\psi=\hat\psi$에서는 $\hat\lambda_{\hat\psi}=\hat\lambda$이다(전역 MLE $(\hat\psi,\hat\lambda)$가 각 좌표에서 서로를 최적화하므로). 전역 MLE의 1차조건 $\ell_\psi(\hat\psi,\hat\lambda)=0$과 s1의 결과를 함께 쓰면 $\ell_p'(\hat\psi)=\ell_\psi(\hat\psi,\hat\lambda)=0$이다. 즉 $\hat\psi$는 전체우도 뿐 아니라 프로파일우도 $\ell_p$도 최대화한다.`, blanks: [] },
+      { id: "s3", text: String.raw`이제 곡률(2차도함수)을 구하자. 정의식 $\ell_\lambda(\psi,\hat\lambda_\psi)=0$의 양변을 $\psi$로 암묵미분하면 $\ell_{\lambda\psi}+\ell_{\lambda\lambda}\cdot\dfrac{d\hat\lambda_\psi}{d\psi}=0$, 즉 $\dfrac{d\hat\lambda_\psi}{d\psi}=$[[blank:나]]이다.`,
+        blanks: [{ id: "나", latex: String.raw`-\dfrac{\ell_{\lambda\psi}}{\ell_{\lambda\lambda}}`, why: String.raw`$\ell_{\lambda\psi}+\ell_{\lambda\lambda}\cdot\dfrac{d\hat\lambda_\psi}{d\psi}=0$을 $\dfrac{d\hat\lambda_\psi}{d\psi}$에 대해 풀면 바로 이 식이 나옵니다.` }] },
+      { id: "s4", text: String.raw`$\ell_p'(\psi)=\ell_\psi(\psi,\hat\lambda_\psi)$를 다시 $\psi$로 미분하면 $\ell_p''(\psi)=\ell_{\psi\psi}+\ell_{\psi\lambda}\cdot\dfrac{d\hat\lambda_\psi}{d\psi}=\ell_{\psi\psi}-\dfrac{\ell_{\psi\lambda}\ell_{\lambda\psi}}{\ell_{\lambda\lambda}}$ 이다. 이는 정확히 관측정보행렬 $J=-\begin{pmatrix}\ell_{\psi\psi}&\ell_{\psi\lambda}\\\ell_{\lambda\psi}&\ell_{\lambda\lambda}\end{pmatrix}$의 $\ell_{\lambda\lambda}$에 대한 슈어 여인자이며, 블록행렬 역행렬 공식에 의해 $J^{-1}$의 $(\psi,\psi)$ 성분을 $I^{\psi\psi}$라 하면 $\ell_p''(\hat\psi)=-1/$[[blank:다]]가 성립한다.`,
+        blanks: [{ id: "다", latex: String.raw`I^{\psi\psi}`, why: String.raw`블록행렬 역행렬 공식에서 $(J^{-1})_{\psi\psi}=1/(J_{\psi\psi}-J_{\psi\lambda}J_{\lambda\lambda}^{-1}J_{\lambda\psi})$인데, $J=-\text{Hess}$이므로 이 슈어 여인자가 정확히 $-\ell_p''(\hat\psi)$와 같습니다. 즉 $I^{\psi\psi}=1/(-\ell_p''(\hat\psi))$, 다시 말해 $\ell_p''(\hat\psi)=-1/I^{\psi\psi}$입니다.` }] },
+      { id: "s5", text: String.raw`s2에서 $\ell_p'(\hat\psi)=0$, s4에서 $\ell_p''(\hat\psi)=-1/I^{\psi\psi}$를 얻었으므로, $\ell_p(\psi_0)$을 $\hat\psi$ 주변에서 2차 테일러전개하면 $\ell_p(\psi_0)\approx\ell_p(\hat\psi)-\dfrac{(\psi_0-\hat\psi)^2}{2I^{\psi\psi}}$ 이고, 따라서 $-2[\ell_p(\psi_0)-\ell_p(\hat\psi)]\approx$[[blank:라]]이다.`,
+        blanks: [{ id: "라", latex: String.raw`\dfrac{(\hat\psi-\psi_0)^2}{I^{\psi\psi}}`, why: String.raw`$\ell_p(\psi_0)-\ell_p(\hat\psi)\approx-\dfrac{(\psi_0-\hat\psi)^2}{2I^{\psi\psi}}$이므로 여기에 $-2$를 곱하면 $\dfrac{(\psi_0-\hat\psi)^2}{I^{\psi\psi}}=\dfrac{(\hat\psi-\psi_0)^2}{I^{\psi\psi}}$가 됩니다.` }] },
+      { id: "s6", text: String.raw`한편 $(\psi,\lambda)$에 대한 다변량 MLE의 점근정규성에 의해 $\sqrt n(\hat\psi-\psi_0)\xrightarrow{d}N(0,I^{\psi\psi})$가 성립한다 (이때 분산은 정확히 전체 역정보행렬의 $(\psi,\psi)$ 성분으로, $\lambda$를 함께 추정하는 데서 오는 추가 불확실성이 반영되어 있다). 따라서 $(\hat\psi-\psi_0)^2/I^{\psi\psi}=\big[(\hat\psi-\psi_0)/\sqrt{I^{\psi\psi}}\big]^2$은 표준정규분포 제곱의 극한, 즉 $\chi^2_1$ 분포로 수렴한다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면 $-2[\ell_p(\psi_0)-\ell_p(\hat\psi)]\xrightarrow{d}\chi^2_1$이고, 이 극한은 성가신모수 $\lambda$의 차원과 무관하다(자유도는 오직 관심모수 $\psi$의 차원, 즉 1로만 결정된다). 이로부터 우도비를 반전한 신뢰집합 $CI$의 점근적 커버리지가 $1-\alpha$임이 따라온다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "wald-sequential-test": {
+    title: String.raw`Wald 순차확률비검정(SPRT)의 정지경계`,
+    domain: "stat",
+    subLabel: String.raw`신뢰구간 · 순차분석`,
+    explanation: String.raw`고정된 표본크기 없이, 데이터를 하나씩 보면서 "이제 그만 봐도 결론 낼 수 있다"고 판단되는 순간 멈추는 검정을 만들 수 있다면 평균적으로 훨씬 적은 표본으로 같은 오류율을 달성할 수 있습니다. Wald의 순차확률비검정(SPRT)은 누적 우도비가 두 경계 중 하나를 넘는 순간 멈춥니다. 이 경계를 원하는 오류율 $\alpha,\beta$로부터 아주 간단한 부등식만으로 유도할 수 있다는 것이 이 정리의 핵심입니다.<br><br><strong>명제.</strong> $H_0:\theta=\theta_0$ vs $H_1:\theta=\theta_1$, 누적우도비 $\Lambda_n=\prod_{i=1}^n f_1(x_i)/f_0(x_i)$. 정지규칙: $\Lambda_n\ge A$이면 멈추고 $H_0$ 기각, $\Lambda_n\le B$이면 멈추고 $H_0$ 채택, 그 사이면 계속 표집한다 ($0<B<1<A$). 목표 오류율이 $P(\text{기각}\mid H_0)\le\alpha$, $P(\text{채택}\mid H_1)\le\beta$일 때, Wald의 근사 경계 $$A=\frac{1-\beta}{\alpha},\qquad B=\frac{\beta}{1-\alpha}$$ 는 (정지시점에서 우도비가 경계를 살짝 넘어서는 "초과분"을 무시하는 근사 하에) 이 오류율 조건을 만족시킨다.`,
+    example: String.raw`<p>$\alpha=0.05$, $\beta=0.10$을 목표로 한다면 $A=(1-0.10)/0.05=18$, $B=0.10/0.95\approx0.1053$입니다. 로그를 취하면 $\log A\approx2.890$, $\log B\approx-2.251$입니다.</p>
+<p>베르누이 관측값으로 $H_0:p=0.3$ vs $H_1:p=0.6$을 검정한다고 하면, 관측 하나당 로그우도비 기여분은 성공($x=1$)이면 $\log(0.6/0.3)=\log2\approx0.693$, 실패($x=0$)면 $\log(0.4/0.7)\approx-0.560$입니다.</p>
+<p>예를 들어 처음 5개 관측이 성공,성공,성공,실패,성공(성공 4, 실패 1)이라면 누적 로그우도비는 $4(0.693)-0.560\approx2.213$으로 아직 $2.890$을 넘지 않아 표집을 계속합니다. 6번째 관측이 다시 성공이면 $2.213+0.693\approx2.906>2.890$이 되어 이 시점에서 멈추고 $H_0$를 기각합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`정지시점 $N$을 $\Lambda_n\ge A$ 또는 $\Lambda_n\le B$가 처음 성립하는 $n$으로 정의하고("계속 표집" 영역을 벗어나는 첫 순간), $N$이 거의 확실히 유한하다고 가정하자(표준적인 사실). "기각"은 $\{\Lambda_N\ge A\}$, "채택"은 $\{\Lambda_N\le B\}$인 사건이다.`, blanks: [] },
+      { id: "s2", text: String.raw`정지된 경로 $(x_1,\dots,x_N)$에 대한 $H_0,H_1$ 하의 결합밀도(우도)를 각각 $L_0,L_1$이라 하자. 기각 사건 $\{\Lambda_N\ge A\}$ 위에서는 정의상 우도비가 $A$ 이상이므로, 그 사건 위의 모든 경로에서 $L_1(x_1,\dots,x_N)\ge$[[blank:가]]$\cdot L_0(x_1,\dots,x_N)$가 항상 성립한다.`,
+        blanks: [{ id: "가", latex: String.raw`A`, why: String.raw`정지규칙에서 $\{\Lambda_N\ge A\}$가 바로 기각을 결정하는 사건이고, $\Lambda_N=L_1/L_0\ge A$는 곧 $L_1\ge A\cdot L_0$와 같은 말입니다.` }] },
+      { id: "s3", text: String.raw`이 부등식을 기각 사건 전체에 대해 적분(측도변환)하면 $P_{H_1}(\text{기각})=\int_{\{\Lambda_N\ge A\}}L_1\ge A\int_{\{\Lambda_N\ge A\}}L_0=A\cdot P_{H_0}(\text{기각})$ 을 얻는다. $P_{H_1}(\text{기각})=1-\beta$(검정력), $P_{H_0}(\text{기각})=\alpha$로 두면 $1-\beta\ge A\alpha$, 즉 $A\le$[[blank:나]]이어야 목표 오류율을 달성할 수 있다.`,
+        blanks: [{ id: "나", latex: String.raw`\dfrac{1-\beta}{\alpha}`, why: String.raw`$1-\beta\ge A\alpha$의 양변을 $\alpha>0$으로 나누면 $A\le(1-\beta)/\alpha$가 됩니다.` }] },
+      { id: "s4", text: String.raw`대칭적으로 채택 사건 $\{\Lambda_N\le B\}$ 위에서는 $L_1\le B\cdot L_0$가 항상 성립하므로, 이를 채택 사건 전체에 대해 적분하면 $\beta=P_{H_1}(\text{채택})\le B\cdot P_{H_0}(\text{채택})=B(1-\alpha)$ 를 얻는다. 이로부터 $B\ge$[[blank:다]]이어야 함을 알 수 있다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{\beta}{1-\alpha}`, why: String.raw`$\beta\le B(1-\alpha)$의 양변을 $(1-\alpha)>0$으로 나누면 $B\ge\beta/(1-\alpha)$가 됩니다.` }] },
+      { id: "s5", text: String.raw`s3, s4는 각각 "$A$가 너무 크면 안 된다", "$B$가 너무 작으면 안 된다"는 필요조건을 준다. Wald는 이 부등식을 등식으로 놓아 $A=(1-\beta)/\alpha$, $B=\beta/(1-\alpha)$로 정한다. 실제로는 정지시점에 $\Lambda_N$이 경계 $A$를 살짝 초과하거나 $B$를 살짝 밑도는 "초과분(overshoot)"이 있어 부등식이 등식이 아닌 경우가 대부분이지만, 이 초과분은 보통 작아서 무시하면 이 경계 설정이 목표 오류율 $\alpha,\beta$를 근사적으로 달성한다.`, blanks: [] },
+      { id: "s6", text: String.raw`실행 가능한 형태로 바꾸면, $\Lambda_n$ 대신 로그누적합 $S_n=\sum_{i=1}^n\log\dfrac{f_1(x_i)}{f_0(x_i)}$ 을 매 관측마다 갱신하는 것과 동치이다. 정지규칙은 $\log B<S_n<$[[blank:라]]인 동안 계속 표집하고, $S_n$이 이 범위를 벗어나는 순간 멈추는 것이 된다.`,
+        blanks: [{ id: "라", latex: String.raw`\log A`, why: String.raw`$\Lambda_n$에 로그를 취하면 곱이 합으로 바뀌어 $\log\Lambda_n=S_n$이 되고, 원래의 "계속 표집" 조건 $B<\Lambda_n<A$는 로그를 취해도 부등호 방향이 그대로 유지되어 $\log B<S_n<\log A$가 됩니다.` }] },
+      { id: "s7", text: String.raw`정리하면, 목표 오류율 $\alpha,\beta$로부터 $A,B$가 근사적으로 결정되고, 매 관측마다 로그우도비를 누적해 두 경계와 비교하는 것만으로 SPRT를 실행할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  // --- Wave 7: wave7_c1.js ---
+  "rubin-causal-model": {
+    title: String.raw`Rubin 인과모형: 잠재결과와 근본문제`,
+    domain: "causal",
+    subLabel: String.raw`잠재결과 프레임워크`,
+    explanation: String.raw`어떤 사람이 신약을 먹었을 때와 먹지 않았을 때 몸무게가 어떻게 달라질지 알고 싶다고 하자. 문제는 한 사람이 특정 시점에 약을 먹거나 안 먹거나 둘 중 하나만 할 수 있다는 것이다 — 같은 사람이 같은 순간에 두 가지 상태를 동시에 경험할 수는 없다. Rubin 인과모형(Rubin Causal Model, RCM)은 이 딜레마를 잠재결과(potential outcomes)라는 개념으로 정식화한다.<br><br><strong>명제.</strong> 개체 $i=1,\dots,n$에 대해 이진 처치변수 $T_i\in\{0,1\}$과 두 잠재결과 $Y_i(1), Y_i(0)$을 정의하자. 관측된 결과는 $Y_i = T_iY_i(1)+(1-T_i)Y_i(0)$ 로 주어진다. 이때 개체수준 인과효과 $\tau_i = Y_i(1)-Y_i(0)$ 는 어떤 개체 $i$에 대해서도 $Y_i(1)$과 $Y_i(0)$ 둘 다를 동시에 관측하는 것이 불가능하므로 데이터만으로는 식별되지 않는다(근본문제, fundamental problem of causal inference).`,
+    example: String.raw`<p>신약 임상시험에서 환자 두 명을 생각해보자. 환자 A는 실제로 약을 받았고($T_A=1$), 만약 약을 받았다면 혈압이 $Y_A(1)=118$mmHg, 받지 않았다면 $Y_A(0)=132$mmHg이었을 것이라 하자(둘 다 개념상의 참값). 환자 B는 약을 받지 않았고($T_B=0$), $Y_B(1)=125$, $Y_B(0)=136$이라 하자.</p><p>관측된 데이터는 스위칭 방정식으로 결정된다.</p><p>$$Y_A = T_A Y_A(1) + (1-T_A)Y_A(0) = 1\times118 + 0\times132 = 118$$</p><p>$$Y_B = T_B Y_B(1) + (1-T_B)Y_B(0) = 0\times125 + 1\times136 = 136$$</p><p>즉 실제 데이터셋에는 $(T_A=1,\ Y_A=118)$과 $(T_B=0,\ Y_B=136)$만 기록되고, $Y_A(0)=132$나 $Y_B(1)=125$는 영원히 관측되지 않는다. 개체수준 효과 $\tau_A=118-132=-14$, $\tau_B=125-136=-11$이 참값이라 해도, 데이터만으로는 이를 확인할 방법이 없다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`지금 보이려는 것은 두 가지다. (1) 관측된 결과 $Y_i$가 잠재결과 $Y_i(1),Y_i(0)$과 처치지시 $T_i$로부터 어떻게 결정되는지, (2) 왜 개체수준 인과효과 $\tau_i=Y_i(1)-Y_i(0)$가 근본적으로 관측 불가능한지를 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`각 개체 $i$는 두 개의 잠재결과 $Y_i(1)$(처치를 받았을 때의 결과)과 $Y_i(0)$(처치를 받지 않았을 때의 결과)을 갖는다고 가정한다. 이 두 값은 개체 $i$의 고정된 속성으로, 실제로 어떤 처치가 배정되는지와 무관하게 개념상 둘 다 존재한다(SUTVA 하에서). 처치지시 변수는 $T_i\in\{0,1\}$이다.`, blanks: [] },
+      { id: "s3", text: String.raw`실제로 관측되는 결과 $Y_i$는 처치지시 $T_i$에 따라 두 잠재결과 중 하나를 '선택'하는 함수여야 한다. 이를 지시변수를 이용해 하나의 식으로 쓰면 $Y_i = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`T_iY_i(1) + (1-T_i)Y_i(0)`, why: String.raw`$T_i=1$이면 첫째 항만 남아 $Y_i(1)$이 되고, $T_i=0$이면 둘째 항만 남아 $Y_i(0)$이 되도록, 두 경우를 지시변수 곱으로 이어붙인 것입니다.` }] },
+      { id: "s4", text: String.raw`검증해보자. $T_i=1$을 대입하면 $Y_i = 1\cdot Y_i(1) + 0\cdot Y_i(0) = Y_i(1)$이 되고, $T_i=0$을 대입하면 $Y_i = 0\cdot Y_i(1)+1\cdot Y_i(0)=Y_i(0)$이 된다. 즉 이 식은 처치를 받은 개체는 $Y_i(1)$을, 받지 않은 개체는 $Y_i(0)$을 정확히 관측된 값으로 재현한다.`, blanks: [] },
+      { id: "s5", text: String.raw`이제 개체수준 인과효과 $\tau_i=Y_i(1)-Y_i(0)$를 계산한다고 하자. $T_i=1$인 개체는 $Y_i(1)=Y_i$를 관측하지만 $Y_i(0)$은 결코 관측되지 않고, $T_i=0$인 개체는 $Y_i(0)=Y_i$를 관측하지만 [[blank:나]] 은 결코 관측되지 않는다.`,
+        blanks: [{ id: "나", latex: String.raw`Y_i(1)`, why: String.raw`$T_i=0$인 개체는 실제로 처치를 받지 않았으므로, 만약 처치를 받았다면 어떤 결과가 나왔을지 즉 $Y_i(1)$은 반사실(counterfactual)로 남아 데이터에는 나타나지 않습니다.` }] },
+      { id: "s6", text: String.raw`따라서 모든 개체 $i$에 대해 $\{Y_i(1),Y_i(0)\}$ 중 정확히 하나만 관측되고 나머지는 항상 결측이므로, 개체수준 효과 $\tau_i$는 어떤 표본 크기로도 개별적으로 identify되지 않는다. 이것이 근본문제이며, 이후 다루는 ATE·무교란성 같은 가정들은 모두 이 문제를 개체 수준이 아닌 집단(모집단) 수준에서 우회하기 위한 장치다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "sutva-assumption": {
+    title: String.raw`SUTVA 가정: 안정적 단위처치값과 간섭 편향`,
+    domain: "causal",
+    subLabel: String.raw`잠재결과 프레임워크`,
+    explanation: String.raw`잠재결과 $Y_i(1),Y_i(0)$을 정의할 때 우리는 암묵적으로 "개체 $i$의 결과는 개체 $i$ 자신의 처치에만 의존한다"고 가정한다. 하지만 백신처럼 이웃에게 파급되는(spillover) 처치라면 이 가정이 깨진다 — 내가 백신을 맞으면 나와 접촉하는 이웃의 감염 위험도 낮아지기 때문이다. SUTVA(Stable Unit Treatment Value Assumption)는 이런 상황을 배제하는 두 조건을 명시한다.<br><br><strong>명제.</strong> SUTVA는 (i) 간섭없음(no interference): 전체 처치벡터 $\mathbf T=(T_1,\dots,T_n)$에 대해 $Y_i(\mathbf T)=Y_i(T_i)$, (ii) 처치의 단일버전(no hidden variation of treatments)으로 구성된다. 조건 (i)이 위반되어 개체 $i$의 잠재결과가 이웃의 처치에도 의존한다면, 단순 평균차 추정량은 일반적으로 '직접효과(direct effect)'의 불편추정량이 아니라 직접효과와 파급효과(spillover effect)가 뒤섞인 편향된 양을 추정한다.`,
+    example: String.raw`<p>2인 가구 두 곳(가구1={단위1,2}, 가구2={단위3,4})에서 백신 접종을 생각하자. 감염위험 점수 $Y(t_i,t_{\text{partner}})$가 자신과 파트너의 접종 여부에 모두 의존한다고 하자.</p><p>$$Y(1,1)=0.1,\quad Y(1,0)=0.2,\quad Y(0,1)=0.3,\quad Y(0,0)=0.5$$</p><p>실제 배정이 $T=(T_1,T_2,T_3,T_4)=(1,0,0,0)$이라 하자(단위1만 접종). 그러면 $Y_1=Y(1,0)=0.2$, $Y_2=Y(0,1)=0.3$(파트너가 접종해 파급효과를 받음), $Y_3=Y_4=Y(0,0)=0.5$이다.</p><p>처치군 $\{1\}$, 대조군 $\{2,3,4\}$로 단순 평균차를 계산하면 $$\hat\tau = 0.2-\frac{0.3+0.5+0.5}{3}=0.2-0.433=-0.233$$ 이다. 그런데 '상대방이 접종하지 않았을 때의 직접효과'를 $Y(1,0)-Y(0,0)=0.2-0.5=-0.3$으로 정의하면 $-0.233\neq-0.3$이다. 대조군에 이미 파급효과를 받은 단위2(값 0.3)가 섞여 대조군 평균이 순수 무처치 수준(0.5)보다 낮아졌고, 그 결과 추정치가 진짜 직접효과보다 0쪽으로 감쇠되었다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`간섭이 있을 때 단순 평균차 추정량이 어떤 양을 추정하게 되는지, 왜 그것이 '직접효과'와 다른지를 구체적 수치로 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`SUTVA의 첫째 조건인 '간섭없음'은, 전체 처치벡터를 $\mathbf T=(T_1,\dots,T_n)$라 할 때 개체 $i$의 잠재결과가 $\mathbf T$ 전체가 아니라 자기 자신의 처치에만 의존한다는 것, 즉 $Y_i(\mathbf T) = $[[blank:가]] 라는 조건이다.`,
+        blanks: [{ id: "가", latex: String.raw`Y_i(T_i)`, why: String.raw`간섭이 없다는 것은 다른 개체들이 무엇을 배정받았는지와 무관하게 나의 잠재결과가 오직 나 자신의 처치값 하나로 결정된다는 뜻이기 때문입니다.` }] },
+      { id: "s3", text: String.raw`이 조건이 깨지는 상황을 보이기 위해, 2인 가구 두 곳(단위1,2 / 단위3,4)에서 감염위험 점수가 자신과 파트너의 접종 여부 모두에 의존하는 $Y(t_i,t_{\text{partner}})$로 주어진다고 하자: $Y(1,1)=0.1,\ Y(1,0)=0.2,\ Y(0,1)=0.3,\ Y(0,0)=0.5$. 이는 명백히 $Y_i$가 $T_i$만이 아니라 파트너의 처치에도 의존하므로 SUTVA를 위반한다.`, blanks: [] },
+      { id: "s4", text: String.raw`실제 배정이 $\mathbf T=(1,0,0,0)$이라 하자(단위1,2가 한 가구, 3,4가 한 가구). 그러면 $Y_1=Y(1,0)=0.2$, $Y_3=Y_4=Y(0,0)=0.5$이고, 단위2는 처치를 받지 않았지만 파트너인 단위1이 접종했으므로 $Y_2 = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`Y(0,1)=0.3`, why: String.raw`단위2는 $T_2=0$이지만 같은 가구의 파트너인 단위1이 백신을 맞았으므로 $Y(0,1)=0.3$의 파급(보호)효과를 받습니다.` }] },
+      { id: "s5", text: String.raw`처치군은 $\{1\}$, 대조군은 $\{2,3,4\}$이므로 단순 평균차 추정량은 $\hat\tau = Y_1-\dfrac{Y_2+Y_3+Y_4}{3} = 0.2-\dfrac{0.3+0.5+0.5}{3} = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`-0.233`, why: String.raw`대조군 평균은 $(0.3+0.5+0.5)/3\approx0.433$이고, $0.2-0.433\approx-0.233$입니다.` }] },
+      { id: "s6", text: String.raw`만약 순수한 '직접효과'를 상대방이 처치받지 않은 상태에서의 효과, 즉 $Y(1,0)-Y(0,0)=0.2-0.5=-0.3$으로 정의한다면, 방금 구한 단순 평균차 추정값 $-0.233$은 이 값과 다르다. 대조군 평균에 단위2처럼 이웃의 처치로부터 이미 파급효과를 받은 개체가 섞여 있어, 대조군이 순수한 '무처치·무파급' 상태를 대표하지 못하기 때문이다.`, blanks: [] },
+      { id: "s7", text: String.raw`따라서 SUTVA의 간섭없음 조건이 깨지면 $Y_i(1)$이라는 표기 자체가 잘 정의되지 않고(파트너 상태에 따라 값이 달라지므로), 이를 무시하고 계산한 단순 평균차 추정량은 직접효과와 파급효과가 뒤섞인 편향된 양을 추정하게 된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "counterfactual-generation": {
+    title: String.raw`반사실 생성: 무교란성과 $Y(0)$ 대체 추정`,
+    domain: "causal",
+    subLabel: String.raw`잠재결과 프레임워크`,
+    explanation: String.raw`처치받은 개체의 $Y_i(0)$은 결코 관측되지 않는다. 그렇다면 이 관측 안 된 반사실을 어떻게 "생성"할 수 있을까? 가장 흔한 방법은 대조군 데이터로 조건부기댓값 모델 $\mu_0(x)=E[Y(0)\mid X=x]$를 학습한 뒤, 처치군 개체의 공변량 $X_i$를 이 모델에 넣어 $\hat Y_i(0)=\mu_0(X_i)$를 반사실로 사용하는 것이다. 이 대체가 타당하려면 처치배정이 잠재결과와 독립이어야 한다는 무교란성 가정이 필요하다.<br><br><strong>명제.</strong> 공변량 $X$가 모든 교란요인을 포함한다고 하자(무교란성/ignorability): $(Y(1),Y(0))\perp T\mid X$, 그리고 오버랩 $0<P(T=1\mid X=x)<1$이 성립한다고 하자. 이때 대조군 데이터로 정의되는 $\mu_0(x):=E[Y\mid X=x,T=0]$는 처치군 개체의 관측되지 않은 $E[Y_i(0)\mid X_i]$와 정확히 일치하며, 따라서 생성된 반사실 $\hat Y_i(0)=\mu_0(X_i)$는 (일치추정 하에서) 불편이다.`,
+    example: String.raw`<p>공변량이 나이대 하나뿐이라고 하자. 대조군의 관측된 $Y(0)$ 값이 젊은층 $\{10,12,14\}$, 나이든층 $\{20,22\}$라면 $$\mu_0(\text{young})=\frac{10+12+14}{3}=12,\qquad \mu_0(\text{old})=\frac{20+22}{2}=21$$ 이다.</p><p>처치군의 젊은층 개체가 관측된 $Y(1)=18$을 가진다면, 생성된 반사실은 $\hat Y(0)=\mu_0(\text{young})=12$이고 개체수준 효과 추정값은 $18-12=6$이다. 나이든층 처치개체가 $Y(1)=30$이라면 $\hat Y(0)=21$, 효과 추정값은 $30-21=9$이다. 무교란성이 성립한다면(같은 나이대 안에서는 누가 처치를 받았는지가 원래의 감염위험/반응성과 무관하다면) 이 대체값들은 편향되지 않은 반사실 추정치다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 대조군 데이터에서 학습한 $\mu_0(x)=E[Y\mid X=x,T=0]$를 처치군 개체에 적용해 얻은 $\hat Y_i(0)=\mu_0(X_i)$가 실제로 처치군 개체의 반사실 $E[Y_i(0)\mid X_i]$와 일치함을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 대체가 타당하려면 처치배정이 잠재결과와 독립이어야 한다는 무교란성(unconfoundedness, ignorability) 가정이 필요하다. 공변량 $X$가 모든 교란요인을 포함한다고 할 때, 이 가정은 [[blank:가]] 로 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`(Y(1),Y(0)) \perp T \mid X`, why: String.raw`공변량 $X$를 통제하고 나면 처치를 받았는지 여부가 잠재결과 값 자체와는 더 이상 연관되지 않는다는 뜻이며, 이는 $X$ 수준이 같은 처치군과 대조군이 잠재결과 분포까지 포함해 서로 교환가능함을 의미합니다.` }] },
+      { id: "s3", text: String.raw`무교란성 하에서 대조군에서 관측되는 조건부기댓값을 살펴보자. $T=0$이면 스위칭 방정식에 의해 $Y=Y(0)$이므로 $E[Y\mid X=x,T=0]=E[Y(0)\mid X=x,T=0]$이고, 무교란성을 다시 적용하면 이는 [[blank:나]] 와 같다.`,
+        blanks: [{ id: "나", latex: String.raw`E[Y(0)\mid X=x]`, why: String.raw`무교란성은 $X$를 고정했을 때 $Y(0)$의 분포가 $T$ 값에 의존하지 않는다는 것이므로, $T=0$이라는 조건을 떼어내고 $X$만으로 조건화한 기댓값과 같아집니다.` }] },
+      { id: "s4", text: String.raw`같은 논리를 $T=1$인 개체에 적용하면 $E[Y(0)\mid X=x,T=1]=E[Y(0)\mid X=x]=E[Y\mid X=x,T=0]$이 성립한다. 즉 대조군에서 정의한 $\mu_0(x):=E[Y\mid X=x,T=0]$는 같은 $X=x$를 가진 처치군 개체의 관측되지 않은 $Y_i(0)$의 조건부기댓값과 정확히 일치한다.`, blanks: [] },
+      { id: "s5", text: String.raw`구체적으로 대조군의 나이대별 평균이 젊은층 $\mu_0(\text{young})=\frac{10+12+14}{3}=12$, 나이든층 $\mu_0(\text{old})=\frac{20+22}{2}=21$이라 하자. 처치군에서 젊은층 개체의 관측된 $Y(1)=18$이라면 생성된 반사실은 $\hat Y(0)=$[[blank:다]] 이고, 개체수준 효과 추정값은 $18-12=6$이다.`,
+        blanks: [{ id: "다", latex: String.raw`12`, why: String.raw`무교란성에 의해 $E[Y(0)\mid X=\text{young},T=1]=E[Y(0)\mid X=\text{young},T=0]=\mu_0(\text{young})=12$이므로, 대조군에서 추정한 값을 그대로 처치군 개체의 반사실 예측치로 사용합니다.` }] },
+      { id: "s6", text: String.raw`$\mu_0$이 대조군 표본으로부터 일치추정(consistent)되고 무교란성이 성립한다면, 처치받은 개체 $i$에 대해 $E[\hat Y_i(0)\mid X_i]-E[Y_i(0)\mid X_i] \to $[[blank:라]] 이므로 생성된 반사실은 점근적으로 편향이 없다.`,
+        blanks: [{ id: "라", latex: String.raw`0`, why: String.raw`$\hat\mu_0(X_i)$가 $\mu_0(X_i)=E[Y(0)\mid X_i]$로 수렴하고, 이 값이 무교란성에 의해 처치군에서도 동일하게 성립하는 참값이므로 추정오차의 기댓값이 0으로 수렴합니다.` }] },
+      { id: "s7", text: String.raw`따라서 무교란성과 정합성(consistency) 조건 하에서, 대조군 데이터로 학습한 조건부기댓값 모델을 이용한 반사실 $Y(0)$ 생성은 불편(또는 점근적으로 불편)이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "average-treatment-effect": {
+    title: String.raw`평균처치효과(ATE): 무작위배정과 불편성`,
+    domain: "causal",
+    subLabel: String.raw`잠재결과 프레임워크`,
+    explanation: String.raw`개체수준 인과효과 $\tau_i=Y_i(1)-Y_i(0)$는 근본문제 때문에 관측할 수 없지만, 무작위배정 실험을 하면 모집단 평균 수준에서는 효과를 식별할 수 있다. 처치를 동전던지기로 배정하면, 처치군과 대조군은 (표본오차를 빼면) 서로 교환가능한 두 집단이 되기 때문이다.<br><br><strong>명제.</strong> 평균처치효과를 $\tau:=E[Y(1)-Y(0)]$로 정의하자. 처치가 잠재결과와 독립으로 무작위 배정된다면($T\perp(Y(1),Y(0))$), 단순 평균차 추정량 $\hat\tau = \frac{1}{n_1}\sum_{i:T_i=1}Y_i - \frac{1}{n_0}\sum_{i:T_i=0}Y_i$ 는 $\tau$의 불편추정량이다: $E[\hat\tau]=\tau$.`,
+    example: String.raw`<p>네 개체의 잠재결과가 다음과 같다고 하자.</p><p>$$Y_1(1)=10,\ Y_1(0)=6\quad Y_2(1)=8,\ Y_2(0)=5\quad Y_3(1)=14,\ Y_3(0)=9\quad Y_4(1)=12,\ Y_4(0)=10$$</p><p>모집단 ATE는 $\tau=\frac{(10-6)+(8-5)+(14-9)+(12-10)}{4}=\frac{4+3+5+2}{4}=3.5$이다.</p><p>4명 중 2명을 무작위로 처치군에 배정하는 완전무작위배정에서는 $\binom{4}{2}=6$가지 배정이 가능하다. 각 배정에서 $\hat\tau$를 계산하면:</p><p>$\{1,2\}$ 처치: $\hat\tau=\frac{10+8}{2}-\frac{9+10}{2}=9-9.5=-0.5$<br>$\{1,3\}$ 처치: $\hat\tau=\frac{10+14}{2}-\frac{5+10}{2}=12-7.5=4.5$<br>$\{1,4\}$ 처치: $\hat\tau=\frac{10+12}{2}-\frac{5+9}{2}=11-7=4$<br>$\{2,3\}$ 처치: $\hat\tau=\frac{8+14}{2}-\frac{6+10}{2}=11-8=3$<br>$\{2,4\}$ 처치: $\hat\tau=\frac{8+12}{2}-\frac{6+9}{2}=10-7.5=2.5$<br>$\{3,4\}$ 처치: $\hat\tau=\frac{14+12}{2}-\frac{6+5}{2}=13-5.5=7.5$</p><p>여섯 값의 평균은 $\frac{-0.5+4.5+4+3+2.5+7.5}{6}=\frac{21}{6}=3.5$로, 모집단 ATE $3.5$와 정확히 일치한다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`무작위배정 하에서 단순 평균차 추정량 $\hat\tau$의 기댓값이 정확히 ATE $\tau=E[Y(1)-Y(0)]$와 같음을 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`스위칭 방정식 $Y_i=T_iY_i(1)+(1-T_i)Y_i(0)$을 다시 사용한다. 즉 $T_i=1$인 개체는 $Y_i=Y_i(1)$을, $T_i=0$인 개체는 $Y_i=Y_i(0)$을 관측한다.`, blanks: [] },
+      { id: "s3", text: String.raw`무작위배정 실험에서 처치군 평균과 대조군 평균의 차이로 이루어진 추정량은 $\hat\tau = $[[blank:가]] 로 정의된다. 여기서 $n_1=\sum_i T_i$, $n_0=n-n_1$이다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{1}{n_1}\sum_{i:T_i=1} Y_i \;-\; \dfrac{1}{n_0}\sum_{i:T_i=0} Y_i`, why: String.raw`처치군에 속한 개체들의 관측된 결과 평균에서 대조군에 속한 개체들의 관측된 결과 평균을 빼는 것이 단순 평균차 추정량의 정의입니다.` }] },
+      { id: "s4", text: String.raw`처치군 평균의 기댓값을 구해보자. $T_i=1$인 개체는 $Y_i=Y_i(1)$이므로 $E[\bar Y_1]=E\big[\tfrac{1}{n_1}\sum_{T_i=1}Y_i(1)\big]$이고, 무작위배정에 의해 $T\perp(Y(1),Y(0))$이므로 이는 [[blank:나]] 와 같다.`,
+        blanks: [{ id: "나", latex: String.raw`E[Y(1)]`, why: String.raw`무작위배정 하에서는 처치를 받은 부분집합이 전체 모집단에서 무작위로 뽑힌 것과 같으므로, 그 부분집합에서의 $Y(1)$ 평균의 기댓값은 전체에서의 기댓값 $E[Y(1)]$과 같아집니다.` }] },
+      { id: "s5", text: String.raw`대칭적으로 대조군 평균에 대해서도 같은 논리를 적용하면 $E[\bar Y_0] = $[[blank:다]] 를 얻는다.`,
+        blanks: [{ id: "다", latex: String.raw`E[Y(0)]`, why: String.raw`대조군은 $T_i=0$인 개체들이며 $Y_i=Y_i(0)$이 관측되고, 무작위배정으로 인해 이 부분집합에서의 평균의 기댓값도 전체 모집단에서의 $E[Y(0)]$과 같습니다.` }] },
+      { id: "s6", text: String.raw`따라서 $E[\hat\tau]=E[\bar Y_1]-E[\bar Y_0]=E[Y(1)]-E[Y(0)] = $[[blank:라]] 이며, 이는 정의에 의해 ATE 그 자체이다.`,
+        blanks: [{ id: "라", latex: String.raw`\tau`, why: String.raw`ATE는 $\tau:=E[Y(1)-Y(0)]=E[Y(1)]-E[Y(0)]$로 정의되므로, 방금 구한 식이 바로 ATE와 일치합니다.` }] },
+      { id: "s7", text: String.raw`네 개체로 이루어진 예제에서 가능한 6가지 처치배정 전부에 대해 $\hat\tau$를 계산해 평균을 내면 정확히 모집단 ATE인 $3.5$와 일치함을 직접 확인할 수 있다(예제 참고). 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "dag-d-separation": {
+    title: String.raw`DAG와 d-분리: 그래프로 읽는 조건부독립`,
+    domain: "causal",
+    subLabel: String.raw`그래프 인과모형`,
+    explanation: String.raw`인과 그래프(DAG)만 보고도 어떤 변수와 어떤 변수가 서로 조건부독립인지 알아낼 수 있다면, 데이터를 보지 않고도 회귀식에 어떤 변수를 통제로 넣어야 하는지 미리 설계할 수 있다. d-분리(d-separation)는 그래프의 경로(path) 구조만으로 이런 조건부독립 관계를 읽어내는 그래프이론적 기준이다.<br><br><strong>명제.</strong> DAG $G$가 국소 마르코프 성질(각 노드는 자신의 부모가 주어지면 비후손들과 조건부독립)을 만족하는 분포 $P$를 유도한다고 하자. 두 노드 $X,Y$가 조건화집합 $Z$에 대해 d-분리되면(즉 $X,Y$ 사이의 모든 경로가 $Z$에 의해 막히면), $X\perp Y\mid Z$가 $P$ 하에서 성립한다.`,
+    example: String.raw`<p>이진 변수 $A,B,C,D$로 이루어진 DAG $A\to C,\ B\to C,\ C\to D$를 생각하자. $$P(A=1)=0.5,\quad P(B=1)=0.5$$ $$P(C=1\mid A,B):\ (0,0)\to0.1,\ (0,1)\to0.5,\ (1,0)\to0.5,\ (1,1)\to0.9$$ $$P(D=1\mid C=0)=0.2,\quad P(D=1\mid C=1)=0.8$$</p><p>$A,B$ 사이의 유일한 경로 $A\to C\leftarrow B$는 충돌(collider) 구조다. $C$를 조건화하지 않으면 이 경로는 막혀 있어야 하므로 $A\perp B$가 예측된다. 실제로 $P(A=1,B=1)=P(A=1)P(B=1)=0.25$로 정확히 곱으로 갈라진다.</p><p>그런데 충돌 노드 $C$를 조건화하면 경로가 열린다. 계산하면 $P(C=1)=0.5$, $P(A=1\mid C=1)=P(B=1\mid C=1)=0.7$인데 $$P(A=1,B=1\mid C=1)=\frac{0.225}{0.5}=0.45 \neq 0.7\times0.7=0.49$$ 로 곱셈 분해가 깨진다. $C$를 관측하는 순간 $A,B$가 서로 '설명경쟁(explaining-away)'을 벌이며 의존하게 된 것이다.</p><p>반면 $A\to C\to D$는 사슬(chain) 구조이므로 정반대로 $C$를 조건화하면 막힌다: $$P(A=1,D=1\mid C=1)=\frac{0.28}{0.5}=0.56=0.7\times0.8=P(A=1\mid C=1)P(D=1\mid C=1)$$ 이 정확히 성립해 $A\perp D\mid C$를 확인할 수 있다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`그래프의 경로가 세 가지 기본 패턴(사슬, 분기, 충돌)의 조합으로 이루어진다는 사실로부터, d-분리가 성립하면 실제로 결합분포에서 조건부독립이 성립함을 예제 DAG로 확인한다.`, blanks: [] },
+      { id: "s2", text: String.raw`경로 위의 세 노드 $X-Z-Y$는 화살표 방향에 따라 사슬 $X\to Z\to Y$(또는 그 역방향), 분기 $X\leftarrow Z\to Y$, 충돌 $X\to Z\leftarrow Y$ 중 하나다. 사슬과 분기는 $Z$를 조건화하면 막히고 조건화하지 않으면 열린다. 충돌은 이와 반대로, $Z$(또는 그 자손)를 조건화하지 않으면 막혀 있다가 조건화하면 [[blank:가]] 된다.`,
+        blanks: [{ id: "가", latex: String.raw`\text{열림(open)}`, why: String.raw`충돌 구조에서는 두 원인이 하나의 공통결과에 함께 영향을 미치는데, 그 결과(또는 그 자손)를 관측하는 순간 한 원인에 대한 정보가 다른 원인에 대한 정보를 바꾸는 '설명경쟁' 효과가 생겨 두 원인 사이에 없던 의존관계가 생기기 때문입니다.` }] },
+      { id: "s3", text: String.raw`d-분리는 $X,Y$ 사이의 모든 경로가 $Z$에 의해 막히는 것으로 정의된다. 국소 마르코프 성질을 만족하는 분포에서는 d-분리가 조건부독립을 함의한다는 것이 그래프모형의 핵심 정리(global Markov property)다. 지금부터 이를 예제로 구체적으로 확인한다.`, blanks: [] },
+      { id: "s4", text: String.raw`예제 DAG $A\to C,\ B\to C,\ C\to D$에서 각 변수가 부모만 주어지면 그 외 선행 변수들과 독립이라는 국소 마르코프 성질을 적용하면, 결합분포는 $P(a,b,c,d) = $[[blank:나]] 로 인수분해된다.`,
+        blanks: [{ id: "나", latex: String.raw`P(a)\,P(b)\,P(c\mid a,b)\,P(d\mid c)`, why: String.raw`DAG의 각 노드는 조건부확률 $P(\text{노드}\mid\text{부모})$의 곱으로 결합분포를 구성합니다. $A,B$는 부모가 없으므로 주변확률 $P(a),P(b)$ 그대로, $C$는 부모 $A,B$가 주어진 조건부, $D$는 부모 $C$가 주어진 조건부로 곱해집니다.` }] },
+      { id: "s5", text: String.raw`이 인수분해에서 $C,D$를 모두 주변화하면 $P(a,b) = P(a)P(b)\sum_c P(c\mid a,b)\sum_d P(d\mid c) = P(a)P(b)\cdot 1\cdot 1 = $[[blank:다]] 가 되어, $A\to C\leftarrow B$ 경로가 $C$를 조건화하지 않을 때 막혀 있다는 d-분리 예측과 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`P(a)P(b)`, why: String.raw`$c,d$에 대한 합이 각각 전체확률이므로 1이 되어 사라지고, 남는 것은 $A,B$의 주변확률의 곱뿐입니다. 결합확률이 곱으로 정확히 갈라진다는 것은 $A\perp B$를 의미합니다.` }] },
+      { id: "s6", text: String.raw`이번엔 $A\to C\to D$ 경로를 보자. $B$를 주변화하면 $P(a,c,d) = P(a)P(d\mid c)\sum_b P(b)P(c\mid a,b)$인데 $\sum_b P(b)P(c\mid a,b)$는 정의상 $P(c\mid a)$이므로 $P(a,c,d)=P(a)P(c\mid a)P(d\mid c)=P(a,c)P(d\mid c)$이다. 양변을 $P(c)$로 나누면 $P(a,d\mid c) = $[[blank:라]] 가 되어 $A\perp D\mid C$가 성립함을 알 수 있다.`,
+        blanks: [{ id: "라", latex: String.raw`P(a\mid c)\,P(d\mid c)`, why: String.raw`$P(a,c)/P(c)=P(a\mid c)$이고 나머지 인자는 그대로 $P(d\mid c)$이므로, 조건부결합확률이 두 조건부확률의 곱으로 갈라집니다. 이는 정확히 조건부독립의 정의입니다.` }] },
+      { id: "s7", text: String.raw`실제로 수치 예제에서 $P(A{=}1,B{=}1)=0.25=P(A{=}1)P(B{=}1)$로 $A\perp B$가 확인되고, $C$를 조건화하면 $0.45\neq0.49$로 의존관계가 생기며, 반대로 $P(A{=}1,D{=}1\mid C{=}1)=0.56=P(A{=}1\mid C{=}1)P(D{=}1\mid C{=}1)$로 $A\perp D\mid C$가 확인된다. 이는 각각 충돌·사슬 경로에 대한 d-분리 기준의 예측과 정확히 일치한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "invariant-risk-minimization": {
+    title: String.raw`인과 표현학습: 환경 불변 예측기(IRM)`,
+    domain: "causal",
+    subLabel: String.raw`그래프 인과모형`,
+    explanation: String.raw`딥러닝 모델이 소를 인식할 때 소 자체가 아니라 배경의 초록 잔디를 보고 판단한다면, 잔디가 없는 사진(해변의 소)에서는 실패한다. 잔디-라벨 상관관계는 훈련 환경(주로 목장 사진)에서는 강했지만 다른 환경에서는 약하거나 사라질 수 있는 허위상관(spurious correlation)이다. Invariant Risk Minimization(IRM, Arjovsky et al. 2019)은 여러 개의 서로 다른 데이터 수집 환경 $e\in\mathcal E$가 주어졌을 때, 어느 환경에서도 동시에 최적인 예측기를 찾음으로써 이런 환경 의존적 상관관계를 걸러내자는 아이디어다.<br><br><strong>명제.</strong> 구조방정식 $Y=X_1+\varepsilon$ (편의상 $\varepsilon$은 생략 가능한 잡음), $X_2=k_eY$ ($k_e$는 환경마다 다른 상수)로 생성된 두 개 이상의 환경을 생각하자. $X_1$을 회귀변수로 하는 단순선형회귀의 최적 기울기는 모든 환경에서 $1$로 불변이지만, $X_2$를 회귀변수로 하는 최적 기울기 $1/k_e$는 환경에 따라 달라진다. 따라서 환경 간에 동일한 계수를 갖도록 강제하는 불변예측 목적함수는 $X_1$과 같은 구조적(인과적) 변수를 선호하고 $X_2$와 같은 허위상관 변수를 배제한다.`,
+    example: String.raw`<p>표준정규 $X_1\sim\mathcal N(0,1)$이고 $Y=X_1$이라 하면 $\mathrm{Var}(Y)=\mathrm{Var}(X_1)=1$이다. 환경 1에서는 $X_2=2Y$, 환경 2에서는 $X_2=3Y$라 하자.</p><p>$X_1$에 대한 회귀계수는 두 환경 모두 $$\hat\beta_1=\frac{\mathrm{Cov}(X_1,Y)}{\mathrm{Var}(X_1)}=\frac{1}{1}=1$$ 로 동일하다.</p><p>$X_2$에 대한 회귀계수는 환경마다 다르다. 환경 1: $$\hat\beta_2^{(1)}=\frac{\mathrm{Cov}(2Y,Y)}{\mathrm{Var}(2Y)}=\frac{2\times1}{4\times1}=0.5$$ 환경 2: $$\hat\beta_2^{(2)}=\frac{\mathrm{Cov}(3Y,Y)}{\mathrm{Var}(3Y)}=\frac{3\times1}{9\times1}\approx0.333$$</p><p>$X_2$만 보고 예측하는 모델은 각 환경 안에서는 훈련오차를 최소화할 수 있지만, 그 최적 계수 자체가 환경마다 다르므로 '모든 환경에서 동시에 최적'이라는 IRM의 요구를 만족시키지 못한다. 반면 $X_1$의 계수 $1$은 정의상 환경과 무관하게 항상 최적이다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`여러 환경에서 동시에 최적인 예측기를 요구하는 것이 왜 허위상관 변수를 자연스럽게 배제하는지, 풀 수 있는 선형 예제로 확인한다.`, blanks: [] },
+      { id: "s2", text: String.raw`표현함수 $\Phi$ 위에 스칼라 분류기 $w$를 얹은 예측기 $w\circ\Phi$를 생각하자. IRM이 원하는 이상적 조건은 $w$가 모든 환경 $e\in\mathcal E$에서 동시에 위험 $R^e(w\circ\Phi)$을 최소화하는 것이다. 이 제약을 직접 다루기 어려우므로, $w=1.0$으로 고정한 더미 분류기에 대한 그래디언트가 0에 가까워지도록 벌점을 주는 완화된 목적함수는 $\min_{\Phi,w}\ \sum_{e\in\mathcal E} R^e(w\circ\Phi) + \lambda\, $[[blank:가]] 로 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`\|\nabla_{w\mid w=1.0} R^e(w\circ\Phi)\|^2`, why: String.raw`$w=1.0$에서의 위험 그래디언트 크기가 0에 가깝다는 것은 그 환경에서 $w=1.0$이 이미 최적(또는 최적에 가까움)이라는 뜻이므로, 이 벌점항을 최소화하면 모든 환경에서 동시에 최적인 $w$를 찾으라는 원래 제약을 근사적으로 강제하게 됩니다.` }] },
+      { id: "s3", text: String.raw`이 목적함수의 효과를 풀 수 있는 형태로 확인하기 위해, 두 환경 $e\in\{1,2\}$를 갖는 선형 구조방정식 예제를 살펴본다.`, blanks: [] },
+      { id: "s4", text: String.raw`두 환경에서 각각 다음과 같이 데이터가 생성된다고 하자: $X_1\sim\mathcal N(0,1)$, $Y=X_1$(잡음 생략), $X_2=k_eY$, 단 $k_1=2,\ k_2=3$. $X_1$은 $Y$의 구조적 원인이므로 두 환경에서 생성 메커니즘 $Y=X_1$이 그대로 유지되는 반면, $X_2$는 $Y$의 결과이고 그 비례상수 $k_e$가 환경마다 다르다.`, blanks: [] },
+      { id: "s5", text: String.raw`$Y$를 $X_1$에 대해 단순회귀하면 기울기는 $\hat\beta_1^{(e)}=\dfrac{\mathrm{Cov}(X_1,Y)}{\mathrm{Var}(X_1)}$인데, $Y=X_1$이므로 $\mathrm{Cov}(X_1,Y)=\mathrm{Var}(X_1)$이 되어 환경 $e$와 무관하게 $\hat\beta_1^{(e)} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`$\mathrm{Cov}(X_1,Y)=\mathrm{Var}(X_1)$이므로 두 값의 비는 항상 1이고, 이는 $k_e$와 전혀 관계가 없으므로 환경이 바뀌어도 변하지 않습니다.` }] },
+      { id: "s6", text: String.raw`반면 $Y$를 $X_2=k_eY$에 대해 단순회귀하면 $\hat\beta_2^{(e)}=\dfrac{\mathrm{Cov}(X_2,Y)}{\mathrm{Var}(X_2)}=\dfrac{k_e\mathrm{Var}(Y)}{k_e^2\mathrm{Var}(Y)} = $[[blank:다]] 이므로, $e=1$일 때 $\hat\beta_2^{(1)}=1/2$, $e=2$일 때 $\hat\beta_2^{(2)}=1/3$으로 환경에 따라 값이 달라진다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{1}{k_e}`, why: String.raw`분자 $k_e\mathrm{Var}(Y)$와 분모 $k_e^2\mathrm{Var}(Y)$에서 $\mathrm{Var}(Y)$와 $k_e$가 하나씩 약분되어 $1/k_e$만 남고, 이 값은 $k_e$가 환경마다 다르므로 환경에 의존합니다.` }] },
+      { id: "s7", text: String.raw`따라서 두 환경에서 동시에 최적인 선형계수를 요구하면 $X_1$의 계수 $1$은 두 환경 모두를 만족시키지만, $X_2$의 계수는 어느 값을 고정해도 다른 환경에서는 최적이 아니게 되어 IRM의 벌점항이 0이 될 수 없다. 즉 환경 불변성 조건은 구조적으로 안정된 관계만을 통과시키고, 환경마다 강도가 변하는 허위상관 관계는 걸러낸다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "do-operator": {
+    title: String.raw`do-연산자: 개입과 조건화의 차이`,
+    domain: "causal",
+    subLabel: String.raw`그래프 인과모형`,
+    explanation: String.raw`'약을 먹은 사람들의 회복률'과 '모든 사람에게 강제로 약을 먹였을 때의 회복률'은 다른 질문이다. 전자는 이미 존재하는 데이터에서 약을 먹은 부분집합을 골라 조건화한 것이고, 후자는 실제로 개입해서 관측되는 결과다. 두 사람 무리가 애초에 같은 이유로 약을 먹었을 수도(교란) 있기 때문에 이 둘은 일반적으로 다른 숫자를 낸다. do-연산자 $do(X=x)$는 이 개입을 그래프 조작(절단된 인수분해)으로 정식화한다.<br><br><strong>명제.</strong> DAG가 $U\to X,\ U\to Y,\ X\to Y$로 주어지고 결합분포가 마르코프 인수분해 $P(u,x,y)=P(u)P(x\mid u)P(y\mid x,u)$를 따른다고 하자. 그러면 절단된 인수분해(truncated factorization)에 의해 $P(y\mid do(X=x)) = \sum_u P(u)P(y\mid x,u)$이고, 이는 일반적으로 단순조건화 $P(y\mid x)=\sum_u P(u\mid x)P(y\mid x,u)$와 다르다. 둘은 $U\perp X$(교란이 없을 때)에만 일치한다.`,
+    example: String.raw`<p>교란변수 $U$(건강의식 수준), 처치 $X$(신약 복용), 결과 $Y$(회복)로 이루어진 확률표를 생각하자.</p><p>$$P(U=1)=0.5$$ $$P(X=1\mid U=0)=0.2,\quad P(X=1\mid U=1)=0.8$$ $$P(Y=1\mid X=0,U=0)=0.1,\ P(Y=1\mid X=0,U=1)=0.4,\ P(Y=1\mid X=1,U=0)=0.3,\ P(Y=1\mid X=1,U=1)=0.6$$</p><p>건강의식이 높은 사람($U=1$)일수록 약도 더 많이 먹고($P(X{=}1\mid U{=}1)=0.8$) 원래도 더 잘 회복되는 경향이 있다고 하자. 단순 조건화를 계산하면 베이즈 규칙으로 $P(U{=}1\mid X{=}1)=0.8$, $P(U{=}0\mid X{=}1)=0.2$를 얻고, $$P(Y=1\mid X=1)=0.3\times0.2+0.6\times0.8=0.54$$ 이다. 반면 모두에게 강제로 약을 투여하는 개입 $do(X=1)$은 $U$의 분포를 원래대로($P(U{=}1)=0.5$) 둔 채 $X$만 고정하므로 $$P(Y=1\mid do(X=1))=0.3\times0.5+0.6\times0.5=0.45$$ 이다. 같은 방식으로 $P(Y{=}1\mid do(X{=}0))=0.25$를 구하면, 참된 인과효과는 $0.45-0.25=0.20$인 반면 $P(Y{=}1\mid X{=}0)=0.16$을 이용한 순진한 관측적 차이는 $0.54-0.16=0.38$로 실제 효과의 거의 두 배에 달한다 — 교란 때문에 생기는 편향이다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$P(Y\mid do(X=x))$와 $P(Y\mid X=x)$가 왜 다른지, 절단된 인수분해를 이용해 정식으로 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`확률변수 $U$(교란변수, 미관측일 수 있음), $X$(처치), $Y$(결과)로 이루어진 DAG가 $U\to X,\ U\to Y,\ X\to Y$의 구조를 갖는다고 하자(교과서적 교란 구조). 이 DAG의 마르코프 인수분해는 $P(u,x,y)=P(u)P(x\mid u)P(y\mid x,u)$이다.`, blanks: [] },
+      { id: "s3", text: String.raw`$do(X=x)$는 $X$를 그래프에서 $U$로부터 오는 화살표와 무관하게 외부에서 강제로 $x$에 고정시키는 개입이다. 이는 인수분해에서 $X$의 조건부확률 인자 $P(x\mid u)$를 제거하고 $X=x$를 대입하는 절단된 인수분해로 표현된다: $P(u,y\mid do(X=x)) = $[[blank:가]] .`,
+        blanks: [{ id: "가", latex: String.raw`P(u)\,P(y\mid x,u)`, why: String.raw`개입은 $X$가 더 이상 부모 $U$의 영향을 받지 않고 외부에서 값이 강제된다는 뜻이므로, $X$를 낳던 인자 $P(x\mid u)$는 사라지고 나머지 인자들만 $X=x$를 대입한 채 남습니다.` }] },
+      { id: "s4", text: String.raw`여기서 $U$를 주변화하면 $P(y\mid do(X=x)) = \sum_u P(u,y\mid do(X=x)) = $[[blank:나]] 를 얻는다.`,
+        blanks: [{ id: "나", latex: String.raw`\sum_u P(u)P(y\mid x,u)`, why: String.raw`바로 앞에서 얻은 $P(u,y\mid do(X=x))=P(u)P(y\mid x,u)$를 $u$에 대해 그대로 합하면 됩니다.` }] },
+      { id: "s5", text: String.raw`이제 개입 없이 단순히 관측 조건화한 $P(y\mid x)$를 같은 인수분해로부터 구해보자. $P(y\mid x) = \dfrac{\sum_u P(u,x,y)}{P(x)} = \dfrac{\sum_u P(u)P(x\mid u)P(y\mid x,u)}{P(x)} = \sum_u $[[blank:다]] $P(y\mid x,u)$ 이다(베이즈 규칙 $P(u)P(x\mid u)/P(x)=P(u\mid x)$ 사용).`,
+        blanks: [{ id: "다", latex: String.raw`P(u\mid x)`, why: String.raw`베이즈 규칙에 의해 $P(u)P(x\mid u)/P(x)=P(u\mid x)$이므로, 이 조합이 $U$에 대한 사후(관측 후) 분포로 바뀝니다.` }] },
+      { id: "s6", text: String.raw`따라서 $P(y\mid do(x)) = \sum_u P(u)P(y\mid x,u)$는 $U$를 원래의 주변분포 $P(u)$로 가중평균하는 반면, $P(y\mid x) = \sum_u P(u\mid x)P(y\mid x,u)$는 $X=x$를 관측한 뒤 갱신된 사후분포 $P(u\mid x)$로 가중평균한다. $U\to X$ 간선이 존재해 $U,X$가 서로 연관되어 있다면(즉 $P(u\mid x)\neq P(u)$), 두 가중치가 달라지므로 일반적으로 $P(y\mid do(x))\neq P(y\mid x)$이다.`, blanks: [] },
+      { id: "s7", text: String.raw`실제로 수치 예제에서 $P(Y{=}1\mid X{=}1)=0.54$인 반면 $P(Y{=}1\mid do(X{=}1))=0.45$로 서로 다르며, 그 차이는 $P(u\mid x)=(0.2,0.8)$가 $P(u)=(0.5,0.5)$와 다르기 때문에 발생한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "counterfactual-policy-evaluation": {
+    title: String.raw`반사실 정책평가: 중요도가중 off-policy 추정`,
+    domain: "causal",
+    subLabel: String.raw`그래프 인과모형`,
+    explanation: String.raw`이미 운영 중인 추천시스템(행동정책 $\pi_b$)이 수집한 로그 데이터만 가지고, 아직 배포하지 않은 새로운 정책(타깃 정책 $\pi_e$)의 기대 성과를 추정하고 싶다. 각 로그에는 어떤 맥락에서 어떤 행동을 선택했고 어떤 보상을 받았는지만 있을 뿐, 다른 행동을 선택했다면 어떤 보상을 받았을지는 기록되어 있지 않다 — 잠재결과 프레임워크의 언어로 말하면 관측된 보상 $R$은 실제로 취해진 행동 $A$에 대응하는 반사실 보상 하나일 뿐이다. 반사실 정책평가는 이 로그로부터 다른 정책의 가치를 복원하는 문제다.<br><br><strong>명제.</strong> 맥락 $X$, 행동 $A$, 보상 $R$로 이루어진 데이터가 행동정책 $\pi_b$ 하에서 $(X,A,R)\sim\pi_b$로 수집되었다고 하자. 보상함수를 $r(x,a):=E[R\mid X=x,A=a]$라 하고, 모든 $x$에 대해 $\pi_e(a\mid x)>0 \Rightarrow \pi_b(a\mid x)>0$(양의성/오버랩)이 성립한다고 하자. 그러면 중요도가중 추정량 $\hat V_{IS}(\pi_e) = E_{(X,A,R)\sim\pi_b}\big[\frac{\pi_e(A\mid X)}{\pi_b(A\mid X)}R\big]$은 타깃 정책의 참값 $V(\pi_e)=E_X[\sum_a\pi_e(a\mid X)r(X,a)]$의 불편추정량이다: $E[\hat V_{IS}(\pi_e)] = V(\pi_e)$.`,
+    example: String.raw`<p>맥락 $X\in\{\text{morning},\text{evening}\}$, 행동 $A\in\{1,2\}$인 상황을 생각하자. $P(X{=}\text{morning})=P(X{=}\text{evening})=0.5$이고, 참 보상함수는 $r(\text{morning},1)=10,\ r(\text{morning},2)=6,\ r(\text{evening},1)=4,\ r(\text{evening},2)=8$이다.</p><p>행동정책: $\pi_b(1\mid\text{morning})=0.7,\ \pi_b(2\mid\text{morning})=0.3,\ \pi_b(1\mid\text{evening})=0.4,\ \pi_b(2\mid\text{evening})=0.6$.<br>타깃정책: $\pi_e(1\mid\text{morning})=0.5,\ \pi_e(2\mid\text{morning})=0.5,\ \pi_e(1\mid\text{evening})=0.9,\ \pi_e(2\mid\text{evening})=0.1$.</p><p>타깃 정책의 참값은 $$V(\pi_e)=0.5(0.5\times10+0.5\times6)+0.5(0.9\times4+0.1\times8)=0.5\times8+0.5\times4.4=6.2$$ 이다. 중요도가중치는 $w(\text{morning},1)=0.5/0.7\approx0.714,\ w(\text{morning},2)=0.5/0.3\approx1.667,\ w(\text{evening},1)=0.9/0.4=2.25,\ w(\text{evening},2)=0.1/0.6\approx0.167$이며, 행동정책의 확률로 가중평균하면 $$0.7\times0.714\times10+0.3\times1.667\times6=5+3=8\ (\text{아침})$$ $$0.4\times2.25\times4+0.6\times0.167\times8=3.6+0.8=4.4\ (\text{저녁})$$ 로 각 맥락에서 정확히 목표정책 기준 값과 같아지고, 전체 평균은 $0.5\times8+0.5\times4.4=6.2=V(\pi_e)$로 일치한다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`행동정책으로 수집한 데이터만으로 계산 가능한 중요도가중 추정량이 실제로 타깃 정책의 참값 $V(\pi_e)$와 기댓값이 같음을 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`타깃 정책의 가치는 $V(\pi_e) = E_{X}\big[\sum_a \pi_e(a\mid X)\,r(X,a)\big]$로 정의된다. $\pi_b$로 수집된 데이터만으로 이를 추정하기 위한 중요도가중(importance sampling) 추정량은 $\hat V_{IS}(\pi_e) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`E_{(X,A,R)\sim\pi_b}\!\left[\dfrac{\pi_e(A\mid X)}{\pi_b(A\mid X)}\,R\right]`, why: String.raw`관측된 보상 $R$에 목표정책과 행동정책의 확률 비율(중요도 가중치) $\pi_e(A\mid X)/\pi_b(A\mid X)$을 곱해 기댓값을 취하면, 행동정책 데이터의 분포를 목표정책 분포 쪽으로 재가중할 수 있습니다.` }] },
+      { id: "s3", text: String.raw`기댓값의 조건부구조를 풀어쓰면 $\hat V_{IS}(\pi_e) = E_X\big[\sum_a \pi_b(a\mid X)\dfrac{\pi_e(a\mid X)}{\pi_b(a\mid X)} r(X,a)\big]$이다. 여기서 관측된 보상이 실제 보상함수의 조건부기댓값과 일치한다는 표준적 정합성(consistency) 가정 $E[R\mid X,A]=r(X,A)$을 사용했다.`, blanks: [] },
+      { id: "s4", text: String.raw`$a$에 대한 합 안에서 분모 분자의 $\pi_b(a\mid X)$가 서로 약분되므로 $\sum_a \pi_b(a\mid X)\dfrac{\pi_e(a\mid X)}{\pi_b(a\mid X)} r(X,a) = $[[blank:나]] 가 된다(단, $\pi_e(a\mid X)>0$인 모든 $a$에 대해 $\pi_b(a\mid X)>0$이라는 양의성 조건이 필요하다).`,
+        blanks: [{ id: "나", latex: String.raw`\sum_a \pi_e(a\mid X)\,r(X,a)`, why: String.raw`$\pi_b(a\mid X)$가 분모와 분자에서 정확히 하나씩 상쇄되어 사라지고, 남는 것은 목표정책의 확률로 가중된 보상의 합입니다.` }] },
+      { id: "s5", text: String.raw`따라서 $\hat V_{IS}(\pi_e) = E_X\big[\sum_a \pi_e(a\mid X) r(X,a)\big] = $[[blank:다]] 이며, 이는 정확히 타깃 정책의 참값 $V(\pi_e)$의 정의와 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`V(\pi_e)`, why: String.raw`바로 앞 줄의 식이 처음에 정의한 $V(\pi_e)=E_X[\sum_a\pi_e(a\mid X)r(X,a)]$와 글자 그대로 동일하기 때문입니다.` }] },
+      { id: "s6", text: String.raw`양의성 조건이 깨져 어떤 $a^*$에서 $\pi_e(a^*\mid X)>0$인데 $\pi_b(a^*\mid X)=0$이라면, 그 행동은 행동정책 데이터에 전혀 등장하지 않아 가중치 $\pi_e/\pi_b$가 정의되지 않고, $\hat V_{IS}$의 전개에서 그 항이 통째로 누락되어 더 이상 $V(\pi_e)$와 일치하지 않는다.`, blanks: [] },
+      { id: "s7", text: String.raw`수치 예제에서 아침 맥락의 기여분은 $\sum_a\pi_b(a\mid\text{morning})\frac{\pi_e(a\mid\text{morning})}{\pi_b(a\mid\text{morning})}r(\text{morning},a) = 8$로 $\sum_a \pi_e(a\mid\text{morning})r(\text{morning},a)=8$과 정확히 같고, 저녁 맥락도 마찬가지로 $4.4$로 일치하여 전체 추정값이 $V(\pi_e)=6.2$와 일치함을 확인할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  // --- Wave 7: wave7_c2.js ---
+  "propensity-score": {
+    title: "성향점수(Propensity Score)와 균형성 정리",
+    domain: "causal",
+    subLabel: "식별과 추정",
+    explanation: String.raw`교란변수 $X$가 나이, 소득, 병력처럼 여러 개라면 처치군과 대조군을 $X$의 모든 차원에서 동시에 맞추는 건 사실상 불가능해요. 표본이 조금만 희소해져도 같은 $X$값을 가진 처치·대조 쌍을 찾기 어려워지죠. 그런데 각 사람이 처치를 받을 확률, 즉 성향점수 하나만 맞추면 그 뒤에 숨은 $X$ 전체가 저절로 균형을 이룬다는 놀라운 사실이 있어요. 이게 성향점수를 쓰는 이유예요.<br><br><strong>명제.</strong> 성향점수를 $e(x) := P(T=1\mid X=x)$ 로 정의하자. 그러면 $X$는 $e(X)$를 조건으로 걸었을 때 $T$와 조건부독립이다: $X \perp T \mid e(X)$ (균형성 정리, Rosenbaum &amp; Rubin, 1983).`,
+    example: String.raw`<p>추상적인 증명 전에 이산적인 $X$로 균형성이 실제로 무슨 뜻인지 숫자로 확인해봅니다.</p>
+<p>두 개의 이진 공변량 $X_1,X_2\in\{0,1\}$이 있고, 모집단에서 $(X_1,X_2)=(1,0)$인 사람과 $(0,1)$인 사람이 각각 절반씩 있다고 합시다. 두 프로필 모두에서 처치를 받을 확률이 우연히 같다고 해봅시다.</p>
+$$P(T=1\mid X_1=1,X_2=0) = 0.3, \qquad P(T=1\mid X_1=0,X_2=1) = 0.3$$
+<p>그러면 성향점수는 $e(1,0)=e(0,1)=0.3$으로 두 프로필에서 완전히 같은 값이 됩니다. 이제 $e(X)=0.3$인 부분집단만 떼어놓고 보면, 그 안에는 $(1,0)$형과 $(0,1)$형이 원래 비율 그대로 50대50으로 섞여 있습니다. 베이즈 정리로 확인해보면</p>
+$$P\big(X=(1,0)\mid T=1, e(X)=0.3\big) = \frac{P(X=(1,0))\times0.3}{P(X=(1,0))\times0.3+P(X=(0,1))\times0.3} = \frac{0.5}{0.5+0.5}=0.5$$
+<p>가 나오고, 같은 계산을 $T=0$에 대해 해도 똑같이 $0.5$가 나옵니다. 즉 $e(X)=0.3$이라는 정보만 알고 나면, 처치를 받았는지 여부는 그 사람이 정확히 어떤 $X$ 프로필인지에 대해 아무것도 알려주지 않습니다. $X$의 분포가 $T=1$ 집단과 $T=0$ 집단에서 완전히 똑같이 균형을 이루고 있는 거예요. 아래 증명은 이 균형이 우연이 아니라 성향점수의 정의 자체에서 항상 나오는 사실임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 $e(X)$ 하나만 알면 $X$의 나머지 정보는 처치 여부 $T$를 예측하는 데 더 이상 쓸모가 없다는 것, 즉 $X\perp T\mid e(X)$ 를 보이는 것이다. 이걸 확인하려면 조건부확률 $P(T=1\mid X,e(X))$ 와 $P(T=1\mid e(X))$ 를 각각 계산해서 서로 같은지 비교하면 된다.`, blanks: [] },
+      { id: "s2", text: String.raw`성향점수의 정의는 $e(x)=P(T=1\mid X=x)$ 이다. $e(X)$는 $X$의 값이 정해지면 그대로 정해지는, $X$의 함수일 뿐이다. 이 사실을 목표 조건부확률의 좌변에 그대로 적용하면 결국 $P(T=1\mid X, e(X)) = $[[blank:가]] 를 보이면 충분하다는 걸 알 수 있다. 두 조건부확률이 같다는 것이 바로 조건부독립 $X\perp T\mid e(X)$의 정의이기 때문이다.`,
+        blanks: [{ id: "가", latex: String.raw`P(T=1\mid e(X))`, why: String.raw`$A\perp B\mid C$ 라는 조건부독립은 정의상 $P(B\mid A,C)=P(B\mid C)$ 와 같아요. 여기서는 $A=X,\ B=T,\ C=e(X)$를 넣은 거예요. 그러니 목표는 $P(T=1\mid X,e(X))$와 $P(T=1\mid e(X))$가 같다는 걸 보이는 걸로 바뀌어요.` }] },
+      { id: "s3", text: String.raw`먼저 좌변을 계산한다. $e(X)$는 $X$만으로 완전히 결정되는 값이므로, $X$와 $e(X)$를 동시에 조건으로 거는 것은 $X$ 하나만 조건으로 거는 것과 똑같은 정보를 준다. 따라서 $P(T=1\mid X,e(X)) = P(T=1\mid X) = $[[blank:나]] 이다. 이는 성향점수의 정의 그 자체다.`,
+        blanks: [{ id: "나", latex: String.raw`e(X)`, why: String.raw`$e(X)$가 이미 $X$로부터 계산되는 값이라서, 조건에 $e(X)$를 추가로 얹어도 정보가 더 늘지 않아요. 그래서 $P(T=1\mid X,e(X))=P(T=1\mid X)$이고, 이건 정의상 그대로 $e(X)$예요.` }] },
+      { id: "s4", text: String.raw`이제 우변을 계산할 차례다. 반복기대법칙(law of iterated expectations)을 쓰면, $e(X)$라는 더 거친(coarser) 정보로 조건을 건 기댓값은 $X$로 조건을 건 기댓값을 한 번 더 평균낸 것과 같다. $T$는 $0,1$ 값만 가지므로 $P(T=1\mid\cdot)=E[T\mid\cdot]$ 로 쓸 수 있고, 이를 이용하면 $P(T=1\mid e(X)) = E[T\mid e(X)] = E[E[T\mid X]\mid e(X)] = E[e(X)\mid e(X)] = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`e(X)`, why: String.raw`$e(X)$가 이미 확정된 값으로 조건에 들어가 있으니, 그 값 자체를 다시 조건부기댓값 취해도 그대로 자기 자신이 나와요. $E[c\mid c]=c$인 것과 같은 이치예요.` }] },
+      { id: "s5", text: String.raw`s3에서 좌변이 $e(X)$였고, s4에서 우변도 $e(X)$였다. 두 값이 똑같으므로 $P(T=1\mid X,e(X)) = P(T=1\mid e(X))$ 가 성립한다. 이는 정확히 $X\perp T\mid e(X)$ 라는 뜻이다.`, blanks: [] },
+      { id: "s6", text: String.raw`정리하면, 성향점수 $e(X)$ 하나만 조건으로 걸어도 $X$의 나머지 정보는 처치 여부와 더 이상 관계가 없어진다. 이것이 성향점수의 균형성이며, 다차원 $X$ 대신 스칼라 $e(X)$ 하나만 맞춰도 매칭·층화·가중이 정당화되는 이유다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "doubly-robust-estimation": {
+    title: "이중강건추정(Doubly Robust / AIPW)",
+    domain: "causal",
+    subLabel: "식별과 추정",
+    explanation: String.raw`역확률가중(IPW)은 성향점수모형이 틀리면 무너지고, 회귀보정(outcome regression)은 결과모형이 틀리면 무너져요. 두 모형 다 정확히 맞히기는 현실에서 쉽지 않죠. 이중강건추정(AIPW)은 두 모형을 결합해서, 둘 중 하나만 맞아도 정답을 내는 추정량을 만듭니다. 마치 두 겹의 보험을 든 셈이에요.<br><br><strong>명제.</strong> 무교란성 $(Y_0,Y_1)\perp T\mid X$ 와 양성성 $0&lt;e(X)&lt;1$ 하에서, 증강역확률가중함수 $\varphi(W;e,\mu_0,\mu_1) := \mu_1(X)-\mu_0(X)+\dfrac{T(Y-\mu_1(X))}{e(X)}-\dfrac{(1-T)(Y-\mu_0(X))}{1-e(X)}$ 에 대해 $E[\varphi]=\mathrm{ATE}$ 가 성립하며, 이 등식은 (a) $e$가 참 성향점수이고 $\mu_0,\mu_1$은 임의(틀려도 됨)이거나, (b) $\mu_0,\mu_1$이 참 결과모형이고 $e$는 임의(단 $0&lt;e&lt;1$)인 두 경우 중 하나만 성립해도 유지된다 (이중강건성).`,
+    example: String.raw`<p>이중강건성이 실제로 어떻게 작동하는지, 처치군 항 하나만 떼어서 숫자로 확인해봅니다.</p>
+<p>공변량 $X\in\{0,1\}$이 각각 확률 $0.5$로 나오고, 참 결과함수는 $\mu_1^*(X)=2+X$, 참 성향점수는 $e^*(0)=0.5,\ e^*(1)=0.7$이라 합시다. 그러면 참값은 $E[Y_1]=E[\mu_1^*(X)]=0.5\times2+0.5\times3=2.5$ 입니다.</p>
+<p><strong>경우 1: 성향점수는 맞고 결과모형은 틀림.</strong> 분석가가 결과모형을 상수 $\tilde\mu_1(X)=3$ (틀림)으로 잘못 적합했지만 참 성향점수 $e^*$는 그대로 썼다고 합시다.</p>
+$$E\big[\tilde\mu_1(X)\big]+E\Big[\tfrac{T(Y-\tilde\mu_1(X))}{e^*(X)}\Big]=3+E\big[\mu_1^*(X)-3\big]=3+(2.5-3)=2.5$$
+<p>결과모형이 틀렸는데도 $2.5$가 정확히 나옵니다.</p>
+<p><strong>경우 2: 결과모형은 맞고 성향점수는 틀림.</strong> 이번엔 $\mu_1^*(X)=2+X$는 맞게 썼지만 성향점수를 상수 $\tilde e(X)=0.9$ (틀림, 다만 $(0,1)$ 안에는 있음)로 잘못 썼다고 합시다.</p>
+$$E\big[\mu_1^*(X)\big]+E\Big[\tfrac{T(Y-\mu_1^*(X))}{\tilde e(X)}\Big]=2.5+E\Big[\tfrac{0}{\tilde e(X)}\Big]=2.5+0=2.5$$
+<p>여기서도 $2.5$가 정확히 나옵니다. 성향점수가 틀렸는데도 결과모형이 맞으면 잔차 $T(Y-\mu_1^*(X))$의 조건부기댓값 자체가 $0$이라 성향점수 값이 무엇이든 영향을 안 줍니다. 아래 증명은 이 두 경우가 우연이 아니라 항상 성립하는 대수적 사실임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`IPW는 성향점수가 틀리면, 회귀보정은 결과모형이 틀리면 편향된다. 지금 목표는 이 둘을 합친 $\varphi$가 두 모형 중 하나만 맞아도 $E[\varphi]=\mathrm{ATE}$를 준다는 것을 보이는 것이다. $\varphi$의 처치 쪽 항 $\mu_1(X)+\dfrac{T(Y-\mu_1(X))}{e(X)}$ 와 대조 쪽 항은 구조가 대칭이므로, 처치 쪽 항 하나가 항상 $E[Y_1]$로 수렴함을 두 경우에 대해 각각 보이면 충분하다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 경우 (a): 성향점수는 참값 $e^*$를 쓰고 결과모형 $\tilde\mu_1$은 틀려도 된다고 하자. $T=1$일 때만 $Y=Y_1$이 관측되므로 $TY=TY_1$이고, 무교란성 $T\perp Y_1\mid X$에 의해 $E[T\mid X]=e^*(X)$와 $E[Y_1\mid X]=\mu_1^*(X)$가 서로 독립적으로 곱해진다. 이를 이용하면 $E\big[T(Y-\tilde\mu_1(X))\mid X\big] = E[TY_1\mid X]-\tilde\mu_1(X)E[T\mid X] = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`e^*(X)\big(\mu_1^*(X)-\tilde\mu_1(X)\big)`, why: String.raw`$E[TY_1\mid X]=E[T\mid X]E[Y_1\mid X]=e^*(X)\mu_1^*(X)$ (무교란성으로 $T$와 $Y_1$이 $X$ 조건부로 독립). 여기서 $\tilde\mu_1(X)E[T\mid X]=\tilde\mu_1(X)e^*(X)$를 빼면 $e^*(X)\mu_1^*(X)-\tilde\mu_1(X)e^*(X)=e^*(X)(\mu_1^*(X)-\tilde\mu_1(X))$가 남아요.` }] },
+      { id: "s3", text: String.raw`이 조건부기댓값을 $e^*(X)$로 나누면 $e^*(X)$가 정확히 약분되어 사라진다. 그러니 $E\Big[\dfrac{T(Y-\tilde\mu_1(X))}{e^*(X)}\Big] = E\big[\mu_1^*(X)-\tilde\mu_1(X)\big]$ 이고, 이를 처치 쪽 항 전체에 대입하면 $E\big[\tilde\mu_1(X)\big]+E\big[\mu_1^*(X)-\tilde\mu_1(X)\big] = $[[blank:나]] 이다. $\tilde\mu_1(X)$ 항이 서로 상쇄되어 결과모형이 틀렸다는 사실 자체가 흔적도 없이 지워진다.`,
+        blanks: [{ id: "나", latex: String.raw`E[\mu_1^*(X)]=E[Y_1]`, why: String.raw`$E[\tilde\mu_1(X)]+E[\mu_1^*(X)]-E[\tilde\mu_1(X)]$에서 $\tilde\mu_1(X)$ 항이 정확히 상쇄돼요. 남는 건 $E[\mu_1^*(X)]$뿐이고, 무교란성 덕분에 이는 $E[Y_1]$과 같아요.` }] },
+      { id: "s4", text: String.raw`이제 경우 (b): 결과모형은 참값 $\mu_1^*$를 쓰고 성향점수 $\tilde e$는 틀려도 된다고 하자 (단 $0&lt;\tilde e(X)&lt;1$). 이번엔 s2와 같은 방식으로 $E\big[T(Y-\mu_1^*(X))\mid X\big] = E[TY_1\mid X]-\mu_1^*(X)E[T\mid X] = e^*(X)\mu_1^*(X)-\mu_1^*(X)e^*(X) = $[[blank:다]] 이다. 결과모형이 정확하면 이 잔차의 조건부기댓값 자체가 항등적으로 사라진다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`$e^*(X)\mu_1^*(X)-\mu_1^*(X)e^*(X)$는 같은 두 항을 빼는 것이라 정확히 $0$이에요. 여기엔 $\tilde e(X)$가 등장조차 하지 않는다는 점이 핵심이에요 — 성향점수가 무엇이든 상관없어요.` }] },
+      { id: "s5", text: String.raw`s4의 결과를 $\tilde e(X)$로 나눠도 여전히 $0/\tilde e(X)=0$ 이므로 ($0&lt;\tilde e(X)&lt;1$이라 나눗셈이 항상 정의된다), $E\Big[\dfrac{T(Y-\mu_1^*(X))}{\tilde e(X)}\Big]=0$ 이다. 따라서 처치 쪽 항 전체는 $E[\mu_1^*(X)]+0 = E[\mu_1^*(X)] = E[Y_1]$ 이 되어, 성향점수 $\tilde e$가 어떤 값이든 상관없이 정답이 나온다.`, blanks: [] },
+      { id: "s6", text: String.raw`대조 쪽 항 $-\mu_0(X)-\dfrac{(1-T)(Y-\mu_0(X))}{1-e(X)}$ 도 $T$를 $1-T$로, $e(X)$를 $1-e(X)$로, $\mu_1$을 $\mu_0$로 바꾸기만 하면 s2~s5와 완전히 같은 대수 구조이므로 같은 논증으로 $-E[Y_0]$ 로 수렴한다. 두 경우 모두에서 두 항을 합치면 $E[\varphi] = E[Y_1]-E[Y_0] = \mathrm{ATE}$ 이다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면, 성향점수모형이 맞거나 결과모형이 맞거나 둘 중 하나만 성립해도 $E[\varphi]=\mathrm{ATE}$가 유지된다. 이것이 AIPW의 이중강건성이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "nearest-neighbor-matching": {
+    title: "최근접이웃 매칭과 ATT로의 수렴",
+    domain: "causal",
+    subLabel: "식별과 추정",
+    explanation: String.raw`매칭의 아이디어는 단순해요. 처치받은 사람과 공변량 $X$가 가장 비슷한 미처치 "쌍둥이"를 찾아서 그 둘의 결과를 직접 비교하는 거예요. 실험이라면 무작위배정이 이 쌍둥이 비교를 자동으로 만들어주지만, 관측자료에서는 우리가 직접 가장 가까운 이웃을 찾아줘야 해요.<br><br><strong>명제.</strong> 최근접이웃 매칭 추정량을 $\hat\tau_M := \dfrac{1}{n_1}\displaystyle\sum_{i:T_i=1}\big[Y_i - Y_{j(i)}\big]$, $j(i) := \arg\min_{j:T_j=0}\|X_j-X_i\|$ 로 정의하자. 무교란성 $(Y_0,Y_1)\perp T\mid X$, 공통지지(양성성) $0&lt;P(T=1\mid X)&lt;1$, $X$가 연속이고 $\mu_0(x):=E[Y_0\mid X=x]$가 연속함수라는 조건 하에서, 표본크기 $n\to\infty$일 때 $\hat\tau_M \xrightarrow{p} \mathrm{ATT} := E[Y_1-Y_0\mid T=1]$ 로 확률수렴한다.`,
+    example: String.raw`<p>본격적인 극한 논증에 앞서, 작은 표본으로 매칭 추정량을 손으로 직접 계산해봅니다.</p>
+<p>나이($X$)를 기준으로 처치군 3명, 대조군 5명이 있습니다.</p>
+<p>처치군: $(X,Y)=(2,10),\ (5,15),\ (8,20)$</p>
+<p>대조군: $(X,Y)=(1,6),\ (2.2,9),\ (4.8,13),\ (7.6,17),\ (9.5,22)$</p>
+<p>처치군 각 사람마다 나이가 가장 가까운 대조군을 찾습니다. $X=2$인 사람은 대조군 중 $X=2.2$(거리 $0.2$)가 $X=1$(거리 $1$)보다 가까우니 짝은 $Y=9$입니다. $X=5$인 사람은 $X=4.8$(거리 $0.2$)이 짝이라 $Y=13$입니다. $X=8$인 사람은 $X=7.6$(거리 $0.4$)이 짝이라 $Y=17$입니다.</p>
+<p>세 쌍의 차이는 $10-9=1$, $15-13=2$, $20-17=3$이고 평균을 내면</p>
+$$\hat\tau_M = \frac{1+2+3}{3} = 2$$
+<p>이 됩니다. 대조군이 촘촘할수록 짝의 나이 차이는 더 작아지고, 그 차이가 $0$에 가까워질수록 이 평균은 진짜 처치효과에 더 가까워질 것입니다. 아래 증명은 표본이 무한히 커질 때 이 직관이 정확히 ATT로의 수렴으로 이어짐을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`매칭 추정량은 처치받은 각 사람 $i$의 결과 $Y_i$에서, 그와 가장 비슷한 미처치 이웃의 결과 $Y_{j(i)}$를 빼서 그 차이를 처치군 전체에서 평균낸 것이다. $Y_{j(i)}$는 사실상 "만약 $i$가 처치를 받지 않았다면 어땠을까"라는 반사실을 이웃의 실제 결과로 대신 채우려는 시도다. 지금 목표는 표본이 커질수록 이 대체가 점점 더 정확해져서 $\hat\tau_M$이 결국 ATT로 수렴한다는 것을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`무교란성 가정 $(Y_0,Y_1)\perp T\mid X$ 덕분에, 관측되지 않는 반사실 조건부기댓값 $E[Y_0\mid X=x]$를 관측 가능한 양으로 바꿔 쓸 수 있다. $T=0$인 사람들만 봐도 $Y_0$의 조건부분포는 전체 모집단에서와 같기 때문이다. 즉 $\mu_0(x):=E[Y_0\mid X=x] = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`E[Y\mid X=x, T=0]`, why: String.raw`무교란성 $(Y_0,Y_1)\perp T\mid X$ 덕분에 $E[Y_0\mid X=x,T=0]=E[Y_0\mid X=x]$가 성립해요. 그리고 $T=0$인 사람은 실제로 $Y=Y_0$가 관측되니 $E[Y_0\mid X=x,T=0]=E[Y\mid X=x,T=0]$이에요. 두 등식을 이으면 관측 가능한 $E[Y\mid X=x,T=0]$이 반사실 $\mu_0(x)$와 같아져요.` }] },
+      { id: "s3", text: String.raw`ATT의 정의 $E[Y_1-Y_0\mid T=1]$ 안의 $Y_1,Y_0$를 반복기대법칙으로 $X$에 대해 한 번 더 풀어 쓰면, $E[Y_1-Y_0\mid T=1] = E\big[E[Y_1-Y_0\mid X,T=1]\mid T=1\big]$ 이고, 무교란성 덕분에 $E[Y_1-Y_0\mid X,T=1]=\mu_1(X)-\mu_0(X)$ 이므로 결국 $\mathrm{ATT} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`E[\mu_1(X)-\mu_0(X)\mid T=1]`, why: String.raw`무교란성 덕분에 $X$로 조건을 걸고 나면 $T=1$이라는 조건이 $Y_1,Y_0$의 조건부평균에 더는 영향을 주지 않아요. 그래서 $E[Y_1-Y_0\mid X,T=1]=\mu_1(X)-\mu_0(X)$가 되고, 이를 $T=1$ 집단에서 $X$에 대해 평균내면 ATT의 이 표현이 나와요.` }] },
+      { id: "s4", text: String.raw`이제 매칭의 기하학적 성질을 쓴다. 공통지지(양성성) 가정 덕분에 각 처치단위 $X_i$ 근처에도 대조군 단위들이 항상 충분히 존재하고, $X$가 연속분포를 따르므로 표본크기 $n$이 커질수록 후보 대조군의 개수도 함께 늘어난다. 그러면 가장 가까운 대조군까지의 거리는 점점 좁혀져서, $\|X_{j(i)}-X_i\| \xrightarrow{p} $[[blank:다]] 가 성립한다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`공통지지가 있으면 $X_i$ 근처 어디에나 양의 밀도로 대조군이 존재해요. $n\to\infty$이면 그 근방에 들어오는 대조군 후보 수도 함께 늘어나므로, 그중 가장 가까운 것과의 거리는 확률적으로 $0$까지 좁혀져요. (차원이 고정되어 있다는 전제가 필요하다 — 차원이 표본과 함께 커지면 이 수렴은 느려지거나 깨진다.)` }] },
+      { id: "s5", text: String.raw`거리가 $0$으로 좁혀지고 $\mu_0$가 연속함수라는 가정을 함께 쓰면, 가까운 곳에서는 함수값도 가까워야 한다는 연속함수의 정의 그대로 $E[Y_{j(i)}\mid X_i] \to \mu_0(X_i)$ 로 수렴한다. 이걸 각 처치단위 $i$에 대입하면 $\hat\tau_M = \dfrac{1}{n_1}\displaystyle\sum_{i:T_i=1}\big[Y_i-Y_{j(i)}\big] \xrightarrow{p} \dfrac{1}{n_1}\displaystyle\sum_{i:T_i=1}\big[Y_i-\mu_0(X_i)\big] \xrightarrow{p} $[[blank:라]] 로 수렴한다.`,
+        blanks: [{ id: "라", latex: String.raw`E[Y_1-\mu_0(X)\mid T=1]`, why: String.raw`처치군 표본에서 $Y_i-\mu_0(X_i)$의 평균은 대수의 법칙에 의해 그 모집단 평균, 즉 $E[Y_1-\mu_0(X)\mid T=1]$로 확률수렴해요. $T_i=1$인 사람의 $Y_i$는 $Y_1$의 실현값이라는 점을 쓴 거예요.` }] },
+      { id: "s6", text: String.raw`s5에서 얻은 $E[Y_1-\mu_0(X)\mid T=1]$은 s3에서 구한 ATT 표현 $E[\mu_1(X)-\mu_0(X)\mid T=1]$과 정확히 같다. $T=1$ 집단에서 $Y_1$의 조건부평균이 바로 $\mu_1(X)$이기 때문이다. 그러므로 $\hat\tau_M \xrightarrow{p} \mathrm{ATT}$ 이다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면, 무교란성과 공통지지, $\mu_0$의 연속성 하에서 최근접이웃 매칭 추정량은 표본이 커질수록 확률적으로 ATT에 다가간다. 다만 이는 점근적(일치성) 결과이지 각 표본 크기에서 편향이 없다는 뜻은 아니다 — 유한표본에서는 이웃 거리가 정확히 $0$이 아니라서 매칭편향이 남는다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "inverse-probability-weighting": {
+    title: "역확률가중(IPW) 추정량의 불편성",
+    domain: "causal",
+    subLabel: "식별과 추정",
+    explanation: String.raw`처치받을 확률이 낮은데도 실제로 처치를 받은 사람은 데이터에서 드물게 등장하는 "희귀 사례"예요. 이런 사람의 결과를 그냥 단순평균에 넣으면 그 존재감이 실제 모집단 비중보다 축소돼요. IPW는 이런 사람에게 $1/e(x)$라는 큰 가중치를 줘서, 표본이 다시 원래 모집단을 대표하도록 재구성하는 방법이에요.<br><br><strong>명제.</strong> 무교란성 $(Y_0,Y_1)\perp T\mid X$ 와 양성성 $0&lt;e(X)&lt;1$ 하에서, 참 성향점수 $e(X)=P(T=1\mid X)$를 그대로 안다고 할 때 $\psi(W) := \dfrac{TY}{e(X)}-\dfrac{(1-T)Y}{1-e(X)}$ 는 $E[\psi(W)] = \mathrm{ATE} := E[Y_1-Y_0]$ 을 만족하는 불편추정함수다.`,
+    example: String.raw`<p>추상적 증명 전에 이산 공변량으로 각 층에서 조건부기댓값이 실제로 정확히 맞아떨어지는지 확인해봅니다.</p>
+<p>$X\in\{0,1\}$이 각각 확률 $0.5$로 나오고, 참 성향점수는 $e(0)=0.4,\ e(1)=0.6$, 참 결과함수는 $\mu_1(0)=5,\ \mu_1(1)=8,\ \mu_0(0)=3,\ \mu_0(1)=4$ 라 합시다. 그러면 참 ATE는 다음과 같습니다.</p>
+$$\mathrm{ATE} = E[\mu_1(X)-\mu_0(X)] = 0.5\times(5-3)+0.5\times(8-4) = 1+2 = 3$$
+<p>이제 처치 항 $TY/e(X)$의 조건부기댓값을 각 층에서 직접 계산해봅니다. $X=0$층에서는 $E[TY/e(X)\mid X=0]=\mu_1(0)=5$이고 $X=1$층에서는 $\mu_1(1)=8$입니다 (증명 s2~s3에서 이 등식이 왜 성립하는지 보입니다). 이 둘을 $X$의 분포로 평균내면 $0.5\times5+0.5\times8=6.5=E[Y_1]$이 됩니다. 대칭적으로 대조 항 $(1-T)Y/(1-e(X))$은 같은 방식으로 $0.5\times3+0.5\times4=3.5=E[Y_0]$이 됩니다.</p>
+<p>둘을 빼면 $6.5-3.5=3$으로 참 ATE와 정확히 일치합니다. 아래 증명은 이 일치가 이 숫자 예제만의 우연이 아니라 항상 성립하는 대수적 사실임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 $\psi(W)=\dfrac{TY}{e(X)}-\dfrac{(1-T)Y}{1-e(X)}$의 기댓값이 정확히 $\mathrm{ATE}=E[Y_1-Y_0]$가 됨을 보이는 것이다. 전략은 반복기대법칙을 써서 먼저 $X$로 조건을 건 조건부기댓값을 계산한 뒤, 마지막에 $X$에 대해 평균을 내는 것이다. 처치 항과 대조 항은 구조가 대칭이므로 처치 항 $TY/e(X)$부터 본다.`, blanks: [] },
+      { id: "s2", text: String.raw`$T=1$인 사람만 실제로 $Y=Y_1$이 관측되므로, $TY$라는 곱은 $T$가 $0$일 때 자동으로 $0$이 되어 $T=1$일 때의 값만 남긴다. 따라서 $TY = TY_1$ 이라 쓸 수 있고, 이를 조건부기댓값에 그대로 대입하면 $E[TY\mid X] = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`E[TY_1\mid X]`, why: String.raw`$T=1$일 때 관측되는 $Y$는 정의상 $Y_1$이고, $T=0$일 때는 $TY=0\times Y=0$이라 어떤 값이든 상관없어요. 그러니 $TY$와 $TY_1$은 항상 같은 확률변수이고, 조건부기댓값도 그대로 같아요.` }] },
+      { id: "s3", text: String.raw`무교란성 $T\perp(Y_0,Y_1)\mid X$ 덕분에, $X$로 조건을 걸고 나면 $T$와 $Y_1$은 서로 독립이라 곱의 조건부기댓값이 각 조건부기댓값의 곱으로 쪼개진다. $E[T\mid X]=e(X)$, $E[Y_1\mid X]=\mu_1(X)$ 이므로 $E[TY_1\mid X] = E[T\mid X]\,E[Y_1\mid X] = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`e(X)\mu_1(X)`, why: String.raw`무교란성이 있으면 $X$ 조건부로 $T$와 $Y_1$이 독립이라, 곱의 조건부기댓값이 조건부기댓값의 곱으로 분리돼요. $E[T\mid X]=e(X)$는 성향점수의 정의 그대로이고, $E[Y_1\mid X]=\mu_1(X)$도 정의예요.` }] },
+      { id: "s4", text: String.raw`s2와 s3을 합치면 $E[TY\mid X]=e(X)\mu_1(X)$ 이다. 이걸 $e(X)$로 나누면 $e(X)$가 정확히 약분되어 사라진다. 양성성 가정 $0&lt;e(X)&lt;1$ 덕분에 이 나눗셈은 항상 잘 정의된다. 그러므로 $E\Big[\dfrac{TY}{e(X)}\,\Big|\,X\Big] = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\mu_1(X)`, why: String.raw`$\dfrac{E[TY\mid X]}{e(X)}=\dfrac{e(X)\mu_1(X)}{e(X)}=\mu_1(X)$로 $e(X)$가 분자 분모에서 약분돼요. $0<e(X)<1$이라 분모가 $0$이 될 걱정도 없어요.` }] },
+      { id: "s5", text: String.raw`같은 논증을 대조 항에 그대로 반복한다. $T=0$일 때 $Y=Y_0$이고, 무교란성으로 $E[(1-T)\mid X]=1-e(X)$, $E[Y_0\mid X]=\mu_0(X)$이 곱으로 분리되어 $E[(1-T)Y\mid X]=(1-e(X))\mu_0(X)$ 를 얻는다. 이를 $1-e(X)$로 나누면 $E\Big[\dfrac{(1-T)Y}{1-e(X)}\,\Big|\,X\Big] = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`\mu_0(X)`, why: String.raw`처치 항에서 $T,e(X),\mu_1$을 각각 $1-T,\,1-e(X),\,\mu_0$로 바꾼 것과 완전히 같은 대수 구조예요. 그래서 같은 방식으로 약분되어 $\mu_0(X)$가 남아요.` }] },
+      { id: "s6", text: String.raw`두 조건부기댓값을 빼면 $E[\psi(W)\mid X] = \mu_1(X)-\mu_0(X)$ 이다. 마지막으로 반복기대법칙을 한 번 더 적용해 $X$에 대해 평균을 내면 $E[\psi(W)] = E\big[E[\psi(W)\mid X]\big] = E[\mu_1(X)-\mu_0(X)]$ 이고, $\mu_1(X)=E[Y_1\mid X]$, $\mu_0(X)=E[Y_0\mid X]$ 이므로 $E[\psi(W)] = $[[blank:마]] 이다.`,
+        blanks: [{ id: "마", latex: String.raw`E[Y_1]-E[Y_0] = \mathrm{ATE}`, why: String.raw`반복기대법칙 $E[E[Y_1\mid X]]=E[Y_1]$을 $\mu_1,\mu_0$ 각각에 적용하면 $E[\mu_1(X)]=E[Y_1]$, $E[\mu_0(X)]=E[Y_0]$가 돼요. 두 값의 차가 정확히 ATE의 정의예요.` }] },
+      { id: "s7", text: String.raw`정리하면 참 성향점수 $e(X)$를 그대로 알고 있을 때 $\psi(W)$의 기댓값은 정확히 ATE와 같다. 양성성 $0&lt;e(X)&lt;1$이 모든 나눗셈이 잘 정의됨을 보장하는 핵심 조건이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "instrumental-variables": {
+    title: "도구변수(IV)의 식별 조건과 추정량",
+    domain: "causal",
+    subLabel: "도구변수 · 준실험",
+    explanation: String.raw`처치 $T$가 결과에 함께 영향을 주는 오차 $U$와 상관되어 있으면(내생성), 단순 회귀는 $T$의 효과와 $U$의 효과를 뒤섞어 편향된 값을 냅니다. 도구변수 $Z$는 $T$에는 영향을 주지만 $U$와는 무관하고 $Y$에는 오직 $T$를 거쳐서만 영향을 주는 외부 변수예요. 이 성질을 이용하면 뒤섞인 효과에서 $T\to Y$ 부분만 걸러낼 수 있습니다.<br><br><strong>명제.</strong> 선형 상수효과 모형 $Y=\alpha+\beta T+U$ 를 생각하자. 도구 $Z$가 다음 세 조건을 만족한다고 하자: (i) 관련성 $\mathrm{Cov}(Z,T)\neq0$, (ii) 외생성 $\mathrm{Cov}(Z,U)=0$, (iii) 배제제약(exclusion restriction) — $Z$는 $Y$ 방정식에 직접 나타나지 않고 오직 $T$를 통해서만 $Y$에 영향을 준다. 그러면 $\beta = \mathrm{Cov}(Z,Y)/\mathrm{Cov}(Z,T)$ 이다.`,
+    example: String.raw`<p>추상적 증명 전에 4명짜리 작은 모집단으로 IV 추정량을 직접 계산해봅니다.</p>
+<p>도구 $Z\in\{0,1\}$이 무작위로 배정되어 $U$와 무관하다고 합시다 ($Z=0,0,1,1$, 대응하는 $U=-1,1,-1,1$ — $Z$의 각 값에서 $U$의 평균이 $0$이 되도록 짝지어 외생성을 만족시켰습니다). 참 구조식은 $T=2+3Z+U$, $Y=5+2T+U$ (참 $\beta=2$) 라 합시다.</p>
+<table><tr><th>단위</th><th>$Z$</th><th>$U$</th><th>$T=2+3Z+U$</th><th>$Y=5+2T+U$</th></tr>
+<tr><td>1</td><td>0</td><td>$-1$</td><td>$1$</td><td>$6$</td></tr>
+<tr><td>2</td><td>0</td><td>$1$</td><td>$3$</td><td>$12$</td></tr>
+<tr><td>3</td><td>1</td><td>$-1$</td><td>$4$</td><td>$12$</td></tr>
+<tr><td>4</td><td>1</td><td>$1$</td><td>$6$</td><td>$18$</td></tr></table>
+<p>$\bar Z=0.5,\ \bar T=3.5,\ \bar Y=12$ 이고, 표본공분산(모집단 크기로 나눈 버전)을 계산하면</p>
+$$\mathrm{Cov}(Z,T) = \tfrac14\big[1.25+0.25+0.25+1.25\big] = 0.75,\qquad \mathrm{Cov}(Z,Y)=\tfrac14\big[3+0+0+3\big]=1.5$$
+<p>따라서 $\hat\beta_{IV}=\mathrm{Cov}(Z,Y)/\mathrm{Cov}(Z,T)=1.5/0.75=2$ 로 참값 $\beta=2$와 정확히 일치합니다. (참고로 $\mathrm{Cov}(T,U)$를 계산하면 $1$로 $0$이 아니라서, $T$가 실제로 $U$와 내생적으로 얽혀 있고 단순회귀라면 편향되었을 상황임을 확인할 수 있습니다.) 아래 증명은 이 일치가 우연이 아니라 세 조건이 갖춰지면 항상 성립하는 대수적 사실임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$T$가 $U$와 상관되어 있으면 $Y$를 $T$에 단순회귀했을 때 나오는 계수는 $\beta$와 $U$가 $T$를 통해 만드는 가짜 효과가 뒤섞인 값이다. 지금 목표는 이 오염된 상황에서도 도구 $Z$를 이용해 순수한 $\beta$ 하나만 골라내는 것이다. 전략은 구조식 양변에 $Z$와의 공분산을 씌워서 $U$ 항을 지워버리는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`구조식 $Y=\alpha+\beta T+U$의 양변에 $Z$와의 공분산을 취한다. 공분산은 상수항에 대해서는 $0$이고 선형결합에 대해 분배되므로 $\mathrm{Cov}(Z,Y) = \mathrm{Cov}(Z,\alpha+\beta T+U) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\beta\,\mathrm{Cov}(Z,T)+\mathrm{Cov}(Z,U)`, why: String.raw`공분산은 상수항 $\alpha$에 대해서는 $\mathrm{Cov}(Z,\alpha)=0$이고, 나머지는 선형이라 그대로 분배돼요: $\mathrm{Cov}(Z,\alpha+\beta T+U)=\beta\,\mathrm{Cov}(Z,T)+\mathrm{Cov}(Z,U)$.` }] },
+      { id: "s3", text: String.raw`여기서 외생성 가정 $\mathrm{Cov}(Z,U)=0$을 대입한다. $U$ 항이 정확히 사라지고 $\mathrm{Cov}(Z,Y) = $[[blank:나]] 만 남는다. 배제제약 덕분에 $Z$가 $Y$ 방정식에 애초에 등장하지 않으므로, $Z$와 $Y$의 관계는 오로지 $Z$가 $T$를 흔들고 그 $T$가 다시 $Y$를 흔드는 경로 하나로만 성립한다.`,
+        blanks: [{ id: "나", latex: String.raw`\beta\,\mathrm{Cov}(Z,T)`, why: String.raw`$\mathrm{Cov}(Z,U)=0$을 s2의 식에 대입하면 뒤 항이 사라지고 $\beta\,\mathrm{Cov}(Z,T)$만 남아요.` }] },
+      { id: "s4", text: String.raw`이제 관련성 가정 $\mathrm{Cov}(Z,T)\neq0$을 쓴다. $0$이 아니므로 양변을 $\mathrm{Cov}(Z,T)$로 나누는 것이 허용되고, $\beta = $[[blank:다]] 를 얻는다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{\mathrm{Cov}(Z,Y)}{\mathrm{Cov}(Z,T)}`, why: String.raw`s3의 식 $\mathrm{Cov}(Z,Y)=\beta\,\mathrm{Cov}(Z,T)$의 양변을 $\mathrm{Cov}(Z,T)$로 나누면 바로 이 형태가 나와요. 관련성 가정이 분모가 $0$이 아님을 보장해요.` }] },
+      { id: "s5", text: String.raw`정리하면, 관련성·외생성·배제제약 세 조건이 모두 성립할 때 $\beta = \mathrm{Cov}(Z,Y)/\mathrm{Cov}(Z,T)$ 로 정확히 식별된다. 세 조건 중 하나라도 깨지면 이 식이 더 이상 $\beta$와 같다는 보장이 없다 — 관련성이 깨지면 나눗셈 자체가 불가능하고(약한 도구 문제), 외생성이나 배제제약이 깨지면 $U$ 항이 완전히 지워지지 않아 편향이 남는다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "deep-iv": {
+    title: "Deep IV: 신경망 기반 2단계 도구변수 추정",
+    domain: "causal",
+    subLabel: "도구변수 · 준실험",
+    explanation: String.raw`전통적인 2단계최소제곱(2SLS)은 1단계에서 $T$를 $Z$에 선형회귀해 예측값 $\hat T$를 만들고, 2단계에서 $Y$를 $\hat T$에 회귀해요. 이게 통하는 이유는 결과함수가 $T$에 대해 선형이기 때문이에요. 그런데 결과함수 $g(T,X)$가 비선형이면, 1단계 예측값의 "평균" 하나만 대입하는 전략이 깨져요. Deep IV는 1단계에서 $T$의 조건부분포 전체를 신경망으로 추정하고, 2단계에서 그 분포 전체에 대한 기댓값을 목표로 삼아 이 문제를 해결합니다.<br><br><strong>명제.</strong> 구조방정식 $Y=g(T,X)+\varepsilon$, $E[\varepsilon\mid Z,X]=0$ (배제제약과 외생성)이라 하자. 그러면 식별되는 함수는 $h(Z,X):=E[Y\mid Z,X] = E_{T\sim F(\cdot\mid Z,X)}\big[g(T,X)\big]$ 이며, $g$가 $T$에 대해 비선형이면 일반적으로 이는 조건부평균을 대입한 값 $g\big(E[T\mid Z,X],X\big)$ 와 같지 않다. 즉 2단계에는 $T$의 조건부분포 $F(T\mid Z,X)$ 전체가 필요하며 조건부평균만으로는 부족하다.`,
+    example: String.raw`<p>비선형 $g$에서 "평균 대입"이 왜 깨지는지 아주 단순한 숫자 예로 확인해봅니다.</p>
+<p>어떤 $Z$값에서 $T$의 조건부분포가 $T=1$ 또는 $T=3$을 각각 확률 $0.5$로 갖는다고 합시다 ($X$는 고정해서 생략). 결과함수는 $g(T)=T^2$ (2차, 비선형)이라 합시다.</p>
+<p>조건부평균은 $E[T\mid Z]=0.5\times1+0.5\times3=2$ 이고, 이를 $g$에 대입하면 $g(E[T\mid Z])=g(2)=4$ 입니다.</p>
+<p>반면 참값, 즉 $h(Z)=E[Y\mid Z]=E[g(T)\mid Z]=E[T^2\mid Z]$를 직접 계산하면</p>
+$$E[T^2\mid Z] = 0.5\times1^2+0.5\times3^2 = 0.5+4.5 = 5$$
+<p>가 나옵니다. $5\neq4$입니다. 조건부평균만 대입한 "단순 2단계 회귀"는 참값 $5$ 대신 $4$를 내놓아, $1$만큼의 체계적 편향이 생깁니다. ($g$가 볼록함수라 $E[g(T)]\ge g(E[T])$라는 옌센 부등식의 방향과도 정확히 일치합니다: $5\ge4$.) 아래 증명은 이 어긋남이 $g$가 비선형일 때 항상 나타나는 구조적 문제임을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`구조방정식은 $Y=g(T,X)+\varepsilon$ 이고, $T$는 $U$(오차 $\varepsilon$과 상관된 교란요인)의 영향을 받아 내생적이지만 도구 $Z$는 배제제약과 외생성에 의해 $E[\varepsilon\mid Z,X]=0$을 만족한다. 지금 목표는 관측 가능한 $h(Z,X):=E[Y\mid Z,X]$가 정확히 무엇으로 식별되는지 구하고, 이 식별식이 왜 $T$의 조건부평균이 아니라 조건부분포 전체를 요구하는지 밝히는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`정의 $h(Z,X)=E[Y\mid Z,X]$에 구조방정식을 대입하면 $h(Z,X) = E[g(T,X)+\varepsilon\mid Z,X] = E[g(T,X)\mid Z,X] + $[[blank:가]] 이고, 배제제약과 외생성 가정 $E[\varepsilon\mid Z,X]=0$ 덕분에 뒤 항이 정확히 사라진다.`,
+        blanks: [{ id: "가", latex: String.raw`E[\varepsilon\mid Z,X]`, why: String.raw`기댓값은 선형연산이라 합의 기댓값은 기댓값의 합으로 쪼개져요. $E[g(T,X)+\varepsilon\mid Z,X]=E[g(T,X)\mid Z,X]+E[\varepsilon\mid Z,X]$.` }] },
+      { id: "s3", text: String.raw`뒤 항이 사라졌으므로 $h(Z,X) = $[[blank:나]] 이다. 이 값은 $T$가 $Z,X$로 조건부일 때 따르는 분포 $F(T\mid Z,X)$ 전체에 대해 $g(T,X)$를 적분한 것이지, $T$의 조건부평균 한 점에서 $g$를 계산한 값이 아니다.`,
+        blanks: [{ id: "나", latex: String.raw`E_{T\sim F(\cdot\mid Z,X)}[g(T,X)]`, why: String.raw`s2에서 $E[\varepsilon\mid Z,X]=0$이므로 $h(Z,X)=E[g(T,X)\mid Z,X]$만 남아요. 이 조건부기댓값은 정의상 $T$가 조건부분포 $F(T\mid Z,X)$를 따를 때 $g(T,X)$의 기댓값, 즉 $\int g(t,X)\,dF(t\mid Z,X)$예요.` }] },
+      { id: "s4", text: String.raw`이제 "단순 2단계 회귀"를 생각해보자. 1단계에서 조건부평균 $\hat T(Z,X):=E[T\mid Z,X]$ 하나만 추정하고, 2단계에서 이를 그대로 $g$에 대입해 $g\big(\hat T(Z,X),X\big)$를 결과함수로 쓰는 방식이다. 반면 s3에서 구한 참값은 $E_{T\sim F(\cdot\mid Z,X)}[g(T,X)]$ 이다. $g$가 $T$에 대해 볼록이면 옌센 부등식에 의해 $E_{T\sim F(\cdot\mid Z,X)}[g(T,X)] \ge $[[blank:다]] 이고, 등호는 $T$의 조건부분포가 한 점에 몰려 있거나(퇴화분포) $g$가 $T$에 대해 아핀(affine)함수일 때만 성립한다.`,
+        blanks: [{ id: "다", latex: String.raw`g\big(E[T\mid Z,X],X\big)`, why: String.raw`옌센 부등식은 볼록함수 $g$에 대해 $E[g(T)]\ge g(E[T])$를 말해요. 여기서 등호가 성립하는 두 경우, 즉 조건부분포가 퇴화분포이거나 $g$가 아핀함수인 경우를 빼면 두 값은 일반적으로 다르다는 뜻이에요.` }] },
+      { id: "s5", text: String.raw`따라서 $g$가 $T$에 대해 비선형(아핀이 아님)이고 $T$의 조건부분포가 퇴화되지 않은 일반적인 경우, 조건부평균 대입값 $g(\hat T(Z,X),X)$은 참값 $h(Z,X)$와 다르다. 즉 2단계 결과모형이 참값에 수렴하려면 1단계는 $T$의 조건부평균 하나가 아니라 조건부분포 $F(T\mid Z,X)$ 전체를 정확히 근사해야 한다.`, blanks: [] },
+      { id: "s6", text: String.raw`Deep IV는 정확히 이 요구를 반영한 구조다. 1단계에서 혼합밀도네트워크 같은 신경망으로 $\hat F(T\mid Z,X)$ 전체를 추정하고, 2단계에서는 그 분포에서 몬테카를로 표본을 뽑아 $E_{T\sim\hat F(\cdot\mid Z,X)}[g(T,X)]$를 근사한 뒤, 이 근사값이 관측된 $Y$를 잘 설명하도록 $g$를 신경망으로 적합한다. $g$가 선형인 특수한 경우에는 s4의 부등식이 등호가 되어 조건부평균 하나로 충분해지고, 이때 Deep IV는 전통적 2SLS와 같은 답을 낸다. 따라서 논증이 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "regression-discontinuity-design": {
+    title: "회귀불연속설계(RDD)의 국소효과 식별",
+    domain: "causal",
+    subLabel: "도구변수 · 준실험",
+    explanation: String.raw`장학금이 시험점수 70점을 넘으면 지급되고 넘지 못하면 지급되지 않는다고 해봅시다. 69.9점과 70.1점을 받은 두 학생은 실력이 사실상 똑같은데도 한쪽만 장학금을 받아요. 이 임계점 바로 근처에서는 마치 동전을 던져 처치를 나눈 것과 비슷한 상황이 우연히 만들어지는 셈이에요. 회귀불연속설계는 바로 이 국소적인 준실험을 이용합니다.<br><br><strong>명제.</strong> 순위변수 $X$, 임계점 $c$, 샤프 처치 $T=\mathbb{1}\{X\ge c\}$, 잠재적 결과 $Y_1,Y_0$ 를 생각하자. $\mu_1(x):=E[Y_1\mid X=x]$ 와 $\mu_0(x):=E[Y_0\mid X=x]$ 가 $x=c$에서 연속이라 하자. 그러면 $\tau_{SRD} := \displaystyle\lim_{x\downarrow c}E[Y\mid X=x] - \lim_{x\uparrow c}E[Y\mid X=x] = \mu_1(c)-\mu_0(c) = E[Y_1-Y_0\mid X=c]$ 이다.`,
+    example: String.raw`<p>추상적인 극한 논증 전에 구체적인 함수로 국소효과가 어떻게 계산되는지 확인해봅니다.</p>
+<p>시험점수 $X$, 임계점 $c=70$, 장학금 $T=\mathbb{1}\{X\ge70\}$이라 합시다. 잠재적 결과의 조건부기댓값함수가 다음과 같다고 합시다 (장학금을 받았을 때는 $\mu_1(x)=50+0.5x$만, 받지 않았을 때는 $\mu_0(x)=40+0.5x$만 실제로 관측됩니다).</p>
+<p>임계점보다 살짝 위인 $x=70.1$에서는 $T=1$이라 관측되는 값은 $\mu_1(70.1)=50+0.5\times70.1=85.05$ 입니다. 임계점보다 살짝 아래인 $x=69.9$에서는 $T=0$이라 관측되는 값은 $\mu_0(69.9)=40+0.5\times69.9=74.95$ 입니다. 이 둘의 차이는 $85.05-74.95=10.1$로 이미 대략 $10$에 가깝습니다.</p>
+<p>격차를 임계점에 점점 더 가깝게 좁혀가면 ($x=70.01,\ 69.99$ 등) 두 값은 각각 $\mu_1(70)=85$, $\mu_0(70)=75$로 수렴하고, 그 차이는 정확히 $\tau_{SRD}=85-75=10$ 이 됩니다. 임계점에서 아주 조금 떨어진 값들의 비교가 극한에서는 정확한 국소효과로 수렴하는 거예요. 아래 증명은 이 수렴이 두 함수가 $x=c$에서 연속이기만 하면 항상 성립함을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`임계점에서 조금 떨어진 두 사람은 순위변수 $X$가 비슷하니 처치 여부만 다를 뿐 그 외의 특성은 비슷할 것이라 기대할 수 있다. 지금 목표는 이 직관을 임계점으로 다가가는 극한으로 정확히 표현해서, $\tau_{SRD}$가 임계점에서의 처치효과 $E[Y_1-Y_0\mid X=c]$와 정확히 같음을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`샤프 RDD에서는 $X\ge c$이면 반드시 $T=1$이다. 그러니 $x\ge c$인 곳에서 관측되는 결과는 항상 $Y=Y_1$이고, $E[Y\mid X=x] = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\mu_1(x)`, why: String.raw`$x\ge c$이면 $T=\mathbb{1}\{X\ge c\}=1$이라서 관측되는 $Y$는 항상 $Y_1$이에요. 그러니 $E[Y\mid X=x]=E[Y_1\mid X=x]=\mu_1(x)$가 정의 그대로 성립해요.` }] },
+      { id: "s3", text: String.raw`반대로 $x&lt;c$인 곳에서는 반드시 $T=0$이므로 관측되는 결과는 항상 $Y=Y_0$이고, $E[Y\mid X=x] = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\mu_0(x)`, why: String.raw`$x<c$이면 $T=0$이라서 관측되는 $Y$는 항상 $Y_0$예요. 그러니 $E[Y\mid X=x]=E[Y_0\mid X=x]=\mu_0(x)$예요.` }] },
+      { id: "s4", text: String.raw`이제 $x$를 오른쪽에서 $c$로 보내는 극한을 취한다. s2에서 $x\ge c$인 모든 곳에서 $E[Y\mid X=x]=\mu_1(x)$였으므로, $\mu_1$이 $x=c$에서 연속이라는 가정을 쓰면 $\displaystyle\lim_{x\downarrow c}E[Y\mid X=x] = \lim_{x\downarrow c}\mu_1(x) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\mu_1(c)`, why: String.raw`함수의 연속성은 정확히 $\lim_{x\to c}\mu_1(x)=\mu_1(c)$를 뜻해요. 오른쪽 극한도 마찬가지로 이 값에 도달해요.` }] },
+      { id: "s5", text: String.raw`마찬가지로 $x$를 왼쪽에서 $c$로 보내면, s3에서 $x&lt;c$인 곳에서 $E[Y\mid X=x]=\mu_0(x)$였고 $\mu_0$도 $x=c$에서 연속이므로 $\displaystyle\lim_{x\uparrow c}E[Y\mid X=x] = \lim_{x\uparrow c}\mu_0(x) = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`\mu_0(c)`, why: String.raw`$\mu_0$의 연속성에 의해 왼쪽에서 다가가는 극한도 함수값 $\mu_0(c)$로 수렴해요.` }] },
+      { id: "s6", text: String.raw`두 극한의 차를 취하면 $\tau_{SRD} = \displaystyle\lim_{x\downarrow c}E[Y\mid X=x] - \lim_{x\uparrow c}E[Y\mid X=x] = \mu_1(c)-\mu_0(c) = $[[blank:마]] 이다.`,
+        blanks: [{ id: "마", latex: String.raw`E[Y_1-Y_0\mid X=c]`, why: String.raw`$\mu_1(c)=E[Y_1\mid X=c]$, $\mu_0(c)=E[Y_0\mid X=c]$라는 정의를 그대로 빼면 $E[Y_1\mid X=c]-E[Y_0\mid X=c]=E[Y_1-Y_0\mid X=c]$가 돼요.` }] },
+      { id: "s7", text: String.raw`정리하면 $\tau_{SRD}$는 임계점 $X=c$ 부근에서의 국소평균처치효과 $E[Y_1-Y_0\mid X=c]$와 정확히 같다. 다만 이는 $X=c$에서만 성립하는 국소적 결과이며, 순위변수가 임계점에서 멀리 떨어진 사람들의 처치효과에 대해서는 이 논증이 아무것도 말해주지 않는다는 한계가 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "difference-in-differences": {
+    title: "이중차분(DiD)과 평행추세 가정",
+    domain: "causal",
+    subLabel: "도구변수 · 준실험",
+    explanation: String.raw`처치군의 처치 전후 변화만 보면 정책효과와 원래 그 집단이 가지고 있던 시간 추세가 뒤섞여 있어요. 만약 처치가 없었어도 대조군과 똑같은 추세로 움직였을 거라고 믿을 수 있다면, 대조군의 전후 변화(순수한 추세)를 처치군의 전후 변화에서 빼서 정책효과만 남길 수 있어요. 이게 이중차분의 핵심 아이디어입니다.<br><br><strong>명제.</strong> 처치군 $D=1$, 대조군 $D=0$, 시기 $t\in\{0,1\}$ ($t=0$ 처치 전, $t=1$ 처치 후)를 생각하자. 사전동향 없음(no anticipation) $Y_{i0}=Y_{i0}(0)$ (모든 $i$가 시기 $0$에는 아직 미처치 결과를 보임)과 평행추세 가정 $E[Y_{i1}(0)-Y_{i0}(0)\mid D=1] = E[Y_{i1}(0)-Y_{i0}(0)\mid D=0]$ 하에서, DiD 추정량 $\tau_{DiD} := \big(E[Y_1\mid D=1]-E[Y_0\mid D=1]\big) - \big(E[Y_1\mid D=0]-E[Y_0\mid D=0]\big)$ 는 $\mathrm{ATT} := E[Y_{i1}(1)-Y_{i1}(0)\mid D=1]$ 을 식별한다.`,
+    example: String.raw`<p>최저임금 인상 같은 정책평가에서 자주 쓰이는 숫자 예로 DiD 계산을 먼저 확인해봅니다.</p>
+<p>처치군(정책이 시행된 지역)의 고용은 정책 전 평균 $100$에서 정책 후 평균 $90$으로 줄었습니다. 대조군(정책이 없는 인접 지역)의 고용은 같은 기간 $80$에서 $75$로 줄었습니다.</p>
+<p>처치군의 전후 변화는 $90-100=-10$, 대조군의 전후 변화는 $75-80=-5$ 입니다. 대조군의 변화를 "만약 정책이 없었다면 처치군도 이 정도 줄었을 것"이라는 반사실적 추세로 보고 빼면</p>
+$$\tau_{DiD} = (-10)-(-5) = -5$$
+<p>가 나옵니다. 처치군의 고용이 $10$ 줄어든 것 중 $5$는 대조군도 겪은 일반적인 추세이고, 나머지 $-5$만이 정책 고유의 효과라는 해석이에요. 아래 증명은 이 뺄셈이 평행추세 가정 하에서 정확히 ATT를 복원함을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`관측된 처치군의 처치 후 결과는 실제로 정책을 겪은 잠재적 결과이므로 $E[Y_1\mid D=1]=E[Y_{i1}(1)\mid D=1]$ 이고, 사전동향 없음 가정에 의해 모든 사람이 시기 $0$에는 미처치 상태이므로 $E[Y_0\mid D=1]=E[Y_{i0}(0)\mid D=1]$, $E[Y_0\mid D=0]=E[Y_{i0}(0)\mid D=0]$ 이다. 대조군은 두 시기 모두 미처치이므로 $E[Y_1\mid D=0]=E[Y_{i1}(0)\mid D=0]$ 이다. 이걸 $\tau_{DiD}$의 정의에 대입하면 $\tau_{DiD} = \big(E[Y_{i1}(1)\mid D=1]-E[Y_{i0}(0)\mid D=1]\big) - \big(E[Y_{i1}(0)\mid D=0]-E[Y_{i0}(0)\mid D=0]\big)$ 로 다시 쓸 수 있다.`, blanks: [] },
+      { id: "s2", text: String.raw`목표는 첫 괄호 안에 처치효과 $E[Y_{i1}(1)-Y_{i1}(0)\mid D=1]$가 드러나도록 식을 조작하는 것이다. 이를 위해 $-E[Y_{i1}(0)\mid D=1]+E[Y_{i1}(0)\mid D=1]$ 를 더하고 빼서(값은 $0$을 더한 것과 같아 변하지 않는다) 항을 하나 끼워넣으면, $E[Y_{i1}(1)\mid D=1]-E[Y_{i0}(0)\mid D=1] = \big(E[Y_{i1}(1)\mid D=1]-E[Y_{i1}(0)\mid D=1]\big) + \big($[[blank:가]]$\big)$ 로 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`E[Y_{i1}(0)\mid D=1]-E[Y_{i0}(0)\mid D=1]`, why: String.raw`끼워넣은 $-E[Y_{i1}(0)\mid D=1]+E[Y_{i1}(0)\mid D=1]$ 중 앞의 $-E[Y_{i1}(0)\mid D=1]$은 첫 괄호에 넣고, 뒤의 $+E[Y_{i1}(0)\mid D=1]$은 원래 있던 $-E[Y_{i0}(0)\mid D=1]$과 묶어서 둘째 괄호 $E[Y_{i1}(0)\mid D=1]-E[Y_{i0}(0)\mid D=1]$를 만들어요.` }] },
+      { id: "s3", text: String.raw`s2의 결과를 s1의 $\tau_{DiD}$ 식에 대입하고 정리하면, $\tau_{DiD}$는 세 항의 조합으로 다시 쓰인다: $\tau_{DiD} = \underbrace{E[Y_{i1}(1)-Y_{i1}(0)\mid D=1]}_{\text{처치군의 ATT}} \;+\; \underbrace{E[Y_{i1}(0)-Y_{i0}(0)\mid D=1]}_{\text{처치군의 반사실적 추세}} \;-\; \underbrace{E[Y_{i1}(0)-Y_{i0}(0)\mid D=0]}_{\text{대조군의 실제 추세}}$. 뒤의 두 항은 둘 다 "만약 정책이 없었다면 각 집단이 겪었을 시간 추세"를 나타낸다.`, blanks: [] },
+      { id: "s4", text: String.raw`여기서 평행추세 가정 $E[Y_{i1}(0)-Y_{i0}(0)\mid D=1] = E[Y_{i1}(0)-Y_{i0}(0)\mid D=0]$ 을 적용한다. 이 가정은 정확히 뒤 두 항이 서로 같다고 말해주므로, 그 차이는 $E[Y_{i1}(0)-Y_{i0}(0)\mid D=1] - E[Y_{i1}(0)-Y_{i0}(0)\mid D=0] = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`평행추세 가정이 두 항을 정확히 같다고 말해주니, 같은 두 값을 빼면 $0$이에요.` }] },
+      { id: "s5", text: String.raw`뒤 두 항의 차가 $0$이므로 s3의 세 항 중 마지막 두 항이 정확히 상쇄되어 사라진다. 남는 것은 첫 항뿐이라 $\tau_{DiD} = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`E[Y_{i1}(1)-Y_{i1}(0)\mid D=1]`, why: String.raw`s3의 세 항 중 둘째, 셋째 항의 차가 s4에서 $0$임을 보였으니 그 둘은 사라지고, 남는 건 첫째 항인 처치군 ATT 표현뿐이에요.` }] },
+      { id: "s6", text: String.raw`s5에서 얻은 $E[Y_{i1}(1)-Y_{i1}(0)\mid D=1]$은 정의상 정확히 $\mathrm{ATT}$이다. 따라서 $\tau_{DiD}=\mathrm{ATT}$ 이다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면, 사전동향 없음과 평행추세 가정이 성립할 때 처치군 전후차에서 대조군 전후차를 뺀 DiD 추정량은 정확히 처치군의 평균처치효과(ATT)를 복원한다. 평행추세가 깨지면(예: 처치군과 대조군이 원래부터 다른 추세를 타고 있었다면) 상쇄되지 않은 추세 차이가 편향으로 남는다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  // --- Wave 7: wave7_d1.js ---
+  "turan-theorem": {
+    title: String.raw`투란 정리(맨텔 정리): 삼각형 없는 그래프의 최대 간선수`,
+    domain: "disc2",
+    subLabel: String.raw`그래프 이론 심화`,
+    explanation: String.raw`그래프에 삼각형(서로 맺어진 세 정점)이 하나도 없다는 제약만 걸었을 때, 간선을 최대한 많이 넣으려면 어떻게 해야 할까요? 정점을 두 그룹으로 나누고 그룹 사이에만 간선을 넣으면(이분그래프) 삼각형이 절대 생기지 않으면서도 간선을 꽤 많이 쓸 수 있습니다. 신기하게도 이것이 최선의 전략이라는 사실이 정확히 증명됩니다.<br><br><strong>명제(맨텔 정리, 투란 정리의 $r=2$ 특수한 경우).</strong> $n$개의 정점을 가지며 삼각형($K_3$)을 부분그래프로 포함하지 않는 그래프 $G$의 간선수 $e(G)$는 $e(G) \le \lfloor n^2/4 \rfloor$ 를 만족한다. 이 상계는 정점을 크기 $\lceil n/2\rceil, \lfloor n/2\rfloor$인 두 그룹으로 나눈 완전이분그래프에서 등호로 달성된다.`,
+    example: String.raw`<p>$n=5$인 경우를 손으로 확인해봅시다. 삼각형 없는 그래프의 간선수 상한은 $\lfloor 25/4 \rfloor = 6$ 입니다. 정점을 $\{1,2\}$와 $\{3,4,5\}$ 두 그룹으로 나눈 완전이분그래프 $K_{2,3}$을 생각하면, 간선수는 $2\times3=6$개이고 모든 간선이 그룹 사이에만 있으므로 같은 그룹 안의 두 정점은 절대 연결되지 않아 삼각형을 이루는 세 변이 모두 존재하는 경우가 없습니다. 실제로 간선 6개로 상한에 정확히 도달합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`지금 목표는 삼각형이 없는 $n$개 정점 그래프 $G$의 간선수 $e(G)$가 $n^2/4$를 넘을 수 없다는 것을 보이는 것입니다. 핵심 아이디어는 '삼각형이 없다'는 조건을 각 간선의 두 끝점이 공통 이웃을 가질 수 없다는 조건으로 바꿔 쓰고, 이를 차수(degree)에 대한 부등식으로 정리하는 것입니다.`, blanks: [] },
+      { id: "s2", text: String.raw`간선 $uv \in E(G)$ 하나를 생각합시다. 만약 $u$와 $v$가 공통 이웃 $w$를 가진다면 $u, v, w$가 삼각형을 이루어 가정에 모순입니다. 따라서 모든 간선 $uv$에 대해 이웃집합의 교집합은 $N(u) \cap N(v) = $[[blank:가]] 이며, 이는 $N(u) \cup N(v) \subseteq V(G)$가 서로소인 합집합이라는 뜻이므로 $\deg(u) + \deg(v) \le n$ 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`\emptyset`, why: String.raw`공통 이웃이 있으면 그 이웃과 u,v가 삼각형을 이루므로, 삼각형이 없으려면 두 이웃집합의 교집합이 반드시 공집합이어야 해요.` }] },
+      { id: "s3", text: String.raw`이제 이 부등식을 그래프 전체 간선에 대해 합해봅시다. 간선의 개수를 $e$라 하면 $\sum_{uv \in E(G)} (\deg(u) + \deg(v)) \le $[[blank:나]] 입니다.`,
+        blanks: [{ id: "나", latex: String.raw`n \cdot e`, why: String.raw`간선마다 부등식 deg(u)+deg(v) ≤ n 이 성립하므로, e개의 간선에 대해 각각의 부등식을 더하면 우변은 n을 e번 더한 만큼, 즉 n·e가 돼요.` }] },
+      { id: "s4", text: String.raw`한편 좌변을 다른 방식으로 세어봅시다. 각 정점 $v$는 자신에게 연결된 $\deg(v)$개의 간선 각각에서 한 번씩 등장하며, 등장할 때마다 $\deg(v)$를 기여합니다. 즉 정점 $v$가 전체 합에 기여하는 양은 $\deg(v)\times\deg(v)$이므로, $\sum_{uv \in E(G)} (\deg(u)+\deg(v)) = $[[blank:다]] 입니다.`,
+        blanks: [{ id: "다", latex: String.raw`\sum_{v \in V(G)} \deg(v)^2`, why: String.raw`각 간선 uv는 양 끝점 u,v에서 각각 한 번씩 세어지고, 정점 v를 지나는 간선은 정확히 deg(v)개이므로 v는 총 deg(v)번 등장하며 매번 deg(v)를 기여해 deg(v)^2가 됩니다. 모든 정점에 대해 더한 것이 좌변과 같아요(이중 계산, double counting).` }] },
+      { id: "s5", text: String.raw`이제 코시-슈바르츠 부등식(제곱평균-산술평균 부등식)을 사용합니다. 임의의 실수 $d_1,\ldots,d_n$에 대해 $\left(\sum_i d_i\right)^2 \le n \sum_i d_i^2$ 이 성립하므로, $d_i = \deg(v_i)$를 대입하고 $\sum_i \deg(v_i) = 2e$ (악수 보조정리, handshake lemma)임을 이용하면 $\sum_v \deg(v)^2 \ge $[[blank:라]] 입니다.`,
+        blanks: [{ id: "라", latex: String.raw`\dfrac{(2e)^2}{n} = \dfrac{4e^2}{n}`, why: String.raw`코시-슈바르츠 부등식 (Σd_i)^2 ≤ nΣd_i^2 을 뒤집어 쓰면 Σd_i^2 ≥ (Σd_i)^2/n 이고, 차수의 합은 간선수의 두 배(악수 보조정리)이므로 Σd_i=2e를 대입하면 (2e)^2/n = 4e^2/n 이 나와요.` }] },
+      { id: "s6", text: String.raw`두 부등식을 연결하면 $\dfrac{4e^2}{n} \le \sum_v \deg(v)^2 \le n \cdot e$ 이므로 $4e^2 \le n^2 e$ 입니다. $e>0$인 경우 양변을 $e$로 나누면 $4e \le n^2$, 즉 $e \le $[[blank:마]] 를 얻습니다 ($e=0$인 경우는 자명하게 성립합니다).`,
+        blanks: [{ id: "마", latex: String.raw`\dfrac{n^2}{4}`, why: String.raw`4e ≤ n^2 의 양변을 4로 나누면 곧바로 e ≤ n^2/4 를 얻어요. e는 정수이므로 이는 e ≤ ⌊n^2/4⌋ 와 동치입니다.` }] },
+      { id: "s7", text: String.raw`정리하면, 삼각형이 없는 $n$개 정점 그래프의 간선수는 항상 $e(G) \le \lfloor n^2/4 \rfloor$ 를 만족하며, 이 상한은 정점을 절반씩 나눈 완전이분그래프에서 정확히 달성됩니다(위 예제의 $K_{2,3}$처럼). 따라서 명제(맨텔 정리)가 성립하며, 이는 임의의 $r$에 대한 일반적인 투란 정리에서 $r=2$인 특수한 경우에 해당합니다.`, blanks: [] }
+    ]
+  },
+
+  "regularity-lemma": {
+    title: String.raw`정칙성 보조정리: ε-정칙쌍이라는 조건 직접 확인하기`,
+    domain: "disc2",
+    subLabel: String.raw`그래프 이론 심화`,
+    explanation: String.raw`큰 그래프를 정확히 다 들여다보는 건 어렵지만, 몇 개의 큰 덩어리로 쪼개서 각 덩어리 사이의 관계를 '거의 무작위 그래프처럼 고르게 섞여 있다'는 한 문장으로 요약할 수 있다면 훨씬 다루기 쉬워집니다. 세메레디 정칙성 보조정리(Szemerédi Regularity Lemma)가 바로 이런 요약이 항상 가능하다는 것을 보장하는 정리입니다. 여기서는 정리 자체를 증명하기보다(증명은 '에너지 증가 논법'이라는 별도의 깊은 기법이 필요합니다), 정리가 사용하는 핵심 개념인 $\varepsilon$-정칙쌍의 정의가 실제로 무엇을 요구하는지 작은 그래프에서 직접 확인해봅니다.<br><br><strong>명제(정칙쌍의 정의 및 정칙성 보조정리).</strong> 서로소인 정점집합 $A,B$와 $X\subseteq A, Y\subseteq B$에 대해 밀도를 $d(X,Y) = \dfrac{e(X,Y)}{|X||Y|}$ 로 정의하자. 쌍 $(A,B)$가 $\varepsilon$-정칙(ε-regular)이라 함은, $|X|\ge \varepsilon|A|$, $|Y|\ge \varepsilon|B|$인 모든 $X\subseteq A, Y\subseteq B$에 대해 $|d(X,Y)-d(A,B)|\le \varepsilon$ 이 성립함을 뜻한다. 세메레디 정칙성 보조정리는, 임의의 $\varepsilon>0$에 대해 정점수에 무관한 상수 $M(\varepsilon)$이 존재하여 모든 그래프의 정점집합을 $k\le M(\varepsilon)$개의(거의 균등한 크기의) 부분으로 분할하되, 전체 쌍 중 $\varepsilon$-정칙이 아닌 쌍이 차지하는 비율이 $\varepsilon$ 이하가 되도록 할 수 있다는 정리이다.`,
+    example: String.raw`<p>정칙성을 몸으로 느끼기 위해, 일부러 정칙성이 깨지는 아주 단순한 그래프를 만들어봅시다. $A=\{a_1,a_2,a_3,a_4\}$, $B=\{b_1,b_2,b_3,b_4\}$ 이고, $a_1,a_2$는 $B$의 네 정점 모두와 연결되어 있지만 $a_3,a_4$는 $B$와 전혀 연결되어 있지 않은 그래프를 생각합니다. 즉 밀도가 두 '구역'으로 완전히 쏠려 있는 그래프입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 이 그래프 $(A,B)$가 어떤 $\varepsilon$에 대해 $\varepsilon$-정칙쌍인지 아닌지를 정의에 따라 직접 계산으로 확인하는 것입니다. 먼저 전체 밀도 $d(A,B)$부터 구합니다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 그래프의 간선수는 $e(A,B) = 2\times4 = 8$ 개이고 $|A||B| = 4\times4=16$ 이므로, 전체 밀도는 $d(A,B) = \dfrac{e(A,B)}{|A||B|} = $[[blank:가]] 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{8}{16} = \dfrac12`, why: String.raw`정의 d(X,Y)=e(X,Y)/(|X||Y|) 에 e(A,B)=8, |A||B|=16을 대입하면 8/16=1/2이 나와요.` }] },
+      { id: "s3", text: String.raw`이제 $|X|\ge\varepsilon|A|$ 조건을 만족하는 부분집합 중 밀도가 전체와 가장 다른 경우를 찾아봅니다. $X=\{a_1,a_2\}$(크기 $|X|=2$, 즉 $|A|$의 절반), $Y=B$(크기 $|Y|=4$)로 두면, $X$의 두 정점은 $B$ 전체와 모두 연결되어 있으므로 $e(X,Y)=2\times4=8$이고, 밀도는 $d(X,Y) = \dfrac{8}{8} = $[[blank:나]] 입니다.`,
+        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`X={a1,a2}의 두 정점은 각각 B의 네 정점 모두와 연결되어 있으므로 X,Y 사이의 가능한 간선 |X||Y|=8개가 전부 존재해, 밀도는 1(완전연결)이에요.` }] },
+      { id: "s4", text: String.raw`이제 편차를 계산합니다. $|d(X,Y) - d(A,B)| = |1 - \tfrac12| = $[[blank:다]] 입니다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac12`, why: String.raw`d(X,Y)=1, d(A,B)=1/2 이므로 그 차이의 절댓값은 1/2 입니다.` }] },
+      { id: "s5", text: String.raw`$\varepsilon = 0.4$로 두고 정칙성 조건을 점검해봅시다. $|X|=2 \ge \varepsilon|A| = 1.6$ 이고 $|Y|=4 \ge \varepsilon|B|=1.6$ 이므로 $X,Y$는 정칙성 정의가 요구하는 '충분히 큰' 부분집합 조건을 만족합니다. 그런데 편차 $0.5$와 $\varepsilon=0.4$를 비교하면 $|d(X,Y)-d(A,B)| = $[[blank:라]]$ \varepsilon$ 이므로, 정칙성 부등식이 깨집니다.`,
+        blanks: [{ id: "라", latex: String.raw`0.5 >`, why: String.raw`계산한 편차 0.5가 기준 ε=0.4보다 크므로, 정칙성이 요구하는 부등식 |d(X,Y)-d(A,B)|≤ε 을 만족하지 못해요.` }] },
+      { id: "s6", text: String.raw`정리하면, $(A,B)$는 $\varepsilon=0.4$에 대해 정칙쌍이 아닙니다 — 그래프의 밀도가 두 구역으로 완전히 쏠려 있어서, 절반 크기의 부분집합만 골라도 전체 밀도와 크게 다른 부분을 찾을 수 있기 때문입니다. 이 예제는 정칙쌍이라는 정의가 정확히 무엇을 요구하는지 보여줍니다: 진짜로 '무작위처럼 고르게 섞인' 쌍이어야 어떤 부분집합을 뽑아도 밀도가 크게 흔들리지 않습니다. 세메레디 정칙성 보조정리는 이런 정칙쌍이 대부분을 차지하도록 하는 분할이(그래프 크기와 무관한 개수의 부분으로) 항상 존재함을 보장하는 정리이며, 그 증명은 분할을 반복적으로 세분하면서 '에너지'라는 양이 매번 증가하다가 유한 번 만에 멈춘다는 논법을 사용합니다(여기서는 다루지 않습니다).`, blanks: [] }
+    ]
+  },
+
+  "erdos-renyi-random-graph": {
+    title: String.raw`랜덤그래프모형 G(n,p): 기댓값 계산과 문턱함수`,
+    domain: "disc2",
+    subLabel: String.raw`그래프 이론 심화`,
+    explanation: String.raw`그래프를 하나 고정해서 분석하는 대신, 간선 하나하나를 동전을 던지듯 독립적으로 확률 $p$로 연결할지 말지 정해서 만든 '랜덤그래프'를 생각하면 어떨까요? 이렇게 만들어진 그래프의 성질(간선수, 삼각형 개수 등)은 확률변수가 되고, 그 기댓값을 계산하면 '전형적인' 랜덤그래프가 어떤 모습인지 가늠할 수 있습니다. 나아가 $p$를 $n$에 따라 얼마나 빠르게 키우거나 줄이느냐에 따라 특정 구조(삼각형 등)가 나타났다 사라졌다 하는 경계, 즉 문턱함수(threshold function)가 존재합니다.<br><br><strong>명제.</strong> 에르되시-레니(Erdős–Rényi) 랜덤그래프모형 $G(n,p)$에서 각 간선이 서로 독립적으로 확률 $p$로 존재한다고 하자. 그러면 (1) 기대 간선수는 $\mathbb{E}[e(G)] = \binom{n}{2}p$ 이고, (2) 기대 삼각형 개수는 $\mathbb{E}[T(G)] = \binom{n}{3}p^3$ 이다. 또한 $p=p(n)$이 $p=o(1/n)$을 만족하면, 마르코프 부등식에 의해 $n\to\infty$일 때 $G(n,p)$가 삼각형을 포함할 확률은 $0$으로 수렴한다 — 즉 $t(n)=1/n$은 삼각형 출현의 문턱함수이다.`,
+    example: String.raw`<p>$n=4$, $p=1/2$인 작은 경우를 직접 계산해봅시다. 가능한 간선은 $\binom{4}{2}=6$개이고, 가능한 세 정점 조합(삼각형 후보)은 $\binom{4}{3}=4$개입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $G(n,p)$에서 기대 간선수와 기대 삼각형 개수를 정확한 공식으로 구하고, 이 공식이 어떻게 '문턱함수'라는 개념으로 이어지는지 보이는 것입니다. 핵심 도구는 지시확률변수(indicator random variable)와 기댓값의 선형성입니다.`, blanks: [] },
+      { id: "s2", text: String.raw`가능한 간선 하나하나 $\{i,j\}$에 대해 지시확률변수 $X_{ij}$를 그 간선이 존재하면 $1$, 아니면 $0$으로 정의하면 $\mathbb{E}[X_{ij}]=p$ 입니다. 전체 간선수는 $e(G)=\sum_{\{i,j\}} X_{ij}$ 이고 가능한 쌍의 개수는 $\binom{n}{2}$개이므로, 기댓값의 선형성에 의해 $\mathbb{E}[e(G)] = $[[blank:가]] 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`\binom{n}{2}p`, why: String.raw`기댓값의 선형성은 확률변수들이 독립일 필요 없이 항상 성립해요. 항이 binom{n}{2}개 있고 각 항의 기댓값이 p이므로 총합의 기댓값은 binom{n}{2}·p 입니다.` }] },
+      { id: "s3", text: String.raw`이제 정점 세 개로 이루어진 부분집합 $\{i,j,k\}$마다 지시확률변수 $Y_{ijk}$를 그 세 정점을 잇는 간선 $ij, jk, ik$가 모두 존재하면 $1$, 아니면 $0$으로 정의합니다. 세 간선의 존재 여부는 서로 독립이므로 $\mathbb{E}[Y_{ijk}] = $[[blank:나]] 입니다.`,
+        blanks: [{ id: "나", latex: String.raw`p^3`, why: String.raw`삼각형이 되려면 세 간선이 모두 있어야 하고 각 간선은 독립적으로 확률 p로 존재하므로, 세 사건이 동시에 일어날 확률은 p·p·p = p^3 입니다.` }] },
+      { id: "s4", text: String.raw`전체 삼각형 개수는 $T(G) = \sum_{\{i,j,k\}} Y_{ijk}$ 이고, 가능한 세 정점 조합의 개수는 $\binom{n}{3}$개이므로 기댓값의 선형성에 의해 $\mathbb{E}[T(G)] = $[[blank:다]] 입니다.`,
+        blanks: [{ id: "다", latex: String.raw`\binom{n}{3}p^3`, why: String.raw`각 항 Y_{ijk}의 기댓값이 p^3이고 항의 개수가 binom{n}{3}개이므로, 합의 기댓값은 binom{n}{3}·p^3 입니다.` }] },
+      { id: "s5", text: String.raw`이제 $n=4$, $p=\tfrac12$를 대입해 직접 확인해봅시다. 기대 간선수는 $\mathbb{E}[e(G)] = \binom{4}{2}\times\tfrac12 = 6\times\tfrac12=3$ 이고, 기대 삼각형 개수는 $\mathbb{E}[T(G)] = \binom{4}{3}\times\left(\tfrac12\right)^3 = 4\times\tfrac18 = $[[blank:라]] 입니다.`,
+        blanks: [{ id: "라", latex: String.raw`\dfrac12`, why: String.raw`4×(1/8) = 4/8 = 1/2 입니다.` }] },
+      { id: "s6", text: String.raw`삼각형 개수의 기댓값이 상수 크기가 되는 지점을 찾기 위해 $p = c/n$($c$는 상수)로 놓으면 $\mathbb{E}[T(G)] = \binom{n}{3}\left(\dfrac{c}{n}\right)^3 \approx \dfrac{n^3}{6}\cdot\dfrac{c^3}{n^3} = \dfrac{c^3}{6}$ 로, $n$에 무관한 상수에 수렴합니다. 이는 $p=1/n$이 삼각형 출현의 자연스러운 척도(문턱함수)임을 시사합니다. 실제로 $p=o(1/n)$이면 $\mathbb{E}[T(G)]\to0$이고, $T(G)$가 음이 아닌 정수값 확률변수이므로 마르코프 부등식에 의해 $\Pr[T(G)\ge1] \le \mathbb{E}[T(G)] \to $[[blank:마]] 입니다.`,
+        blanks: [{ id: "마", latex: String.raw`0`, why: String.raw`마르코프 부등식 Pr[T≥1] ≤ E[T] 에서 우변이 0으로 수렴하면 좌변인 확률도 0으로 눌려 수렴할 수밖에 없어요. 즉 p=o(1/n)이면 거의 모든 랜덤그래프가 삼각형을 갖지 않습니다.` }] },
+      { id: "s7", text: String.raw`정리하면, $G(n,p)$에서 기대 간선수는 $\binom{n}{2}p$, 기대 삼각형 개수는 $\binom{n}{3}p^3$ 이며, $p=1/n$을 기준으로 그보다 훨씬 느리게 커지는 $p$에서는(마르코프 부등식으로 엄밀하게) 삼각형이 거의 등장하지 않고, 그보다 훨씬 빠르게 커지는 $p$에서는(이차모멘트법으로 보일 수 있음, 여기서는 다루지 않음) 삼각형이 거의 확실히 등장합니다. 따라서 $t(n)=1/n$이 삼각형 부분구조의 문턱함수라는 명제가 성립합니다.`, blanks: [] }
+    ]
+  },
+
+  "minimax-alpha-beta": {
+    title: String.raw`미니맥스와 알파-베타 가지치기: 같은 값, 더 적은 탐색`,
+    domain: "disc2",
+    subLabel: String.raw`그래프 이론 심화`,
+    explanation: String.raw`두 명이 번갈아 두는 게임의 최선의 수를 찾으려면, 나는 내 점수를 최대화하는 수를 고르고 상대는 내 점수를 최소화하는 수를 고른다고 가정하며 게임트리를 끝까지 재귀적으로 계산하면 됩니다(미니맥스). 그런데 트리가 조금만 커져도 다 훑어보는 건 비효율적입니다. 알파-베타 가지치기는 '지금까지 알아낸 정보만으로도 이 아래 가지는 절대 선택되지 않을 것'이 확실한 부분을 건너뛰어, 미니맥스와 완전히 같은 값을 반환하면서 탐색량만 줄입니다.<br><br><strong>명제.</strong> 게임트리에서 리프(잎) 노드의 값은 주어진 효용값이고, MAX 노드의 값은 자식 값들의 최댓값, MIN 노드의 값은 자식 값들의 최솟값으로 재귀적으로 정의된 것을 미니맥스 값이라 하자. 탐색 도중 유지하는 구간 $[\alpha,\beta]$에 대해, MIN 노드에서 지금까지 찾은 잠정값 $v$가 조상 MAX 노드의 $\alpha$ 이하가 되는 순간(또는 대칭적으로 MAX 노드의 잠정값이 조상 MIN 노드의 $\beta$ 이상이 되는 순간) 그 노드의 나머지 자식을 더 탐색해도 조상 노드가 반환하는 최종 미니맥스 값은 바뀌지 않는다. 따라서 알파-베타 가지치기는 루트의 미니맥스 값을 그대로 보존하면서 방문 노드수만 줄인다.`,
+    example: String.raw`<p>MAX가 루트인 깊이 $2$의 작은 게임트리를 봅시다. 루트(MAX)는 두 자식 $A, B$(둘 다 MIN 노드)를 가지고, $A$의 자식(리프)은 $3, 5$, $B$의 자식(리프)은 $2, 9$ 입니다. 완전 탐색으로는 $A=\min(3,5)=3$, $B=\min(2,9)=2$, 루트 $=\max(3,2)=3$ 이 나옵니다. 알파-베타 가지치기를 적용하면 리프 $9$를 아예 살펴보지 않고도 같은 답 $3$을 얻을 수 있습니다 — 어떻게 그럴 수 있는지 아래에서 단계별로 확인합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`먼저 $\alpha$는 '루트(MAX)가 지금까지의 탐색으로 이미 확보한, 이보다는 못하지 않을 것이 보장된 값', $\beta$는 대칭적으로 MIN 편에서 확보한 상한이라고 이해합니다. 왼쪽 자식 $A$부터 완전히 탐색해 $A=\min(3,5)=3$을 얻고, 이 값이 루트에서 $\alpha=3$으로 갱신됩니다.`, blanks: [] },
+      { id: "s2", text: String.raw`이제 $B$의 첫 번째 자식인 리프 $2$를 살펴보면, $B$는 MIN 노드이므로 지금까지 확인한 자식 중 최솟값이 $B$의 현재 잠정값이 됩니다. 아직 다른 자식을 보지 않았지만 이미 $B \le $[[blank:가]] 임을 알 수 있습니다.`,
+        blanks: [{ id: "가", latex: String.raw`2`, why: String.raw`MIN 노드의 값은 지금까지 본 자식들의 최솟값이므로, 리프 2를 본 순간 B의 최종 값은 2보다 클 수 없다는 것(2 이하라는 것)을 바로 확정할 수 있어요. 아직 안 본 자식이 있어도 MIN이라 값은 더 내려갈 수만 있지 올라갈 수는 없습니다.` }] },
+      { id: "s3", text: String.raw`그런데 $B \le 2$이고 루트의 $\alpha=3$이므로, $B$의 최종값은 절대로 $\alpha=3$을 넘어설 수 없습니다(MIN 노드는 자식을 더 볼수록 값이 내려가거나 그대로일 뿐, 절대 올라가지 않기 때문입니다). MAX인 루트는 이미 $A=3$을 확보했으므로, 리프 $9$를 실제로 확인하지 않고 가지치기(pruning)하더라도 $\max(A,B) = $[[blank:나]] 로 결론이 같습니다.`,
+        blanks: [{ id: "나", latex: String.raw`A = 3`, why: String.raw`B의 두 번째 자식이 무엇이든 B의 최종값은 2 이하로 확정되어 있어 A=3보다 작으므로, 루트의 max(A,B)는 항상 A=3이 됩니다. 따라서 리프 9의 실제 값(9)을 몰라도 루트 값은 정확히 구해져요.` }] },
+      { id: "s4", text: String.raw`이 관찰을 일반화하면 알파-베타 가지치기의 정확성 원리가 됩니다: 어떤 MIN 노드에서 지금까지 찾은 잠정값을 $v$, 조상 MAX 노드가 이미 확보한 값을 $\alpha$라 하면, [[blank:다]] 인 순간 그 MIN 노드의 나머지 자식은 최종 결과에 영향을 줄 수 없어 가지치기할 수 있습니다(대칭적으로 MAX 노드에서는 잠정값이 조상 MIN의 $\beta$ 이상이 되는 순간 가지치기합니다).`,
+        blanks: [{ id: "다", latex: String.raw`v \le \alpha`, why: String.raw`MIN 노드의 값은 앞으로 더 내려갈 수는 있어도 올라가지는 않으므로, 이미 v ≤ α 라면 최종 MIN 값도 ≤ α 로 확정되어 조상 MAX가 이미 확보한 α보다 유리해질 수 없어요. 그래서 더 볼 필요가 없습니다.` }] },
+      { id: "s5", text: String.raw`지금까지의 논리를 다시 확인해봅시다. 완전 탐색은 리프 $3,5,2,9$ 네 개를 모두 방문하지만, 알파-베타 가지치기는 리프 $9$를 방문하지 않고도 루트값을 구했으므로 방문한 리프는 $3$개뿐입니다. 즉 방문 노드수는 $4$개에서 [[blank:라]] 개로 줄었습니다.`,
+        blanks: [{ id: "라", latex: String.raw`3`, why: String.raw`3, 5, 2 세 리프는 실제로 값을 확인해야 하지만 9는 가지치기로 건너뛰므로 총 3개의 리프만 방문합니다.` }] },
+      { id: "s6", text: String.raw`정리하면 루트의 미니맥스 값은 완전 탐색과 알파-베타 가지치기 모두 $\max(3,2)=3$으로 동일하며, 알파-베타는 이를 더 적은 노드 방문(리프 $3$개, 완전 탐색은 $4$개)으로 달성합니다. 이는 특정 예제에서만이 아니라 일반적으로 성립합니다: $v\le\alpha$(또는 대칭 조건)를 만족하는 순간 가지치기해도 조상이 반환하는 미니맥스 값은 결코 바뀌지 않기 때문입니다. 따라서 명제가 성립합니다.`, blanks: [] }
+    ]
+  },
+
+  "generating-function-recurrence": {
+    title: String.raw`생성함수로 점화식 풀기: 피보나치 수열의 닫힌 형태`,
+    domain: "disc2",
+    subLabel: String.raw`조합론 심화`,
+    explanation: String.raw`점화식을 하나씩 손으로 풀어나가는 대신, 수열 전체를 $A(x)=\sum_n a_n x^n$이라는 하나의 함수(생성함수)로 묶어버리면, 점화식은 $A(x)$가 만족하는 대수 방정식으로 바뀝니다. 이 방정식을 풀어 $A(x)$의 닫힌 형태를 구한 뒤, 부분분수분해로 다시 계수 $a_n$을 뽑아내면 점화식의 명시적인 해가 나옵니다.<br><br><strong>명제.</strong> $a_0=0, a_1=1, a_n=a_{n-1}+a_{n-2}\ (n\ge2)$로 정의된 피보나치 수열의 생성함수는 $A(x)=\sum_{n\ge0}a_nx^n = \dfrac{x}{1-x-x^2}$ 이고, 이로부터 닫힌 형태 $a_n = \dfrac{\varphi^n-\psi^n}{\sqrt5}$(단 $\varphi=\dfrac{1+\sqrt5}2,\ \psi=\dfrac{1-\sqrt5}2$, 비네의 공식)를 얻는다.`,
+    example: String.raw`<p>수열의 처음 몇 항은 $0,1,1,2,3,5,8,\ldots$ 입니다. 예컨대 $a_5=5$인데, 이것을 점화식으로 손수 계산하지 않고 닫힌 형태 공식만으로 재현할 수 있는지가 아래 증명의 목표입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 점화식 $a_n=a_{n-1}+a_{n-2}$를 만족하는 수열의 생성함수 $A(x)=\sum_{n\ge0}a_nx^n$를 구하고, 거기서 계수의 닫힌 형태를 뽑아내는 것입니다. 전략은 점화식을 $A(x)$ 자신에 대한 방정식으로 바꿔 쓰는 것입니다.`, blanks: [] },
+      { id: "s2", text: String.raw`$A(x) = a_0+a_1x+\sum_{n\ge2}a_nx^n = x + \sum_{n\ge2}(a_{n-1}+a_{n-2})x^n$ 이고, 지수를 맞춰 다시 쓰면 $\sum_{n\ge2}a_{n-1}x^n = x\sum_{m\ge1}a_mx^m = xA(x)$(단 $a_0=0$이므로 $m=0$항은 $0$), $\sum_{n\ge2}a_{n-2}x^n=x^2\sum_{k\ge0}a_kx^k=x^2A(x)$ 이므로 $A(x) = $[[blank:가]] 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`x + xA(x) + x^2A(x)`, why: String.raw`위에서 구한 세 조각(x, xA(x), x^2A(x))을 그대로 합치면 A(x)에 대한 방정식이 나와요.` }] },
+      { id: "s3", text: String.raw`이 식을 $A(x)$에 대해 정리하면 $A(x)(1-x-x^2) = x$ 이므로 $A(x) = $[[blank:나]] 입니다.`,
+        blanks: [{ id: "나", latex: String.raw`\dfrac{x}{1-x-x^2}`, why: String.raw`A(x) - xA(x) - x^2A(x) = x 를 A(x)(1-x-x^2)=x로 묶고 양변을 (1-x-x^2)으로 나누면 바로 나옵니다.` }] },
+      { id: "s4", text: String.raw`분모를 인수분해하기 위해 $\varphi=\dfrac{1+\sqrt5}2,\ \psi=\dfrac{1-\sqrt5}2$ 를 도입합니다. 이 둘은 $t^2=t+1$의 두 근이고 $\varphi+\psi=1$, $\varphi\psi=-1$ 을 만족하므로, $(1-\varphi x)(1-\psi x) = 1-(\varphi+\psi)x+\varphi\psi x^2 = $[[blank:다]] 입니다.`,
+        blanks: [{ id: "다", latex: String.raw`1 - x - x^2`, why: String.raw`φ+ψ=1, φψ=-1을 대입하면 1-(φ+ψ)x+φψx^2 = 1-x+(-1)x^2 = 1-x-x^2 가 되어, 분모와 정확히 일치함을 확인할 수 있어요.` }] },
+      { id: "s5", text: String.raw`따라서 $A(x) = \dfrac{x}{(1-\varphi x)(1-\psi x)}$ 이고, 이를 부분분수로 $\dfrac{x}{(1-\varphi x)(1-\psi x)} = \dfrac{P}{1-\varphi x}+\dfrac{Q}{1-\psi x}$ 로 놓고 계수를 맞추면 $P=\dfrac1{\sqrt5}$, $Q=-\dfrac1{\sqrt5}$ 를 얻습니다. 즉 $A(x) = \dfrac1{\sqrt5}\cdot\dfrac1{1-\varphi x} - $[[blank:라]] 입니다.`,
+        blanks: [{ id: "라", latex: String.raw`\dfrac1{\sqrt5}\cdot\dfrac1{1-\psi x}`, why: String.raw`Q=-1/√5 이므로 두 번째 항은 (1/√5)·1/(1-ψx)를 빼는 형태가 돼요.` }] },
+      { id: "s6", text: String.raw`이제 각 항을 등비급수로 전개합니다. $\dfrac1{1-\varphi x} = \sum_{n\ge0}\varphi^nx^n$, $\dfrac1{1-\psi x}=\sum_{n\ge0}\psi^nx^n$ 이므로 계수를 비교하면 $a_n = $[[blank:마]] 입니다.`,
+        blanks: [{ id: "마", latex: String.raw`\dfrac{\varphi^n-\psi^n}{\sqrt5}`, why: String.raw`A(x) = (1/√5)Σφ^n x^n - (1/√5)Σψ^n x^n = Σ[(φ^n-ψ^n)/√5]x^n 이므로 x^n의 계수, 즉 a_n은 (φ^n-ψ^n)/√5 입니다(비네의 공식).` }] },
+      { id: "s7", text: String.raw`검산해봅시다. $\varphi^2=\varphi+1,\ \varphi^3=2\varphi+1,\ \varphi^4=3\varphi+2,\ \varphi^5=5\varphi+3$ 이고 $\psi$도 같은 규칙을 만족하므로 $\varphi^5-\psi^5 = 5(\varphi-\psi) = 5\sqrt5$ 이고, 따라서 $a_5 = \dfrac{5\sqrt5}{\sqrt5} = $[[blank:바]] 로, 실제 수열의 $a_5=5$와 정확히 일치합니다. 따라서 명제가 성립합니다.`,
+        blanks: [{ id: "바", latex: String.raw`5`, why: String.raw`5√5를 √5로 나누면 5가 되어, 실제 피보나치 수열의 여섯 번째 항(0-indexed 다섯 번째) a_5=5와 정확히 일치함을 확인할 수 있어요.` }] }
+    ]
+  },
+
+  "probabilistic-method": {
+    title: String.raw`확률적 방법: 무작위 구성으로 존재성 증명하기`,
+    domain: "disc2",
+    subLabel: String.raw`조합론 심화`,
+    explanation: String.raw`어떤 조건을 만족하는 구조가 존재한다는 것을 보이고 싶은데, 그 구조를 직접 만들어내기는 너무 어렵다면 어떻게 할까요? 확률적 방법(probabilistic method)의 아이디어는 이렇습니다: 무작위로 구조를 하나 만들고, '원하지 않는 성질'이 나타나는 개수의 기댓값이 $1$보다 작다는 것만 보이면, 실제로 원하지 않는 성질이 전혀 없는 구성이(적어도 하나는) 반드시 존재한다고 결론지을 수 있습니다 — 구성을 직접 만들지 않고도요.<br><br><strong>명제.</strong> $n$개의 정점을 가진 완전그래프 $K_n$의 각 간선을 독립적으로 빨강/파랑 두 색 중 하나로 균등하게 무작위 색칠한다고 하자. 만약 $\binom{n}{k}\cdot2^{1-\binom{k}{2}} < 1$ 이면, 단색(monochromatic) $K_k$가 전혀 없는 $2$-색칠이 존재하며, 따라서 램지수는 $R(k,k) > n$ 을 만족한다.`,
+    example: String.raw`<p>$k=4$인 경우를 직접 계산해봅시다. $\binom{4}{2}=6$이므로 조건은 $\binom{n}{4}\cdot2^{-5}<1$, 즉 $\binom{n}{4}<32$ 입니다. $\binom{6}{4}=15<32$(성립)이지만 $\binom{7}{4}=35\ge32$(실패)이므로, $n=6$이 이 방법으로 밀어붙일 수 있는 한계입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $K_n$의 무작위 $2$-색칠에서 '단색 $K_k$의 개수'라는 확률변수의 기댓값을 계산하고, 그 기댓값이 $1$보다 작으면 단색 $K_k$가 하나도 없는 색칠이 반드시 존재한다는 논리를 세우는 것입니다.`, blanks: [] },
+      { id: "s2", text: String.raw`정점 $k$개로 이루어진 부분집합 $S$를 하나 고정합시다. $S$ 안의 $\binom{k}{2}$개 간선이 모두 빨강이거나 모두 파랑일 확률을 $p_S$라 하면, 각 간선이 독립이므로 $p_S = $[[blank:가]] 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`2^{1-\binom{k}{2}}`, why: String.raw`모두 빨강일 확률은 (1/2)^{binom{k}{2}}, 모두 파랑일 확률도 (1/2)^{binom{k}{2}}이고 두 사건은 동시에 일어날 수 없으므로(배반) 더하면 2×(1/2)^{binom{k}{2}} = 2^{1-binom{k}{2}} 입니다.` }] },
+      { id: "s3", text: String.raw`단색인 $k$-부분집합의 개수를 $X = \sum_{S} \mathbb{1}[S\text{가 단색}]$ 라 하면($S$는 정점 $k$개짜리 부분집합 전체를 돌며, 그 개수는 $\binom{n}{k}$개), 기댓값의 선형성에 의해 $\mathbb{E}[X] = $[[blank:나]] 입니다.`,
+        blanks: [{ id: "나", latex: String.raw`\binom{n}{k}\cdot2^{1-\binom{k}{2}}`, why: String.raw`각 indicator의 기댓값이 p_S = 2^{1-binom{k}{2}}이고 그런 항이 binom{n}{k}개 있으므로, 합의 기댓값은 그 개수만큼 곱한 값이에요.` }] },
+      { id: "s4", text: String.raw`핵심 논리 단계입니다. $X$는 항상 $0$ 이상의 정수 값을 갖는 확률변수입니다. 만약 모든 색칠 결과에서 $X\ge1$이라면 $\mathbb{E}[X]\ge1$이어야 하는데, 이는 $\mathbb{E}[X]<1$이라는 가정과 모순입니다. 따라서 $X = $[[blank:다]] 인 색칠이 적어도 하나 존재합니다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`X≥1이 모든 경우에 성립한다면 기댓값도 1 이상이어야 하는데 이는 E[X]<1과 모순이므로, 적어도 하나의 색칠 결과에서는 X=0이어야 해요(귀류법).` }] },
+      { id: "s5", text: String.raw`단색 $k$-부분집합이 전혀 없는 $2$-색칠이 존재한다는 것은, 그 색칠에서 크기 $k$인 단색 완전그래프 $K_k$가 하나도 나타나지 않는다는 뜻입니다. 램지수 $R(k,k)$의 정의(어떤 $2$-색칠을 하더라도 단색 $K_k$가 반드시 나타나는 최소 정점수)에 따라, 이런 색칠이 $n$개 정점에서 존재한다는 것은 [[blank:라]] 를 의미합니다.`,
+        blanks: [{ id: "라", latex: String.raw`R(k,k) > n`, why: String.raw`램지수는 '어떤 2색칠을 해도 단색 K_k가 반드시 생기는' 최소 n을 뜻하는데, 우리는 그런 색칠이 생기지 않는 n을 하나 찾았으므로, 그 n은 램지수보다 작다는 것, 즉 R(k,k) > n 임을 뜻해요.` }] },
+      { id: "s6", text: String.raw`$k=4$를 대입해봅시다. $\binom{k}{2}=6$이므로 조건은 $\binom{n}{4}\cdot2^{-5}<1$, 즉 $\binom{n}{4}<32$ 입니다. $\binom{6}{4}=15$이고 $15<32$이므로 조건이 성립하며, $\binom{7}{4}=35\ge32$로 조건이 깨지는 것을 고려하면 이 방법으로 밀어붙일 수 있는 가장 큰 $n$은 $n=$[[blank:마]] 입니다.`,
+        blanks: [{ id: "마", latex: String.raw`6`, why: String.raw`n=6일 때 binom{6}{4}=15<32로 조건을 만족하지만 n=7이면 binom{7}{4}=35≥32로 조건이 깨지므로, 이 방법으로 밀어붙일 수 있는 최대 n은 6이에요.` }] },
+      { id: "s7", text: String.raw`정리하면, $n=6$, $k=4$에서 $\mathbb{E}[X] = \binom{6}{4}\cdot2^{-5} = \dfrac{15}{32}<1$ 이므로 단색 $K_4$가 없는 $K_6$의 $2$-색칠이 존재하고, 따라서 $R(4,4) > 6$, 즉 $R(4,4)\ge7$ 을 얻습니다(실제 값은 $R(4,4)=18$로 이 하한보다 훨씬 크지만, 확률적 방법은 색칠을 직접 구성하지 않고도 이런 하한을 손쉽게 준다는 것이 핵심입니다). 따라서 명제가 성립합니다.`, blanks: [] }
+    ]
+  },
+
+  "combinatorial-explosion": {
+    title: String.raw`조합적 폭발: 이산 잠재공간의 경우의 수 세기`,
+    domain: "disc2",
+    subLabel: String.raw`조합론 심화`,
+    explanation: String.raw`토큰 시퀀스나 그래프 구조처럼 이산적인 선택지들의 조합으로 이루어진 공간은, 선택지 하나하나는 소박해 보여도 그것들이 곱해지는 순간 상상을 초월하는 크기로 불어납니다. 이걸 정확한 카운팅 공식으로 확인하고 나면, 왜 이런 공간에서 '모든 경우를 다 따져보는' 완전탐색이 아주 작은 문제를 빼면 사실상 불가능한지 숫자로 체감할 수 있습니다.<br><br><strong>명제.</strong> 크기 $V$인 어휘(알파벳)에서 길이 $L$인 토큰 시퀀스의 개수는 정확히 $V^L$개이다. 또한 $n$개의 이름표 붙은 정점으로 이루어진 단순그래프(simple graph)의 개수는 정확히 $2^{\binom{n}{2}}$개이다. 이 두 값은 각각 $L$과 $n$에 대해 지수함수적으로(그래프의 경우 사실상 $n^2$ 크기의 지수로) 증가하므로, 임의의 다항식 크기 탐색 예산으로는 $L$ 또는 $n$이 조금만 커져도 전체 공간을 다 훑을 수 없다.`,
+    example: String.raw`<p>알파벳 크기 $V=26$(영문 소문자), 길이 $L=20$인 문자열을 생각해봅시다. 또한 정점 $20$개짜리 그래프도 함께 세어봅니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 두 가지 이산 잠재공간 — 길이 $L$인 토큰 시퀀스의 집합과, $n$개 정점 그래프의 집합 — 의 크기를 정확한 조합 공식으로 세고, 그 크기가 완전탐색이 감당할 수 있는 수준을 훨씬 넘어선다는 것을 구체적인 숫자로 확인하는 것입니다.`, blanks: [] },
+      { id: "s2", text: String.raw`길이 $L$인 토큰 시퀀스는 위치 $1,2,\ldots,L$ 각각에 $V$개의 어휘 중 하나를 독립적으로 배정하는 것과 같습니다. 곱의 법칙(product rule)에 의해 위치마다 $V$가지 선택이 있고 위치가 $L$개이므로, 전체 시퀀스의 개수는 [[blank:가]] 개입니다.`,
+        blanks: [{ id: "가", latex: String.raw`V^L`, why: String.raw`서로 독립인 L번의 선택에서 매번 V가지 경우가 있으므로 곱의 법칙에 의해 총 경우의 수는 V를 L번 곱한 V^L이 됩니다.` }] },
+      { id: "s3", text: String.raw`이번엔 $n$개의 이름표 붙은 정점으로 만들 수 있는 단순그래프를 셉니다. 가능한 간선의 자리는 $\binom{n}{2}$개이고, 각 자리마다 '간선이 있다/없다' 두 가지 독립적인 선택이 있으므로, 그래프의 개수는 [[blank:나]] 개입니다.`,
+        blanks: [{ id: "나", latex: String.raw`2^{\binom{n}{2}}`, why: String.raw`가능한 간선 자리마다 존재/비존재 2가지이고 자리 개수가 binom{n}{2}개이므로, 그래프 하나는 이 자리들에 대한 하나의 이진 선택 조합과 정확히 대응하여 총 2^{binom{n}{2}}가지가 있어요.` }] },
+      { id: "s4", text: String.raw`$V=26$, $L=20$을 대입하면 $\log_{10}(26^{20}) = 20\log_{10}26 \approx 20\times1.415=28.3$ 이므로 문자열의 개수는 약 $2\times10^{28}$개입니다. 또한 $n=20$이면 $\binom{20}{2}=190$이므로 그래프의 개수는 $2^{190}$인데, $\log_{10}(2^{190})=190\log_{10}2\approx190\times0.301=57.2$ 이므로 그래프의 개수는 약 [[blank:다]] 개입니다.`,
+        blanks: [{ id: "다", latex: String.raw`1.6\times10^{57}`, why: String.raw`10^{57.2} = 10^{57}\times10^{0.2}\approx10^{57}\times1.585 이므로 약 1.6×10^{57}개가 됩니다.` }] },
+      { id: "s5", text: String.raw`이 크기를 체감해봅시다. 초당 $10^{12}$개(1조 개)의 후보를 확인할 수 있는 컴퓨터가 있다고 해도, $26^{20}\approx2\times10^{28}$개의 문자열을 다 훑는 데 걸리는 시간은 $\dfrac{2\times10^{28}}{10^{12}} = 2\times10^{16}$초이며, 이는 약 [[blank:라]] 년에 해당합니다(1년 $\approx3\times10^7$초).`,
+        blanks: [{ id: "라", latex: String.raw`6.7\times10^{8}`, why: String.raw`2×10^{16}초를 1년≈3×10^7초로 나누면 약 6.7×10^8년(약 6~7억 년)이 나와, 우주 나이(약 138억 년)의 몇십 분의 1에 해당하는 시간입니다.` }] },
+      { id: "s6", text: String.raw`정리하면 토큰 시퀀스 개수는 $V^L$, 그래프 개수는 $2^{\binom{n}{2}}$로 각각 $L$과 $n$에 대해 지수함수적(그래프는 사실상 $n$의 제곱에 대한 지수)으로 증가합니다. 지수함수는 어떤 다항식보다도 결국 더 빠르게 커지므로($\lim_{n\to\infty} n^k/a^n=0,\ a>1$), 고정된 다항식 규모의 탐색 예산으로는 $L$ 또는 $n$이 조금만 커져도 전체 공간을 완전탐색하는 것이 불가능해집니다. 이것이 이산 잠재공간에서 완전탐색 대신 빔서치, 몬테카를로 트리 탐색, 학습 기반 휴리스틱 등을 쓰는 근본적인 이유입니다.`, blanks: [] }
+    ]
+  },
+
+  "ramsey-theorem": {
+    title: String.raw`램지 정리: R(3,3) ≤ 6의 비둘기집 증명`,
+    domain: "disc2",
+    subLabel: String.raw`조합론 심화`,
+    explanation: String.raw`아무리 무질서하게 색칠해도, 충분히 큰 구조 안에는 반드시 어떤 질서가 숨어 있다는 것이 램지 이론(Ramsey theory)의 정신입니다. 가장 작고 유명한 사례가 '파티에 여섯 명이 있으면, 서로 다 아는 세 명이 있거나 서로 다 모르는 세 명이 반드시 있다'는 것입니다. 그래프 언어로는, $K_6$의 간선을 빨강/파랑 두 색으로 어떻게 칠하든 반드시 단색 삼각형이 생긴다는 뜻입니다.<br><br><strong>명제.</strong> 램지수 $R(3,3) \le 6$이다. 즉, $K_6$의 간선을 빨강/파랑 두 색으로 임의로 색칠하더라도, 항상 세 변이 모두 같은 색인 삼각형(단색 삼각형)이 적어도 하나 존재한다.`,
+    example: String.raw`<p>먼저 $6$이 최소한임을, 즉 $5$로는 충분하지 않음을 확인해봅시다. $K_5$의 정점을 $1,2,3,4,5$로 원형으로 배치하고, 원 위에서 바로 옆(차이가 $1$)인 정점끼리 잇는 간선(오각형 $1$-$2$-$3$-$4$-$5$-$1$)은 빨강, 한 칸 건너(차이가 $2$)인 정점끼리 잇는 간선(오각별 모양)은 파랑으로 칠하면, 어느 세 정점을 골라도 단색 삼각형이 생기지 않는다는 것이 알려져 있습니다(각 정점에서 빨강 간선도 파랑 간선도 정확히 $2$개씩이라, 대칭적인 구조 덕분에 어떤 삼각형도 두 변만 같은 색을 갖고 나머지 한 변은 반드시 다른 색이 됩니다). 따라서 $R(3,3) > 5$이고, 아래에서 보일 $R(3,3)\le6$과 합치면 $R(3,3)=6$임이 정확히 결정됩니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$K_6$의 임의의 $2$-색칠이 주어졌다고 합시다. 정점 하나 $v$를 고정하면, $K_6$에서 $v$는 나머지 다섯 정점과 모두 연결되어 있으므로 $\deg(v) = $[[blank:가]] 입니다.`,
+        blanks: [{ id: "가", latex: String.raw`5`, why: String.raw`K_6은 6개 정점의 완전그래프이므로 임의의 한 정점은 자신을 제외한 나머지 5개 정점 모두와 간선으로 연결되어 있어요.` }] },
+      { id: "s2", text: String.raw`$v$에서 나가는 $5$개의 간선은 각각 빨강 또는 파랑 두 색 중 하나입니다. 비둘기집 원리에 의해, 두 색 중 적어도 한 색은 $\lceil 5/2\rceil = $[[blank:나]] 개 이상의 간선에 쓰입니다. 일반성을 잃지 않고 그 색이 빨강이라 하고, $v$와 빨강 간선으로 연결된 세 정점을 $a,b,c$라 합시다.`,
+        blanks: [{ id: "나", latex: String.raw`3`, why: String.raw`5개를 두 그룹으로 나누면 적어도 한 그룹은 ⌈5/2⌉=3개 이상을 가져야 해요(비둘기집 원리: 5=2+3 또는 4+1, 어느 경우든 한쪽이 3 이상).` }] },
+      { id: "s3", text: String.raw`이제 $a,b,c$ 사이의 세 간선 $ab, bc, ca$를 봅니다. 만약 이 중 하나, 예를 들어 $ab$가 빨강이라면, $v$-$a$와 $v$-$b$도 이미 빨강이므로 $v,a,b$는 세 변이 모두 빨강인 [[blank:다]] 을 이룹니다.`,
+        blanks: [{ id: "다", latex: String.raw`\text{단색 삼각형}`, why: String.raw`v-a, v-b, a-b 세 변이 모두 빨강이면 정의상 v,a,b는 빨간 단색 삼각형을 이뤄요.` }] },
+      { id: "s4", text: String.raw`반대로 $ab, bc, ca$ 가 모두 빨강이 아니라면(즉 모두 파랑이라면), $a,b,c$ 세 정점 사이의 삼각형 자체가 세 변 모두 파랑인 단색 삼각형이 됩니다. 즉 두 경우(적어도 하나가 빨강 / 모두 파랑) 모두에서 단색 삼각형이 [[blank:라]] 합니다.`,
+        blanks: [{ id: "라", latex: String.raw`\text{반드시 존재}`, why: String.raw`ab,bc,ca 중 하나라도 빨강이면 앞 단계의 논리로 단색 삼각형이 생기고, 셋 다 파랑이면 a,b,c 자체가 파란 단색 삼각형이 되므로, 색칠이 어떻든 항상 단색 삼각형이 존재해요.` }] },
+      { id: "s5", text: String.raw`정리하면, $v$에서 뻗어나온 다수색(빨강, 최소 $3$개) 이웃 $a,b,c$ 사이의 관계를 따져보면 어느 경우든 단색 삼각형이 발견되므로, $K_6$의 어떤 $2$-색칠에서도 단색 삼각형이 존재합니다. 따라서 $R(3,3)\le6$ 이고, 위 예제의 $K_5$ 반례(오각형/오각별 색칠)와 합쳐 $R(3,3)=6$ 임이 정확히 결정됩니다.`, blanks: [] }
+    ]
+  },
+
+  // --- Wave 7: wave7_d2.js ---
+  "max-flow-min-cut": {
+    title: String.raw`최대유량-최소절단 정리: Max-Flow Min-Cut`,
+    domain: "disc2",
+    subLabel: String.raw`네트워크 흐름`,
+    explanation: String.raw`수도관 네트워크를 상상해보세요. 물은 시작점(source) $s$에서 나와 여러 파이프를 거쳐 도착점(sink) $t$로 흘러갑니다. 각 파이프에는 흘려보낼 수 있는 최대 용량이 있어요. 이 네트워크에 최대한 많은 물을 흘려보내고 싶다면, 얼마나 많이 보낼 수 있을까요? 흥미롭게도 이 최댓값은 네트워크를 두 조각(하나는 $s$를 포함, 하나는 $t$를 포함)으로 자를 때 그 절단선을 지나가는 파이프들의 용량 합의 최솟값과 정확히 같습니다.<br><br><strong>명제.</strong> 유한한 방향그래프 $G=(V,E)$에 용량함수 $c:E\to\mathbb{R}_{>0}$, 시작점 $s$, 도착점 $t$가 주어졌다고 하자. $f$가 실행가능한 $s$-$t$ 흐름(용량제약 $0\le f(e)\le c(e)$과 각 $v\ne s,t$에서의 흐름보존을 만족)일 때 흐름값을 $|f|$라 하고, $s\in S,\,t\in T=V\setminus S$인 분할 $(S,T)$를 절단이라 하며 그 용량을 $c(S,T)=\sum_{u\in S,v\in T}c(u,v)$라 하자. 그러면 $\max_f |f| = \min_{(S,T)} c(S,T)$이다.`,
+    example: String.raw`<p>노드 4개짜리 작은 네트워크로 감을 잡아봅시다. $s,a,b,t$ 사이에 방향 간선과 용량이 다음처럼 주어져 있습니다: $c(s,a)=10,\ c(s,b)=5,\ c(a,b)=15,\ c(a,t)=5,\ c(b,t)=10$.</p><p>가능한 절단들을 다 살펴보면 $c(\{s\},\{a,b,t\})=10+5=15$, $c(\{s,a\},\{b,t\})=5+15+5=25$, $c(\{s,b\},\{a,t\})=10+10=20$, $c(\{s,a,b\},\{t\})=5+10=15$ 이므로 최소절단값은 $15$입니다. 실제로 $f(s,a)=10,\ f(s,b)=5,\ f(a,t)=5,\ f(a,b)=5,\ f(b,t)=10$으로 흐름을 주면 $a$에서 $10=5+5$, $b$에서 $5+5=10$으로 보존이 성립하고 흐름값은 $|f|=f(a,t)+f(b,t)=5+10=15$가 되어 최소절단값과 정확히 일치합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 이 등식 $\max_f|f|=\min_{(S,T)}c(S,T)$을 두 방향의 부등식으로 나눠서 보이는 것입니다. 먼저 '흐름값은 항상 절단용량 이하'라는 약한 쌍대성(weak duality)을 보이고, 그다음 '어떤 흐름과 어떤 절단이 실제로 같아지는 순간'을 잔여그래프(residual graph)로 찾아냅니다.`, blanks: [] },
+      { id: "s2", text: String.raw`임의의 흐름 $f$와 임의의 절단 $(S,T)$을 고정하자. $s$에서 나가는 순흐름을 $S$의 경계 전체에서 합해도 값은 그대로이므로 $|f|=\sum_{u\in S,v\in T}f(u,v)-\sum_{u\in S,v\in T}f(v,u)$ 이다. 그런데 $0\le f(u,v)\le c(u,v)$이고 $f(v,u)\ge 0$이므로 $|f|\le $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`c(S,T)`, why: String.raw`각 항 f(u,v)를 최댓값 c(u,v)로, 빼는 항 f(v,u)를 0으로 바꾸면 상한이 나오고 그 합이 바로 절단용량의 정의예요.` }] },
+      { id: "s3", text: String.raw`이제 등호가 언제 성립하는지 잔여그래프로 찾는다. 흐름 $f$에 대해 잔여그래프 $G_f$는 각 간선 $(u,v)$마다 순방향 잔여용량 $c_f(u,v)=c(u,v)-f(u,v)$인 간선과, 역방향으로 흐름을 되돌릴 수 있는 잔여용량 $c_f(v,u)=$[[blank:나]] 인 간선을 갖는 그래프다. $G_f$에 $s$에서 $t$로 가는 양의 잔여용량 경로(증가경로)가 있으면, 그 경로의 병목값만큼 흐름을 더 흘려 $|f|$를 키울 수 있으므로 $f$는 아직 최대가 아니다.`,
+        blanks: [{ id: "나", latex: String.raw`f(u,v)`, why: String.raw`이미 흘려보낸 만큼(f(u,v))을 되돌릴 수 있는 여유가 바로 역방향 잔여용량이에요.` }] },
+      { id: "s4", text: String.raw`$f$가 최대흐름이라 하자. 그러면 $G_f$에는 $s$에서 $t$로 가는 증가경로가 없다. $S$를 $G_f$에서 $s$로부터 도달 가능한 정점들의 집합, $T=V\setminus S$라 하면 증가경로가 없다는 것은 바로 $t\notin S$, 즉 $(S,T)$가 유효한 절단이라는 뜻이다. 이제 $u\in S,v\in T$인 임의의 간선 $(u,v)\in E$를 보면, $v$가 $S$에서 도달 불가능하므로 잔여용량 $c_f(u,v)=0$이어야 하고, 즉 $f(u,v)=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`c(u,v)`, why: String.raw`c_f(u,v)=c(u,v)-f(u,v)=0이 되려면 f가 용량과 같아야(포화 상태여야) 해요.` }] },
+      { id: "s5", text: String.raw`같은 이유로 $v\in T,u\in S$ 방향의 간선 $(v,u)$을 보면, 만약 $f(v,u)>0$이면 잔여그래프에 역방향 간선 $u\to v$가 생겨 $v$도 $S$에서 도달 가능해져야 하는데 이는 모순이므로 $f(v,u)=0$이다. 따라서 $|f|=\sum_{u\in S,v\in T}f(u,v)-\sum f(v,u)=\sum_{u\in S,v\in T}c(u,v)-0=$[[blank:라]] 이다. 즉 이 특정 절단에서는 등호 $|f|=c(S,T)$가 성립한다.`,
+        blanks: [{ id: "라", latex: String.raw`c(S,T)`, why: String.raw`포화된 순방향 간선들의 용량 합이 곧 절단 (S,T)의 용량 정의예요.` }] },
+      { id: "s6", text: String.raw`s2에서 임의의 절단에 대해 $|f|\le c(S,T)$였으므로 특히 최소절단 $(S^*,T^*)$에 대해서도 $|f|\le c(S^*,T^*)\le c(S,T)=|f|$가 성립하고, 이는 $c(S^*,T^*)=|f|$, 즉 이 흐름 $f$의 값이 정확히 최소절단의 용량과 같다는 뜻이다. 앞의 예제에서도 최대흐름값 $15$가 절단 $(\{s\},\{a,b,t\})$의 용량 $15$와 일치했다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "hall-marriage-theorem": {
+    title: String.raw`이분매칭과 홀의 결혼정리: Hall's Marriage Theorem`,
+    domain: "disc2",
+    subLabel: String.raw`네트워크 흐름`,
+    explanation: String.raw`일꾼들을 서로 다른 일자리에 하나씩 배정하고 싶습니다. 각 일꾼은 자신이 할 수 있는 일자리 목록이 정해져 있어요. 모든 일꾼을 빠짐없이 배정할 수 있으려면 어떤 조건이 필요할까요? 직관적으로는, 어떤 일꾼들의 부분집합을 뽑아도 그들이 할 수 있는 일자리의 종류가 그 인원수보다 적으면 안 됩니다. 놀랍게도 이 간단한 조건이 필요충분조건입니다.<br><br><strong>명제(홀의 결혼정리).</strong> 이분그래프 $G=(A\cup B,E)$에서, $A$의 모든 정점을 포화시키는(빠짐없이 매칭되는) 매칭이 존재할 필요충분조건은 모든 $S\subseteq A$에 대해 $|N(S)|\ge|S|$인 것이다(단 $N(S)=\{b\in B: \exists a\in S,\,(a,b)\in E\}$).`,
+    example: String.raw`<p>$A=\{a_1,a_2,a_3\}$, $B=\{b_1,b_2,b_3\}$이고 간선은 $a_1$-$b_1$, $a_1$-$b_2$, $a_2$-$b_2$, $a_2$-$b_3$, $a_3$-$b_1$, $a_3$-$b_3$라 하자. 부분집합들을 확인하면 $|N(\{a_1\})|=|\{b_1,b_2\}|=2\ge1$, $|N(\{a_1,a_2\})|=|\{b_1,b_2,b_3\}|=3\ge2$, $|N(A)|=|\{b_1,b_2,b_3\}|=3\ge3$처럼 모든 경우에 홀의 조건이 성립한다. 실제로 $a_1$-$b_1$, $a_2$-$b_2$, $a_3$-$b_3$를 매칭으로 고르면 $A$ 전체가 포화된다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`이분그래프 $G=(A\cup B,E)$에서 $A$를 포화시키는 매칭이 존재할 필요충분조건이 홀의 조건임을 최대유량-최소절단 정리로 보이자. 소스 $s$, 싱크 $t$를 추가해 $s\to a$ (모든 $a\in A$, 용량 $1$), $a\to b$ ($(a,b)\in E$인 경우, 용량 $\infty$), $b\to t$ (모든 $b\in B$, 용량 $1$)인 유량 네트워크를 만들면, 정수 최대유량의 값은 정확히 $G$의 최대매칭 크기와 같다. 따라서 $A$를 포화시키는 매칭이 존재하는 것은 최대유량이 $|A|$인 것과 동치이며, 이를 최소절단으로 분석한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$s$에서 도달 가능하도록 남겨둘 부분집합 $A_1\subseteq A$를 고르고, $B_1\subseteq B$는 소스 쪽에 남을 정점들이라 하자. $a$-$b$ 간선의 용량이 $\infty$이므로 절단용량이 유한하려면 $N(A_1)\subseteq B_1$이어야 한다. 절단은 $s\to a$ 간선 중 $A\setminus A_1$에 해당하는 것들과 $b\to t$ 간선 중 $B_1$에 해당하는 것들을 자르므로 용량은 $|A\setminus A_1|+|B_1|$이고, 이는 $B_1=N(A_1)$으로 잡을 때(더 크게 잡을 이유가 없으므로) 최소화되어 $A_1$을 고정했을 때 최소절단값은 $|A\setminus A_1| + $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`|N(A_1)|`, why: String.raw`b→t 간선 중 잘라야 하는 최소 개수가 N(A1)에 속한 것들이라, B1=N(A1)일 때 절단용량이 최소가 돼요.` }] },
+      { id: "s3", text: String.raw`$A_1=\emptyset$을 택하면 $N(\emptyset)=\emptyset$이므로 이 절단값은 $|A|-0+0=$[[blank:나]] 이다. 즉 최소절단값은 항상 $|A|$ 이하이다.`,
+        blanks: [{ id: "나", latex: String.raw`|A|`, why: String.raw`|A\emptyset|=|A|이고 |N(∅)|=0이니 그대로 |A|가 남아요.` }] },
+      { id: "s4", text: String.raw`이제 홀의 조건이 성립한다고 하자: 모든 $S\subseteq A$에 대해 $|N(S)|\ge|S|$. 그러면 임의의 $A_1\subseteq A$에 대해 이 절단값은 $|A\setminus A_1|+|N(A_1)|\ge|A\setminus A_1|+|A_1| = $[[blank:다]] 이다. s3에서 $A_1=\emptyset$일 때 이미 정확히 $|A|$가 달성되므로, 모든 절단이 $|A|$ 이상이면서 그 값을 취하는 절단이 존재해 최소절단 $=|A|$이고, 최대유량-최소절단 정리에 의해 최대유량도 $|A|$가 되어 $A$를 포화시키는 매칭이 존재한다.`,
+        blanks: [{ id: "다", latex: String.raw`|A|`, why: String.raw`|A\A1|+|A1|은 그냥 |A|예요 (A1과 A\A1은 A를 정확히 둘로 나눈 것).` }] },
+      { id: "s5", text: String.raw`반대로 어떤 $S\subseteq A$에서 홀의 조건이 깨져 $|N(S)|<|S|$라 하자. $A_1=S$를 택하면 이 절단값은 $|A\setminus S|+|N(S)|<|A\setminus S|+|S| = $[[blank:라]] 이므로 최소절단은 $|A|$보다 작다. 최대유량-최소절단 정리에 의해 최대유량도 $|A|$보다 작아지므로, $A$의 모든 정점을 포화시키는 매칭은 존재할 수 없다.`,
+        blanks: [{ id: "라", latex: String.raw`|A|`, why: String.raw`|A\S|+|S|도 마찬가지로 그냥 |A|예요.` }] },
+      { id: "s6", text: String.raw`따라서 $A$를 포화시키는 매칭이 존재하는 것은 정확히 모든 $S\subseteq A$에 대해 $|N(S)|\ge|S|$인 것과 동치이며, 이것이 최대유량-최소절단 정리로부터 유도된 홀의 결혼정리이다. 앞의 예제에서도 모든 부분집합에 대해 홀의 조건이 성립했고 실제로 $A$ 전체를 포화시키는 매칭을 찾을 수 있었다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "normalizing-flow": {
+    title: String.raw`흐름 기반 생성모델과 변수변환공식: Normalizing Flow`,
+    domain: "disc2",
+    subLabel: String.raw`네트워크 흐름`,
+    explanation: String.raw`복잡한 데이터 분포 $p_X$를 직접 다루기는 어렵지만, 표준정규분포처럼 다루기 쉬운 기저분포 $p_Z$에서 시작해 이를 가역적인 변환 $f$로 '흘려보내' $X=f(Z)$를 만들면 어떨까요? $f$가 뒤집을 수 있는(invertible) 매끄러운 함수라면, $Z$의 확률질량이 어디로 이동했는지를 추적해서 $X$의 정확한 확률밀도를 계산할 수 있습니다. 이것이 정규화 흐름(normalizing flow)의 핵심 아이디어입니다.<br><br><strong>명제.</strong> $f:\mathbb{R}^d\to\mathbb{R}^d$가 미분가능한 전단사함수이고 그 역함수 $f^{-1}$도 미분가능하다고 하자(즉 $f$는 미분동형사상). $Z$가 밀도 $p_Z$를 갖는 확률변수이고 $X=f(Z)$라 하면, $X$의 밀도는 $z=f^{-1}(x)$에 대해 $p_X(x) = p_Z(z)\,\left|\det J_f(z)\right|^{-1}$ 이다 (단 $J_f(z)$는 $f$의 야코비안 행렬).`,
+    example: String.raw`<p>가장 단순한 1차원 예로 확인해봅시다. $Z\sim N(0,1)$이고 $f(z)=2z+1$이라는 가역 아핀변환으로 $X=2Z+1$을 만든다고 합시다. 직접 계산하면 $X\sim N(1,4)$(평균 $1$, 분산 $4$)이므로 $x=3$에서의 참값은 $p_X(3)=\frac{1}{2\sqrt{2\pi}}e^{-(3-1)^2/(2\cdot4)}=\frac{1}{2\sqrt{2\pi}}e^{-1/2}\approx 0.121$입니다. 아래에서 이 값을 변수변환공식으로부터 직접 유도해서 일치하는지 확인합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 두 가지입니다. 먼저 임의의 가역변환 $f$에 대해 $p_X(x)=p_Z(f^{-1}(x))|\det J_f(z)|^{-1}$이라는 변수변환공식을 유도하고, 그다음 왜 $f$가 반드시 가역이어야 이 계산(즉 정확한 우도 계산)이 가능한지를 살펴봅니다. 핵심 도구는 '확률은 보존된다'는 사실, 즉 어떤 영역에 대해서도 $Z$쪽 확률과 $X$쪽 확률이 같아야 한다는 것입니다.`, blanks: [] },
+      { id: "s2", text: String.raw`임의의 (가측) 영역 $A\subseteq\mathbb{R}^d$에 대해 $X\in A$일 확률은 $Z\in f^{-1}(A)$일 확률과 같다. 즉 $\Pr(X\in A)=\Pr(Z\in f^{-1}(A))=\int_{f^{-1}(A)}p_Z(z)\,dz$ 이고, 동시에 밀도의 정의로부터 $\Pr(X\in A)=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\int_A p_X(x)\,dx`, why: String.raw`확률변수 X의 밀도 p_X의 정의 자체가 바로 이 적분이에요.` }] },
+      { id: "s3", text: String.raw`다변수 치환적분 공식을 왼쪽 적분에 적용하자. $z=f^{-1}(x)$로 치환하면 $dz = \left|\det J_{f^{-1}}(x)\right|dx$이므로 $\int_{f^{-1}(A)}p_Z(z)\,dz = \int_A p_Z(f^{-1}(x))\,\left|\det J_{f^{-1}}(x)\right|dx$ 가 된다. 이것이 모든 영역 $A$에 대해 $\int_A p_X(x)dx$와 같아야 하므로, 피적분함수끼리 같아야 하고 $p_X(x) = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`p_Z(f^{-1}(x))\left|\det J_{f^{-1}}(x)\right|`, why: String.raw`두 적분이 모든 A에 대해 같으려면 적분 안의 피적분함수 자체가 같아야 해요.` }] },
+      { id: "s4", text: String.raw`역함수 정리에 의해 $J_{f^{-1}}(x) = [J_f(z)]^{-1}$이므로 $\det J_{f^{-1}}(x) = 1/\det J_f(z)$이다. 이를 대입하면 $z=f^{-1}(x)$에서 $p_X(x) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`p_Z(f^{-1}(x))\left|\det J_f(f^{-1}(x))\right|^{-1}`, why: String.raw`역함수 정리로 야코비안 역행렬식이 원래 함수의 야코비안 행렬식의 역수로 바뀐 최종 공식이에요.` }] },
+      { id: "s5", text: String.raw`예제에 적용해보자. $f(z)=2z+1$은 $1$차원이라 야코비안이 스칼라 $J_f(z)=2$이다. $x=3$이면 $z=f^{-1}(3)=(3-1)/2=1$이고, $p_Z(1)=\frac{1}{\sqrt{2\pi}}e^{-1/2}$이므로 $p_X(3) = p_Z(1)\times|2|^{-1} = \frac{1}{\sqrt{2\pi}}e^{-1/2}\times\frac12 = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`\frac{1}{2\sqrt{2\pi}}e^{-1/2}`, why: String.raw`p_Z(1)에 1/2을 곱하면 분모의 √(2π)에 2가 더 곱해져 2√(2π)가 돼요. 이는 앞서 직접 구한 참값과 정확히 일치해요.` }] },
+      { id: "s6", text: String.raw`만약 $f$가 전단사가 아니라면(즉 여러 $z$가 같은 $x=f(z)$로 매핑되면) 첫 줄의 $\Pr(Z\in f^{-1}(A))$에서 $f^{-1}(A)$가 함수가 아니라 여러 원상(preimage)들의 합집합이 되어, 밀도공식은 단일 항이 아니라 $p_X(x)=$[[blank:마]]$p_Z(z)|\det J_f(z)|^{-1}$처럼 모든 원상에 대한 합으로 바뀌어야 한다. 이렇게 되면 어느 원상을 써야 할지 알 수 없거나 계산량이 폭발하고, $f$가 전사가 아니면 $x$의 원상이 아예 없어 우도가 정의조차 안 될 수 있다. 그래서 정규화 흐름은 항상 $f$를 전단사로 설계해 단일 항 공식으로 정확한 우도를 다루기 쉽게 만든다.`,
+        blanks: [{ id: "마", latex: String.raw`\sum_{z:f(z)=x}`, why: String.raw`원상이 여러 개면 그것들을 모두 더해줘야 확률질량이 보존돼요.` }] },
+      { id: "s7", text: String.raw`따라서 명제가 성립한다 — $f$가 미분동형사상(가역이고 매끄러운 역함수를 가짐)일 때만 $p_X(x)=p_Z(f^{-1}(x))|\det J_f(f^{-1}(x))|^{-1}$라는 단일 항의 정확한 우도 공식이 성립하며, 정규화 흐름은 이런 가역층들을 여러 개 쌓아 $\log p_X(x)=\log p_Z(z) - \sum_i\log|\det J_{f_i}|$로 로그우도를 계산해 최대우도로 직접 학습한다.`, blanks: [] }
+    ]
+  },
+
+  "min-cost-flow-resource-allocation": {
+    title: String.raw`자원할당과 최소비용유량: Min-Cost Flow & MDP`,
+    domain: "disc2",
+    subLabel: String.raw`네트워크 흐름`,
+    explanation: String.raw`한정된 자원을 여러 수요처에 나눠줘야 하는데, 경로마다 단가와 한도가 다릅니다. 총비용을 최소화하며 배분하는 문제는 유량 네트워크에서 '흐름보존'을 지키며 비용을 최소화하는 최소비용유량(min-cost flow) 문제로 그대로 옮겨집니다. 흥미롭게도 강화학습의 마르코프결정과정(MDP)에서 정책이 만들어내는 상태-행동 방문빈도도 정확히 같은 형태의 흐름보존 제약을 만족합니다.<br><br><strong>명제.</strong> 할인율 $\gamma\in[0,1)$, 초기분포 $\mu_0$를 갖는 MDP에서 정책 $\pi$의 상태-행동 점유측도(occupancy measure)를 $x^\pi(s,a)=\sum_{t=0}^\infty\gamma^t\Pr(s_t=s,a_t=a\mid\pi,\mu_0)$라 하면, $x^\pi(s,a)\ge0$이고 모든 상태 $s$에 대해 $\sum_a x^\pi(s,a) = \mu_0(s)+\gamma\sum_{s',a'}P(s\mid s',a')x^\pi(s',a')$라는 유량보존제약을 만족한다. 역으로 이 제약을 만족하는 임의의 음이 아닌 $x$는 어떤 정상정책의 점유측도이며, 기대보상을 최대화하는 최적정책은 이 유량보존 다면체 위에서 선형목적함수를 최대화하는 최소비용유량류의 선형계획법 문제로 얻어진다.`,
+    example: String.raw`<p>상태 $\{s_1,s_2\}$, 행동 $\{a_1,a_2\}$인 MDP를 생각합니다. 항상 $s_1$에서 시작하므로 $\mu_0(s_1)=1,\mu_0(s_2)=0$이고 $\gamma=0.5$. 전이는 결정적으로 $s_1$에서 $a_2$를 하면 $s_2$로, $s_2$에서 $a_1$을 하면 $s_1$로 갑니다. 정책 $\pi$가 $s_1$에서는 항상 $a_2$, $s_2$에서는 항상 $a_1$을 택한다면, 궤적은 $s_1,s_2,s_1,s_2,\dots$로 진동합니다. 점유측도는 $x(s_1,a_2)=\sum_{t\text{ 짝수}}\gamma^t=\frac{1}{1-\gamma^2}=\frac43$, $x(s_2,a_1)=\sum_{t\text{ 홀수}}\gamma^t=\frac{\gamma}{1-\gamma^2}=\frac23$이고 $x(s_1,a_1)=x(s_2,a_2)=0$입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`자원할당 문제 — 공급지에서 수요지로 자원을 보낼 때 경로마다 단위비용과 용량이 정해져 있고 총비용을 최소화하는 문제 — 는 소스 $\text{src}$, 싱크 $\text{snk}$를 추가한 유량 네트워크에서 $\text{src}\to$공급지, 공급지$\to$수요지(비용=단가, 용량=최대할당량), 수요지$\to\text{snk}$ 간선을 만들고 흐름보존·용량제약 아래 총비용을 최소화하는 최소비용유량 문제로 정식화된다. 이런 흐름보존 구조가 MDP의 최적정책이 만드는 상태-행동 방문빈도(occupancy)에도 그대로 나타난다는 것을 보이자.`, blanks: [] },
+      { id: "s2", text: String.raw`정의상 $x^\pi(s,a) = \sum_{t=0}^\infty \gamma^t \Pr(s_t=s,a_t=a\mid \pi,\mu_0)$ 이다. 시각 $t$에 상태 $s$에 있으려면 $t=0$에 바로 $s$에서 시작했거나($\mu_0(s)$), 아니면 이전 시각에 어떤 $(s',a')$에서 $P(s\mid s',a')$로 전이해온 것이므로, 모든 행동에 대해 합한 상태점유 $\rho^\pi(s)=\sum_a x^\pi(s,a)$는 $\rho^\pi(s) = \mu_0(s) + \gamma\sum_{s',a'} P(s\mid s',a')\,$[[blank:가]] 를 만족한다.`,
+        blanks: [{ id: "가", latex: String.raw`x^\pi(s',a')`, why: String.raw`직전 시각에 (s',a')에 머물렀던 할인점유량 x^π(s',a')가 전이확률을 타고 s로 흘러들어오는 양이에요.` }] },
+      { id: "s3", text: String.raw`이 식은 정확히 유량보존(flow conservation) 형태다: 각 상태 $s$를 노드로 보면, $s$로 흘러들어오는 양은 외부주입 $\mu_0(s)$와 다른 노드로부터의 전이유입의 합이고, 흘러나가는 양은 $\rho^\pi(s)=\sum_a x^\pi(s,a)$이다. $x(s,a)\ge0$인 흐름들의 집합은 하나의 다면체(polytope)를 이루며, 이 다면체 위에서 총 기대보상은 $\sum_{s,a} x(s,a)\,$[[blank:나]] 로 선형함수이다.`,
+        blanks: [{ id: "나", latex: String.raw`r(s,a)`, why: String.raw`각 상태-행동 쌍의 점유량에 그때의 보상 r(s,a)를 곱해 더한 것이 총 기대(할인)보상이에요.` }] },
+      { id: "s4", text: String.raw`반대로 유량보존 제약 $\sum_a x(s,a) = \mu_0(s)+\gamma\sum_{s',a'}P(s\mid s',a')x(s',a')$과 $x(s,a)\ge0$을 만족하는 임의의 $x$가 주어지면, $\pi(a\mid s) = x(s,a)/$[[blank:다]] 로 정의된 정상정책이 정확히 이 $x$를 자신의 점유측도로 가진다. 따라서 실행가능한 점유측도의 집합과 정상정책의 집합은 사실상 같은 것이고, 기대보상을 최대화하는 최적정책은 유량보존 다면체 위에서 선형목적함수 $\sum_{s,a}x(s,a)r(s,a)$를 최대화하는 꼭짓점에서 얻어진다 — 이는 최소비용유량 LP와 동일한 구조다.`,
+        blanks: [{ id: "다", latex: String.raw`\sum_{a'} x(s,a')`, why: String.raw`π(a|s)가 확률이 되려면 분모가 상태 s의 전체 점유량 ρ(s)=Σ_{a'}x(s,a')이어야 해요.` }] },
+      { id: "s5", text: String.raw`수치로 확인해보자. 예제의 정책에서 $s_1$에서의 유량보존을 확인하면 좌변 $\rho(s_1)=x(s_1,a_1)+x(s_1,a_2)=0+\frac43=\frac43$이고, 우변은 $s_1$로 들어오는 유일한 경로인 $(s_2,a_1)\to s_1$을 통해 $\mu_0(s_1)+\gamma\cdot P(s_1\mid s_2,a_1)x(s_2,a_1) = 1+0.5\times\frac23 = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`\frac{4}{3}`, why: String.raw`1 + 0.5×(2/3) = 1 + 1/3 = 4/3으로, 좌변과 정확히 일치해요.` }] },
+      { id: "s6", text: String.raw`좌변과 우변이 정확히 일치하므로 이 점유측도는 유량보존 제약을 만족하고, 이는 자원할당 문제의 공급-수요 보존 제약과 같은 형태이다. 따라서 MDP의 최적정책이 만족하는 상태-행동 흐름은 최소비용유량 문제의 실행가능해와 동일한 구조를 가지며, 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "hamming-distance-error-correction": {
+    title: String.raw`오류정정부호와 해밍거리: Error-Correcting Codes`,
+    domain: "disc2",
+    subLabel: String.raw`부호이론 · 조합최적화`,
+    explanation: String.raw`통신 채널에 잡음이 있어 비트 몇 개가 뒤집혀도 원래 메시지를 복구하고 싶습니다. 서로 다른 부호단어(codeword)들을 충분히 '멀리' 떨어뜨려 배치해두면, 몇 개의 비트가 바뀌어도 여전히 원래 부호단어가 가장 가까운 이웃으로 남아있어 정확히 복원할 수 있습니다. 얼마나 멀리 떨어뜨려야 몇 개의 오류까지 견딜 수 있는지가 핵심 질문입니다.<br><br><strong>명제.</strong> 부호 $C\subseteq\{0,1\}^n$의 두 단어 사이 해밍거리를 $d_H(x,y)=|\{i:x_i\ne y_i\}|$, 최소거리를 $d=\min_{c\ne c'\in C}d_H(c,c')$라 하자. $t=\lfloor(d-1)/2\rfloor$라 하면, 임의의 $c\in C$를 보낸 후 $d_H(c,r)\le t$인 $r$을 받았을 때 $r$에 가장 가까운 부호단어는 $C$ 안에서 유일하게 $c$이다. 즉 최근접 부호단어 복호(nearest-codeword decoding)는 $t$개 이하의 비트 오류를 항상 정확히 정정한다.`,
+    example: String.raw`<p>반복부호 $C=\{000,111\}\subset\{0,1\}^3$은 $d=d_H(000,111)=3$이므로 $t=\lfloor2/2\rfloor=1$개의 오류를 정정할 수 있어야 합니다. 반면 $C=\{0000,1111\}\subset\{0,1\}^4$는 $d=4$이므로 $t=\lfloor3/2\rfloor=1$이며, 이 두 예제로 정정 한계와 그 한계가 왜 딱 그만큼인지를 확인합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 부호단어 $c$를 보내고 $t$개 이하의 오류로 $r$을 받았을 때, $r$을 최근접 부호단어로 복호하면 정확히 $c$로 복원됨을 보이는 것이다. 도구는 해밍거리가 진짜 거리함수라서 만족하는 삼각부등식이다.`, blanks: [] },
+      { id: "s2", text: String.raw`부호단어 $c\in C$를 전송했는데 $t$개 이하의 오류가 나서 $d_H(c,r)\le t$인 $r$을 받았다고 하자. $C$의 다른 임의의 부호단어 $c'\ne c$에 대해 삼각부등식을 적용하면 $d_H(c,c')\le d_H(c,r)+d_H(r,c')$이므로, 이를 $d_H(r,c')$에 대해 정리하면 $d_H(r,c')\ge d_H(c,c')-d_H(c,r)\ge$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`d-t`, why: String.raw`d_H(c,c')≥d(최소거리 정의)이고 d_H(c,r)≤t이므로, 가장 보수적인(작은 쪽) 값을 넣으면 d-t가 나와요.` }] },
+      { id: "s3", text: String.raw`floor 함수의 정의에서 $t=\lfloor (d-1)/2\rfloor \le (d-1)/2$이므로 $2t\le d-1$, 즉 $d\ge 2t+1$이다. 양변에서 $t$를 빼면 $d-t \ge$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`t+1`, why: String.raw`d ≥ 2t+1의 양변에서 t를 빼면 d-t ≥ t+1이 바로 나와요.` }] },
+      { id: "s4", text: String.raw`s2와 s3을 결합하면 $d_H(r,c') \ge d-t \ge t+1 > t \ge d_H(c,r)$이다. 즉 받은 단어 $r$은 원래 보낸 $c$보다 다른 어떤 부호단어 $c'$에도 항상 더 멀리 떨어져 있으므로, $r$에 가장 가까운 부호단어는 유일하게 $c$이다. 이 논증은 특정 $c'$의 선택과 무관하게 모든 $c'\ne c$에 대해 성립하므로, 최근접 부호단어 복호는 $t=\lfloor(d-1)/2\rfloor$개 이하의 오류를 항상 정확히 정정한다.`, blanks: [] },
+      { id: "s5", text: String.raw`예를 들어 반복부호 $C=\{000,111\}$은 $d=3$이므로 $t=1$개의 오류까지 정정할 수 있어야 한다. $111$을 보냈는데 한 비트가 뒤집혀 $r=101$을 받았다면 $d_H(r,111)=1$이고 $d_H(r,000)=$[[blank:다]] 이므로, 더 가까운 $111$로 정확히 복호된다.`,
+        blanks: [{ id: "다", latex: String.raw`2`, why: String.raw`101과 000은 첫째, 셋째 자리가 다르므로 해밍거리는 2예요.` }] },
+      { id: "s6", text: String.raw`$t$가 이보다 클 수 없다는 것도 확인할 수 있다. $C=\{0000,1111\}$은 $d=4$이므로 공식대로면 $t=\lfloor3/2\rfloor=1$이다. 만약 $2$개의 비트가 뒤집혀 $r=1100$을 받으면 $d_H(r,0000)=2$이고 $d_H(r,1111)=$[[blank:라]] 로 두 거리가 같아져 어느 쪽으로도 유일하게 복호할 수 없다. 이는 $t+1=2$개의 오류부터는 정정을 보장할 수 없음을 보여주며, $t=\lfloor(d-1)/2\rfloor$가 정확한 한계임을 확인해준다. 따라서 명제가 성립한다.`,
+        blanks: [{ id: "라", latex: String.raw`2`, why: String.raw`1100과 1111은 셋째, 넷째 자리가 다르므로 해밍거리는 2로, 0000까지의 거리와 같아져요.` }] }
+    ]
+  },
+
+  "lp-relaxation-integrality-gap": {
+    title: String.raw`정수계획법의 LP완화와 완화갭: LP Relaxation`,
+    domain: "disc2",
+    subLabel: String.raw`부호이론 · 조합최적화`,
+    explanation: String.raw`정수해만 허용하는 최적화 문제(정수계획법, IP)는 풀기 어려운 경우가 많습니다. 정수제약을 잠시 내려놓고 실수해를 허용한 선형계획법(LP완화)을 풀면 훨씬 쉽고 빠르지만, 그 답이 원래 정수문제의 진짜 답은 아닙니다. 대신 이 LP완화값은 항상 원래 정수최적값에 대한 유효한 한계(경계)를 제공하며, 그 경계가 얼마나 느슨할 수 있는지를 완화갭이라 부릅니다.<br><br><strong>명제.</strong> 정수계획법 $\mathrm{OPT}_{IP}=\text{opt}\{c^Tx : x\in P\cap\mathbb{Z}^n\}$ (단 $P=\{x:Ax\le b,x\ge0\}$)의 LP완화를 $\mathrm{OPT}_{LP}=\text{opt}\{c^Tx:x\in P\}$라 하면, 최소화 문제에서는 $\mathrm{OPT}_{LP}\le\mathrm{OPT}_{IP}$, 최대화 문제에서는 $\mathrm{OPT}_{LP}\ge\mathrm{OPT}_{IP}$가 항상 성립한다. 그러나 이 부등식은 일반적으로 등식이 아니며(완화갭 $>1$), 이는 구체적인 예제로 보일 수 있다.`,
+    example: String.raw`<p>삼각형 그래프 $K_3$(정점 $1,2,3$, 세 변 모두 존재)의 정점피복 문제로 LP완화값과 정수최적값이 벌어지는 예를 만들어봅니다. IP는 $\min x_1+x_2+x_3$ s.t. 각 변 $(i,j)$에서 $x_i+x_j\ge1$, $x_i\in\{0,1\}$입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`정수계획법(IP)의 실행가능영역은 $P\cap\mathbb{Z}^n$이고, 이를 완화한 선형계획법(LP)의 실행가능영역은 정수제약을 뺀 $P$ 전체다. $P\cap\mathbb{Z}^n\subseteq P$이므로, IP의 최적해는 항상 LP에서도 실행가능하다. 이 사실로부터 두 최적값 사이의 부등식과, 그 부등식이 얼마나 느슨할 수 있는지(완화갭)를 살펴보자.`, blanks: [] },
+      { id: "s2", text: String.raw`최소화 문제를 기준으로 보자. $x^*$를 IP의 최적해라 하면 $x^*\in P\cap\mathbb{Z}^n\subseteq P$이므로 $x^*$는 LP에서도 실행가능하다. LP는 더 넓은 영역 $P$ 위에서 최솟값을 구하는 것이므로, 그 최솟값은 $P$ 안의 특정한 점 $x^*$에서의 값보다 클 수 없다: $\mathrm{OPT}_{LP}\le c^Tx^* = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\mathrm{OPT}_{IP}`, why: String.raw`x*는 IP의 최적해이므로 c^Tx*의 값이 바로 OPT_IP의 정의예요.` }] },
+      { id: "s3", text: String.raw`이 부등식(최소화 기준 $\mathrm{OPT}_{LP}\le\mathrm{OPT}_{IP}$, 최대화라면 반대 방향)은 LP완화가 항상 IP최적값의 하한(또는 상한)을 준다는 뜻이다. 두 값이 얼마나 벌어질 수 있는지를 재는 것이 완화갭(integrality gap)이며, 최소화 문제에서는 $\mathrm{gap}=$[[blank:나]] 로 정의하고 항상 $1$ 이상이다.`,
+        blanks: [{ id: "나", latex: String.raw`\mathrm{OPT}_{IP}/\mathrm{OPT}_{LP}`, why: String.raw`정수최적값을 LP최적값으로 나눈 비율이 완화갭의 표준적인 정의예요.` }] },
+      { id: "s4", text: String.raw`삼각형 $K_3$의 LP완화에서 $x_1=x_2=x_3=1/2$로 두면 모든 변에서 $1/2+1/2=1\ge1$을 만족하는 실행가능해가 되어 목적값 $3/2$를 얻는다. 이것이 최적임은 쌍대문제(각 변에 매칭변수 $y_e\ge0$, $\max\sum y_e$ s.t. 각 정점에서 $\sum_{e\ni i}y_e\le1$)로 확인된다: $y_e=1/2$(세 변 모두)를 대입하면 각 정점에서 $2\times\frac12=1\le1$로 실행가능하고, 쌍대목적값도 $3\times\frac12=$[[blank:다]] 로 primal과 일치해 강쌍대성에 의해 이것이 정확한 LP최적값임이 확인된다.`,
+        blanks: [{ id: "다", latex: String.raw`3/2`, why: String.raw`세 변의 y_e=1/2를 모두 더하면 3×(1/2)=3/2예요.` }] },
+      { id: "s5", text: String.raw`반면 정수해로는 정점 하나만 골라서는(예: $x=(1,0,0)$) 변 $(2,3)$이 덮이지 않으므로 실패하고, 반드시 두 정점이 필요하다(예: $x=(1,1,0)$은 세 변 모두를 덮는다). 따라서 $\mathrm{OPT}_{IP}=2$이고, 완화갭은 $\mathrm{OPT}_{IP}/\mathrm{OPT}_{LP} = 2/(3/2) = $[[blank:라]] 이다.`,
+        blanks: [{ id: "라", latex: String.raw`4/3`, why: String.raw`2를 3/2로 나누면 2×(2/3)=4/3이에요.` }] },
+      { id: "s6", text: String.raw`이 갭 $4/3>1$은 LP완화의 최적값 $3/2$가 진짜 정수최적값 $2$보다 엄격히 작다는 것을 보여준다. 즉 LP완화는 항상 유효한 하한(최소화 기준)을 주지만 그 값 자체가 정확한 답이라는 보장은 없으며, 갭이 클수록 분기한정법이나 절단평면법 같은 추가 기법이 필요하다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "compressed-sensing-l1-recovery": {
+    title: String.raw`압축센싱과 희소복원: Compressed Sensing`,
+    domain: "disc2",
+    subLabel: String.raw`부호이론 · 조합최적화`,
+    explanation: String.raw`신호의 대부분 성분이 $0$인(희소한) 것을 알고 있다면, 성분 개수보다 훨씬 적은 측정치로도 정확히 복원할 수 있지 않을까요? 측정행렬이 '희소벡터의 길이를 거의 보존하는' 좋은 성질(RIP)을 가지면, 계산이 어려운 $\ell_0$(0이 아닌 성분 개수) 최소화 대신 볼록최적화인 $\ell_1$ 최소화만으로도 같은 답을 얻을 수 있습니다.<br><br><strong>명제.</strong> 측정행렬 $A\in\mathbb{R}^{m\times n}$이 계수 $2k$의 제한등거리성질(RIP)을 상수 $\delta_{2k}<\sqrt2-1$로 만족한다면, 임의의 $k$-희소 신호 $x$와 측정치 $y=Ax$에 대해 $\hat x=\arg\min_z\|z\|_1 \text{ s.t. } Az=y$는 $\hat x=x$를 만족한다(정확한 복원). 이 정리의 일반적 증명은 길므로, 여기서는 직관을 설명하고 아주 작은 예제에서 $\ell_1$ 최소화와 $\ell_0$ 최소화가 실제로 같은 해를 줌을 직접 계산으로 확인한다.`,
+    example: String.raw`<p>$n=3$차원에서 $1$-희소($k=1$) 신호 $x=(2,0,0)$을 측정행렬 $A=\begin{pmatrix}1&1&1\\0&1&2\end{pmatrix}$ (측정치 $m=2$개, 미지수 $3$개보다 적음)로 관측해 $y=Ax=(2,0)$을 얻었다고 합시다. 이 소수의 측정치만으로 $\ell_1$ 최소화가 원래의 희소해를 정확히 찾아내는지 확인합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`측정행렬 $A$가 계수 $k$의 제한등거리성질(RIP)을 만족한다는 것은, 모든 $k$-희소벡터 $v$(0이 아닌 성분이 $k$개 이하)에 대해 $(1-\delta_k)\|v\|_2^2 \le \|Av\|_2^2 \le$[[blank:가]] 를 만족하는 작은 상수 $\delta_k\in(0,1)$가 존재한다는 뜻이다. 직관적으로 $A$가 희소벡터들의 길이(에너지)를 거의 보존해서, 서로 다른 두 희소벡터를 같은 측정값으로 뭉개버리지 않는다는 뜻이다.`,
+        blanks: [{ id: "가", latex: String.raw`(1+\delta_k)\|v\|_2^2`, why: String.raw`RIP는 위아래 양쪽에서 길이를 거의 보존한다는 뜻이라, 상한도 (1+δ_k)‖v‖² 형태예요.` }] },
+      { id: "s2", text: String.raw`직접 $\|z\|_0$(0이 아닌 성분의 개수)을 최소화하는 것이 원하는 답이지만 이는 조합적 탐색이 필요한 NP-hard 문제다. $\ell_2$ 노름을 최소화하면 등고선이 둥근 공이라 접점이 축 위(성분이 0인 곳)에 오는 경우가 거의 없어 해가 조밀(dense)해진다. 반면 $\ell_1$ 노름의 등고선은 꼭짓점이 좌표축 위에 있는 다면체이므로, 아핀 제약 $Az=y$와 만나는 최소 $\ell_1$ 노름 지점이 꼭짓점, 즉 희소한 점일 가능성이 높다. RIP 조건은 이 직관이 실제로 정확한 복원을 보장한다는 것을 말해준다 — 일반적인 증명은 생략하고, 아주 작은 예제에서 $\ell_1$과 $\ell_0$ 최소화가 실제로 같은 답을 주는 것을 직접 확인한다.`, blanks: [] },
+      { id: "s3", text: String.raw`$Az=y$를 만족하는 모든 $z=(z_1,z_2,z_3)$는 $z_1+z_2+z_3=2$와 $z_2+2z_3=0$을 만족해야 하므로 $z_2=-2z_3$이고, 첫 식에 대입하면 $z_1 = 2 - z_2 - z_3 = 2+2z_3-z_3=$[[blank:나]] 이다. $t=z_3$라 두면 해집합은 $z(t)=(2+t,\,-2t,\,t)$인 직선이다.`,
+        blanks: [{ id: "나", latex: String.raw`2+z_3`, why: String.raw`z2=-2z3를 z1=2-z2-z3에 대입하면 z1=2+2z3-z3=2+z3이 돼요.` }] },
+      { id: "s4", text: String.raw`$t=0$이면 $z(0)=(2,0,0)$으로 $0$이 아닌 성분이 $1$개뿐이다. $t\ne0$이면 $z_3=t\ne0$이 이미 $0$이 아니고, $z_1=2+t=0$이 되려면 $t=-2$인데 그때 $z_2=4\ne0$이라 오히려 성분이 $2$개 남는다. 따라서 $0$이 아닌 성분이 가장 적은($\ell_0$ 노름이 최소인) 해는 유일하게 $t=$[[blank:다]] 인 경우이고, 이는 원래 신호 $x=(2,0,0)$과 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`1-희소인 유일한 해는 t=0에서 나오는 (2,0,0)이에요.` }] },
+      { id: "s5", text: String.raw`이제 $\ell_1$ 노름 $f(t)=\|z(t)\|_1=|2+t|+|{-2t}|+|t|=|2+t|+3|t|$를 최소화하자. $t\ge0$에서는 $f(t)=(2+t)+3t=2+4t$로 $t=0$에서 최소이고, $-2\le t\le0$에서는 $f(t)=(2+t)+3(-t)=2-2t$로 역시 $t=0$에서 최소($t$가 커질수록 감소)이며, $t<-2$에서는 $f(t)=-2-4t$가 더 큰 값만 낸다. 세 구간을 종합하면 $f(t)$는 $t=0$에서 유일한 전역최솟값 $f(0)=$[[blank:라]] 를 갖는다.`,
+        blanks: [{ id: "라", latex: String.raw`2`, why: String.raw`f(0)=|2|+0+0=2예요.` }] },
+      { id: "s6", text: String.raw`따라서 $\ell_1$ 최소화의 해도 $t=0$, 즉 $z=(2,0,0)$으로 $\ell_0$ 최소화 해와 정확히 일치하고, 이는 원래 신호 $x$와 같다. 이 작은 예제는 측정행렬이 희소벡터들을 잘 구분해줄 만큼 좋은 조건(RIP류 조건)을 가질 때, 계산이 훨씬 쉬운 볼록최적화 $\ell_1$ 최소화가 NP-hard한 $\ell_0$ 최소화와 같은 답을 준다는 압축센싱의 핵심 현상을 보여준다. 따라서 명제가 이 예제 수준에서 확인된다.`, blanks: [] }
+    ]
+  },
+
+  "tsp-policy-gradient": {
+    title: String.raw`외판원문제와 정책그래디언트: TSP as MDP`,
+    domain: "disc2",
+    subLabel: String.raw`부호이론 · 조합최적화`,
+    explanation: String.raw`외판원문제(TSP)는 도시 수가 늘어나면 가능한 투어의 수가 $(n-1)!/2$로 폭발해 완전탐색은 물론 정확한 동적계획법(Held–Karp, $O(n^2 2^n)$)조차 감당하기 어려워집니다. 하지만 '다음에 어떤 도시로 갈지'를 순차적으로 결정하는 문제로 바라보면, 강화학습의 정책그래디언트로 표본 몇 개만 뽑아 정책을 점점 더 짧은 투어 쪽으로 이동시킬 수 있습니다.<br><br><strong>명제.</strong> TSP를 상태 $s_t=(\text{현재 도시},\text{방문집합})$, 행동 $a_t=\text{다음 도시}$, 보상 $r(s_t,a_t)=-d(\cdot,\cdot)$인 MDP로 정식화하고 정책 $\pi_\theta$의 목적함수를 $J(\theta)=\mathbb{E}_{\tau\sim\pi_\theta}[R(\tau)]$(음의 기대 투어길이)라 하면, $\nabla_\theta J(\theta)=\mathbb{E}_\tau\left[R(\tau)\sum_t\nabla_\theta\log\pi_\theta(a_t\mid s_t)\right]$이다(REINFORCE). 이 추정량은 불편(unbiased)이며 표본 롤아웃만으로 계산 가능하므로, 모든 투어를 나열하지 않고도 기대 투어길이를 개선하는 방향으로 정책을 갱신할 수 있다.`,
+    example: String.raw`<p>도시 $A,B,C,D$에 거리 $d(A,B)=2,d(A,C)=9,d(A,D)=10,d(B,C)=6,d(B,D)=4,d(C,D)=3$이 주어졌다고 합시다. 서로 다른 투어는 $3$개뿐입니다: $A\text{-}B\text{-}C\text{-}D\text{-}A$는 $2+6+3+10=21$, $A\text{-}B\text{-}D\text{-}C\text{-}A$는 $2+4+3+9=18$, $A\text{-}C\text{-}B\text{-}D\text{-}A$는 $9+6+4+10=29$로, 최적은 길이 $18$입니다. 도시가 늘어나면 이런 나열 자체가 불가능해지므로, 표본 기반 정책그래디언트가 어떻게 대안이 되는지 확인합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 REINFORCE 그래디언트 공식을 유도하고, 이것이 왜 모든 투어를 나열하지 않고도 정책을 개선할 수 있게 해주는지를 논증하는 것이다. 핵심 도구는 로그미분 항등식이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$\theta$에 대한 로그미분 항등식 $\nabla_\theta \pi_\theta(\tau) = \pi_\theta(\tau)\nabla_\theta \log\pi_\theta(\tau)$를 이용하면, 목적함수 $J(\theta)=\mathbb{E}_{\tau\sim\pi_\theta}[R(\tau)]=\int R(\tau)\pi_\theta(\tau)\,d\tau$의 그래디언트는 $\nabla_\theta J(\theta)=\int R(\tau)\pi_\theta(\tau)\nabla_\theta\log\pi_\theta(\tau)\,d\tau = $[[blank:가]] 로 다시 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`\mathbb{E}_{\tau\sim\pi_\theta}[R(\tau)\nabla_\theta\log\pi_\theta(\tau)]`, why: String.raw`확률밀도 π_θ(τ)를 곱한 적분은 기댓값의 정의 그 자체예요.` }] },
+      { id: "s3", text: String.raw`궤적 $\tau=(s_0,a_0,s_1,a_1,\dots)$의 확률은 $\pi_\theta(\tau)=p(s_0)\prod_t \pi_\theta(a_t\mid s_t)P(s_{t+1}\mid s_t,a_t)$로 분해된다. TSP에서는 다음 도시로 이동하면 상태(현재 도시, 방문집합)가 결정적으로 정해지므로 $P(s_{t+1}\mid s_t,a_t)$와 $p(s_0)$는 $\theta$에 의존하지 않는다. 따라서 로그를 취해 미분하면 $\theta$-의존항만 남아 $\nabla_\theta\log\pi_\theta(\tau) = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sum_t \nabla_\theta\log\pi_\theta(a_t\mid s_t)`, why: String.raw`log를 취하면 곱이 합이 되고, θ에 의존하지 않는 P, p(s_0) 항은 미분하면 0이 되어 정책 로그확률의 합만 남아요.` }] },
+      { id: "s4", text: String.raw`이 합을 s2 식에 대입하면 REINFORCE 그래디언트를 얻는다. 여기에 행동과 무관한 임의의 기저선(baseline) $b(s_t)$를 빼도 기댓값이 바뀌지 않는데, 이는 $\sum_a\pi_\theta(a\mid s_t)=1$이 상수이므로 $\mathbb{E}_{a_t\sim\pi_\theta(\cdot|s_t)}[\nabla_\theta\log\pi_\theta(a_t\mid s_t)]=\nabla_\theta\sum_a\pi_\theta(a\mid s_t) = \nabla_\theta 1 = $[[blank:다]] 이기 때문이다. 따라서 보상 대신 이점(advantage) $A(\tau)=R(\tau)-b(s_t)$를 써도 그래디언트 기댓값은 그대로 유지되면서 분산만 줄어든다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`상수 1을 θ로 미분하면 0이에요.` }] },
+      { id: "s5", text: String.raw`예제의 4개 도시 TSP로 돌아가자. 출발지 $A$에서 첫 행동으로 $B$를 고르면 이어지는 최적 완성경로는 길이 $18$이 되어 보상 $R(B)=-18$이고, $C$를 고르면 남는 경로는 길이 $29$뿐이라 $R(C)=-29$이다. 초기 정책이 $\pi_\theta(B)=\pi_\theta(C)=0.5$라면 기저선 $b=\frac{-18+(-29)}{2}=-23.5$이고, 이점은 $A(B)=-18-(-23.5)=5.5$, $A(C)=-29-(-23.5)=$[[blank:라]] 이다. $B$가 표본추출되면 $\Delta\theta_B=\alpha A(B)(1-\pi_\theta(B))=\alpha\times5.5\times0.5>0$으로 $B$를 선택할 확률이 높아지고, $C$가 표본추출되면 $\Delta\theta_C=\alpha A(C)(1-\pi_\theta(C))<0$으로 $C$의 확률이 낮아진다.`,
+        blanks: [{ id: "라", latex: String.raw`-5.5`, why: String.raw`-29-(-23.5) = -29+23.5 = -5.5예요.` }] },
+      { id: "s6", text: String.raw`즉 REINFORCE는 $(n-1)!/2$개의 모든 투어를 나열하거나 $2^n$개의 부분집합을 전부 저장하는 동적계획법 없이도, 표본 롤아웃 몇 개만으로 s2–s4에서 증명한 불편추정량을 얻어 정책을 짧은 투어 쪽으로 점진적으로 이동시킨다. 도시 수 $n$이 커져 완전탐색이나 정확한 동적계획법이 지수적으로 불가능해져도, 표본평균 그래디언트는 다항시간에 계산되고 대수의 법칙에 의해 참 그래디언트 방향으로 수렴하므로 조합폭발을 우회한 근사해를 준다. 따라서 이 논증이 성립한다.`, blanks: [] }
+    ]
+  },
+
+  // --- Wave 7: wave7_n1.js ---
+  "lu-decomposition": {
+    title: String.raw`LU분해: 가우스소거법의 행렬 형태`,
+    domain: "num2",
+    subLabel: String.raw`직접법`,
+    explanation: String.raw`연립방정식 $Ax=b$를 서로 다른 $b$에 대해 여러 번 풀어야 하는 상황을 생각합니다. 매번 가우스소거법을 처음부터 다시 하면 낭비가 큽니다. 그런데 가우스소거법에서 실제로 $A$에 하는 일은 $b$와 무관하게 $A$ 자체를 정리하는 것뿐입니다. 이 정리 과정을 미리 한 번 기록해 두면, 이후에는 그 기록만으로 훨씬 빠르게 풀 수 있습니다.<br><br><strong>명제.</strong> 가우스소거법을 행교환 없이 수행할 수 있는(모든 선행 주소행렬식이 $0$이 아닌) 정방행렬 $A\in\mathbb{R}^{n\times n}$에 대해, 대각성분이 모두 $1$인 하삼각행렬 $L$과 상삼각행렬 $U$가 유일하게 존재하여 $A=LU$가 성립한다. 이때 $U$는 가우스소거법으로 얻는 행사다리꼴이고, $L$의 비대각성분은 소거에 쓰인 곱셈계수(multiplier)들이다.`,
+    example: String.raw`<p>다음 $3\times3$ 행렬을 직접 소거해서 $L,U$를 구해봅니다.</p>
+$$A=\begin{pmatrix}2&1&1\\4&3&3\\8&7&9\end{pmatrix}$$
+<p>1열을 정리합니다. 2행에서 1행의 $2$배를 빼고($R_2\to R_2-2R_1$), 3행에서 1행의 $4$배를 뺍니다($R_3\to R_3-4R_1$). 곱셈계수 $2,4$를 각각 $l_{21},l_{31}$로 기억해 둡니다.</p>
+$$\begin{pmatrix}2&1&1\\0&1&1\\0&3&5\end{pmatrix}$$
+<p>이제 2열을 정리합니다. 3행에서 2행의 $3$배를 뺍니다($R_3\to R_3-3R_2$). 곱셈계수 $3$을 $l_{32}$로 기억해 둡니다.</p>
+$$U=\begin{pmatrix}2&1&1\\0&1&1\\0&0&2\end{pmatrix},\qquad L=\begin{pmatrix}1&0&0\\2&1&0\\4&3&1\end{pmatrix}$$
+<p>실제로 곱해서 확인해봅니다. $L$의 3행 $(4,3,1)$과 $U$를 곱하면 $4(2,1,1)+3(0,1,1)+1(0,0,2)=(8,4,4)+(0,3,3)+(0,0,2)=(8,7,9)$가 되어 $A$의 3행과 정확히 일치합니다. 1행, 2행도 같은 방식으로 확인하면 $A=LU$가 성분별로 정확히 성립함을 알 수 있습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$b$가 여러 번 바뀌어도 매번 가우스소거를 처음부터 다시 하지 않도록, $A=LU$로 미리 분해해 두는 것이 목표다. $L$은 대각성분이 $1$인 하삼각행렬이고 $U$는 가우스소거의 최종 결과인 상삼각행렬이다. 소거 과정 자체가 이 분해를 어떻게 만들어내는지 확인한다.`, blanks: [] },
+      { id: "s2", text: String.raw`1열을 소거하는 연산 $R_i\to R_i-l_{i1}R_1$ $(i=2,\dots,n)$은 왼쪽에서 단위하삼각행렬 $E_1$(항등행렬의 $(i,1)$성분을 $-l_{i1}$로 바꾼 행렬)을 곱하는 것과 같다. 2열을 소거하는 연산도 마찬가지로 단위하삼각행렬 $E_2$를 곱하는 것과 같다. 이 과정을 끝까지 반복하면 $E_{n-1}\cdots E_2E_1A=U$가 된다. $3\times3$ 예에서는 $E_2E_1A=U$이다.`, blanks: [] },
+      { id: "s3", text: String.raw`양변 왼쪽에 $(E_2E_1)^{-1}$을 곱하면 $A = $[[blank:가]]$U$ 이다. 이 역행렬을 $L$이라 정의한다.`,
+        blanks: [{ id: "가", latex: String.raw`(E_2E_1)^{-1}`, why: String.raw`$E_2E_1A=U$의 양변 왼쪽에 그 역행렬을 곱하면 $A$만 남는다. 이 역행렬을 $L$이라 이름 붙인다.` }] },
+      { id: "s4", text: String.raw`$E_1$은 $1$열 아래에만, $E_2$는 $2$열 아래에만 $0$이 아닌 비대각성분을 갖는 단위하삼각행렬이므로, 그 역행렬 $E_1^{-1},E_2^{-1}$도 같은 자리에서 부호만 바뀐($+l_{i1},+l_{32}$) 단위하삼각행렬이다. 두 역행렬은 서로 다른 열에만 값을 가지므로 곱해도 간섭이 생기지 않는다: $L=E_1^{-1}E_2^{-1}$의 $(i,1)$성분은 그대로 $l_{i1}$, $(3,2)$성분은 그대로 $l_{32}$로 남는다.`, blanks: [] },
+      { id: "s5", text: String.raw`일반적으로 $i>j$일 때 $L$의 $(i,j)$성분은 $j$열을 소거할 때 $i$행에 사용한 곱셈계수와 같다: $L_{ij} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`l_{ij}`, why: String.raw`$L$의 아래쪽 성분은 정확히 그 소거단계에서 사용한 곱셈계수와 같다는 것이 s4의 결론이다.` }] },
+      { id: "s6", text: String.raw`유일성을 보자. 만약 $A=L_1U_1=L_2U_2$처럼 두 방식으로 분해된다면, $A$가 가역이므로 $L_1,U_1,L_2,U_2$도 모두 가역이고 $L_2^{-1}L_1=U_2U_1^{-1}$이다. 좌변은 단위하삼각행렬끼리의 곱이라 단위하삼각행렬이고, 우변은 상삼각행렬끼리의 곱이라 상삼각행렬이다. 하삼각이면서 동시에 상삼각인 행렬은 대각행렬뿐이고 좌변의 대각성분은 모두 $1$이므로 $L_2^{-1}L_1 = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`I`, why: String.raw`하삼각이면서 상삼각인 행렬은 대각행렬이고, 단위하삼각행렬끼리의 곱이므로 대각성분도 모두 $1$이다. 따라서 항등행렬이다.` }] },
+      { id: "s7", text: String.raw`$L_2^{-1}L_1=I$이므로 $L_1=L_2$이고 곧바로 $U_1=U_2$도 따라 나온다. 따라서 $LU$분해는 존재하면 유일하다. 실전에서는 한 번 $A=LU$를 구해두면 $b$가 바뀔 때마다 $Ly=b$를 전진대입으로, $Ux=y$를 후진대입으로 풀어 매번 $O(n^2)$ 만에 새 해를 얻을 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "정방행렬의 가역성과 행렬식", slug: "determinant-invertibility" }]
+  },
+
+  "qr-decomposition": {
+    title: String.raw`QR분해와 최소제곱: 정규방정식 없이 풀기`,
+    domain: "num2",
+    subLabel: String.raw`직접법`,
+    explanation: String.raw`관측이 많고 미지수가 적은 과결정계 $Ax=b$($A\in\mathbb{R}^{m\times n}$, $m>n$)는 보통 정확히 풀 수 없어서 잔차 $\|Ax-b\|$를 최소화하는 $x$를 찾습니다. 정규방정식 $A^TAx=A^Tb$를 직접 풀 수도 있지만 $A^TA$를 계산하면 조건수가 제곱이 되어 수치적으로 불안정해집니다. gram-schmidt로 $A$의 열을 정규직교화하면 이 문제를 더 안정적으로 풀 수 있습니다.<br><br><strong>명제.</strong> 열이 일차독립인 $A\in\mathbb{R}^{m\times n}$($m\ge n$)은 $A=QR$로 분해된다. 여기서 $Q\in\mathbb{R}^{m\times n}$은 정규직교열을 갖고 $R\in\mathbb{R}^{n\times n}$은 대각성분이 양수인 상삼각행렬이다. 이때 최소제곱해는 $Rx=Q^Tb$를 풀어 얻어진다.`,
+    example: String.raw`<p>세 점 $(0,1),(1,2),(2,0)$에 직선 $y=x_1+x_2t$를 최소제곱으로 맞춰봅니다. 설계행렬과 목표벡터는 다음과 같습니다.</p>
+$$A=\begin{pmatrix}1&0\\1&1\\1&2\end{pmatrix},\qquad b=\begin{pmatrix}1\\2\\0\end{pmatrix}$$
+<p>그람-슈미트로 $A$의 열을 정규직교화합니다. $u_1=(1,1,1)$, $\|u_1\|=\sqrt3$이므로 $q_1=(1,1,1)/\sqrt3$. 둘째 열 $a_2=(0,1,2)$에서 $q_1$ 방향 성분을 빼면 $a_2-(a_2\cdot q_1)q_1=(0,1,2)-1\cdot(1,1,1)=(-1,0,1)$이고 그 노름은 $\sqrt2$이므로 $q_2=(-1,0,1)/\sqrt2$.</p>
+$$Q=\begin{pmatrix}1/\sqrt3&-1/\sqrt2\\1/\sqrt3&0\\1/\sqrt3&1/\sqrt2\end{pmatrix},\qquad R=\begin{pmatrix}\sqrt3&\sqrt3\\0&\sqrt2\end{pmatrix}$$
+<p>$Q^Tb$를 계산하면 $q_1\cdot b=(1+2+0)/\sqrt3=\sqrt3$, $q_2\cdot b=(-1+0+0)/\sqrt2=-1/\sqrt2$입니다. $Rx=Q^Tb$, 즉 $\sqrt2x_2=-1/\sqrt2$에서 $x_2=-1/2$, $\sqrt3x_1+\sqrt3x_2=\sqrt3$에서 $x_1+x_2=1$이므로 $x_1=3/2$. 정규방정식 $A^TAx=A^Tb$로 직접 확인해도 $\begin{pmatrix}3&3\\3&5\end{pmatrix}x=\begin{pmatrix}3\\2\end{pmatrix}$이고 같은 해 $x=(3/2,-1/2)$를 줍니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $\|Ax-b\|$를 최소화하는 $x$를 $A^TA$를 계산하지 않고 구하는 것이다. $A=QR$로 분해되면 이 최소제곱 문제가 삼각시스템 하나로 바뀐다는 것을 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`그람-슈미트 과정은 $A$의 열 $a_1,\dots,a_n$으로부터 정규직교벡터 $q_1,\dots,q_n$을 만들고, 각 $a_j$를 $q_1,\dots,q_j$의 일차결합으로 표현하는 계수들을 $R$의 $j$열에 채운다. 이렇게 얻은 $Q=[q_1\ \cdots\ q_n]$과 상삼각행렬 $R$은 $A=QR$을 만족하고, $A$의 열이 일차독립이므로 $R$의 대각성분은 모두 $0$이 아니어서 $R$은 가역이다. 또한 $Q$의 열이 정규직교이므로 $Q^TQ=I_n$이다.`, blanks: [] },
+      { id: "s3", text: String.raw`$Q$의 열들이 span하는 공간과 수직인 방향들을 추가로 뽑아 $Q_\perp\in\mathbb{R}^{m\times(m-n)}$을 만들면 $\hat Q=[Q\ Q_\perp]\in\mathbb{R}^{m\times m}$은 정사각 직교행렬이다. 직교행렬을 곱해도 노름은 변하지 않으므로 임의의 벡터 $v$에 대해 $\|\hat Q^Tv\|=$[[blank:가]] 이다. 따라서 $\|Ax-b\|=\|\hat Q^T(Ax-b)\|$이다.`,
+        blanks: [{ id: "가", latex: String.raw`\|v\|`, why: String.raw`직교행렬은 노름을 보존하는 선형변환이므로 $\hat Q^Tv$의 노름은 원래 $v$의 노름과 같다.` }] },
+      { id: "s4", text: String.raw`$A$의 열은 모두 $Q$의 열공간 안에 있으므로 $Q_\perp$와는 수직이다. 즉 $Q_\perp^TA = $[[blank:나]] 이다. 따라서 $\hat Q^TA=\begin{pmatrix}Q^TA\\Q_\perp^TA\end{pmatrix}=\begin{pmatrix}R\\0\end{pmatrix}$이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$A$의 열은 모두 $Q$의 열공간 안에 있으므로 그와 직교하는 $Q_\perp$ 방향 성분은 $0$이다.` }] },
+      { id: "s5", text: String.raw`따라서 $\hat Q^T(Ax-b)=\begin{pmatrix}Rx-Q^Tb\\-Q_\perp^Tb\end{pmatrix}$이고 $\|Ax-b\|^2=\|Rx-Q^Tb\|^2+\|Q_\perp^Tb\|^2$이다. 둘째 항은 $x$와 무관한 상수이므로, $\|Ax-b\|^2$를 최소화하는 것은 $\|Rx-Q^Tb\|^2$를 최소화하는 것과 같다. $R$이 가역이므로 이 값은 $Rx = $[[blank:다]] 일 때 정확히 $0$이 되어 최솟값을 이룬다.`,
+        blanks: [{ id: "다", latex: String.raw`Q^Tb`, why: String.raw`$R$이 가역행렬이므로 $Rx-Q^Tb$를 정확히 $0$으로 만드는 $x$가 유일하게 존재하고, 그때 최소제곱 목적함수가 최솟값을 갖는다.` }] },
+      { id: "s6", text: String.raw`정리하면 최소제곱해는 $Rx=Q^Tb$라는 상삼각시스템을 후진대입으로 풀어 얻어지고, $A^TA$를 계산하지 않으므로 정규방정식 방식보다 수치적으로 더 안정적이다. 예제에서 얻은 $x=(3/2,-1/2)$가 정규방정식으로 직접 푼 것과 정확히 일치함도 확인했다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "그람-슈미트 정규직교화", slug: "gram-schmidt" }]
+  },
+
+  "cholesky-decomposition": {
+    title: String.raw`촐레스키분해와 상관된 표본 생성`,
+    domain: "num2",
+    subLabel: String.raw`직접법`,
+    explanation: String.raw`다변량 정규분포 $N(\mu,\Sigma)$에서 표본을 뽑고 싶다면, 표준정규 난수는 쉽게 만들 수 있지만 성분끼리 상관된 표본은 그렇지 않습니다. 대칭 양의정부호 행렬 $\Sigma$를 하삼각행렬의 제곱 형태로 쪼갤 수 있다면, 독립적인 표준정규 표본에 이 하삼각행렬을 곱하는 것만으로 원하는 상관구조를 그대로 만들어낼 수 있습니다.<br><br><strong>명제.</strong> 대칭 양의정부호 행렬 $\Sigma\in\mathbb{R}^{n\times n}$에 대해 대각성분이 양수인 하삼각행렬 $L$이 유일하게 존재하여 $\Sigma=LL^T$이다. 이때 $z\sim N(0,I_n)$이면 $x=\mu+Lz$는 $N(\mu,\Sigma)$를 따른다.`,
+    example: String.raw`<p>두 변수의 공분산행렬이 다음과 같다고 합시다.</p>
+$$\Sigma=\begin{pmatrix}4&2\\2&5\end{pmatrix}$$
+<p>$L=\begin{pmatrix}l_{11}&0\\l_{21}&l_{22}\end{pmatrix}$이라 두고 $LL^T=\Sigma$를 성분별로 풀어봅니다. $(1,1)$성분: $l_{11}^2=4$이므로 $l_{11}=2$. $(2,1)$성분: $l_{21}l_{11}=2$이므로 $l_{21}=1$. $(2,2)$성분: $l_{21}^2+l_{22}^2=5$이므로 $l_{22}^2=5-1=4$, $l_{22}=2$.</p>
+$$L=\begin{pmatrix}2&0\\1&2\end{pmatrix}$$
+<p>검산하면 $LL^T=\begin{pmatrix}2&0\\1&2\end{pmatrix}\begin{pmatrix}2&1\\0&2\end{pmatrix}=\begin{pmatrix}4&2\\2&5\end{pmatrix}=\Sigma$로 정확히 일치합니다. 표준정규 표본 $z=(1,0)$을 뽑았다면 $x=Lz=(2,1)$이 되고, $z=(0,1)$이라면 $x=(0,2)$가 됩니다. $z$의 두 성분은 서로 독립이었지만 $x=Lz$의 두 성분은 공분산 $2$만큼 얽히게 됩니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 대칭 양의정부호 $\Sigma$를 $\Sigma=LL^T$ 꼴로 쪼개는 것이다. $n=1$일 때는 $\Sigma=(\sigma_{11})$이 스칼라이고 양의정부호 조건이 곧 $\sigma_{11}>0$이므로 $l_{11}=\sqrt{\sigma_{11}}$로 자명하게 존재한다. $n-1$차원에서 존재한다고 가정하고 $n$차원에서 이를 어떻게 만들어내는지 살펴본다(귀납법).`, blanks: [] },
+      { id: "s2", text: String.raw`$\Sigma$를 $\Sigma=\begin{pmatrix}\sigma_{11}&v^T\\v&\Sigma_{22}\end{pmatrix}$로 블록 분할한다. $\Sigma$가 양의정부호이므로 $e_1^T\Sigma e_1=\sigma_{11}>0$이다. $L$의 첫 열을 $\left(\sqrt{\sigma_{11}},\,v/\sqrt{\sigma_{11}}\right)^T$로 두고, 이 첫 열이 만드는 외적을 $\Sigma$에서 빼서 남는 부분(슈어보수)을 살펴본다.`, blanks: [] },
+      { id: "s3", text: String.raw`직접 계산하면 $\Sigma$에서 첫 열의 외적을 뺀 $(2,2)$블록은 $\Sigma_{22} - $[[blank:가]] 이다. 이를 $S$라 부른다(슈어보수).`,
+        blanks: [{ id: "가", latex: String.raw`\dfrac{vv^T}{\sigma_{11}}`, why: String.raw`$L$의 첫 열이 만드는 외적의 $(2,2)$블록이 $vv^T/\sigma_{11}$이므로 이를 빼서 남는 것이 슈어보수다.` }] },
+      { id: "s4", text: String.raw`$S$가 다시 양의정부호임을 보인다. $z=(x,y)\ne0$에서 $x=-v^Ty/\sigma_{11}$로 두면 $z^T\Sigma z=\sigma_{11}x^2+2xv^Ty+y^T\Sigma_{22}y$인데, 이 $x$를 대입해 완전제곱으로 정리하면 앞의 두 항이 합쳐져 $z^T\Sigma z = y^T\Sigma_{22}y - $[[blank:나]]$ = y^TSy$가 된다.`,
+        blanks: [{ id: "나", latex: String.raw`\dfrac{(v^Ty)^2}{\sigma_{11}}`, why: String.raw`$\sigma_{11}x^2+2xv^Ty=\sigma_{11}(x+v^Ty/\sigma_{11})^2-(v^Ty)^2/\sigma_{11}$이고 $x=-v^Ty/\sigma_{11}$을 골랐으므로 첫 항이 사라지고 이 항만 남는다.` }] },
+      { id: "s5", text: String.raw`$y\ne0$이면 이때의 $z=(x,y)$도 $0$이 아니므로 $\Sigma$가 양의정부호라는 가정에서 $z^T\Sigma z>0$, 즉 $y^TSy>0$이다. 이는 모든 $y\ne0$에서 성립하므로 $S$도 양의정부호($(n-1)\times(n-1)$)이다. 귀납가정에 의해 $S=L_{22}L_{22}^T$인 하삼각행렬 $L_{22}$가 존재하므로, $L=\begin{pmatrix}\sqrt{\sigma_{11}}&0\\v/\sqrt{\sigma_{11}}&L_{22}\end{pmatrix}$로 정의한다.`, blanks: [] },
+      { id: "s6", text: String.raw`이렇게 만든 $L$이 실제로 $LL^T=\Sigma$를 주는지 $(2,2)$블록을 확인한다. $LL^T$의 $(2,2)$블록은 $\dfrac{vv^T}{\sigma_{11}}+L_{22}L_{22}^T=\dfrac{vv^T}{\sigma_{11}}+S$인데, $S=\Sigma_{22}-vv^T/\sigma_{11}$이었으므로 이 두 항을 더하면 $vv^T/\sigma_{11}$끼리 상쇄되어 $\dfrac{vv^T}{\sigma_{11}}+S = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\Sigma_{22}`, why: String.raw`$S=\Sigma_{22}-vv^T/\sigma_{11}$이므로 $vv^T/\sigma_{11}$을 더하면 그 항이 상쇄되고 $\Sigma_{22}$만 남는다.` }] },
+      { id: "s7", text: String.raw`나머지 블록도 같은 방식으로 확인되어 $\Sigma=LL^T$가 성립하고, 대각성분을 항상 양수로 고르면 $L$은 유일하다. 이제 $x=\mu+Lz$, $z\sim N(0,I_n)$을 보면 $x$는 가우스 확률변수 $z$의 아핀변환이므로 그 자체로 정규분포를 따르고, 평균은 $E[x]=\mu+LE[z]=\mu$, 공분산은 $E[(x-\mu)(x-\mu)^T]=LE[zz^T]L^T=LI_nL^T=LL^T=\Sigma$이다. 따라서 $x\sim N(\mu,\Sigma)$이고 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "bellman-linear-system": {
+    title: String.raw`벨만방정식의 선형시스템 풀이와 가역성`,
+    domain: "num2",
+    subLabel: String.raw`직접법`,
+    explanation: String.raw`정책 $\pi$를 고정하면 가치함수 $V^\pi$는 벨만 기대방정식 $V^\pi(s)=R(s)+\gamma\sum_{s'}P(s'|s)V^\pi(s')$을 만족합니다. 이건 사실 $V^\pi$에 대한 연립일차방정식입니다. 굳이 반복적으로 갱신하지 않아도 이 선형시스템을 직접 풀어 $V^\pi$를 정확히 구할 수 있습니다. 다만 그러려면 이 시스템이 항상 유일한 해를 갖는다는 사실, 즉 계수행렬이 항상 가역이라는 사실이 먼저 확인되어야 합니다.<br><br><strong>명제.</strong> 유한 상태공간에서 정책 $\pi$에 대한 전이확률행렬을 $P$(각 행의 합이 $1$인 확률행렬), 보상을 $R$, 할인율을 $0\le\gamma<1$이라 하면 벨만 기대방정식은 선형시스템 $(I-\gamma P)V=R$이고, $I-\gamma P$는 항상 가역이어서 $V^\pi=(I-\gamma P)^{-1}R$이 유일하게 존재한다.`,
+    example: String.raw`<p>상태 $\{1,2\}$인 2상태 MDP에서 $\gamma=0.5$, $P=\begin{pmatrix}0.8&0.2\\0.4&0.6\end{pmatrix}$, $R=(2,0)$이라 합시다.</p>
+$$I-\gamma P=\begin{pmatrix}1-0.4&-0.1\\-0.2&1-0.3\end{pmatrix}=\begin{pmatrix}0.6&-0.1\\-0.2&0.7\end{pmatrix}$$
+<p>행렬식은 $0.6\times0.7-(-0.1)\times(-0.2)=0.42-0.02=0.4$이므로 역행렬이 존재합니다.</p>
+$$(I-\gamma P)^{-1}=\frac1{0.4}\begin{pmatrix}0.7&0.1\\0.2&0.6\end{pmatrix}=\begin{pmatrix}1.75&0.25\\0.5&1.5\end{pmatrix}$$
+<p>$V=(I-\gamma P)^{-1}R=\begin{pmatrix}1.75&0.25\\0.5&1.5\end{pmatrix}\begin{pmatrix}2\\0\end{pmatrix}=(3.5,\,1.0)$입니다. 검산하면 $V_1=2+0.5(0.8\times3.5+0.2\times1.0)=2+0.5\times3=3.5$, $V_2=0+0.5(0.4\times3.5+0.6\times1.0)=0.5\times2=1.0$으로 벨만방정식을 정확히 만족합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`벨만 기대방정식을 행렬로 쓰면 $V=R+\gamma PV$이다. 목표는 이 식을 $V$에 대한 선형시스템으로 정리하고, 그 계수행렬이 항상 가역임을 보여 반복 없이 $V$를 직접 구할 수 있음을 확인하는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$V=R+\gamma PV$의 양변에서 $\gamma PV$를 이항하면 $(I-\gamma P)V = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`R`, why: String.raw`$\gamma PV$항을 좌변으로 옮기면 $V-\gamma PV=(I-\gamma P)V$가 되고 우변에는 $R$만 남는다.` }] },
+      { id: "s3", text: String.raw`$I-\gamma P$가 항상 가역인지 확인해야 한다. 먼저 $P$가 확률행렬이면 그 고유값의 크기가 항상 $1$ 이하임을 보인다. $Pv=\lambda v$이고 $|v_k|=\max_i|v_i|$인 성분 $k$를 고르면 $|\lambda||v_k|=\left|\sum_jP_{kj}v_j\right|\le\sum_jP_{kj}|v_j|\le\sum_jP_{kj}|v_k| = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`|v_k|`, why: String.raw`$P$의 각 행의 합은 $1$이므로($\sum_jP_{kj}=1$) $|v_k|$를 그대로 곱한 값과 같다.` }] },
+      { id: "s4", text: String.raw`$v_k\ne0$이므로 양변을 $|v_k|$로 나누면 $|\lambda|\le1$이다. 즉 $P$의 모든 고유값 $\lambda_i$는 $|\lambda_i|\le1$을 만족한다.`, blanks: [] },
+      { id: "s5", text: String.raw`$I-\gamma P$의 고유값은 $1-\gamma\lambda_i$ 꼴인데 $0\le\gamma<1$이고 $|\lambda_i|\le1$이므로 $|\gamma\lambda_i|\le\gamma<1$이다. 따라서 $1-\gamma\lambda_i \ne $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`$\gamma\lambda_i$의 크기가 항상 $1$보다 작으므로 $1-\gamma\lambda_i$는 결코 $0$이 될 수 없다.` }] },
+      { id: "s6", text: String.raw`정방행렬의 행렬식은 고유값(중복 포함)의 곱과 같은데, $I-\gamma P$의 모든 고유값이 $0$이 아니므로 그 곱인 $\det(I-\gamma P)$도 $0$이 아니다. 따라서 $I-\gamma P$는 항상 가역이다.`, blanks: [] },
+      { id: "s7", text: String.raw`$I-\gamma P$가 가역이므로 $(I-\gamma P)V=R$은 유일한 해 $V^\pi=(I-\gamma P)^{-1}R$을 갖는다. 예제에서 이 공식으로 직접 구한 $V=(3.5,1.0)$이 벨만방정식을 정확히 만족함도 확인했다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "벨만 기대방정식의 1스텝 갱신", slug: "markov-mdp" }, { label: "벨만 연산자의 수렴성 논증", slug: "value-iteration-contraction" }]
+  },
+
+  "power-iteration": {
+    title: String.raw`거듭제곱법: 지배적 고유벡터로의 수렴`,
+    domain: "num2",
+    subLabel: String.raw`고유값 알고리즘`,
+    explanation: String.raw`행렬 $A$의 가장 큰 고유값에 대응하는 고유벡터를 알고 싶은데, 고유값 방정식을 직접 풀기는 번거롭습니다. 그런데 아무 벡터에나 $A$를 반복해서 곱하고 매번 크기를 $1$로 맞춰주기만 해도, 그 방향이 저절로 지배적 고유벡터 쪽으로 정렬됩니다.<br><br><strong>명제.</strong> 대칭행렬 $A\in\mathbb{R}^{n\times n}$의 고유값이 $|\lambda_1|>|\lambda_2|\ge\cdots\ge|\lambda_n|$이고 초기벡터 $v_0$가 $\lambda_1$의 고유공간 방향 성분을 가지면($c_1\ne0$), $v_{k+1}=Av_k/\|Av_k\|$로 정의되는 반복은 $k\to\infty$일 때 (부호를 맞추면) $\lambda_1$의 고유벡터 방향으로 수렴한다.`,
+    example: String.raw`<p>$A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$의 고유값은 $3$과 $1$이고 각각의 고유벡터는 $(1,1)/\sqrt2$와 $(1,-1)/\sqrt2$입니다. $v_0=(1,0)$에서 시작해 거듭제곱법을 돌려봅니다.</p>
+<p>$Av_0=(2,1)$, $\|Av_0\|=\sqrt5\approx2.2361$이므로 $v_1\approx(0.8944,0.4472)$입니다.</p>
+<p>$Av_1\approx(2.2360,1.7888)$, $\|Av_1\|\approx2.8636$이므로 $v_2\approx(0.7809,0.6247)$입니다.</p>
+<p>$Av_2\approx(2.1864,2.0303)$, $\|Av_2\|\approx2.9837$이므로 $v_3\approx(0.7328,0.6805)$입니다.</p>
+<p>참고유벡터 $(1,1)/\sqrt2\approx(0.7071,0.7071)$에 $v_1,v_2,v_3$가 점점 가까워지는 것을 볼 수 있습니다. 동시에 $\|Av_k\|$의 값 $2.236,\,2.864,\,2.984$도 참고유값 $3$에 점점 가까워지고 있습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$A$가 대칭이므로 고유벡터 $e_1,\dots,e_n$을 정규직교기저로 고를 수 있고, 초기벡터를 이 기저로 전개하면 $v_0=\sum_{i=1}^nc_ie_i$이다. 목표는 $A$를 반복해서 곱하고 정규화하는 과정이 왜 $e_1$ 방향으로 수렴하는지를 이 전개로부터 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$A$를 $e_i$에 곱하면 $\lambda_i$배가 되므로, $A$를 $k$번 곱하면 $v_0=\sum_ic_ie_i$는 $A^kv_0 = \sum_{i=1}^n$[[blank:가]]$e_i$가 된다.`,
+        blanks: [{ id: "가", latex: String.raw`c_i\lambda_i^k`, why: String.raw`고유벡터 $e_i$에 $A$를 곱하면 $\lambda_i$배가 되므로, $k$번 곱하면 $\lambda_i^k$배가 된다.` }] },
+      { id: "s3", text: String.raw`$\lambda_1^k$로 묶어내면 $A^kv_0 = \lambda_1^k\left(c_1e_1+\sum_{i=2}^nc_i\left(\dfrac{\lambda_i}{\lambda_1}\right)^ke_i\right)$이다.`, blanks: [] },
+      { id: "s4", text: String.raw`$i\ge2$일 때 $|\lambda_1|>|\lambda_i|$이므로 $|\lambda_i/\lambda_1|<1$이고, 따라서 $k\to\infty$일 때 $(\lambda_i/\lambda_1)^k \to $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`절댓값이 $1$보다 작은 수를 계속 거듭제곱하면 $0$으로 수렴한다.` }] },
+      { id: "s5", text: String.raw`따라서 $k\to\infty$일 때 괄호 안의 $\sum_{i\ge2}$항은 모두 사라지고 $A^kv_0/\lambda_1^k \to c_1e_1$이다. $c_1\ne0$이라는 가정 덕분에 이 극한벡터는 $0$이 아니다.`, blanks: [] },
+      { id: "s6", text: String.raw`거듭제곱법의 $v_k$는 매 스텝 $A^kv_0$를 그 자신의 노름으로 나눈 것과 방향이 같다(정규화는 스칼라배일 뿐 방향을 바꾸지 않는다). $A^kv_0=\lambda_1^k(c_1e_1+o(1))$의 방향은 스칼라 $\lambda_1^kc_1$의 부호를 제외하면 $k\to\infty$일 때 오직 $e_1$ 방향으로만 남으므로 $v_k \to \pm$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`e_1`, why: String.raw`$o(1)$항이 사라지므로 남는 방향은 $e_1$뿐이고, 부호는 매 스텝 $\lambda_1^kc_1$의 부호에 따라 정해진다.` }] },
+      { id: "s7", text: String.raw`따라서 $v_k$는 $\lambda_1$의 고유벡터 방향으로(부호를 맞추면) 수렴한다. 동시에 $\|Av_k\|\to|\lambda_1|$도 성립해 고유값 자체도 근사할 수 있는데, 예제에서 $2.236\to2.864\to2.984$가 $3$에 다가가는 것이 바로 이 수렴이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "고유값 분해와 대각화", slug: "eigen-diagonalization" }]
+  },
+
+  "qr-algorithm": {
+    title: String.raw`QR알고리즘: 반복 사상과 닮음 불변성`,
+    domain: "num2",
+    subLabel: String.raw`고유값 알고리즘`,
+    explanation: String.raw`거듭제곱법은 가장 큰 고유값 하나의 고유벡터만 찾아줍니다. 모든 고유값을 한꺼번에 구하고 싶다면 어떻게 해야 할까요. QR알고리즘은 행렬을 QR분해했다가 순서를 바꿔 다시 곱하는 것을 반복하는데, 이렇게 만들어지는 행렬들이 원래 행렬과 항상 같은 고유값을 가진다는 사실(닮음 불변성) 덕분에 반복할수록 대각행렬에 가까워지고 대각성분에서 고유값을 모두 읽어낼 수 있습니다.<br><br><strong>명제.</strong> $A_0=A$에서 시작해 $A_k=Q_kR_k$(QR분해)와 $A_{k+1}=R_kQ_k$를 반복하면, 모든 $k$에 대해 $A_{k+1}$은 $A_k$와 닮음(similar)이고 따라서 $A_{k+1}$과 $A_k$, 그리고 원래 $A_0$는 모두 동일한 고유값을 갖는다.`,
+    example: String.raw`<p>$A_0=\begin{pmatrix}2&1\\1&2\end{pmatrix}$(고유값 $3,1$)로 QR알고리즘을 한 번 돌려봅니다. 그람-슈미트로 열을 정규직교화하면 $q_1=(2,1)/\sqrt5$, $q_2=(-1,2)/\sqrt5$이고</p>
+$$Q_0=\begin{pmatrix}2/\sqrt5&-1/\sqrt5\\1/\sqrt5&2/\sqrt5\end{pmatrix},\qquad R_0=\begin{pmatrix}\sqrt5&4/\sqrt5\\0&3/\sqrt5\end{pmatrix}$$
+<p>이제 순서를 바꿔 $A_1=R_0Q_0$을 계산합니다.</p>
+$$A_1=R_0Q_0=\begin{pmatrix}2.8&0.6\\0.6&1.2\end{pmatrix}$$
+<p>대각합을 확인하면 $2.8+1.2=4=2+2$로 $A_0$의 대각합과 같고, 행렬식도 $2.8\times1.2-0.6\times0.6=3.36-0.36=3=2\times2-1\times1$로 $A_0$의 행렬식과 같습니다. 특성방정식 $\lambda^2-4\lambda+3=0$을 풀면 여전히 $\lambda=3,1$이 나와 고유값이 정확히 보존되었음을 확인할 수 있습니다. 비대각성분은 $1$에서 $0.6$으로 줄어들어, 반복할수록 대각행렬에 가까워지는 경향도 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $A_{k+1}=R_kQ_k$가 $A_k=Q_kR_k$와 항상 닮음이라는 것, 즉 두 행렬이 같은 특성다항식(따라서 같은 고유값)을 가진다는 것을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$Q_k$는 QR분해에서 나온 직교행렬이므로 $Q_k^{-1}=Q_k^T$가 존재한다. $A_k=Q_kR_k$의 양변 왼쪽에 $Q_k^{-1}$을 곱하면 $R_k = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`Q_k^{-1}A_k`, why: String.raw`정의를 그대로 왼쪽에 $Q_k^{-1}$을 곱해 정리한 것이다.` }] },
+      { id: "s3", text: String.raw`$A_{k+1}=R_kQ_k$에 $R_k=Q_k^{-1}A_k$를 대입하면 $A_{k+1} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`Q_k^{-1}A_kQ_k`, why: String.raw`$R_k$ 자리에 $Q_k^{-1}A_k$를 그대로 넣은 것이다.` }] },
+      { id: "s4", text: String.raw`$A_{k+1}=Q_k^{-1}A_kQ_k$는 정확히 $A_k$를 가역행렬 $Q_k$로 닮음변환(conjugation)한 꼴이다.`, blanks: [] },
+      { id: "s5", text: String.raw`닮음행렬은 같은 특성다항식을 갖는다는 사실을 직접 확인한다. $\det(A_{k+1}-\lambda I)=\det(Q_k^{-1}(A_k-\lambda I)Q_k)=\det(Q_k^{-1})\det(A_k-\lambda I)\det(Q_k)$인데, 행렬식의 곱셈성과 $\det(Q_k^{-1})\det(Q_k)=\det(Q_k^{-1}Q_k)=\det(I)=1$을 쓰면 이는 [[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\det(A_k-\lambda I)`, why: String.raw`스칼라인 $\det(Q_k^{-1})$과 $\det(Q_k)$의 곱이 $1$이 되어 사라지고, 남는 것은 원래 $A_k$의 특성다항식뿐이다.` }] },
+      { id: "s6", text: String.raw`$A_{k+1}$과 $A_k$가 같은 특성다항식을 가지므로 두 행렬은 정확히 같은 고유값(중복도 포함)을 갖는다. 이는 모든 $k$에서 성립하므로 귀납적으로 $A_k$는 언제나 $A_0=A$와 동일한 고유값을 갖는다.`, blanks: [] },
+      { id: "s7", text: String.raw`실전에서 반복을 거듭하면 (조건이 맞을 때) $A_k$의 비대각성분이 점점 작아져 대각행렬에 가까워지고, 대각성분에서 고유값을 직접 읽어낼 수 있다. 예제에서도 비대각성분이 $1\to0.6$으로 줄었고 대각합·행렬식·특성다항식이 모두 원래 행렬과 일치함을 확인했다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "고유값 분해와 대각화", slug: "eigen-diagonalization" }]
+  },
+
+  "rayleigh-quotient": {
+    title: String.raw`레일리몫: 대칭행렬의 고유값을 변분적으로 특징짓기`,
+    domain: "num2",
+    subLabel: String.raw`고유값 알고리즘`,
+    explanation: String.raw`고유값을 특성방정식을 풀지 않고도, 벡터 하나를 넣고 스칼라 하나를 얻는 간단한 비율만으로 특징지을 수 있다면 유용할 것입니다. 대칭행렬에서는 이 비율, 레일리몫이 고유벡터에서 정확히 그 고유값과 같아지고, 단위구 위에서 이 비율의 임계점이 정확히 고유벡터라는 성질을 갖습니다.<br><br><strong>명제.</strong> 대칭행렬 $A\in\mathbb{R}^{n\times n}$에 대해 레일리몫을 $R(v)=\dfrac{v^TAv}{v^Tv}$($v\ne0$)라 하면, $v$가 $A$의 고유벡터일 때 $R(v)$는 그에 대응하는 고유값과 정확히 같다. 또한 $\|v\|=1$ 제약 위에서 $R(v)$의 그래디언트가 $0$이 되는 점은 정확히 $A$의 고유벡터이다.`,
+    example: String.raw`<p>$A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$의 고유값은 $3,1$이고 고유벡터는 $(1,1)$과 $(1,-1)$입니다. 고유벡터에서 레일리몫을 계산해봅니다.</p>
+<p>$v=(1,1)$이면 $Av=(3,3)$이고 $v^TAv=1\times3+1\times3=6$, $v^Tv=1+1=2$이므로 $R(v)=6/2=3$, 정확히 대응 고유값과 같습니다.</p>
+<p>$v=(1,-1)$이면 $Av=(1,-1)$이고 $v^TAv=1\times1+(-1)\times(-1)=2$, $v^Tv=2$이므로 $R(v)=2/2=1$, 역시 대응 고유값과 정확히 같습니다.</p>
+<p>고유벡터가 아닌 $v=(1,0)$을 넣으면 $Av=(2,1)$, $v^TAv=2$, $v^Tv=1$이므로 $R(v)=2$입니다. 두 고유값 $1$과 $3$ 사이의 값이 나왔습니다. 임의의 방향에 대한 레일리몫은 항상 최소고유값과 최대고유값 사이에 놓입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`명제는 두 부분이다. (a) 고유벡터에서 $R(v)$가 정확히 대응 고유값과 같다는 것, (b) $\|v\|=1$ 제약 위에서 $R(v)$의 임계점이 정확히 고유벡터라는 것. 둘을 차례로 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`(a) $Av=\lambda v$이면 $v^TAv = v^T(\lambda v) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\lambda v^Tv`, why: String.raw`스칼라 $\lambda$를 $v^T(\cdot)$ 앞으로 빼낸 것이다.` }] },
+      { id: "s3", text: String.raw`따라서 $R(v)=\dfrac{v^TAv}{v^Tv}=\dfrac{\lambda v^Tv}{v^Tv}=\lambda$로, 레일리몫은 고유벡터에서 정확히 대응 고유값과 같다.`, blanks: [] },
+      { id: "s4", text: String.raw`(b) $\|v\|=1$ 제약 위에서 $v^TAv$의 임계점을 구한다(레일리몫은 $R(cv)=R(v)$로 스케일에 무관하므로 단위구 위의 $v^TAv$만 보면 충분하다). 라그랑주 함수는 $L(v,\mu) = v^TAv - \mu($[[blank:나]]$)$로 쓴다.`,
+        blanks: [{ id: "나", latex: String.raw`v^Tv-1`, why: String.raw`제약이 지켜지는지를 $0$이 되는 식으로 적는다(pca 증명과 같은 방식).` }] },
+      { id: "s5", text: String.raw`$A$가 대칭이므로 $\nabla_v(v^TAv)=2Av$이고 $\nabla_v(v^Tv)=2v$이다. $\nabla_vL=0$은 $2Av-2\mu v=0$, 즉 $Av = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\mu v`, why: String.raw`그래디언트가 $0$이 되는 조건을 정리하면 고유값방정식이 그대로 나온다.` }] },
+      { id: "s6", text: String.raw`이 조건 $Av=\mu v$는 정확히 $v$가 고유값 $\mu$에 대응하는 $A$의 고유벡터라는 뜻이다. 역으로 모든 고유벡터는 단위벡터로 정규화하면 이 조건을 만족하므로 제약 위에서 $L$의 임계점 전체가 곧 $A$의 (정규화된) 고유벡터 전체와 일치한다. (a)에 의해 그 임계점에서의 $R(v)$값은 바로 $\mu$이다.`, blanks: [] },
+      { id: "s7", text: String.raw`같은 결론은 라그랑주를 쓰지 않고 직접 미분해도 얻어진다: $R(v)=v^TAv/v^Tv$의 그래디언트는 몫의 미분법으로 $\nabla R(v)=\dfrac{2(Av-R(v)v)}{v^Tv}$이고, 이것이 $0$이 되는 조건도 $Av=R(v)v$로 동일하다. 예제에서 고유벡터 $(1,1),(1,-1)$의 $R(v)$값이 각각 정확히 $3,1$이고, 고유벡터가 아닌 $(1,0)$의 $R(v)=2$가 두 고유값 사이에 놓인다는 것도 확인했다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "PCA의 최적 방향", slug: "pca" }, { label: "고유값 분해와 대각화", slug: "eigen-diagonalization" }]
+  },
+
+  "policy-eigenvalue-convergence": {
+    title: String.raw`정책평가 반복의 수렴속도: 스펙트럴반경과 $\gamma^k$`,
+    domain: "num2",
+    subLabel: String.raw`고유값 알고리즘`,
+    explanation: String.raw`정책평가 반복 $V_{k+1}=R+\gamma PV_k$은 벨만 기대연산자를 그냥 반복 적용하는 것뿐인데, 몇 번 반복해야 답에 충분히 가까워지는지는 감이 잘 오지 않습니다. 오차가 매 스텝 얼마나 줄어드는지는 반복행렬 $\gamma P$의 스펙트럴반경(고유값 크기의 최댓값)이 정확히 결정합니다.<br><br><strong>명제.</strong> 정책평가 반복 $V_{k+1}=R+\gamma PV_k$의 고정점을 $V^*=(I-\gamma P)^{-1}R$이라 하면 오차 $e_k=V_k-V^*$는 $e_k=(\gamma P)^ke_0$를 만족한다. $P$가 확률행렬이라 $P$의 최대 고유값이 $1$이므로 $\gamma P$의 스펙트럴반경은 $\gamma$이고, 따라서 $\|e_k\|$는 점근적으로 $\gamma^k$의 속도로 $0$에 수렴한다.`,
+    example: String.raw`<p>bellman-linear-system 항목과 같은 2상태 MDP를 씁니다: $\gamma=0.5$, $P=\begin{pmatrix}0.8&0.2\\0.4&0.6\end{pmatrix}$, $R=(2,0)$이고 정확한 해는 $V^*=(3.5,1.0)$이었습니다. $V_0=(0,0)$에서 반복을 시작합니다.</p>
+<p>$V_1=R+\gamma PV_0=(2,0)$입니다. $V_2=R+\gamma PV_1=(2,0)+0.5\begin{pmatrix}0.8&0.2\\0.4&0.6\end{pmatrix}\begin{pmatrix}2\\0\end{pmatrix}=(2,0)+0.5(1.6,0.8)=(2.8,0.4)$입니다.</p>
+<p>오차를 계산하면 $e_0=V_0-V^*=(-3.5,-1)$, $e_1=V_1-V^*=(-1.5,-1)$, $e_2=V_2-V^*=(-0.7,-0.6)$입니다. 실제로 $\gamma Pe_0=0.5\begin{pmatrix}0.8&0.2\\0.4&0.6\end{pmatrix}\begin{pmatrix}-3.5\\-1\end{pmatrix}=0.5(-3.0,-2.0)=(-1.5,-1.0)=e_1$이 정확히 성립하고, 같은 방식으로 $\gamma Pe_1=(-0.7,-0.6)=e_2$도 성립합니다.</p>
+<p>$P$의 고유값은 특성방정식 $\lambda^2-1.4\lambda+0.4=0$을 풀면 $\lambda=1,0.4$입니다(확률행렬이므로 최대 고유값이 항상 $1$). 따라서 $\gamma P$의 스펙트럴반경은 $0.5\times1=0.5$이고, 오차의 크기는 대략 $0.5^k$의 속도로 줄어듭니다: $\|e_0\|\approx3.64,\ \|e_1\|\approx1.80,\ \|e_2\|\approx0.92$로 각 단계에서 대략 절반씩 줄어드는 것을 볼 수 있습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`고정점 $V^*$는 $V^*=R+\gamma PV^*$를 만족한다(bellman-linear-system 항목). 목표는 반복 $V_{k+1}=R+\gamma PV_k$의 오차 $e_k=V_k-V^*$가 어떤 속도로 $0$에 가는지를 $\gamma P$의 고유값으로 정확히 특징짓는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`두 식을 빼면 $V_{k+1}-V^* = (R+\gamma PV_k)-(R+\gamma PV^*) = \gamma P($[[blank:가]]$)$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`V_k-V^*`, why: String.raw`$R$ 항은 상쇄되고 $\gamma P$가 공통으로 곱해진 차이만 남는다.` }] },
+      { id: "s3", text: String.raw`즉 $e_{k+1}=\gamma Pe_k$이다. 이를 반복 적용하면 $e_1=\gamma Pe_0$, $e_2=\gamma Pe_1=(\gamma P)^2e_0$이고, 귀납적으로 $e_k=(\gamma P)^ke_0$이다.`, blanks: [] },
+      { id: "s4", text: String.raw`$P$의 특성방정식 $(0.8-\lambda)(0.6-\lambda)-0.2\times0.4=0$을 전개하면 $\lambda^2-1.4\lambda+0.4=0$이고, 판별식은 $1.4^2-4\times0.4=1.96-1.6=0.36$이므로 $\lambda=\dfrac{1.4\pm\sqrt{0.36}}{2}=\dfrac{1.4\pm0.6}{2}$, 즉 $\lambda = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`1,\ 0.4`, why: String.raw`근의공식 결과인 $(1.4+0.6)/2=1$과 $(1.4-0.6)/2=0.4$가 $P$의 두 고유값이다.` }] },
+      { id: "s5", text: String.raw`고유값 하나가 정확히 $1$인 것은 우연이 아니다. $P$가 확률행렬(각 행의 합이 $1$)이면 모든 성분이 $1$인 벡터 $\mathbf{1}$에 대해 $P\mathbf{1}=\mathbf{1}$이 항상 성립하므로 $1$은 언제나 $P$의 고유값이다. bellman-linear-system 항목에서 본 것처럼 $P$의 모든 고유값은 $|\lambda|\le1$을 만족하므로, $1$이 $P$의 최대 고유값이고 스펙트럴반경 $\rho(P)=1$이다.`, blanks: [] },
+      { id: "s6", text: String.raw`$\gamma P$의 고유값은 $\gamma\lambda_i$이므로 스펙트럴반경은 $\rho(\gamma P)=\gamma\rho(P)$이다. $e_0$을 $P$의 고유벡터로 전개하면 $(\gamma P)^ke_0$의 각 항은 $(\gamma\lambda_i)^k$배로 줄어드는데, 이 중 가장 천천히 줄어드는(크기가 가장 큰) 항은 $\gamma$의 크기가 가장 큰 고유값 방향, 즉 $\rho(\gamma P)=\gamma\times1=$[[blank:다]] 배로 결정된다.`,
+        blanks: [{ id: "다", latex: String.raw`\gamma`, why: String.raw`$P$의 최대 고유값이 $1$이므로 $\gamma P$의 스펙트럴반경도 그대로 $\gamma$가 된다.` }] },
+      { id: "s7", text: String.raw`따라서 $\|e_k\|=\|(\gamma P)^ke_0\|$는 점근적으로 $\rho(\gamma P)^k=\gamma^k$의 속도, 즉 기하급수적으로 $0$에 수렴한다. 예제에서도 $\|e_0\|\approx3.64\to\|e_1\|\approx1.80\to\|e_2\|\approx0.92$로 매 단계 대략 $\gamma=0.5$배씩 줄어드는 것을 확인했다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [{ label: "벨만방정식의 선형시스템 풀이", slug: "bellman-linear-system" }, { label: "가치반복의 수렴성", slug: "value-iteration-contraction" }]
+  },
+
+  // --- Wave 7: wave7_n2.js ---
+  "conjugate-gradient": {
+    title: "켤레기울기법(CG): A-켤레 방향과 유한 스텝 수렴",
+    domain: "num2",
+    subLabel: "반복법",
+    explanation: String.raw`대칭 양의정부호(SPD) 행렬 $A$로 이루어진 선형시스템 $Ax=b$를 반복법으로 풀 때, 가장 단순한 방법인 최대강하법(steepest descent)은 등고선을 따라 지그재그로 움직이며 이미 최적화한 방향을 계속 다시 건드리는 비효율을 겪습니다. 만약 매 스텝의 탐색방향들이 서로 '겹치지 않도록' 미리 정해둘 수 있다면, 방향마다 딱 한 번씩만 최적화해도 충분할 것입니다. 이때 '겹치지 않는다'는 뜻을 유클리드 직교가 아니라 $A$가 정의하는 기하학에서의 직교, 즉 $A$-켤레(A-conjugate)로 잡는 것이 켤레기울기법(CG)의 핵심입니다.<br><br><strong>명제.</strong> $A\in\mathbb{R}^{n\times n}$이 대칭 양의정부호이고 $b\in\mathbb{R}^n$이라 하자. CG가 생성하는 탐색방향 $p_0,\dots,p_{n-1}$은 서로 $A$-켤레이다(즉 $i\neq j$이면 $p_i^TAp_j=0$). 각 반복은 $x_{k+1}=x_k+\alpha_kp_k$ 형태로 이차함수 $\varphi(x)=\frac12x^TAx-b^Tx$를 부분공간 $x_0+\mathrm{span}\{p_0,\dots,p_k\}$ 위에서 최소화하도록 $\alpha_k$를 정하며, 완전연산(exact arithmetic)에서는 늦어도 $n$번째 반복 $x_n$에서 정확해 $x^*=A^{-1}b$에 도달한다.`,
+    example: String.raw`<p>구체적인 $2\times2$ SPD 시스템으로 CG를 직접 돌려봅니다.</p>
+$$A=\begin{pmatrix}4&1\\1&3\end{pmatrix},\quad b=\begin{pmatrix}1\\2\end{pmatrix}$$
+<p>순서주 소행렬식이 $4>0$, $\det A=11>0$이므로 $A$는 SPD입니다. $Ax=b$를 직접 풀면 정확해는 $x^*=(1/11,\,7/11)\approx(0.0909,\,0.6364)$입니다.</p>
+<p>$x_0=(0,0)$에서 시작합니다. $r_0=b-Ax_0=(1,2)=p_0$이고,</p>
+<p>$\alpha_0=\dfrac{r_0^Tr_0}{p_0^TAp_0}=\dfrac{5}{20}=\dfrac14$ (여기서 $Ap_0=(6,7)$, $p_0^TAp_0=1\cdot6+2\cdot7=20$),</p>
+<p>$x_1=x_0+\alpha_0p_0=(0.25,\,0.5)$, $r_1=r_0-\alpha_0Ap_0=(-0.5,\,0.25)$.</p>
+<p>$\beta_0=\dfrac{r_1^Tr_1}{r_0^Tr_0}=\dfrac{0.3125}{5}=\dfrac1{16}$이므로 $p_1=r_1+\beta_0p_0=(-7/16,\,3/8)$,</p>
+<p>$\alpha_1=\dfrac{r_1^Tr_1}{p_1^TAp_1}=\dfrac{5/16}{55/64}=\dfrac{4}{11}$이고,</p>
+<p>$x_2=x_1+\alpha_1p_1=(1/11,\,7/11)=x^*$ — 정확해와 정확히 일치합니다.</p>
+<p>$n=2$인 시스템이라 늦어도 2번째 반복에서 정확해에 도달해야 한다는 명제의 예측이 그대로 확인됩니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$Ax=b$ ($A$: SPD)를 푸는 문제는 이차함수 $\varphi(x)=\frac12x^TAx-b^Tx$를 최소화하는 문제와 같다. $\nabla\varphi(x)=Ax-b$이므로 $\varphi$의 임계점은 정확히 $Ax=b$의 해이고, $A$가 양의정부호라 이 임계점은 유일한 전역최솟값이다. 이제 $\varphi$를 좋은 방향 몇 개로 순차 최소화해서 $n$번 이내에 정확해에 도달하는 절차를 찾는다.`, blanks: [] },
+      { id: "s2", text: String.raw`서로 다른 두 방향 $p_i,p_j$ ($i\neq j$)가 $A$-켤레라는 것은, $A$가 만드는 내적 $\langle u,v\rangle_A:=u^TAv$ 기준으로 직교함을 뜻한다. 즉 $A$-켤레 조건은 $p_i^TAp_j = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`직교는 내적이 0이라는 뜻이며, 여기서는 그 내적이 $u^TAv$로 정의됩니다.` }] },
+      { id: "s3", text: String.raw`$A$가 양의정부호이면 0이 아닌 $A$-켤레 벡터들은 항상 선형독립이다. $\sum_i c_ip_i=0$이라 하고 양변 왼쪽에 $p_j^TA$를 곱하면 $A$-켤레성 덕분에 $i\neq j$인 항이 모두 사라져 $c_jp_j^TAp_j=0$만 남는다. $p_j\neq0$이고 $A$가 양의정부호이므로 $p_j^TAp_j>0$이고, 따라서 $c_j = $[[blank:나]] 이다. 이는 모든 $j$에 대해 성립하므로 $p_0,\dots,p_{n-1}$은 선형독립이며, $n$개이므로 $\mathbb{R}^n$의 기저를 이룬다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$c_jp_j^TAp_j=0$이고 $p_j^TAp_j>0$이므로 $c_j$는 0일 수밖에 없습니다.` }] },
+      { id: "s4", text: String.raw`$x_{k+1}=x_k+\alpha p_k$ 형태로 제한했을 때 $\varphi(x_k+\alpha p_k)$를 $\alpha$에 대해 최소화해보자. $r_k:=b-Ax_k$라 하면 $\dfrac{d}{d\alpha}\varphi(x_k+\alpha p_k) = -p_k^Tr_k+\alpha\,p_k^TAp_k$ 이고, 이를 0으로 놓아 풀면 $\alpha_k = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{p_k^Tr_k}{p_k^TAp_k}`, why: String.raw`1차 조건 $-p_k^Tr_k+\alpha p_k^TAp_k=0$을 $\alpha$에 대해 풀면 나옵니다. (CG에서는 $p_k^Tr_k=r_k^Tr_k$가 성립함이 알려져 있어 흔히 $r_k^Tr_k/p_k^TAp_k$로도 씁니다.)` }] },
+      { id: "s5", text: String.raw`$x_{k+1}=x_k+\alpha_kp_k$의 양변에 $-A$를 곱하고 $b$를 더하면 잔차의 재귀식 $r_{k+1}=r_k-\alpha_k$[[blank:라]] 를 얻는다. 이 재귀식과 $p_{k+1}=r_{k+1}+\beta_kp_k$ ($\beta_k=r_{k+1}^Tr_{k+1}/r_k^Tr_k$)를 결합하면, 모든 잔차가 서로 직교하고($r_i^Tr_j=0,\,i\neq j$) 모든 탐색방향이 $A$-켤레로 유지된다는 것을 귀납적으로 보일 수 있다.`,
+        blanks: [{ id: "라", latex: String.raw`Ap_k`, why: String.raw`$r_{k+1}=b-Ax_{k+1}=b-A(x_k+\alpha_kp_k)=r_k-\alpha_kAp_k$이므로 그렇습니다.` }] },
+      { id: "s6", text: String.raw`$\{p_0,\dots,p_{n-1}\}$이 $\mathbb{R}^n$의 기저이므로 $x^*-x_0=\sum_{i=0}^{n-1}\gamma_ip_i$로 유일하게 쓸 수 있다. 양변에 $p_j^TA$를 곱하면 $A$-켤레성 덕분에 $j\neq i$인 항이 모두 사라져 $p_j^TA(x^*-x_0)=\gamma_jp_j^TAp_j$만 남고, 좌변은 $p_j^Tr_0$과 같다. CG의 각 스텝에서 나오는 $\alpha_j$가 잔차 직교성에 의해 이 $\gamma_j$와 정확히 일치함을 보일 수 있으므로, $x_n=x_0+\sum_{i=0}^{n-1}\alpha_ip_i = $[[blank:마]] 이다.`,
+        blanks: [{ id: "마", latex: String.raw`x^*`, why: String.raw`전개계수 $\gamma_i$와 CG 스텝크기 $\alpha_i$가 일치하므로, $n$개의 방향을 모두 사용한 $x_n$은 $x_0+(x^*-x_0)=x^*$와 같습니다.` }] },
+      { id: "s7", text: String.raw`정리하면 $A$-켤레 방향들은 $\mathbb{R}^n$의 기저를 이루고, 각 CG 스텝은 그 방향으로 정확히 최적의 크기만큼 전진하며, $n$개의 방향을 모두 사용하면 초기 오차가 완전히 상쇄된다. 따라서 완전연산에서 CG는 늦어도 $n$번째 반복에서 정확해 $x^*$에 도달한다. 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "gmres": {
+    title: "GMRES: 비대칭 시스템에서 잔차 노름 최소화",
+    domain: "num2",
+    subLabel: "반복법",
+    explanation: String.raw`CG는 대칭성 덕분에 작동합니다: $A$-켤레 방향 사이의 짧은 재귀관계도, 잔차의 직교성도 모두 $A=A^T$라는 사실에 기대고 있습니다. $A$가 비대칭이면 $A$-켤레 방향을 정의하는 내적 $u^TAv$ 자체가 대칭적인 좋은 성질(양의정부호성과 결합된 대칭)을 잃어버리고, 짧은 재귀관계를 보장하는 증명이 무너집니다. GMRES는 목표를 '켤레 방향 찾기'에서 'Krylov 부분공간 안에서 잔차를 최소로 만드는 벡터 찾기'로 바꾸어 이 문제를 우회합니다.<br><br><strong>명제.</strong> $A\in\mathbb{R}^{n\times n}$이 (반드시 대칭일 필요는 없는) 가역행렬이고 $r_0=b-Ax_0$라 하자. Krylov 부분공간 $\mathcal{K}_k(A,r_0)=\mathrm{span}\{r_0,Ar_0,\dots,A^{k-1}r_0\}$ 위에서 GMRES는 $x_k=x_0+z$, $z\in\mathcal{K}_k(A,r_0)$ 중 잔차의 2-노름 $\|b-Ax_k\|_2$를 최소화하는 $x_k$를 계산한다. 이때 잔차 노름은 반복이 진행될수록 단조 비증가하며, 늦어도 $n$번째 반복에서 $\|b-Ax_n\|_2=0$이 된다.`,
+    example: String.raw`<p>$A=\begin{pmatrix}2&1\\-1&2\end{pmatrix}$는 $A^T=\begin{pmatrix}2&-1\\1&2\end{pmatrix}\neq A$라 비대칭입니다. $b=(3,1)$, $x_0=(0,0)$으로 시작합니다. 직접 풀면 정확해는 $x^*=(1,1)$입니다.</p>
+<p>$r_0=b=(3,1)$, $\|r_0\|_2=\sqrt{10}$. 아르놀디(Arnoldi) 첫 벡터는 $v_1=r_0/\|r_0\|=(3,1)/\sqrt{10}$입니다.</p>
+<p>$Av_1 = (7,-1)/\sqrt{10}$이고, $h_{11}=v_1^T(Av_1) = \frac1{10}(3\cdot7+1\cdot(-1))=2$입니다. $w=Av_1-h_{11}v_1 = (1,-3)/\sqrt{10}$이고 $h_{21}=\|w\|=1$이므로 $v_2=w/h_{21}=(1,-3)/\sqrt{10}$입니다.</p>
+<p>1스텝 GMRES는 $\min_y\left\|\begin{pmatrix}\sqrt{10}\\0\end{pmatrix}-\begin{pmatrix}2\\1\end{pmatrix}y\right\|_2$를 최소화하는 스칼라 $y$를 찾는 최소제곱 문제입니다. 미분해서 풀면 $y=\frac{2\sqrt{10}}{5}\approx1.265$이고, $x_1=x_0+v_1y=(1.2,\,0.4)$를 얻습니다.</p>
+<p>잔차를 확인하면 $r_1=b-Ax_1=(0.2,\,1.4)$이고 $\|r_1\|_2=\sqrt{2}\approx1.414 < \|r_0\|_2=\sqrt{10}\approx3.162$입니다. 잔차가 줄었지만 아직 정확해 $(1,1)$은 아닙니다 — $n=2$이므로 명제에 따르면 늦어도 2번째 반복에서 정확히 도달합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$Ax=b$를 CG처럼 $A$-켤레 방향으로 풀려면 우선 $A$-내적 $u^TAv$가 대칭이어야 한다. $A$가 비대칭이면 $u^TAv\neq v^TAu$이므로 이 내적 자체가 정의부터 무너지고, CG의 짧은 재귀관계와 잔차 직교성 증명(모두 대칭성에 의존)이 통째로 실패한다. 따라서 비대칭 $A$에서는 '켤레 방향'이 아니라 다른 원리를 세워야 한다.`, blanks: [] },
+      { id: "s2", text: String.raw`GMRES가 대신 세우는 원리는 잔차 자체를 최소화하는 것이다. $k$번째 Krylov 부분공간 $\mathcal{K}_k(A,r_0)=\mathrm{span}\{r_0,Ar_0,\dots,A^{k-1}r_0\}$ 위에서, $x_k=x_0+z$ ($z\in\mathcal{K}_k$)가 최소화해야 할 목적함수는 $\|b-Ax_k\|_2 = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\|r_0 - Az\|_2`, why: String.raw`$b-Ax_k=b-A(x_0+z)=(b-Ax_0)-Az=r_0-Az$이므로 목적함수를 $z$의 함수로 바꿔 쓴 것입니다.` }] },
+      { id: "s3", text: String.raw`$\mathcal{K}_k$의 정규직교기저 $v_1,\dots,v_k$를 아르놀디 과정으로 만든다: $v_1=r_0/\|r_0\|$에서 시작해 $Av_j$를 지금까지의 $v_1,\dots,v_j$에 대해 그람-슈미트로 직교화한다. $A$가 대칭이 아니므로 이 직교화는 CG의 짧은 재귀와 달리 매번 $v_1,\dots,v_j$ 전부를 참조해야 하고, 그 결과 $AV_k = V_{k+1}\bar H_k$가 성립하는데, 여기서 $\bar H_k\in\mathbb{R}^{(k+1)\times k}$는 $i>j+1$이면 $[\bar H_k]_{ij} = $[[blank:나]] 를 만족하는 상 헤센베르크(upper Hessenberg) 행렬이다 (대칭인 경우에만 삼중대각행렬로 더 좁혀진다).`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`그람-슈미트 구성에서 $v_i\perp Av_j$ ($i>j+1$)가 성립함을 보일 수 있어, 대각선 바로 아래 한 줄을 제외하면 전부 0이 됩니다 — 이것이 헤센베르크 구조의 정의입니다.` }] },
+      { id: "s4", text: String.raw`$x_k=x_0+V_ky$ ($y\in\mathbb{R}^k$)로 쓰면 $r_0-Az = r_0-AV_ky = r_0-V_{k+1}\bar H_ky$이고, $r_0=\|r_0\|_2v_1=V_{k+1}(\|r_0\|_2e_1)$이므로 $\|r_0-Az\|_2 = \|V_{k+1}(\|r_0\|_2e_1-\bar H_ky)\|_2$이다. $V_{k+1}$의 열이 정규직교이므로 이는 $\|\,\|r_0\|_2e_1-\bar H_ky\,\|_2$와 같고, 따라서 GMRES의 $k$번째 반복은 다음 최소제곱 문제로 축약된다: $y_k = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\arg\min_{y\in\mathbb{R}^k}\left\|\,\|r_0\|_2e_1-\bar H_ky\,\right\|_2`, why: String.raw`직교행렬을 곱해도 2-노름이 보존되므로($\|V_{k+1}u\|_2=\|u\|_2$), 원래 $n$차원 최소화 문제가 $(k+1)\times k$ 크기의 작은 최소제곱 문제로 바뀝니다.` }] },
+      { id: "s5", text: String.raw`$\mathcal{K}_k(A,r_0)\subseteq\mathcal{K}_{k+1}(A,r_0)$이므로 $k$번째 반복의 최적해가 만드는 목적함수값은 $(k+1)$번째 반복에서 같은 부분공간 위에서 다시 최소화한 값보다 작을 수 없다. 즉 $\|r_k\|_2\ge\|r_{k+1}\|_2$가 항상 성립해 GMRES의 잔차 노름은 단조 비증가한다.`, blanks: [] },
+      { id: "s6", text: String.raw`케일리-해밀턴 정리에 의해 $A$의 특성다항식 $p(\lambda)=\det(\lambda I-A)$은 차수 $n$이고 $p(A)=0$을 만족한다. 이로부터 $A^{-1}$은 $I,A,\dots,A^{n-1}$의 선형결합으로 쓸 수 있으므로, $A^{-1}r_0\in\mathcal{K}_n(A,r_0)$이다. 즉 $z=A^{-1}r_0$을 택하면 $b-A(x_0+z) = $[[blank:라]] 가 되어, 늦어도 $n$번째 반복에서 최소화 문제의 최솟값이 0이 된다.`,
+        blanks: [{ id: "라", latex: String.raw`0`, why: String.raw`$z=A^{-1}r_0$이면 $x_0+z=x_0+A^{-1}(b-Ax_0)=A^{-1}b=x^*$이므로 $b-Ax_n=0$이 됩니다.` }] },
+      { id: "s7", text: String.raw`정리하면 GMRES는 $A$-켤레성 대신 Krylov 부분공간에서의 잔차 2-노름 최소화라는 원리로 CG의 아이디어를 비대칭 행렬로 확장한다. 잔차는 단조 비증가하고, 늦어도 $n$번째 반복에서 정확해에 도달한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "lanczos-iteration": {
+    title: "Lanczos 반복법: 대칭행렬의 삼중대각화",
+    domain: "num2",
+    subLabel: "반복법",
+    explanation: String.raw`큰 희소 대칭행렬 $A$의 고유값을 구하고 싶을 때, QR 알고리즘처럼 $A$ 전체를 밀집행렬로 다루며 대각화하는 것은 비용이 너무 큽니다. 대신 $A$와의 곱셈(행렬-벡터 곱)만 반복해서 사용할 수 있다면, 작은 Krylov 부분공간 안에서 $A$의 극단적인 고유값들을 훨씬 싸게 근사할 수 있습니다. Lanczos 반복법은 대칭행렬 $A$를 정규직교기저 위에서 삼중대각행렬로 압축하는 절차이고, 대칭성 덕분에 매 스텝마다 직전 두 벡터만 기억하면 충분한 짧은 3항 재귀관계로 이 압축이 이루어집니다.<br><br><strong>명제.</strong> $A\in\mathbb{R}^{n\times n}$이 대칭이고 $q_1$이 단위벡터라 하자. $q_0=0,\ \beta_1=0$에서 시작해 $j=1,2,\dots$에 대해 $\alpha_j=q_j^TAq_j$, $r_j=Aq_j-\alpha_jq_j-\beta_jq_{j-1}$, $\beta_{j+1}=\|r_j\|_2$, $q_{j+1}=r_j/\beta_{j+1}$을 계산하는 Lanczos 반복은 정규직교벡터 $q_1,\dots,q_k$를 생성하며, $Q_k=[q_1\ \cdots\ q_k]$에 대해 $Q_k^TAQ_k=T_k$는 대각성분이 $\alpha_1,\dots,\alpha_k$이고 부대각성분이 $\beta_2,\dots,\beta_k$인 삼중대각행렬이다.`,
+    example: String.raw`<p>$A=\begin{pmatrix}4&1&1\\1&3&0\\1&0&2\end{pmatrix}$는 대칭이지만 $(1,3)$ 성분이 $0$이 아니라서 아직 삼중대각이 아닙니다. $q_1=(1,0,0)$에서 Lanczos를 시작합니다 (검산용: $\mathrm{tr}(A)=4+3+2=9$).</p>
+<p><strong>1단계.</strong> $\alpha_1=q_1^TAq_1=4$. $Aq_1=(4,1,1)$이므로 $r_1=Aq_1-\alpha_1q_1=(0,1,1)$이고 $\beta_2=\|r_1\|=\sqrt2$, $q_2=r_1/\beta_2=(0,\,1/\sqrt2,\,1/\sqrt2)$.</p>
+<p><strong>2단계.</strong> $Aq_2=(2,3,2)/\sqrt2$이고 $\alpha_2=q_2^TAq_2=2.5$. $r_2=Aq_2-\alpha_2q_2-\beta_2q_1=(0,\,\sqrt2/4,\,-\sqrt2/4)$이므로 $\beta_3=\|r_2\|=0.5$, $q_3=r_2/\beta_3=(0,\,1/\sqrt2,\,-1/\sqrt2)$.</p>
+<p><strong>3단계.</strong> $Aq_3=(0,\,3/\sqrt2,\,-2/\sqrt2)$이고 $\alpha_3=q_3^TAq_3=2.5$.</p>
+<p>정리하면 $T_3=\begin{pmatrix}4&\sqrt2&0\\\sqrt2&2.5&0.5\\0&0.5&2.5\end{pmatrix}$이고, $\mathrm{tr}(T_3)=4+2.5+2.5=9=\mathrm{tr}(A)$로 직교닮음변환에서 대각합이 보존된다는 사실과 정확히 일치합니다. 실제로 $A$와 $T_3$의 고유값을 각각 구하면 둘 다 $\{1.468,\,2.653,\,4.879\}$로 동일합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $A$의 고유값을 직접 밀집행렬로 대각화하지 않고, 행렬-벡터 곱 $Av$만 반복 사용해서 $A$를 정규직교기저 위의 작은 삼중대각행렬로 압축하는 것이다. $q_1$에서 시작해 Krylov 부분공간 $\mathrm{span}\{q_1,Aq_1,A^2q_1,\dots\}$을 그람-슈미트로 직교화하면 이 기저를 얻을 수 있다.`, blanks: [] },
+      { id: "s2", text: String.raw`일반적인(비대칭 허용) 아르놀디 과정에서는 $Aq_j$를 $q_1,\dots,q_j$ 전부에 대해 직교화해야 한다. 그런데 $A$가 대칭이면 $i<j-1$인 벡터에 대한 계수 $q_i^T(Aq_j)$는 $q_i^T(Aq_j)=(Aq_i)^Tq_j$로 바꿔쓸 수 있고, $Aq_i$는 $q_1,\dots,q_{i+1}$의 선형결합이며 $j>i+1$이면 $q_j$가 이 벡터들과 모두 직교하므로 $q_i^T(Aq_j) = $[[blank:가]] 가 된다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`$Aq_i\in\mathrm{span}\{q_1,\dots,q_{i+1}\}$이고 $j>i+1$이면 $q_j\perp\mathrm{span}\{q_1,\dots,q_{i+1}\}$이므로 두 벡터의 내적이 0이 됩니다. 대칭성이 이 소거를 가능하게 하는 핵심입니다.` }] },
+      { id: "s3", text: String.raw`즉 대칭성 덕분에 $Aq_j$를 직교화할 때 $q_1,\dots,q_{j-2}$ 방향의 성분은 이미 자동으로 0이고, 남는 것은 $q_j$와 $q_{j-1}$ 방향뿐이다. 그 계수를 각각 $\alpha_j=q_j^TAq_j$, $\beta_j=q_{j-1}^TAq_j$라 쓰면 나머지(잔차) 벡터는 $r_j = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`Aq_j-\alpha_jq_j-\beta_jq_{j-1}`, why: String.raw`$Aq_j$에서 이미 구한 두 방향 성분($\alpha_jq_j$와 $\beta_jq_{j-1}$)을 빼면 남는 것이 다음 기저벡터 방향을 결정하는 잔차입니다.` }] },
+      { id: "s4", text: String.raw`이 잔차를 정규화해서 $\beta_{j+1}=\|r_j\|$, $q_{j+1}=r_j/\beta_{j+1}$로 두면, 정리 순서를 바꿔 다음과 같은 3항 재귀관계를 얻는다: $\beta_{j+1}q_{j+1} = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`Aq_j-\alpha_jq_j-\beta_jq_{j-1}`, why: String.raw`$r_j=\beta_{j+1}q_{j+1}$이고 $r_j=Aq_j-\alpha_jq_j-\beta_jq_{j-1}$이었으므로 그대로 옮겨 쓴 것입니다. 이 식이 바로 Lanczos의 3항 재귀관계입니다.` }] },
+      { id: "s5", text: String.raw`이 재귀관계를 $j=1,\dots,k$에 대해 행렬 형태로 모으면 $AQ_k = Q_kT_k + \beta_{k+1}q_{k+1}e_k^T$가 되고, 양변 왼쪽에 $Q_k^T$를 곱하면 $Q_k$의 정규직교성($Q_k^TQ_k=I$)과 $q_{k+1}\perp q_1,\dots,q_k$에 의해 $Q_k^TAQ_k=T_k$만 남는다. $T_k$의 대각성분은 $\alpha_1,\dots,\alpha_k$, 바로 위/아래 대각성분은 $\beta_2,\dots,\beta_k$이고 그 밖은 모두 0인 삼중대각행렬이다.`, blanks: [] },
+      { id: "s6", text: String.raw`이 구조가 효율적인 이유는 두 가지다. 첫째, 매 스텝에서 저장·계산해야 하는 이전 벡터가 $q_j,q_{j-1}$ 단 두 개뿐이라 메모리가 $O(n)$으로 끝난다(일반 아르놀디는 $k$번째 스텝까지의 벡터 $k$개를 전부 저장해야 한다). 둘째, $A$가 희소행렬이면 $Aq_j$의 계산비용이 $A$의 0이 아닌 성분 개수에 비례하는 $O($[[blank:라]]$)$이라서, 큰 $n$에서도 반복당 비용이 작게 유지된다.`,
+        blanks: [{ id: "라", latex: String.raw`\mathrm{nnz}(A)`, why: String.raw`희소행렬-벡터 곱셈은 0이 아닌 성분 개수(nnz)에 비례하는 시간이 걸리고, 이는 조밀행렬의 $O(n^2)$ 곱셈보다 훨씬 저렴합니다.` }] },
+      { id: "s7", text: String.raw`정리하면 대칭성이 그람-슈미트 직교화를 3항 재귀로 압축시켜 짧은 재귀관계 $\beta_{j+1}q_{j+1}=Aq_j-\alpha_jq_j-\beta_jq_{j-1}$을 만들고, 이로부터 $Q_k^TAQ_k=T_k$가 삼중대각행렬이 된다. 이 삼중대각행렬의 고유값(Ritz값)은 소수의 반복만으로 $A$의 극단적인 고유값을 근사하며, 매 스텝의 비용도 작아 큰 희소행렬에 특히 효율적이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "value-iteration-krylov": {
+    title: "가치반복의 Krylov 가속: 벨만연산자를 선형시스템으로",
+    domain: "num2",
+    subLabel: "반복법",
+    explanation: String.raw`정책 $\pi$가 고정된 상태에서 가치함수를 구하는 정책평가는 표준적으로 가치반복 $V_{k+1}=T^\pi V_k = R^\pi+\gamma P^\pi V_k$를 반복해서 계산합니다. 이는 $\gamma$-축약사상의 고정점을 찾는 문제이므로 오차가 매 스텝 $\gamma$배씩만 줄어드는 선형수렴을 보입니다. 그런데 고정점 방정식 $V=R^\pi+\gamma P^\pi V$는 사실 선형시스템 $(I-\gamma P^\pi)V=R^\pi$에 지나지 않습니다. 표준 가치반복은 이 선형시스템을 리처드슨(Richardson) 반복 방식으로 푸는 것과 완전히 같은데, 이는 여러 선형시스템 해법 중 가장 단순한 것일 뿐입니다. CG 같은 Krylov 부분공간 방법을 대신 적용하면, 특히 $I-\gamma P^\pi$가 대칭인 경우(가역 마르코프체인 등) 훨씬 빠르게 정확해에 도달할 수 있습니다.<br><br><strong>명제.</strong> 고정된 정책 $\pi$에 대해 $A:=I-\gamma P^\pi$, $b:=R^\pi$라 하면 정책평가는 선형시스템 $AV=b$를 푸는 것과 같다. 표준 가치반복 $V_{k+1}=b+\gamma P^\pi V_k$는 오차가 $\|V_k-V^\pi\|\le\gamma^k\|V_0-V^\pi\|$로 줄어드는 선형수렴을 보인다. 반면 $A$가 대칭이 되도록 $P^\pi$가 만들어졌다면(즉 상태전이가 가역적이라면) $A$는 SPD이고, CG를 $AV=b$에 적용하면 늦어도 상태 개수 $n$번째 반복에서 정확해 $V^\pi$에 도달한다.`,
+    example: String.raw`<p>$\gamma=0.9$, 두 상태 사이의 정책 하 전이확률이 $P^\pi=\begin{pmatrix}0.6&0.4\\0.4&0.6\end{pmatrix}$ (대칭 · 이중확률행렬)이고 보상이 $R^\pi=(1,0)$이라 합시다. $P^\pi$가 대칭이므로 $A=I-\gamma P^\pi=\begin{pmatrix}0.46&-0.36\\-0.36&0.46\end{pmatrix}$도 대칭이고, $P^\pi$의 고유값이 $1$과 $0.2$이므로 $A$의 고유값은 $1-0.9=0.1$과 $1-0.18=0.82$로 모두 양수라 $A$는 SPD입니다.</p>
+<p>정확해는 $AV=b$를 풀면 $V^\pi=(230/41,\,180/41)\approx(5.610,\,4.390)$입니다.</p>
+<p><strong>표준 가치반복</strong> ($V_0=(0,0)$): $V_1=(1,\,0)$, $V_2=(1.54,\,0.36)$, $V_3=(1.9612,\,0.7488)$ — 3번 반복해도 정확해 $(5.610,\,4.390)$과는 아직 거리가 멉니다 (오차가 $\gamma=0.9$배씩만 줄어들기 때문에, 오차를 1000분의 1로 줄이려면 약 66번의 반복이 필요합니다).</p>
+<p><strong>CG</strong> ($x_0=(0,0)$): $\alpha_0=50/23$, $x_1=(50/23,\,0)$, $r_1=(0,\,18/23)$, $\beta_0=324/529$, $p_1=(324/529,\,414/529)$, $\alpha_1=230/41$, $x_2=x_1+\alpha_1p_1=(230/41,\,180/41)=V^\pi$ — 정확히 2번째 반복(=상태 개수 $n=2$)에서 정확해에 도달했습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`고정된 정책 $\pi$ 아래에서 벨만 기대연산자는 $T^\pi V = R^\pi+\gamma P^\pi V$로 아핀(affine, 상수항이 있는 선형)함수다. 고정점 $V^\pi=T^\pi V^\pi$는 $V^\pi=R^\pi+\gamma P^\pi V^\pi$를 만족하고, 이를 $V^\pi$ 항으로 정리하면 $(I-\gamma P^\pi)V^\pi = R^\pi$라는 보통의 선형시스템 $AV=b$($A=I-\gamma P^\pi$, $b=R^\pi$)가 된다. 즉 정책평가는 특수한 형태의 선형시스템 풀이일 뿐이다.`, blanks: [] },
+      { id: "s2", text: String.raw`표준 가치반복 $V_{k+1}=b+\gamma P^\pi V_k = b+(I-A)V_k$를 오차 $e_k:=V_k-V^\pi$의 언어로 다시 쓰면, $V^\pi=b+(I-A)V^\pi$를 빼서 $e_{k+1} = $[[blank:가]] 를 얻는다.`,
+        blanks: [{ id: "가", latex: String.raw`(I-A)e_k`, why: String.raw`$V_{k+1}-V^\pi = [b+(I-A)V_k]-[b+(I-A)V^\pi] = (I-A)(V_k-V^\pi) = (I-A)e_k$이기 때문입니다.` }] },
+      { id: "s3", text: String.raw`$I-A=\gamma P^\pi$이고 $P^\pi$가 확률행렬이라 $\|P^\pi\|_\infty=1$이므로 $\|I-A\|_\infty=\gamma$이다. 따라서 $\|e_{k+1}\|\le\gamma\|e_k\|$가 매 스텝 성립하고, 이를 반복하면 $\|V_k-V^\pi\|\le\gamma^k\|V_0-V^\pi\|$라는 선형수렴 속도가 나온다 — 표준 가치반복은 이 이상 빨라지지 않는다.`, blanks: [] },
+      { id: "s4", text: String.raw`만약 $P^\pi$가 대칭이면(가역 마르코프체인의 경우 균일 정상분포에서 이렇게 됩니다) $A=I-\gamma P^\pi$도 대칭이고, $P^\pi$의 고유값이 모두 $[-1,1]$ 안에 있고 $\gamma<1$이므로 $A$의 모든 고유값은 $1-\gamma\lambda(P^\pi) > $[[blank:나]] 를 만족해 $A$는 양의정부호다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$\lambda(P^\pi)\le1$이고 $\gamma<1$이므로 $1-\gamma\lambda(P^\pi) \ge 1-\gamma > 0$이 항상 성립합니다.` }] },
+      { id: "s5", text: String.raw`이제 $A$가 SPD이므로 $AV=b$에 CG를 바로 적용할 수 있다. CG의 유한종료 성질에 따르면, 상태 개수가 $n$일 때 CG는 늦어도 [[blank:다]] 번째 반복에서 정확해 $V^\pi$에 도달한다 — 이는 표준 가치반복이 $\gamma^k\to0$으로 점근적으로만 접근하는 것과 질적으로 다르다.`,
+        blanks: [{ id: "다", latex: String.raw`n`, why: String.raw`CG는 $A$-켤레 방향 $n$개(=상태공간 차원)를 모두 소진하면 오차가 완전히 사라진다는 사실에 근거합니다.` }] },
+      { id: "s6", text: String.raw`실제로 위 2상태 예제에서 표준 가치반복은 3번 반복 후에도 정확해와 오차가 크게 남아 있지만, CG는 $n=2$번째 반복에서 정확히 $V^\pi$를 재현한다. 이는 표준 가치반복이 스칼라 축약률 $\gamma$ 하나에만 의존하는 반면, CG는 $A$ 전체 스펙트럼의 정보를 매 스텝 활용하기 때문이다(일반적으로 CG의 수렴률은 조건수 $\kappa(A)$를 통한 $\big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\big)^k$ 형태의 훨씬 빠른 경계를 따른다).`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면 정책평가를 벨만 고정점 문제가 아니라 선형시스템 $AV=b$로 보는 순간, 표준 가치반복은 그중 가장 단순한 풀이법(리처드슨 반복)에 불과함이 드러난다. $A$가 대칭이 되는 경우(가역 마르코프체인)에는 CG를 적용해 유한 스텝 만에 정확해에 도달할 수 있고, 일반적인 비대칭 $P^\pi$에서도 GMRES를 적용하면 표준 가치반복보다 빠른 수렴을 기대할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "backward-error-analysis": {
+    title: "후방오차분석: 전방오차 ≤ 조건수 × 후방오차",
+    domain: "num2",
+    subLabel: "안정성과 조건화",
+    explanation: String.raw`계산기가 내놓은 답이 '완전히 틀린' 것인지 아니면 '거의 맞는 입력에 대한 정확한 답'인지는 전혀 다른 이야기입니다. 후방오차분석(backward error analysis)은 후자의 관점을 취합니다: 계산된 결과 $\hat y$를 원래 문제 $f(x)$에 대한 근사가 아니라, 살짝 교란된 입력 $x+\Delta x$에 대한 정확한 답 $f(x+\Delta x)$로 재해석하는 것입니다. 이 관점이 강력한 이유는, 문제 자체가 입력의 교란에 얼마나 민감한지(조건수)를 알고 있다면 후방오차만으로 전방오차(우리가 실제로 궁금한, 계산된 답과 참값의 차이)를 통제할 수 있기 때문입니다.<br><br><strong>명제.</strong> 미분가능한 문제 $f$의 상대조건수를 $\kappa(x) = \lim_{\Delta x\to0}\sup \dfrac{\|f(x+\Delta x)-f(x)\|/\|f(x)\|}{\|\Delta x\|/\|x\|}$ 라 하자. 어떤 알고리즘이 계산한 $\hat y=\hat f(x)$가 후방안정(backward stable)이어서 $\hat y = f(x+\Delta x)$를 만족하는 $\Delta x$가 존재하고 $\|\Delta x\|/\|x\| \le \varepsilon_{\text{back}}$ ($\varepsilon_{\text{back}}$이 충분히 작다)이면, 상대 전방오차는 $\dfrac{\|\hat y - f(x)\|}{\|f(x)\|} \le \kappa(x)\,\varepsilon_{\text{back}} + O(\varepsilon_{\text{back}}^2)$ 를 만족한다.`,
+    example: String.raw`<p>$A=\begin{pmatrix}2&0\\0&1\end{pmatrix}$, $b=(2,1)$인 $Ax=b$를 생각합니다. 정확해는 $x^*=(1,1)$입니다.</p>
+<p>어떤 반올림 섞인 알고리즘이 계산한 해가 $\hat x=(1.01,\,1)$이라고 합시다 (첫 성분에서 $0.01$만큼 어긋났습니다).</p>
+<p>후방오차 관점에서는 "$\hat x$가 정확히 어떤 시스템을 풀었는가"를 되묻습니다. $A\hat x = (2.02,\,1)$이므로, $\hat x$는 원래 $b$가 아니라 $b+\Delta b$, $\Delta b=A\hat x-b=(0.02,\,0)$에 대해서는 정확한 해입니다.</p>
+<p>상대 후방오차는 $\|\Delta b\|/\|b\| = 0.02/\sqrt5 \approx 0.008944$이고, 상대 전방오차는 $\|\hat x-x^*\|/\|x^*\| = 0.01/\sqrt2\approx0.007071$입니다.</p>
+<p>$A$의 (2-노름) 조건수는 $\kappa(A)=\|A\|_2\|A^{-1}\|_2 = 2\times1=2$입니다. 명제의 부등식을 확인해보면 $\kappa(A)\times(\text{후방오차}) = 2\times0.008944\approx0.017888 \ge 0.007071 \approx (\text{전방오차})$로, 실제로 부등식이 성립합니다 (여유가 있는 상한이지 등식은 아닙니다).</p>`,
+    sections: [
+      { id: "s1", text: String.raw`문제 $f$를 입력 $x$에 대해 미분가능하다고 하자. 전방오차는 우리가 실제로 관심 있는, 계산된 답과 참값의 차이 $\|\hat y-f(x)\|$이고, 후방오차는 $\hat y$를 정확한 답으로 만드는 최소 교란 $\|\Delta x\|$이다. 목표는 후방오차가 작다는 사실만으로 전방오차에 대한 상한을 얻는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$\hat y=f(x+\Delta x)$이므로 $f$가 $x$ 근방에서 매끄럽다면 1차 테일러 전개로 $f(x+\Delta x) - f(x) \approx $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`f'(x)\Delta x`, why: String.raw`1차 테일러 근사는 $f(x+\Delta x)\approx f(x)+f'(x)\Delta x$이므로, 양변에서 $f(x)$를 빼면 이 식을 얻습니다.` }] },
+      { id: "s3", text: String.raw`따라서 전방오차는 $\|\hat y-f(x)\| = \|f(x+\Delta x)-f(x)\| \approx \|f'(x)\Delta x\| \le \|f'(x)\|\cdot\|\Delta x\|$ 로 위에서 눌린다. 양변을 $\|f(x)\|$로 나누면 상대 전방오차는 $\dfrac{\|\hat y-f(x)\|}{\|f(x)\|} \le \dfrac{\|f'(x)\|\|x\|}{\|f(x)\|}\cdot\dfrac{\|\Delta x\|}{\|x\|}$가 되는데, 여기서 앞의 인수 $\dfrac{\|f'(x)\|\|x\|}{\|f(x)\|}$는 바로 [[blank:나]] 의 정의와 정확히 같다.`,
+        blanks: [{ id: "나", latex: String.raw`\kappa(x)`, why: String.raw`조건수 $\kappa(x)$는 상대 입력교란에 대한 상대 출력변화의 최대 배율이고, 1차 근사에서 이는 정확히 $\|f'(x)\|\|x\|/\|f(x)\|$로 표현됩니다.` }] },
+      { id: "s4", text: String.raw`따라서 상대 전방오차는 $\dfrac{\|\hat y-f(x)\|}{\|f(x)\|} \le \kappa(x)\cdot\dfrac{\|\Delta x\|}{\|x\|}$ 이고, 후방안정성 가정 $\|\Delta x\|/\|x\|\le\varepsilon_{\text{back}}$을 대입하면 상대 전방오차는 $\le$[[blank:다]] 로 눌린다 (1차 근사를 넘는 고차항은 $O(\varepsilon_{\text{back}}^2)$로 무시할 만큼 작다).`,
+        blanks: [{ id: "다", latex: String.raw`\kappa(x)\,\varepsilon_{\text{back}}`, why: String.raw`$\kappa(x)\cdot\|\Delta x\|/\|x\| \le \kappa(x)\cdot\varepsilon_{\text{back}}$을 그대로 대입한 것입니다.` }] },
+      { id: "s5", text: String.raw`이 부등식은 상한일 뿐 등식이 아니다 — 실제 전방오차는 교란 $\Delta x$의 방향이 $f'(x)$의 가장 민감한 방향(최대 특이벡터 방향)과 얼마나 일치하는지에 따라 이 상한보다 훨씬 작을 수 있다. 위 숫자 예제에서도 $\kappa(A)\varepsilon_{\text{back}}\approx0.0179$가 실제 전방오차 $\approx0.0071$보다 크게 나온 것이 그 예다.`, blanks: [] },
+      { id: "s6", text: String.raw`정리하면, 알고리즘이 후방안정하기만 하면 문제 자체의 조건수와 곱해서 전방오차의 상한을 얻을 수 있다. 이는 수치해석에서 좋은 알고리즘을 정의하는 실용적인 기준이 된다: 알고리즘 설계자는 직접 다루기 어려운 전방오차 대신, 상대적으로 다루기 쉬운 후방오차만 작게 만들면 되고 나머지는 문제의 조건수가 알아서 처리한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "floating-point-error": {
+    title: "부동소수점 오차: 기계입실론과 반올림오차의 누적",
+    domain: "num2",
+    subLabel: "안정성과 조건화",
+    explanation: String.raw`컴퓨터는 실수를 유한한 개수의 비트로 표현하므로, 대부분의 실수는 정확히 저장되지 못하고 가장 가까운 표현가능한 값으로 반올림됩니다. 이 반올림 하나하나는 아주 작지만, 수백만 번의 연산을 거치는 계산에서는 이 작은 오차들이 어떻게 쌓이는지가 결과의 신뢰성을 좌우합니다. 기계입실론(machine epsilon)은 이 반올림의 크기를 정량화하는 기준값이고, $n$번의 덧셈을 거친 뒤 오차가 얼마나 커질 수 있는지는 이 기준값으로부터 유도되는 상한으로 통제할 수 있습니다.<br><br><strong>명제.</strong> IEEE 754 배정밀도(double)에서 기계입실론을 $\varepsilon_{\text{mach}}=2^{-52}$ (1과 그다음으로 표현 가능한 수 사이의 간격)라 하면, 임의의 실수 $x$(표현범위 내)에 대해 $\mathrm{fl}(x) = x(1+\delta)$, $|\delta|\le u:=\varepsilon_{\text{mach}}/2=2^{-53}$을 만족하는 단위반올림(unit roundoff) $u$가 존재한다. 표준 반올림 모델 $\mathrm{fl}(a\ \mathrm{op}\ b) = (a\ \mathrm{op}\ b)(1+\delta)$ ($|\delta|\le u$)을 가정할 때, $n$개의 수 $x_1,\dots,x_n$을 순차적으로 더한 계산값 $S_n=\mathrm{fl}(x_1+x_2+\cdots+x_n)$의 오차는 $|S_n - \sum_i x_i| \le (n-1)u\sum_i|x_i| + O(u^2)$ 를 만족한다.`,
+    example: String.raw`<p>실수 $0.1$은 이진수로 $0.0001100110011\ldots$처럼 무한소수이기 때문에 배정밀도 부동소수점으로는 정확히 표현되지 못하고, 가장 가까운 표현가능한 값으로 반올림되어 저장됩니다. $0.1$을 10번 더하면 수학적으로는 정확히 $1.0$이 되어야 하지만, 실제 IEEE 배정밀도 연산에서는</p>
+$$\underbrace{0.1+0.1+\cdots+0.1}_{10\text{번}} = 0.9999999999999999 \neq 1.0$$
+<p>이 됩니다. 차이는 $1.0-0.9999999999999999 \approx 1.11\times10^{-16}$로, 이는 단위반올림 $u=2^{-53}\approx1.11\times10^{-16}$과 정확히 같은 자릿수입니다.</p>
+<p>명제의 상한과 비교해봅니다. $n=10$개의 항 $x_i=0.1$을 더하는 경우, $\sum_i|x_i|=1.0$이므로 상한은 $(n-1)u\sum_i|x_i| = 9\times(1.11\times10^{-16})\times1.0 \approx 9.99\times10^{-16}$입니다. 실제 관측된 오차 $1.11\times10^{-16}$은 이 상한보다 작아, 명제의 부등식이 (여유 있게) 성립함을 확인할 수 있습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`IEEE 배정밀도는 부호 1비트, 지수 11비트, 가수 52비트로 실수를 표현한다. $1$과 그 다음으로 표현 가능한 수 사이의 간격을 기계입실론 $\varepsilon_{\text{mach}}=2^{-52}$라 정의한다. 임의의 실수 $x$를 가장 가까운 표현가능한 값으로 반올림하는 연산을 $\mathrm{fl}(x)$라 쓰면, 반올림 오차의 상대크기는 최대 $u=\varepsilon_{\text{mach}}/2$이다: $\mathrm{fl}(x)=x(1+\delta)$, $|\delta|\le u$.`, blanks: [] },
+      { id: "s2", text: String.raw`가장 간단한 경우로 두 수 $x_1,x_2$를 더하는 경우를 본다. 컴퓨터는 $x_1+x_2$를 정확히 계산한 뒤 그 결과를 한 번 반올림하므로 $S_2:=\mathrm{fl}(x_1+x_2) = (x_1+x_2)(1+\delta_2)$, $|\delta_2|\le u$ 이다. 이때 오차는 $S_2-(x_1+x_2) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`(x_1+x_2)\delta_2`, why: String.raw`$S_2=(x_1+x_2)(1+\delta_2)=(x_1+x_2)+(x_1+x_2)\delta_2$이므로 참값을 빼면 남는 오차항이 이것입니다.` }] },
+      { id: "s3", text: String.raw`이제 세 번째 수 $x_3$을 더한다고 하자. $S_3:=\mathrm{fl}(S_2+x_3) = (S_2+x_3)(1+\delta_3)$, $|\delta_3|\le u$이다. $S_2=(x_1+x_2)(1+\delta_2)$를 대입하고 $\delta_2\delta_3$처럼 $u^2$ 크기인 항을 무시하면(1차 근사), $S_3 \approx (x_1+x_2)(1+\delta_2+\delta_3) + x_3(1+\delta_3)$ 이다. 참값 $x_1+x_2+x_3$을 빼면 오차는 $S_3-(x_1+x_2+x_3) \approx x_1(\delta_2+\delta_3)+x_2(\delta_2+\delta_3)+x_3\delta_3$이고, 절댓값을 취해 삼각부등식과 $|\delta_2|,|\delta_3|\le u$를 쓰면 $|S_3-(x_1+x_2+x_3)| \le $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`2u(|x_1|+|x_2|+|x_3|)`, why: String.raw`각 $x_i$에 곱해진 $\delta$의 개수(1개 또는 2개)를 최악의 경우인 2개로 통일해서 $u$의 배수로 묶으면 이 상한이 나옵니다. 정확한 계수는 $2u|x_1|+2u|x_2|+u|x_3|$이지만, 마지막 항의 계수 $u$도 $2u$보다 작으므로 상한으로서 이렇게 눌러도 부등식은 그대로 성립합니다.` }] },
+      { id: "s4", text: String.raw`같은 논증을 귀납적으로 반복하면, $k$번째 항 $x_k$ ($k<n$)에는 최대 $(n-k)$개의 반올림 계수 $\delta$가 곱해지고 마지막 항 $x_n$에는 $\delta_n$ 하나만 곱해진다는 것을 알 수 있다. 모든 계수를 가장 큰 경우인 $(n-1)$개로 눌러 상한을 단순화하면, $n$개의 수를 순차적으로 더한 오차는 $|S_n-\sum_i x_i| \le $[[blank:다]] $+ O(u^2)$ 이다.`,
+        blanks: [{ id: "다", latex: String.raw`(n-1)u\sum_{i=1}^n|x_i|`, why: String.raw`각 항의 반올림 계수 개수를 최악의 경우인 $(n-1)$로 통일해서 밖으로 묶어낸 것이 바로 명제에서 제시한 상한입니다.` }] },
+      { id: "s5", text: String.raw`$0.1$을 10번 더하는 예제에 이 상한을 적용하면 $n=10$, $\sum_i|x_i|=1.0$이므로 $|S_{10}-1.0| \le 9u \approx 9.99\times10^{-16}$이다. 실제 IEEE 연산에서 관측된 오차는 $\approx1.11\times10^{-16}$로 이 상한 안에 있다 — 상한이 정말 지켜지는 최악의 경우 보장임을 확인할 수 있다 (덧붙여 $0.1$ 자체도 저장되는 순간 이미 $|\delta|\le u$만큼 반올림되어 있으므로, 관측된 총오차에는 이 표현오차도 섞여 있다).`, blanks: [] },
+      { id: "s6", text: String.raw`이 상한이 시사하는 실용적 교훈은 두 가지다. 첫째, 오차 상한이 항의 개수 $n$에 비례해서 커지므로, 아주 많은 수를 더할 때는 반올림 누적이 무시할 수 없는 크기가 될 수 있다. 둘째, 이 상한은 덧셈을 어떤 순서로 하느냐(왼쪽부터 순차적으로 하는 방식 vs 균형잡힌 이진트리 방식 등)에 따라 실제 오차의 크기가 달라질 수 있음을 시사하며, 이 때문에 대규모 합산에는 오차를 더 억제하는 보정된 덧셈 알고리즘(예: Kahan summation)이 쓰이기도 한다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면, 기계입실론(또는 단위반올림 $u$)은 한 번의 반올림이 만들 수 있는 최대 상대오차를 정량화하고, $n$번의 순차 덧셈에서 이 오차들이 삼각부등식을 통해 최대 $(n-1)u\sum|x_i|$까지 누적될 수 있음을 증명했다. $0.1$을 열 번 더하는 구체적 예제가 이 상한 안에서 실제로 오차가 발생함을 확인시켜 준다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "preconditioning": {
+    title: "전처리(Preconditioning): 조건수를 낮춰 반복법을 가속하기",
+    domain: "num2",
+    subLabel: "안정성과 조건화",
+    explanation: String.raw`CG나 GMRES 같은 Krylov 방법의 수렴속도는 시스템 행렬 $A$의 고유값이 얼마나 넓게 퍼져 있는지, 즉 조건수 $\kappa(A)$에 크게 좌우됩니다. $\kappa(A)$가 크면(고유값 스케일이 천차만별이면) 반복법은 느리게 수렴합니다. 전처리는 원래 시스템 $Ax=b$를 같은 해를 갖지만 조건수가 훨씬 작은 등가 시스템으로 바꿔치기하는 기법입니다. 가장 단순한 형태인 대각(Jacobi) 전처리는 $A$의 대각성분으로 스케일을 맞추는 것만으로도, 대각성분의 크기가 서로 크게 다른 행렬에서 극적인 조건수 개선을 만들어낼 수 있습니다.<br><br><strong>명제.</strong> $A\in\mathbb{R}^{n\times n}$이 SPD이고 $M$이 SPD 전처리행렬이라 하자. $M^{-1/2}AM^{-1/2}$는 $M^{-1}A$와 닮음(similar, 같은 고유값을 가짐)이며 대칭이다. CG를 (대칭화된) 전처리 시스템 $M^{-1/2}AM^{-1/2}\tilde x=M^{-1/2}b$에 적용하면, 매 반복의 오차는 $\|\tilde e_k\|_{\tilde A} \le 2\Big(\dfrac{\sqrt{\tilde\kappa}-1}{\sqrt{\tilde\kappa}+1}\Big)^k\|\tilde e_0\|_{\tilde A}$ ($\tilde\kappa=\kappa(M^{-1/2}AM^{-1/2})$)를 만족한다. 대각전처리 $M=\mathrm{diag}(A)$처럼 $\tilde\kappa \ll \kappa(A)$가 되도록 $M$을 고르면, 같은 정확도에 도달하는 데 필요한 반복 횟수가 크게 줄어든다.`,
+    example: String.raw`<p>$A=\begin{pmatrix}100&1\\1&2\end{pmatrix}$는 대각성분의 스케일이 크게 다른 SPD 행렬입니다($100\cdot2-1^2=199>0$이라 SPD). 고유값을 계산하면 $\lambda\approx100.01,\,1.99$이고 조건수는 $\kappa(A)=\lambda_{\max}/\lambda_{\min}\approx50.26$입니다.</p>
+<p>대각전처리 $M=\mathrm{diag}(100,\,2)$를 쓰면 $M^{-1/2}=\mathrm{diag}(1/10,\,1/\sqrt2)$이고,</p>
+$$\tilde A = M^{-1/2}AM^{-1/2}=\begin{pmatrix}1&\frac{1}{10\sqrt2}\\\frac{1}{10\sqrt2}&1\end{pmatrix}\approx\begin{pmatrix}1&0.0707\\0.0707&1\end{pmatrix}$$
+<p>이 $2\times2$ 대칭행렬은 대각성분이 모두 $1$이고 비대각성분이 $c=1/(10\sqrt2)\approx0.0707$이라, 고유벡터 $(1,1)/\sqrt2$와 $(1,-1)/\sqrt2$에 대응하는 고유값이 정확히 $1+c\approx1.0707$과 $1-c\approx0.9293$입니다. 따라서 $\kappa(\tilde A)=\dfrac{1+c}{1-c}\approx1.152$입니다.</p>
+<p>$\kappa(A)\approx50.26$에서 $\kappa(\tilde A)\approx1.152$로 급감했습니다. CG의 스텝당 오차감소율 $r=\dfrac{\sqrt\kappa-1}{\sqrt\kappa+1}$을 비교하면 $r_A\approx0.753$인 반면 $r_{\tilde A}\approx0.035$로, 전처리된 시스템의 CG 1스텝이 원래 시스템의 CG 여러 스텝에 맞먹는 오차감소를 만들어냅니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`CG의 오차수렴 상한은 $\Big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\Big)^k$ 형태로 조건수 $\kappa(A)=\lambda_{\max}(A)/\lambda_{\min}(A)$에 의해 결정된다. $\kappa$가 클수록 이 비율은 1에 가까워져 수렴이 느려진다. 전처리의 목표는 $Ax=b$와 같은 해를 갖는 등가 시스템을 찾되, 그 계수행렬의 조건수가 훨씬 작도록 만드는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`SPD 전처리행렬 $M$을 골라 $M^{-1}Ax=M^{-1}b$로 바꾸면 해는 그대로 $x=A^{-1}b$지만, $M^{-1}A$는 $A,M$이 모두 대칭이어도 일반적으로 대칭이 아니다(두 대칭행렬의 곱은 대칭이 아닐 수 있다). CG를 쓰려면 대칭성이 필요하므로, 대신 $M^{-1/2}AM^{-1/2}$처럼 양쪽에서 $M^{-1/2}$를 곱한 대칭화된 형태를 쓴다. $M^{-1}A$와 $M^{-1/2}AM^{-1/2}$의 관계는 $M^{-1}A = M^{-1/2}\big($[[blank:가]]$\big)M^{1/2}$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`M^{-1/2}AM^{-1/2}`, why: String.raw`$M^{-1/2}(M^{-1/2}AM^{-1/2})M^{1/2} = M^{-1}AM^{-1/2}M^{1/2}=M^{-1}A$이므로 이렇게 인수분해됩니다. 이는 $M^{-1}A$가 대칭행렬 $M^{-1/2}AM^{-1/2}$와 닮음변환 관계임을 보여줍니다.` }] },
+      { id: "s3", text: String.raw`닮음변환은 고유값을 보존하므로($Bv=\lambda v \iff (PBP^{-1})(Pv)=\lambda(Pv)$), $M^{-1}A$와 $M^{-1/2}AM^{-1/2}$는 정확히 같은 고유값을 갖는다. 특히 $M^{-1/2}AM^{-1/2}$는 대칭이므로 그 고유값은 모두 실수이고, $A,M$이 SPD이면 이 고유값들은 모두 양수라 $M^{-1/2}AM^{-1/2}$도 SPD다. 그래서 원래 시스템의 조건수 대신 대칭화된 $M^{-1/2}AM^{-1/2}$의 조건수로 CG의 수렴을 분석할 수 있다.`, blanks: [] },
+      { id: "s4", text: String.raw`$M=\mathrm{diag}(A)$(야코비 전처리)를 쓰면 $\tilde A=M^{-1/2}AM^{-1/2}$의 대각성분은 $[\tilde A]_{ii} = \dfrac{A_{ii}}{\sqrt{A_{ii}}\sqrt{A_{ii}}} = $[[blank:나]] 로, 원래 $A$의 대각성분이 얼마나 다르든 상관없이 항상 1로 통일된다.`,
+        blanks: [{ id: "나", latex: String.raw`1`, why: String.raw`$A_{ii}/(\sqrt{A_{ii}}\sqrt{A_{ii}}) = A_{ii}/A_{ii}=1$이므로, 대각 스케일이 자동으로 맞춰집니다.` }] },
+      { id: "s5", text: String.raw`위 $2\times2$ 예제가 정확히 이 현상을 보여준다: $A$의 두 대각성분이 $100$과 $2$로 50배 차이났지만, 야코비 전처리 후 $\tilde A$의 대각성분은 모두 $1$이 되었고 비대각성분만 $c\approx0.0707$만큼 남았다. 그 결과 조건수가 $\kappa(A)\approx50.26$에서 $\kappa(\tilde A)\approx1.15$로 급감했다.`, blanks: [] },
+      { id: "s6", text: String.raw`정리하면 전처리는 CG의 오차감소율 $\big(\frac{\sqrt\kappa-1}{\sqrt\kappa+1}\big)^k$에서 $\kappa$를 $\kappa(A)$ 대신 훨씬 작은 $\kappa(\tilde A)$로 교체하는 효과를 낸다. 목표 오차수준에 도달하는 데 필요한 반복 횟수는 대략 $\sqrt\kappa$에 비례하므로, $\kappa$가 $50.26$에서 $1.15$로 줄면 필요한 반복 횟수도 대략 $\sqrt{50.26/1.15}\approx$[[blank:다]] 배 가까이 줄어든다는 뜻이다.`,
+        blanks: [{ id: "다", latex: String.raw`6.6`, why: String.raw`필요한 반복 횟수는 $\sqrt\kappa$에 비례하므로, $\sqrt{\kappa(A)/\kappa(\tilde A)} = \sqrt{50.26/1.15}\approx6.6$배만큼 반복 횟수가 줄어든다는 뜻입니다.` }] },
+      { id: "s7", text: String.raw`정리하면, SPD 전처리행렬 $M$을 잘 고르면 원래 시스템과 동일한 해를 유지하면서도 조건수를 크게 낮출 수 있고, 이는 CG(혹은 전처리된 GMRES)의 수렴 속도를 실질적으로 가속한다. 대각전처리라는 가장 단순한 선택만으로도 대각 스케일이 불균형한 행렬에서는 극적인 효과를 볼 수 있음을 위 예제가 확인해준다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "value-iteration-stability": {
+    title: "가치반복의 수치적 안정성: 축약사상과 오차의 유계성",
+    domain: "num2",
+    subLabel: "안정성과 조건화",
+    explanation: String.raw`가치반복은 완전연산에서라면 벨만연산자 $T$의 고정점으로 기하급수적으로 수렴합니다. 그러나 실제 컴퓨터에서는 매 스텝의 계산이 반올림오차를 동반하므로, 진짜로 계산되는 것은 $\hat V_{k+1}=T(\hat V_k)$가 아니라 $\hat V_{k+1}=T(\hat V_k)+\varepsilon_k$ (매 스텝 작은 오차 $\varepsilon_k$가 섞인 값)입니다. 이 오차들이 스텝을 거듭할수록 계속 쌓여 발산해버리지는 않을지가 실용적으로 중요한 질문입니다. 답은 $T$가 축약사상(contraction, 상수 $\gamma<1$)이라는 바로 그 성질에 있습니다 — 축약성이 매 스텝의 오차를 일정 비율로 눌러 주기 때문에, 누적 오차는 발산하지 않고 유한한 상한 안에 머무릅니다.<br><br><strong>명제.</strong> $T$가 $(\mathbb{R}^n,\|\cdot\|_\infty)$ 위에서 상수 $\gamma<1$인 축약사상이고 $V^*=T(V^*)$가 그 고정점이라 하자. 계산된 반복열이 $\hat V_{k+1}=T(\hat V_k)+\varepsilon_k$, $\|\varepsilon_k\|_\infty\le\varepsilon$ (모든 $k$)을 만족하면, 오차 $e_k:=\hat V_k-V^*$는 $\|e_k\|_\infty \le \gamma^k\|e_0\|_\infty + \dfrac{\varepsilon}{1-\gamma}$ 를 만족하며, 특히 $k\to\infty$에서도 $\varepsilon/(1-\gamma)$라는 유한한 값 안에 머무른다(발산하지 않는다).`,
+    example: String.raw`<p>단일 상태의 벨만연산자를 $T(v)=0.5v+3$이라 하고 ($\gamma=0.5$), 참 고정점은 $V^*=T(V^*)$를 풀면 $V^*=6$입니다.</p>
+<p>매 스텝 최악의 경우 항상 같은 방향으로 $\varepsilon=0.01$만큼의 반올림오차가 섞인다고 하고, $\hat V_0=0$에서 계산된 반복 $\hat V_{k+1}=0.5\hat V_k+3+0.01$을 따라가 봅니다.</p>
+<p>$\hat V_1=3.01,\ \hat V_2=4.515,\ \hat V_3=5.2675,\ \hat V_4=5.64375,\ \hat V_5=5.831875,\ldots$</p>
+<p>이 재귀식을 닫힌 식으로 풀면 $\hat V_k = 6.02(1-0.5^k)$이고, $k\to\infty$에서 $\hat V_k \to 6.02$로 수렴합니다 — 참값 $V^*=6$보다 정확히 $0.02$만큼 큰 값에서 멈춥니다. 명제의 상한 $\varepsilon/(1-\gamma)=0.01/0.5=0.02$와 정확히 일치합니다: 오차는 발산하지 않고 딱 이 상한만큼에서 안정됩니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$T$가 $\gamma$-축약사상이라는 것은 임의의 $u,v$에 대해 $\|T(u)-T(v)\|_\infty \le \gamma\|u-v\|_\infty$가 성립함을 뜻한다. 완전연산이라면 $\hat V_{k+1}=T(\hat V_k)$이므로 $\|\hat V_{k+1}-V^*\|=\|T(\hat V_k)-T(V^*)\|\le\gamma\|\hat V_k-V^*\|$가 그대로 성립해 오차가 매 스텝 $\gamma$배씩 줄어든다. 그런데 유한정밀도에서는 매 스텝 계산 자체에도 반올림오차 $\varepsilon_k$가 섞여, 실제로는 $\hat V_{k+1}=T(\hat V_k)+\varepsilon_k$가 계산된다.`, blanks: [] },
+      { id: "s2", text: String.raw`$e_k:=\hat V_k-V^*$라 하자. $V^*=T(V^*)$이므로 $e_{k+1} = \hat V_{k+1}-V^* = T(\hat V_k)+\varepsilon_k - T(V^*) = \big[T(\hat V_k)-T(V^*)\big]+\varepsilon_k$ 이고, 삼각부등식과 축약성을 함께 쓰면 $\|e_{k+1}\|_\infty \le $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\gamma\|e_k\|_\infty + \varepsilon`, why: String.raw`$\|T(\hat V_k)-T(V^*)\|\le\gamma\|e_k\|$(축약성)이고 $\|\varepsilon_k\|\le\varepsilon$이므로, 삼각부등식 $\|a+b\|\le\|a\|+\|b\|$을 적용하면 이 상한을 얻습니다.` }] },
+      { id: "s3", text: String.raw`이 부등식 $\|e_{k+1}\|\le\gamma\|e_k\|+\varepsilon$을 $k=0$부터 반복해서 풀어보면 $\|e_1\|\le\gamma\|e_0\|+\varepsilon$, $\|e_2\|\le\gamma(\gamma\|e_0\|+\varepsilon)+\varepsilon = \gamma^2\|e_0\|+\varepsilon(1+\gamma)$, 이런 식으로 계속되어 $k$번째에는 $\|e_k\|_\infty \le \gamma^k\|e_0\|_\infty + \varepsilon\sum_{j=0}^{k-1}\gamma^j = \gamma^k\|e_0\|_\infty + \varepsilon\cdot$[[blank:나]] 가 된다.`,
+        blanks: [{ id: "나", latex: String.raw`\dfrac{1-\gamma^k}{1-\gamma}`, why: String.raw`등비수열의 합 공식 $\sum_{j=0}^{k-1}\gamma^j = \dfrac{1-\gamma^k}{1-\gamma}$ ($\gamma\neq1$)을 그대로 적용한 것입니다.` }] },
+      { id: "s4", text: String.raw`$0<\gamma<1$이므로 $\gamma^k\to0$이고 $\dfrac{1-\gamma^k}{1-\gamma} \le \dfrac{1}{1-\gamma}$ (분자가 1보다 작으므로)가 항상 성립한다. 따라서 모든 $k$에 대해 균등하게 $\|e_k\|_\infty \le \gamma^k\|e_0\|_\infty + $[[blank:다]] 라는 상한을 얻는다 — 오차가 $k$에 무관하게 유계로 눌린다.`,
+        blanks: [{ id: "다", latex: String.raw`\dfrac{\varepsilon}{1-\gamma}`, why: String.raw`$\varepsilon\cdot\frac{1-\gamma^k}{1-\gamma}\le\varepsilon\cdot\frac{1}{1-\gamma}$이므로, $k$에 의존하지 않는 균등한 상한이 이렇게 나옵니다.` }] },
+      { id: "s5", text: String.raw`만약 $\gamma\ge1$이었다면 이 논증은 완전히 무너진다: 등비수열 합 $\sum_{j=0}^{k-1}\gamma^j$은 $k\to\infty$에서 발산하고, 상한 $\varepsilon/(1-\gamma)$도 $\gamma=1$에서는 정의조차 되지 않는다(분모가 0). 즉 매 스텝 아주 작은 오차 $\varepsilon$만 섞여도, 축약성이 없으면 그 오차가 스텝을 거듭하며 무한히 증폭될 수 있다. $\gamma<1$이라는 축약 조건이 바로 이 증폭을 막는 유일한 안전장치다.`, blanks: [] },
+      { id: "s6", text: String.raw`위 스칼라 예제($\gamma=0.5,\ \varepsilon=0.01$)에서 오차 상한은 $\varepsilon/(1-\gamma)=0.02$였고, 실제로 계산된 반복열은 정확히 $\hat V_k\to6.02=V^*+0.02$로 수렴해 이 상한에 도달했다(오차가 매 스텝 같은 방향으로만 섞이는 최악의 경우를 가정했기 때문에 상한이 등식에 가깝게 실현되었다). 오차가 무한히 커지지 않고 이 유한한 값에서 멈춘 것은 전적으로 $\gamma=0.5<1$이라는 축약성 덕분이다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면, 유한정밀도로 가치반복을 계산할 때 매 스텝의 반올림오차는 사라지지 않지만, 벨만연산자가 $\gamma<1$인 축약사상이라는 사실 덕분에 그 누적효과가 등비급수처럼 억제되어 $\varepsilon/(1-\gamma)$라는 유한한 상한 안에 머무른다. 이것이 가치반복이 수치적으로 안정적인 알고리즘으로 여겨지는 핵심 이유다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
 };
