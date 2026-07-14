@@ -243,7 +243,10 @@
         <!-- ================= 추론통계 ================= -->
         <tr class="group-start" data-group="stat">
           <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">추정이론</p></th>
-          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=unbiased-estimator" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">불편추정량</p><p class="formula">E[θ̂] = θ</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=unbiased-estimator" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">불편추정량</p><p class="formula">E[θ̂] = θ</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-stat)" href="../concepts/index.html?c=james-stein-estimator" target="_blank" rel="noopener"><p class="name">James-Stein 추정량</p><p class="formula">표본평균의 허용불가능성(p≥3)</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-stat)" href="../concepts/index.html?c=method-of-moments" target="_blank" rel="noopener"><p class="name">적률법 추정량</p><p class="formula">모집단 적률 = 표본 적률</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-stat)" href="../concepts/index.html?c=gauss-markov-blue" target="_blank" rel="noopener"><p class="name">가우스-마르코프 정리(BLUE)</p><p class="formula">OLS = 최소분산 선형불편추정량</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=mle-asymptotic-normality" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">MLE의 점근적 정규성</p><p class="formula">√n(θ̂−θ) → N(0, I(θ)⁻¹)</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=sufficient-statistic" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">충분통계량</p><p class="formula">지수족의 T(x)</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=cramer-rao-lower-bound" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">Cramér-Rao 하한</p><p class="formula">Var(θ̂) ≥ 1/I(θ)</p></a></div></td>
@@ -264,10 +267,32 @@
         </tr>
         <tr data-group="stat">
           <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">신뢰구간 · 순차분석</p></th>
-          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=wald-confidence-interval" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">Wald 신뢰구간</p><p class="formula">θ̂ ± z · SE(θ̂)</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=wald-confidence-interval" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">Wald 신뢰구간</p><p class="formula">θ̂ ± z · SE(θ̂)</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-stat)" href="../concepts/index.html?c=conformal-prediction-coverage" target="_blank" rel="noopener"><p class="name">콘포멀 예측</p><p class="formula">교환가능성 → 분포무관 커버리지</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=bootstrap-confidence-interval" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">부트스트랩 신뢰구간</p><p class="formula">재표집 분포의 분위수</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=profile-likelihood-confidence-interval" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">프로파일우도 신뢰구간</p><p class="formula">우도비 반전(inversion)</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=wald-sequential-test" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">Wald 순차검정</p><p class="formula">SPRT 상 · 하한 경계</p></a></div></td>
+        </tr>
+        <tr data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">결정이론</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=bayes-decision-theory-risk" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">베이즈 리스크 최소화</p><p class="formula">0-1손실→MAP, 제곱손실→사후평균</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">예측 평가</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=roc-auc-mann-whitney" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">ROC-AUC = Mann-Whitney U</p><p class="formula">AUC=P(스코어(+)>스코어(-))</p></a><a class="chip chip-link" href="../concepts/index.html?c=proper-scoring-rule" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">진짜 스코어링 규칙</p><p class="formula">브라이어 점수 · 로그점수 유인합치</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="stat">
+          <th><p class="row-eyebrow" style="color:var(--c-stat)">추론통계</p><p class="row-name">모델선택 이론</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=aic-bic-derivation" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">AIC · BIC 점근적 유도</p><p class="formula">AIC=2k-2logL, BIC=k logn-2logL</p></a><a class="chip chip-link" href="../concepts/index.html?c=bayes-factor-occam-razor" target="_blank" rel="noopener" style="--chip-c:var(--c-stat)"><p class="name">베이즈 인수 · 오캄의 면도날</p><p class="formula">BF=p(D|M1)/p(D|M2)</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
         </tr>
 
         <!-- ================= 인과추론 ================= -->
@@ -280,7 +305,8 @@
         </tr>
         <tr data-group="causal">
           <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">그래프 인과모형</p></th>
-          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=dag-d-separation" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">DAG와 d-분리</p><p class="formula">조건부독립 관계 판별</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=dag-d-separation" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">DAG와 d-분리</p><p class="formula">조건부독립 관계 판별</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-causal)" href="../concepts/index.html?c=frontdoor-backdoor-adjustment" target="_blank" rel="noopener"><p class="name">백도어 · 프론트도어 기준</p><p class="formula">조정공식 유도</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=invariant-risk-minimization" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">인과 표현학습</p><p class="formula">환경 불변 예측기(IRM)</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=do-operator" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">do-연산자</p><p class="formula">P(Y | do(X=x))</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=counterfactual-policy-evaluation" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">반사실 정책평가</p><p class="formula">off-policy 반사실 추정</p></a></div></td>
@@ -299,6 +325,27 @@
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=regression-discontinuity-design" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">회귀불연속(RDD)</p><p class="formula">임계점 부근 국소비교</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=difference-in-differences" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">이중차분(DiD)</p><p class="formula">평행추세 가정</p></a></div></td>
         </tr>
+        <tr data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">선형회귀와 편향제거</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=fwl-theorem" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">FWL 정리(직교화)</p><p class="formula">잔차끼리의 회귀 = 부분효과</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">이질적 효과와 개인화</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=cate-conditional-ate" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">CATE(이질적 처치효과)</p><p class="formula">τ(x)=E[Y(1)-Y(0)|X=x]</p></a><a class="chip chip-link" href="../concepts/index.html?c=s-learner-t-learner" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">S-러너 · T-러너</p><p class="formula">단일모델 vs 두 별도모델</p></a><a class="chip chip-link" href="../concepts/index.html?c=x-learner-propensity-weighting" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">X-러너</p><p class="formula">성향점수 가중결합</p></a><a class="chip chip-link" href="../concepts/index.html?c=double-debiased-ml" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">Double/Debiased ML</p><p class="formula">Neyman 직교성 + 교차적합</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="causal">
+          <th><p class="row-eyebrow" style="color:var(--c-causal)">인과추론</p><p class="row-name">실험 설계 확장</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=switchback-experiment-washout" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">스위치백 실험</p><p class="formula">시간단위 무작위화 · 워시아웃</p></a><a class="chip chip-link" href="../concepts/index.html?c=noncompliance-late" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">불응과 LATE</p><p class="formula">IV로 식별되는 순응자 효과</p></a><a class="chip chip-link" href="../concepts/index.html?c=rdd-local-linear-bandwidth" target="_blank" rel="noopener" style="--chip-c:var(--c-causal)"><p class="name">RDD 국소선형추정</p><p class="formula">대역폭 · 편향-분산 트레이드오프</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
 
         <!-- ================= 이산수학 심화 ================= -->
         <tr class="group-start" data-group="disc2">
@@ -310,7 +357,9 @@
         </tr>
         <tr data-group="disc2">
           <th><p class="row-eyebrow" style="color:var(--c-disc2)">이산수학 심화</p><p class="row-name">조합론 심화</p></th>
-          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=generating-function-recurrence" target="_blank" rel="noopener" style="--chip-c:var(--c-disc2)"><p class="name">생성함수</p><p class="formula">Σ aₙxⁿ</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=generating-function-recurrence" target="_blank" rel="noopener" style="--chip-c:var(--c-disc2)"><p class="name">생성함수</p><p class="formula">Σ aₙxⁿ</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-disc2)" href="../concepts/index.html?c=submodular-greedy-approximation" target="_blank" rel="noopener"><p class="name">서브모듈 탐욕 근사</p><p class="formula">(1-1/e) 근사보장</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-disc2)" href="../concepts/index.html?c=distributed-representation-depth-expressivity" target="_blank" rel="noopener"><p class="name">분산표현 · 깊이 표현력</p><p class="formula">얕은 망은 지수적 폭 필요</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=probabilistic-method" target="_blank" rel="noopener" style="--chip-c:var(--c-disc2)"><p class="name">확률적 방법</p><p class="formula">존재성 증명(Probabilistic Method)</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=combinatorial-explosion" target="_blank" rel="noopener" style="--chip-c:var(--c-disc2)"><p class="name">조합적 폭발</p><p class="formula">이산 잠재공간 카운팅</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=ramsey-theorem" target="_blank" rel="noopener" style="--chip-c:var(--c-disc2)"><p class="name">램지이론</p><p class="formula">램지수 R(m,n)</p></a></div></td>
@@ -347,7 +396,8 @@
         </tr>
         <tr data-group="num2">
           <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">반복법</p></th>
-          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=conjugate-gradient" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">켤레기울기법(CG)</p><p class="formula">Krylov 부분공간</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=conjugate-gradient" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">켤레기울기법(CG)</p><p class="formula">Krylov 부분공간</p></a>
+            <a class="chip chip-link" style="--chip-c:var(--c-num2)" href="../concepts/index.html?c=bfgs-quasi-newton" target="_blank" rel="noopener"><p class="name">유사뉴턴법(BFGS)</p><p class="formula">시컨트방정식 → 헤시안역행렬 갱신</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=gmres" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">GMRES</p><p class="formula">비대칭 시스템 반복법</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=lanczos-iteration" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">Lanczos 반복법</p><p class="formula">삼중대각화</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=value-iteration-krylov" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">가치반복 Krylov 가속</p><p class="formula">반복법 가속 기법</p></a></div></td>
@@ -358,6 +408,13 @@
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=floating-point-error" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">부동소수점 오차</p><p class="formula">반올림오차 누적</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=preconditioning" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">전처리(Preconditioning)</p><p class="formula">조건수 개선</p></a></div></td>
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=value-iteration-stability" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">수치적 가치반복 안정성</p><p class="formula">오차전파 분석</p></a></div></td>
+        </tr>
+        <tr data-group="num2">
+          <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">고속변환 · 합성곱</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=fft-convolution-theorem" target="_blank" rel="noopener" style="--chip-c:var(--c-num2)"><p class="name">합성곱 정리 · FFT</p><p class="formula">시간영역 합성곱 = 주파수영역 곱</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
         </tr>
 
       </tbody>
