@@ -20150,7 +20150,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <text x="18" y="163" font-size="11">x</text>
 <text x="122" y="122" font-size="11">z</text>
 <text x="207" y="163" font-size="11">x̂</text>
-<text x="110" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">인코더→잠재분포→디코더</text>
+<text x="110" y="207" font-size="11" class="dg-dim" text-anchor="middle">인코더→잠재분포→디코더</text>
 <circle cx="245" cy="140" r="6" class="dg-accent"/>
 <text x="245" y="122" font-size="11">z</text>
 <rect x="265" y="118" width="44" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
@@ -20158,7 +20158,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <line x1="251" y1="140" x2="263" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
 <polygon points="263,140 254,136 254,144" class="dg-stroke-ink"/>
 <circle cx="345" cy="105" r="5" class="dg-accent"/>
-<text x="352" y="102" font-size="10.5">가짜</text>
+<text x="352" y="102" font-size="11">가짜</text>
 <line x1="305" y1="123" x2="338" y2="109" class="dg-stroke-ink" stroke-width="1.3"/>
 <polygon points="338,109 328,109 332,117" class="dg-stroke-ink"/>
 <rect x="365" y="118" width="44" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
@@ -20166,14 +20166,14 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <line x1="349" y1="108" x2="363" y2="122" class="dg-stroke-ink" stroke-width="1.3"/>
 <polygon points="363,122 359,113 351,117" class="dg-stroke-ink"/>
 <circle cx="345" cy="175" r="5" class="dg-accent"/>
-<text x="352" y="182" font-size="10.5">진짜</text>
+<text x="352" y="182" font-size="11">진짜</text>
 <line x1="349" y1="172" x2="363" y2="140" class="dg-stroke-ink" stroke-width="1.3"/>
 <polygon points="363,140 359,150 351,145" class="dg-stroke-ink"/>
 <path d="M309,113 Q337,88 365,113" fill="none" class="dg-stroke-accent" stroke-width="2"/>
 <polygon points="365,113 353,110 358,120" class="dg-stroke-accent"/>
 <path d="M365,148 Q337,176 309,148" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
 <polygon points="309,148 321,145 318,155" class="dg-line"/>
-<text x="330" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">생성자 ↔ 판별자 경쟁</text>
+<text x="330" y="207" font-size="11" class="dg-dim" text-anchor="middle">생성자 ↔ 판별자 경쟁</text>
 <circle cx="465" cy="140" r="6" class="dg-accent"/>
 <circle cx="515" cy="140" r="6" class="dg-accent"/>
 <circle cx="565" cy="140" r="6" class="dg-accent"/>
@@ -20190,9 +20190,9 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <polygon points="521,148 531,145 530,153" class="dg-stroke-accent"/>
 <path d="M609,148 Q590,164 571,148" fill="none" class="dg-stroke-accent" stroke-width="1.6"/>
 <polygon points="571,148 581,145 580,153" class="dg-stroke-accent"/>
-<text x="465" y="163" font-size="10" class="dg-dim" text-anchor="middle">x₀</text>
-<text x="615" y="163" font-size="10" class="dg-dim" text-anchor="middle">x_T</text>
-<text x="550" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">점선=노이즈 추가, 실선=디노이즈</text>
+<text x="465" y="163" font-size="11" class="dg-dim" text-anchor="middle">x₀</text>
+<text x="615" y="163" font-size="11" class="dg-dim" text-anchor="middle">x_T</text>
+<text x="550" y="207" font-size="11" class="dg-dim" text-anchor="middle">점선=노이즈 추가, 실선=디노이즈</text>
 <rect x="685" y="125" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
 <text x="700" y="145" font-size="11" text-anchor="middle">w₁</text>
 <rect x="730" y="125" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
@@ -20207,7 +20207,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <polygon points="773,140 764,136 764,144" class="dg-stroke-accent"/>
 <line x1="805" y1="140" x2="818" y2="140" class="dg-stroke-accent" stroke-width="2"/>
 <polygon points="818,140 809,136 809,144" class="dg-stroke-accent"/>
-<text x="770" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">P(wₜ | w&lt;ₜ) 순차 생성</text>
+<text x="770" y="207" font-size="11" class="dg-dim" text-anchor="middle">P(wₜ | w&lt;ₜ) 순차 생성</text>
 </svg>`,
     diagramCaption: String.raw`왼쪽부터 VAE(인코더-디코더), GAN(생성자-판별자 경쟁), Diffusion(노이즈 추가·제거), Autoregressive(순차적 다음 토큰 예측) 네 갈래의 생성 흐름 비교.`,
     related: [
@@ -20292,7 +20292,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <text x="600" y="155" font-size="11" text-anchor="middle">C</text>
 <text x="500" y="225" font-size="11" text-anchor="middle">D</text>
 <text x="420" y="155" font-size="11" text-anchor="middle">E</text>
-<text x="430" y="105" font-size="10" class="dg-dim">사이클</text>
+<text x="430" y="105" font-size="11" class="dg-dim">사이클</text>
 </svg>`,
     diagramCaption: String.raw`트리는 노드 사이 경로가 유일하지만(왼쪽), 그래프는 여러 경로와 사이클(굵은 점선)이 함께 존재할 수 있다(오른쪽).`,
     sections: [],
