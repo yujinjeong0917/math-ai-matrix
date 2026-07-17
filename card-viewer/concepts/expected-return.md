@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 기대 리턴의 수렴: 감가율이 만드는 유계성
 hook: 강화학습의 목표는 결국 미래 보상을 전부 더한 리턴 $G_t=\sum_{k=0}^\infty\gamma^kr_{t+k}$의 기댓값을 최대화하는 거예요.
+related: 
 ---
 
 ## 기본설명

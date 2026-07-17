@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인-온라인 지표 괴리
 title: 지표 괴리: 오프라인 점수가 좋아도 온라인 성과로 이어지지 않는 이유
 hook: 오프라인 지표인 NDCG, Recall@k, AUC 등은 기존 시스템이 노출했던 아이템에 대한 과거 클릭만을 정답으로 쓴다.
+related: Interleaving · Replay 평가
 ---
 
 ## 기본설명

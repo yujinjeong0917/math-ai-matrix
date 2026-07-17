@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: 상호정보량의 비음성과 특징 선택
 hook: 특징 선택에서는 목표변수 $Y$와 상호정보량 $I(X;Y)$가 큰 특징 $X$를 고릅니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 정렬(Alignment)
 title: RLHF: 인간 선호로 보상모델을 만들고 PPO로 정렬하기
 hook: RLHF는 세 단계로 이루어진다.
+related: Constitutional AI
 ---
 
 ## 기본설명

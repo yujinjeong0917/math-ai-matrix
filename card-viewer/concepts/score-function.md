@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 스코어 함수와 정규화 상수 무관성
 hook: 확률밀도의 로그를 입력으로 미분한 $\nabla_x\log p(x)$를 스코어 함수라 부릅니다.
+related: 
 ---
 
 ## 기본설명

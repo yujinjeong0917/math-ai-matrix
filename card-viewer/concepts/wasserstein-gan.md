@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: Wasserstein 거리의 쌍대형과 1-립시츠 제약
 hook: GAN의 원래 목적함수는 두 분포가 전혀 겹치지 않을 때 그래디언트가 거의 사라지는 문제가 있습니다.
+related: 
 ---
 
 ## 기본설명

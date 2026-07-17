@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: Semantic Kernel: 엔터프라이즈 통합에 특화된 에이전트 SDK
 hook: Semantic Kernel의 핵심 개념은 커널이다.
+related: OpenAI Agents SDK · AutoGen · LangChain
 ---
 
 ## 기본설명

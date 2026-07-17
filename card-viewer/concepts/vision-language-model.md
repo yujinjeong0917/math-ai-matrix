@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 비전-언어 모델
 title: Vision-Language Model: 이미지를 보고 텍스트로 대답하기
 hook: VLM은 크게 세 부분으로 이루어집니다.
+related: CLIP류 정렬 사전학습 · Cross-attention 결합 · 패치 토큰화
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 우선순위화
 title: PIE 프레임워크: 잠재력, 중요도, 난이도로 페이지 개선 순서 정하기
 hook: PIE는 Potential, Importance, Ease 세 요소의 곱이다.
+related: ICE 스코어 · 인풋 지표 트리
 ---
 
 ## 기본설명

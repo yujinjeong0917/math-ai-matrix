@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: KL발산의 비음성 (Gibbs 부등식)
 hook: 두 분포가 얼마나 다른지 재는 KL발산은 절대 음수가 되지 않습니다.
+related: 
 ---
 
 ## 기본설명

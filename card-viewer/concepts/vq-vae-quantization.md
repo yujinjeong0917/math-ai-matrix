@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: VQ-VAE 최근접 양자화의 왜곡 최소성
 hook: VQ-VAE의 인코더는 연속적인 잠재벡터 $z$를 만들지만, 디코더에 넣기 전에 이 값을 코드북 $\{e_1,\dots,e_K\}$ 안의 벡터 하나로 반드시 바꿔치기해야 한다.
+related: 
 ---
 
 ## 기본설명

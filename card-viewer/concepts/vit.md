@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: ViT: 이미지를 패치 시퀀스로 보는 트랜스포머
 hook: 입력 이미지를 겹치지 않는 $P\times P$ 패치들로 나눈다(논문 기준 $P=16$).
+related: Transformer(2017) · GPT 계열
 ---
 
 ## 기본설명

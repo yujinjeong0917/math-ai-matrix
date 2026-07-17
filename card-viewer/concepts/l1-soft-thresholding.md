@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: L1 정칙화의 근접연산자: 연화임계값(Soft-Thresholding)
 hook: L2 정칙화(릿지)는 계수를 작게 줄이기만 할 뿐 정확히 0으로 만들지는 못해요.
+related: 강볼록성과 유일 최소값
 ---
 
 ## 기본설명

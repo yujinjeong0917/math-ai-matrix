@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 프롬프트 캐싱
 title: 캐싱 비용 구조: 캐시 미스, 쓰기, 히트가 각각 다른 단가를 갖는다
 hook: 비용은 세 부분으로 나뉜다.
+related: 캐시 히트율 · 프리픽스 캐싱 · 캐시 TTL
 ---
 
 ## 기본설명

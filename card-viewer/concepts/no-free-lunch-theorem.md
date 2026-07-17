@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 알고리즘 기초
 title: No Free Lunch 정리: 모든 목적함수 평균에서 알고리즘 성능은 같다
 hook: 머신러닝에는 은근히 유혹적인 질문이 있어요.
+related: 
 ---
 
 ## 기본설명

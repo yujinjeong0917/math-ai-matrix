@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: GAE: n스텝 어드밴티지들을 지수가중으로 섞어 편향과 분산을 조절하기
 hook: actor-critic-baseline에서 본 것처럼 정책경사에는 베이스라인을 뺀 어드밴티지가 곱해집니다.
+related: Actor-Critic 베이스라인의 무편향성 · 정책경사 정리(REINFORCE)의 유도 · 기대제곱오차의 편향-분산 분해
 ---
 
 ## 기본설명

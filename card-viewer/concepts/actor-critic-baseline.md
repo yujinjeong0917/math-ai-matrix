@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: Actor-Critic 베이스라인의 무편향성
 hook: 정책경사 REINFORCE 추정량은 그대로 쓰면 분산이 매우 큽니다.
+related: 
 ---
 
 ## 기본설명

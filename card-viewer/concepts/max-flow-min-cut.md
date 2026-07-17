@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 네트워크 흐름
 title: 최대유량-최소절단 정리: Max-Flow Min-Cut
 hook: 수도관 네트워크를 상상해보세요.
+related: 
 ---
 
 ## 기본설명

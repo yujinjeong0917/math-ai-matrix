@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 부호이론 · 조합최적화
 title: 정수계획법의 LP완화와 완화갭: LP Relaxation
 hook: 정수해만 허용하는 최적화 문제(정수계획법, IP)는 풀기 어려운 경우가 많습니다.
+related: 
 ---
 
 ## 기본설명

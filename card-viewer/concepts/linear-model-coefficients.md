@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 그래디언트 기반
 title: 선형모델 계수: 가장 오래된 설명가능성
 hook: 선형회귀는 $\hat y = w_0 + \sum_i w_i x_i$ 형태로 예측한다.
+related: Saliency Map · 규칙 추출
 ---
 
 ## 기본설명

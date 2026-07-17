@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: KL-제약 RL의 닫힌형 최적정책과 DPO의 보상 역산
 hook: RLHF는 보상모델 $r(x,y)$를 최대화하면서도 참조정책 $\pi_{ref}$에서 너무 멀어지지 않도록 KL발산으로 억제합니다.
+related: 
 ---
 
 ## 기본설명

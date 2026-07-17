@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 역전파(체인룰)의 정확성
 hook: 신경망은 여러 층을 겹겹이 쌓은 합성함수예요.
+related: 
 ---
 
 ## 기본설명

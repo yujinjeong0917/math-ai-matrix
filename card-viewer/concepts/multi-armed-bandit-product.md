@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: A/B 테스트
 title: Multi-armed Bandit: 실험하면서 동시에 수익을 챙기기
 hook: Multi-armed Bandit 문제의 목표는 리그렛을 최소화하는 것이다.
+related: 표본크기 산정 · 순차검정
 ---
 
 ## 기본설명

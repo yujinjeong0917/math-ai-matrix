@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: VAE의 근사사후분포와 진짜 사후분포 사이의 간극
 hook: VAE는 관측 $x$ 뒤에 숨은 잠재변수 $z$를 상정해요.
+related: 
 ---
 
 ## 기본설명

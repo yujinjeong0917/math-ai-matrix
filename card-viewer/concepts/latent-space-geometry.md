@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 잠재공간의 기하: 직선보간은 측지선이 아니다
 hook: VAE나 diffusion의 잠재공간에서 두 코드 $z_0,z_1$을 이을 때 흔히 직선으로 보간합니다.
+related: 
 ---
 
 ## 기본설명

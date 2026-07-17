@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 계층적 베이즈모델과 부분풀링(Partial Pooling)
 hook: 여러 그룹(학교, 병원, 매장 등)마다 따로 평균을 추정하면 표본이 적은 그룹은 추정치가 심하게 흔들립니다.
+related: James-Stein 추정량
 ---
 
 ## 기본설명

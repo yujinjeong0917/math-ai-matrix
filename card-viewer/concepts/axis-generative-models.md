@@ -5,6 +5,7 @@ domainLabel: 매트릭스 읽는 법
 subLabel: 매트릭스 열 · AI 4갈래
 title: 생성모델 — VAE·GAN·Diffusion·Autoregressive(LLM)
 hook: Classical ML·딥러닝·RL은 전부 "데이터를 보고 무언가를 맞히는" 쪽이에요.
+related: VAE 인코더가 logσ²를 출력하는 이유 · GAN 목적함수의 최적 판별자 · 확산모델 정방향과정의 닫힌형 주변분포 · 오토리그레시브 생성의 확률 연쇄법칙
 ---
 
 ## 기본설명

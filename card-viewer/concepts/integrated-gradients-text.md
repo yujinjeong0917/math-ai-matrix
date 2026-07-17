@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 어텐션 · 그래디언트 기반
 title: Integrated Gradients(텍스트): 토큰 임베딩까지 경로적분 확장하기
 hook: 기준 임베딩 $x'$(흔히 [PAD] 토큰의 임베딩이나 영벡터를 쓴다)에서 실제 임베딩 $x$까지 직선 경로를 따라가며 각 지점의 그래디언트를 적분한다.
+related: Attention 설명의 한계 · LIME for Text
 ---
 
 ## 기본설명

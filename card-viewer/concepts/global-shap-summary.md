@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 전역 근사
 title: Global SHAP 요약: 로컬 기여도를 모아 전역 그림 만들기
 hook: $n$개의 샘플에 대해 계산한 특징 $j$의 SHAP값을 $\phi_j^{(i)}$라 하면 전역 중요도는 다음과 같이 정의한다.
+related: shap · Surrogate Model · 전역 설명
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 표현 형식
 title: 프로세스 트리: 재귀적 연산자로 블록을 쌓은 모델
 hook: 나뭇잎은 활동이거나 아무 흔적도 남기지 않는 침묵 활동 $\tau$입니다.
+related: Inductive Miner · Petri Net · BPMN
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 격차 진단
 title: 그룹별 성능 격차: 보호집단마다 예측이 다르게 나오는가
 hook: 가장 널리 쓰이는 지표는 disparate impact ratio다.
+related: Equalized Odds 점검 · 반사실 공정성 · SHAP 기반 편향 소스 추적
 ---
 
 ## 기본설명

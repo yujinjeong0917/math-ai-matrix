@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 대리모델 신뢰도
 title: 설명 근사오차: 국소 근사가 놓치는 것
 hook: 설명 지점 $x_0$에서 만든 국소 선형근사를 $\hat{f}(x) = f(x_0) + \nabla f(x_0)^\top (x - x_0)$라 하자.
+related: 대리모델 충실도
 ---
 
 ## 기본설명

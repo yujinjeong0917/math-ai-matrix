@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 모니터링
 title: 데이터 드리프트: 입력 분포가 학습 시점과 달라지는 것
 hook: 드리프트는 크게 두 종류로 나뉜다.
+related: 성능 저하 감지 · 데이터 리니지
 ---
 
 ## 기본설명

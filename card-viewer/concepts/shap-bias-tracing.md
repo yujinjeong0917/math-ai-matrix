@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 · 소스 추적
 title: SHAP 기반 편향 소스 추적: 어떤 특징이 편향을 옮기고 있는가
 hook: SHAP값은 가산성을 가진다.
+related: 그룹별 성능 격차 · Equalized Odds 점검 · Global SHAP 요약
 ---
 
 ## 기본설명

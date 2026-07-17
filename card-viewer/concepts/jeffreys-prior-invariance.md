@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 확률의 기초
 title: Jeffreys 사전분포의 재매개변수화 불변성
 hook: "무정보 사전분포"를 정하려 할 때 흔히 균등분포를 떠올리지만, 문제가 있습니다.
+related: 켤레사전분포 3종
 ---
 
 ## 기본설명

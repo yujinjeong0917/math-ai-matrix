@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 범위 구분
 title: 국소 설명: 이 예측 하나는 왜 이렇게 나왔는가
 hook: 국소 설명의 대표적인 형태는 개별 샘플 $x_0$에 대한 SHAP값 벡터, $x_0$ 주변에서 학습한 LIME의 국소 선형모델, 이미지 한 장에 대한 saliency map이다.
+related: 전역 설명 · Global SHAP 요약
 ---
 
 ## 기본설명

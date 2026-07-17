@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 평균장 변분추론과 좌표상승(CAVI) 갱신식
 hook: 사후분포 $p(z|x)$가 계산 불가능할 때, 근사분포 $q(z)$를 완전히 독립인 인자들의 곱 $q(z)=\prod_i q_i(z_i)$로 제한하면(평균장 가정) 문제가 훨씬 쉬워집니다.
+related: 기댓값전파(Expectation Propagation) · 지수족의 로그분배함수와 충분통계량의 평균
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 검사 기법
 title: Alignment 기반 적합성: 로그와 모델의 최소편집거리
 hook: 정렬은 로그의 각 단계와 모델의 각 단계를 짝지은 이동의 나열입니다.
+related: Token Replay · Petri Net
 ---
 
 ## 기본설명

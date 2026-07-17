@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 세션 기반 추천
 title: 세션 기반 추천: 로그인 없이 지금 행동만으로 추천하기
 hook: 전통적인 협업 필터링은 사용자 아이디별로 누적된 이력을 벡터나 임베딩으로 요약해 추천에 쓴다.
+related: GRU4Rec · Next-item Prediction
 ---
 
 ## 기본설명

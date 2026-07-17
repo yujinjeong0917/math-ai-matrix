@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 랭킹 모델
 title: GBDT 랭킹: 그래디언트 부스팅 트리로 순위 매기기
 hook: $M$개의 트리를 더한 최종 예측은 다음과 같습니다.
+related: LambdaMART
 ---
 
 ## 기본설명

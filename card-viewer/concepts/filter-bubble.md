@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 다양성 · 공정성 · 탐색
 title: 필터버블: 추천이 좁은 취향에 갇히는 현상
 hook: 필터버블은 협업 필터링이나 콘텐츠 기반 추천이 클릭 로그를 학습 신호로 쓰는 구조에서 자연스럽게 생긴다.
+related: 노출 공정성 · Exploration-Exploitation
 ---
 
 ## 기본설명

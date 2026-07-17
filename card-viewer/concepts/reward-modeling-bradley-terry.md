@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: Bradley-Terry 선호모델과 보상 차이의 로지스틱 회귀
 hook: 사람에게 두 응답 $a,b$ 중 어느 쪽이 더 나은지 물어서 그 선호를 학습하는 게 리워드 모델링이에요.
+related: 
 ---
 
 ## 기본설명

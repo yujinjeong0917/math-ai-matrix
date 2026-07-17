@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 트리 · 앙상블 구조
 title: Mixture of Experts: 토큰마다 다른 전문가를 고르는 라우팅의 구조
 hook: 모델 하나에 전문가라 부르는 여러 개의 작은 서브네트워크를 두고 입력마다 그중 일부만 골라서 쓰는 구조를 mixture of experts라 부릅니다.
+related: 모든 구성원을 평가하는 밀집 앙상블과의 대조 · 연산 효율을 위해 일부만 계산에 참여시키는 다른 예
 ---
 
 ## 기본설명

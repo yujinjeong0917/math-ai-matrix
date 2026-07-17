@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: 베타-VAE와 정보병목의 라그랑주 해석
 hook: 베타-VAE는 KL항 앞에 계수 $\beta$를 붙여서 $\mathbb{E}[\log p(x|z)] - \beta\cdot D_{KL}(q(z|x)\|p(z))$를 최적화합니다.
+related: 
 ---
 
 ## 기본설명

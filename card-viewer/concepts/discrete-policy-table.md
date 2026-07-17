@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: 유한 MDP에서 결정론적 최적정책의 존재
 hook: 강화학습에서 정책은 상태마다 어떤 행동을 할지 정하는 규칙이다.
+related: 
 ---
 
 ## 기본설명

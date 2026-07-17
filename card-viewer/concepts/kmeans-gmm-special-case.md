@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: k-평균은 왜 GMM의 특수한 경우인가
 hook: gmm-em에서 각 데이터가 성분 $k$에서 나왔을 책임값 $\gamma_k(x)$를 베이즈 정리로 유도했다.
+related: GMM의 E-step: 책임값의 유도 · GMM의 M-step: 파라미터 갱신식 유도
 ---
 
 ## 기본설명

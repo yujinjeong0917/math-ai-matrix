@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: L2 정규화와 가우시안 사전분포 하의 MAP 추정
 hook: L2 정규화는 흔히 가중치가 너무 커지지 않도록 억누르는 벌점항으로 소개됩니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 딥러닝 특화 도구
 title: Captum: PyTorch 공식 설명가능성 라이브러리
 hook: Integrated Gradients, Saliency, DeepLift, GradientShap, Occlusion처럼 널리 쓰이는 어트리뷰션 기법들을 각각 별도 클래스로 제공한다.
+related: tf-explain · shap · Alibi Explain
 ---
 
 ## 기본설명

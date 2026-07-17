@@ -5,6 +5,7 @@ domainLabel: 선형대수 심화
 subLabel: 랜덤행렬 · 저랭크
 title: 마르첸코-파스투르(Marchenko–Pastur) 법칙: 표본공분산 고유값의 극한분포
 hook: PCA는 표본공분산행렬의 고유벡터를 신호로 해석합니다.
+related: 
 ---
 
 ## 기본설명

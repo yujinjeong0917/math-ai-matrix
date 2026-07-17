@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: Langevin 샘플링과 정상분포
 hook: Diffusion 모델의 역과정은 노이즈 낀 샘플에서 점점 원래 데이터 분포를 향해 걸어갑니다.
+related: 
 ---
 
 ## 기본설명

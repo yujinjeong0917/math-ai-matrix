@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 규칙 · 트리 특화
 title: Anchors: 이 조건만 지키면 예측이 안 바뀐다는 보증
 hook: Anchors는 조건절(predicate)의 곱으로 이루어진 규칙 $A$를 찾는다.
+related: TreeSHAP · LIME for Text
 ---
 
 ## 기본설명

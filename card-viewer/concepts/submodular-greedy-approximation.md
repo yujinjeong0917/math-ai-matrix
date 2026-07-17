@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 조합론 심화
 title: 서브모듈 함수 최대화: 탐욕 알고리즘의 (1-1/e) 근사보장
 hook: 집합함수 $f$가 '원소를 더 넣을수록 한계효용이 줄어드는(submodular)' 성질을 가지면, 크기 제약 $|S|\le k$ 하에서 $f$를 최대화하는 문제는 일반적으로 NP-hard입니다.
+related: 
 ---
 
 ## 기본설명

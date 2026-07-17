@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 모델 압축
 title: 지식증류: 큰 모델의 지식을 작은 모델로 옮기기
 hook: 지식증류는 교사 모델의 출력을 그대로 정답처럼 쓰지 않고 온도(temperature) $T$로 부드럽게 만든 소프트맥스를 씁니다.
+related: 양자화 · 프루닝
 ---
 
 ## 기본설명

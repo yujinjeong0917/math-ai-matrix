@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 멀티모달 아키텍처
 title: VLM 이미지 토큰화: 픽셀을 언어모델의 입력으로
 hook: 이미지 토큰화의 첫 단계는 대개 사전학습된 비전 인코더다.
+related: CLIP · 크로스모달 어텐션
 ---
 
 ## 기본설명

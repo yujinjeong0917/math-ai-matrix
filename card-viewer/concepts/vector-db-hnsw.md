@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 검색 · 인덱싱
 title: 벡터DB(HNSW): 근사최근접 탐색으로 빠르게 검색하기
 hook: HNSW는 Hierarchical Navigable Small World의 약자로, 벡터들을 여러 층의 그래프로 연결해둡니다.
+related: 하이브리드 검색 · 청킹 전략
 ---
 
 ## 기본설명

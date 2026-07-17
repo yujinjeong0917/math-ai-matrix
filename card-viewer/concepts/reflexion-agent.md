@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 에이전트 설계 패턴
 title: Reflexion: 실패 이유를 스스로 반성하고 다시 시도하기
 hook: Reflexion은 세 부분으로 나뉜다.
+related: Tree of Thoughts · Plan-and-Execute · 에이전트 상태 머신
 ---
 
 ## 기본설명

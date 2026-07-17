@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 설계행렬의 계수와 XᵀX의 가역성
 hook: 정규방정식 $\beta=(X^TX)^{-1}X^Ty$를 쓰려면 $X^TX$가 반드시 가역이어야 합니다.
+related: 
 ---
 
 ## 기본설명

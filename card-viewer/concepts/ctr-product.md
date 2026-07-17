@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 전환 · 참여 지표
 title: CTR: 보여준 만큼 클릭으로 이어졌는가
 hook: $CTR = \frac{c}{n}$이다.
+related: CVR · CPM
 ---
 
 ## 기본설명

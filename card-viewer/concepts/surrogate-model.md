@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 전역 근사
 title: Surrogate Model: 단순한 모델로 블랙박스 전체를 흉내내기
 hook: 대리모델 $g$는 원래 모델 $f$의 입력 $x$에 대한 예측 $f(x)$를 타깃으로 학습한다.
+related: 전역 설명 · InterpretML · Global SHAP 요약
 ---
 
 ## 기본설명

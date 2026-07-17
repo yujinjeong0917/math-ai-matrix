@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 그래디언트 기반
 title: 정책 그래디언트 saliency: 어떤 상태 성분이 행동을 바꾸는가
 hook: 기본 saliency map과 마찬가지로 선택한 행동의 확률 또는 로그확률을 상태로 미분한다.
+related: Saliency Map · 정책 네트워크 CAM · 정책 어텐션 시각화
 ---
 
 ## 기본설명

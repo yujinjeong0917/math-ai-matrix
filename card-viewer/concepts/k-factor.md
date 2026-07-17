@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 전환 · 참여 지표
 title: K-factor: 한 사람이 새 사람을 몇 명이나 데려오는가
 hook: $K = i \times r$이다.
+related: CAC · LTV:CAC 비율
 ---
 
 ## 기본설명

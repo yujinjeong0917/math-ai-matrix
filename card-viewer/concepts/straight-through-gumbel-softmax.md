@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: Gumbel-Softmax: 이산 샘플링을 미분 가능하게 흉내내기
 hook: reparameterization-trick에서는 연속인 가우시안 잠재변수 $z=\mu_\phi+\sigma_\phi\odot\varepsilon$처럼 무작위성과 파라미터를 깔끔히 분리해 그래디언트를 정확히 계산했습니다.
+related: 연속 잠재변수의 재매개변수화와의 대조 · 베르누이 마스크를 이용한 또다른 확률적 학습 기법 · 이산 확률변수 그래디언트의 또다른 접근인 점수함수 추정량
 ---
 
 ## 기본설명

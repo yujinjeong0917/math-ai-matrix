@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 동시성 · 검증
 title: XOR 분기: 여러 흐름 중 딱 하나만 선택되기
 hook: 페트리넷에서 XOR 분기는 보통 자리 하나에 트랜지션 여러 개가 매달린 구조로 표현됩니다.
+related: AND-split/AND-join · 데드락 · 라이브락 검증
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 딥러닝 랭킹
 title: Transformer 기반 랭킹: 시퀀스 전체 문맥으로 순위 매기기
 hook: 셀프어텐션은 이력 임베딩 $e_1,\dots,e_T$에서 쿼리 행렬 $Q$, 키 행렬 $K$, 값 행렬 $V$를 모두 같은 시퀀스에서 뽑아 계산합니다.
+related: DIN · Wide&Deep
 ---
 
 ## 기본설명

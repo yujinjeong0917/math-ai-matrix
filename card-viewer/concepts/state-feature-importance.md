@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 특징 중요도
 title: 상태특징 중요도: Q값이 무엇에 민감한가
 hook: 학습된 Q함수 $Q(s,a)$와 상태 특징 $i$가 있을 때 그 특징만 배경 분포에서 뽑은 값으로 바꾸거나 다른 상태의 값으로 뒤섞은 교란 상태 $s_{\pi_i}$를 만든다.
+related: Permutation Importance · 정책 국소설명
 ---
 
 ## 기본설명

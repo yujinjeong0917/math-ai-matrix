@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 추천 · 개인화
 title: 개인화 랭킹: 사용자마다 다른 순서로 보여주기
 hook: 실무 시스템은 보통 두 단계로 나뉜다.
+related: 밴딧 기반 추천 · CTR · CVR
 ---
 
 ## 기본설명

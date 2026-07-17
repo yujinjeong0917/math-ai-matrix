@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 어텐션 기반
 title: 정책 어텐션 시각화: 의사결정이 주목한 곳
 hook: 트랜스포머 기반 정책 $\pi_\theta$에서 행동을 만들어내는 쿼리 토큰이 시퀀스의 각 개체 혹은 각 시점에 해당하는 키들을 얼마나 주목하는지 $\mathrm{softmax}(QK^\top/\sqrt d)$를 뽑아낸다.
+related: Attention Rollout · 정책 그래디언트 saliency · 정책 네트워크 CAM
 ---
 
 ## 기본설명

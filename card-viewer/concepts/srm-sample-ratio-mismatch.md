@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 실험 함정
 title: SRM: 표본비율불일치는 실험이 고장났다는 신호
 hook: SRM 검사는 각 그룹에 배정된 실제 인원수를 설계된 비율에서 기대되는 인원수와 비교하는 카이제곱 적합도 검정이다.
+related: Novelty Effect · 표본크기 산정
 ---
 
 ## 기본설명

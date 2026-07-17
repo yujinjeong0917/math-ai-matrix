@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 매니폴드 가정과 국소 자유도
 hook: 이미지 하나는 픽셀 수만큼의 차원을 갖는 벡터입니다.
+related: 
 ---
 
 ## 기본설명

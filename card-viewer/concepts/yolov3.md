@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: YOLOv3: 멀티스케일 예측과 앵커박스
 hook: YOLOv3는 백본으로 Darknet-53을 쓴다.
+related: YOLOv1 · YOLOX/v8 · IoU와 NMS
 ---
 
 ## 기본설명

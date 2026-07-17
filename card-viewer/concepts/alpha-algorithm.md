@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 발견 알고리즘
 title: Alpha Algorithm: 로그의 선후관계로 Petri Net 복원하기
 hook: 먼저 로그 안 모든 활동 쌍에 대해 직접후행 관계 $a >_L b$를 정의합니다.
+related: Heuristic Miner · Inductive Miner · Petri Net
 ---
 
 ## 기본설명

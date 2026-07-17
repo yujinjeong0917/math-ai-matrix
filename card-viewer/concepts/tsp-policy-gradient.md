@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 부호이론 · 조합최적화
 title: 외판원문제와 정책그래디언트: TSP as MDP
 hook: 외판원문제(TSP)는 도시 수가 늘어나면 가능한 투어의 수가 $(n-1)!/2$로 폭발해 완전탐색은 물론 정확한 동적계획법(Held–Karp, $O(n^2 2^n)$)조차 감당하기 어려워집니다.
+related: 
 ---
 
 ## 기본설명

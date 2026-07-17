@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 수치적 안정성
 title: FlashAttention: 어텐션을 타일 단위로 계산하면 왜 메모리와 오차가 함께 줄어드는가
 hook: 표준 셀프어텐션은 한 쿼리에 대한 점수 $n$개를 전부 모아 $QK^\top$이라는 $n\times n$ 행렬을 통째로 만들고 나서야 소프트맥스를 씌웁니다.
+related: KV Cache: 자기회귀 생성의 재계산 제거 · PagedAttention: KV 캐시를 페이지 단위로 관리하기 · 어텐션의 스케일링
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 증강 · 재순위화
 title: Reranking: 검색결과를 한 번 더 정밀하게 정렬하기
 hook: 1차 검색에 쓰는 임베딩 모델은 흔히 bi-encoder 구조입니다.
+related: 하이브리드 검색 · RAG-Fusion
 ---
 
 ## 기본설명

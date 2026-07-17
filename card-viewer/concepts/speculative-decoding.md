@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 스케일링 · 양자화
 title: 스펙큘레이티브 디코딩: 작은 모델이 초안 쓰고 큰 모델이 검증하기
 hook: 스펙큘레이티브 디코딩은 작은 초안 모델(draft model)이 다음 몇 토큰, 이를테면 $k$개를 순차적으로 빠르게 생성한 뒤 이 $k$개 토큰 전체를 큰 목표
+related: GPTQ/AWQ · PagedAttention
 ---
 
 ## 기본설명

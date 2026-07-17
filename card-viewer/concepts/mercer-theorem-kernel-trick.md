@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 머서 정리와 커널트릭: 그람행렬의 PSD 조건
 hook: 커널트릭은 "명시적으로 특징벡터 $\phi(x)$를 계산하지 않고도 고차원 특징공간에서의 내적 $\phi(x)\cdot\phi(y)$를 흉내낼 수 있다"는 아이디어예요.
+related: 함수공간의 내적(RKHS 기초) · SVM 라그랑주 쌍대문제의 유도
 ---
 
 ## 기본설명

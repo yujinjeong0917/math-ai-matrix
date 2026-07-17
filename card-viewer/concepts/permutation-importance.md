@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 특징 중요도
 title: Permutation Importance: 특징을 섞어서 중요도 재기
 hook: 이미 학습이 끝난 모델 $f$와 평가 데이터 $(X,y)$, 성능 지표 $s$(정확도나 $R^2$ 등)가 있다고 하자.
+related: Feature Ablation · 상태특징 중요도
 ---
 
 ## 기본설명

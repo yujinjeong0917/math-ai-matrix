@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 정책경사 정리(REINFORCE)의 유도
 hook: 강화학습에서는 정책 $\pi_\theta$를 따라 얻는 기대 리턴 $J(\theta)$를 최대화하고 싶습니다.
+related: 
 ---
 
 ## 기본설명

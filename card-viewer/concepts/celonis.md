@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 대표 도구
 title: Celonis: 상용 프로세스 마이닝 플랫폼
 hook: Celonis는 SAP 같은 ERP 시스템, CRM, 티켓 시스템 등 여러 기업 시스템에서 이벤트 데이터를 자동으로 추출해 표준화된 이벤트 로그 스키마로 변환하는 데이터 커넥터 계층에서 출발합니다.
+related: PM4Py · ProM
 ---
 
 ## 기본설명

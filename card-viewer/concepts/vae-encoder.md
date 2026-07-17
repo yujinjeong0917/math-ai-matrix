@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: VAE 인코더가 logσ²를 출력하는 이유
 hook: VAE의 인코더는 입력 $x$를 받아 잠재변수의 근사사후분포 $q(z|x)=\mathcal{N}(\mu,\sigma^2)$를 결정하는 두 값을 내놓습니다.
+related: 
 ---
 
 ## 기본설명

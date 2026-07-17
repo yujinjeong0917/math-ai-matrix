@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 긴 컨텍스트 배치
 title: Lost-in-the-middle: 중간에 넣은 정보는 잘 기억되지 않는다
 hook: 이 현상은 모델 내부의 주의(attention) 배분과 관련이 깊다.
+related: 정보 배치 전략 · 컨텍스트 순서 민감도
 ---
 
 ## 기본설명

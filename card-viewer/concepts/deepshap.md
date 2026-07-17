@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 게임이론 기반
 title: DeepSHAP: 신경망을 위한 SHAP 근사
 hook: DeepSHAP는 DeepLIFT라는 기존 기법의 역전파 규칙을 섀플리 값의 언어로 재해석한 것이다.
+related: SHAP값 · 잠재변수 SHAP
 ---
 
 ## 기본설명

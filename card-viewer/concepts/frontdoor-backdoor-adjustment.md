@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 그래프 인과모형
 title: 백도어·프론트도어 기준과 조정공식의 유도
 hook: 관측만으로 인과효과 $P(y\mid do(x))$를 계산하려면, 교란(confounding) 경로를 그래프에서 정확히 식별하고 차단할 방법이 필요합니다.
+related: 이중강건 이중편향제거 ML · FWL 정리
 ---
 
 ## 기본설명

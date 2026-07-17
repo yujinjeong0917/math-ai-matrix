@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 출력 형식 강제
 title: JSON mode: 디코딩 단계에서 유효한 JSON만 나오게 강제하기
 hook: 근본 원인은 LLM의 출력이 결국 토큰에 대한 확률분포라는 데 있다.
+related: 함수 스키마 강제 · 타입 검증 파싱 · Grammar-constrained Decoding
 ---
 
 ## 기본설명

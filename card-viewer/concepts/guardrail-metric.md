@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 북극성지표 · OMTM
 title: 가드레일 지표: 북극성지표를 해치면서 이기지 않도록 막기
 hook: 가드레일은 크게 두 층위로 나뉜다.
+related: North Star Metric · SRM
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 자원 관리
 title: 멀티테넌시: 여러 팀이 클러스터를 나눠 쓸 때 자원을 격리하기
 hook: 격리는 몇 단계로 이루어집니다.
+related: 잡 스케줄링 · GPU 활용률 모니터링
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: Adam 모멘트 추정의 편향 보정
 hook: Adam은 그래디언트의 1차 모멘트를 지수이동평균으로 추적합니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 이질적 효과와 개인화
 title: Double/Debiased Machine Learning: Neyman 직교성과 교차적합
 hook: FWL 정리는 선형모델에서 처치효과를 잔차끼리의 회귀로 뽑아낼 수 있음을 보여주었습니다.
+related: 직교화(FWL 정리) · 도구변수 · 이중강건추정
 ---
 
 ## 기본설명

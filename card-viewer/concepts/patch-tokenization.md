@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 이미지 토큰화
 title: 패치 토큰화: 이미지를 조각내서 토큰처럼 다루기
 hook: ViT(Vision Transformer)는 이미지를 겹치지 않는 고정 크기 패치 예를 들어 $16\times16$ 픽셀 조각으로 나눕니다.
+related: 이미지 토큰 수 · 타일링
 ---
 
 ## 기본설명

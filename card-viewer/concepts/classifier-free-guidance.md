@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: Classifier-Free Guidance: 별도 분류기 없이 조건부 생성을 더 선명하게 만들기
 hook: classifier-guidance에서는 무조건부 스코어에 별도로 학습한 분류기의 그래디언트를 더해서 조건부 생성을 유도했습니다.
+related: Classifier Guidance: 조건부 스코어의 분해 · 확산모델 정방향과정의 닫힌형 주변분포
 ---
 
 ## 기본설명

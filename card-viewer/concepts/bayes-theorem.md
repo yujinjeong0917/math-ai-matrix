@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 베이즈 정리
 hook: 평소에 믿던 확률인 사전확률이 있어요.
+related: 
 ---
 
 ## 기본설명

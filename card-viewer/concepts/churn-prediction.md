@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: LTV · 이탈예측
 title: Churn 예측: 떠나기 전에 미리 알아채기
 hook: 입력 특징으로는 사용 빈도 추세, 마지막 접속 이후 경과일, 핵심 기능 사용량 변화, 결제 실패 이력, 고객센터 문의 이력 등을 주로 쓴다.
+related: LTV 모델링 · LTV:CAC 비율
 ---
 
 ## 기본설명

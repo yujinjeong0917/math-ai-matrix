@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 부호이론 · 조합최적화
 title: 압축센싱과 희소복원: Compressed Sensing
 hook: 신호의 대부분 성분이 $0$인(희소한) 것을 알고 있다면, 성분 개수보다 훨씬 적은 측정치로도 정확히 복원할 수 있지 않을까요?
+related: 
 ---
 
 ## 기본설명

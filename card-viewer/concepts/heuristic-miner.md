@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 발견 알고리즘
 title: Heuristic Miner: 빈도로 노이즈를 걸러내며 모델 찾기
 hook: $|a{>}b|$를 로그 전체에서 $a$ 바로 다음에 $b$가 나온 횟수라 하면 Heuristic Miner는 다음과 같은 의존도 지표를 계산합니다.
+related: Alpha Algorithm · Inductive Miner
 ---
 
 ## 기본설명

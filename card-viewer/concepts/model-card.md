@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 레지스트리
 title: 모델 카드: 성능과 한계, 의도된 쓰임새를 적어두는 설명서
 hook: 모델 카드에는 몇 가지 구획이 반복됩니다.
+related: 모델 버저닝 · 승인 워크플로우
 ---
 
 ## 기본설명

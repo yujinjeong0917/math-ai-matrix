@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 네트워크 흐름
 title: 흐름 기반 생성모델과 변수변환공식: Normalizing Flow
 hook: 복잡한 데이터 분포 $p_X$를 직접 다루기는 어렵지만, 표준정규분포처럼 다루기 쉬운 기저분포 $p_Z$에서 시작해 이를 가역적인 변환 $f$로 '흘려보내' $X=f(Z)$를 만들면 어떨까요?
+related: 
 ---
 
 ## 기본설명

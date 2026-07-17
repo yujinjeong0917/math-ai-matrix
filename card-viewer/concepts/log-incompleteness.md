@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 로그 구조 · 품질 이슈
 title: 로그 불완전성: 기록되지 않은 이벤트가 흐름을 왜곡한다
 hook: 불완전성은 몇 가지 형태로 나타납니다.
+related: 필수 3요소 · 노이즈 필터링
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 메모리 · 상태관리
 title: 에이전트 상태 머신: 진행 단계를 명시적으로 관리하기
 hook: 상태 머신은 에이전트가 있을 수 있는 단계를 몇 개의 상태로 정의하고 각 상태에서 어떤 사건이 일어나면 어느 상태로 넘어가는지를 전이 규칙으로 정의한다.
+related: Plan-and-Execute · 단기 vs 장기 메모리 · Reflexion
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 일반화된 내적: 양의정부호 행렬과 마할라노비스 거리
 hook: 유클리드 내적 $\langle x,y\rangle=x^Ty$는 사실 내적이 만족해야 할 공리들의 아주 특수한 경우일 뿐이에요.
+related: 노름의 삼각부등식 · 함수공간의 내적(RKHS 기초)
 ---
 
 ## 기본설명

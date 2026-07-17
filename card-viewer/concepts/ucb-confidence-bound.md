@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: Hoeffding 부등식과 UCB의 낙관적 탐험
 hook: UCB(신뢰상한) 알고리즘은 각 행동의 평균 보상 추정치에 보너스 항을 더해서 그 합이 가장 큰 행동을 고릅니다.
+related: 
 ---
 
 ## 기본설명

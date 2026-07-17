@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 시계열
 title: LSTM/GRU: 게이트로 장기의존성을 다루는 순환망
 hook: 기본 순환신경망은 은닉상태를 매 스텝 같은 가중치행렬로 반복해서 곱한다.
+related: TCN · 시계열 Transformer
 ---
 
 ## 기본설명

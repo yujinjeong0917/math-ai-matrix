@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 잠재결과 프레임워크
 title: 반사실 생성: 무교란성과 $Y(0)$ 대체 추정
 hook: 처치받은 개체의 $Y_i(0)$은 결코 관측되지 않는다.
+related: 
 ---
 
 ## 기본설명

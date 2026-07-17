@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: YOLOX/v8: 앵커프리와 디커플드 헤드
 hook: YOLOv3까지는 미리 정한 앵커박스와의 오프셋을 예측하는 앵커기반 방식이었다.
+related: YOLOv3 · IoU와 NMS · Focal Loss
 ---
 
 ## 기본설명

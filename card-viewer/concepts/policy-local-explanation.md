@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 국소 근사 기반
 title: 정책 국소설명: 상태를 흔들어 결정을 설명하기
 hook: 상태 $s$에서 정책 $\pi(\cdot\mid s)$ 또는 행동가치 $Q(s,a)$가 주어졌을 때 상태를 이루는 특징 하나 $s_i$를 배경값이나 다른 상태에서 뽑은 값으로 바꿔치기한 교란 상태 $s'$를 만든다.
+related: 상태특징 중요도 · LIME · 보상분해 Shapley
 ---
 
 ## 기본설명

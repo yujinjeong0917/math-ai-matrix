@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 수익성 지표
 title: ROAS: 광고비 1원당 얼마나 팔렸는가
 hook: $ROAS = \frac{R}{S}$다.
+related: CAC · CPA
 ---
 
 ## 기본설명

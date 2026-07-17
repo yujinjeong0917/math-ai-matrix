@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 계산학습이론
 title: VC 차원: 2차원 선형분류기는 왜 3인가
 hook: 선형분류기가 표현할 수 있는 패턴의 다양성을 한 숫자로 요약한 것이 VC 차원입니다.
+related: 유한 가설공간의 PAC 학습가능성 · Sauer's Lemma와 증가함수 · VC 차원 기반 일반화 바운드
 ---
 
 ## 기본설명

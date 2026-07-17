@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: ε-greedy의 무한탐험 보장
 hook: ε-greedy는 대부분은 지금까지 가장 좋아 보이는 행동을 고르고, 아주 가끔 확률 $\varepsilon$으로 완전히 무작위인 행동을 섞어 넣습니다.
+related: 
 ---
 
 ## 기본설명

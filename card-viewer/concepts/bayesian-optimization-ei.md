@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 근사 · 적분
 title: 베이지안 최적화의 획득함수: 기대개선(Expected Improvement)의 닫힌형
 hook: 평가 비용이 비싼 블랙박스 함수를 최소화하고 싶을 때, 매번 어디를 다음으로 평가할지 정해야 합니다.
+related: 가우시안 프로세스 회귀
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 컨텍스트 구성 기법
 title: 컨텍스트 토큰 예산 관리: 한정된 토큰을 어디에 나눠 쓸까
 hook: 토큰 예산은 대략 $T_{\text{system}} + T_{\text{history}} + T_{\text{retrieval}} + T_{\text{output}} \le T_{\text{max}}$ 형태의 부등식으로 생각할 수 있다.
+related: 동적 컨텍스트 조립 · 정보 배치 전략
 ---
 
 ## 기본설명

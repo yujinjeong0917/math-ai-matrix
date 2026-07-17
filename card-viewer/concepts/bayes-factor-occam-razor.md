@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 모델선택 이론
 title: 베이즈 인수와 오캄의 면도날: 주변우도의 자동 복잡도 벌점
 hook: 두 모델을 베이즈적으로 비교할 때는 주변우도(evidence) $p(D\mid M)=\int p(D\mid\theta,M)p(\theta\mid M)\,d\theta$의 비, 즉 베이즈 인수를 본다.
+related: AIC/BIC의 점근적 유도 · MAP 추정
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 도구변수 · 준실험
 title: Deep IV: 신경망 기반 2단계 도구변수 추정
 hook: 전통적인 2단계최소제곱(2SLS)은 1단계에서 $T$를 $Z$에 선형회귀해 예측값 $\hat T$를 만들고, 2단계에서 $Y$를 $\hat T$에 회귀해요.
+related: 
 ---
 
 ## 기본설명

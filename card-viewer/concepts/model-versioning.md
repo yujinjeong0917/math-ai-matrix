@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 레지스트리
 title: 모델 버저닝: 버전 번호로 변경 이력을 명확히 하기
 hook: 소프트웨어에서 널리 쓰는 semantic versioning 규칙을 모델에 그대로 가져올 수 있습니다.
+related: 모델 카드 · 승인 워크플로우 · 실험 메타데이터
 ---
 
 ## 기본설명

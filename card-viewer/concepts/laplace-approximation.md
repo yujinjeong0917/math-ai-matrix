@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 라플라스 근사: 사후분포의 국소 가우시안화
 hook: 사후분포 $p(\theta\mid D)$의 정확한 형태를 구하려면 정규화 상수 $Z=\int p(D\mid\theta)p(\theta)\,d\theta$까지 계산해야 하는데, 이 적분이 닫힌 형태로 안 풀리는 경우가 대부분입니다.
+related: 베이지안 선형회귀 사후분포
 ---
 
 ## 기본설명

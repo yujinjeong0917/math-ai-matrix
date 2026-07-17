@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 선형회귀와 편향제거
 title: 직교화(FWL 정리): 잔차끼리의 회귀
 hook: 처치효과를 추정할 때 흔히 다중회귀 $Y=X\beta+T\alpha+\varepsilon$ 를 돌려서 $T$의 계수 $\alpha$를 교란변수 $X$를 통제한 처치효과로 해석합니다.
+related: 평균처치효과(ATE) · 성향점수 · Double/Debiased ML
 ---
 
 ## 기본설명

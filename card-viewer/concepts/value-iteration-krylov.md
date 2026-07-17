@@ -5,6 +5,7 @@ domainLabel: 수치해석 심화
 subLabel: 반복법
 title: 가치반복의 Krylov 가속: 벨만연산자를 선형시스템으로
 hook: 정책 $\pi$가 고정된 상태에서 가치함수를 구하는 정책평가는 표준적으로 가치반복 $V_{k+1}=T^\pi V_k = R^\pi+\gamma P^\pi V_k$를 반복해서 계산합니다.
+related: 
 ---
 
 ## 기본설명

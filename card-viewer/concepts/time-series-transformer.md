@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 시계열
 title: 시계열 Transformer: 순서를 잃지 않는 어텐션
 hook: RNN 계열은 한 스텝씩 순서대로 처리하기 때문에 순서 정보가 계산 구조 자체에 들어있다.
+related: TCN · LSTM/GRU
 ---
 
 ## 기본설명

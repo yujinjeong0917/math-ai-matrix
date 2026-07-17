@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 프롬프팅 기법
 title: ReAct: 추론과 행동을 교대로 반복하기
 hook: ReAct라는 이름은 Reasoning과 Acting을 합친 말입니다.
+related: Chain-of-Thought · Self-RAG
 ---
 
 ## 기본설명

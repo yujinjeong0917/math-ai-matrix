@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 최대우도추정(MLE)과 로그우도
 hook: 지금 가진 데이터가 나올 확률이 가장 높아지는 파라미터는 무엇일까요.
+related: 
 ---
 
 ## 기본설명

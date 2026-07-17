@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 퍼널 · 코호트
 title: 퍼널분석: 단계마다 얼마나 빠져나가는지 추적하기
 hook: 퍼널을 정의하려면 최초 유입 단계를 $S_0$이라 하고 그 뒤로 목표까지 이어지는 순서 있는 단계들을 $S_1, S_2, \ldots, S_n$이라 하자.
+related: 코호트 리텐션 곡선 · North Star Metric
 ---
 
 ## 기본설명

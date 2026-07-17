@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 최소제곱 사영으로 본 잠재공간 압축의 최적성
 hook: 인코더는 고차원 데이터 $x$를 저차원 잠재벡터로 압축합니다.
+related: 
 ---
 
 ## 기본설명

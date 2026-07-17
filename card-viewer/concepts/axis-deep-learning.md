@@ -5,6 +5,7 @@ domainLabel: 매트릭스 읽는 법
 subLabel: 매트릭스 열 · AI 4갈래
 title: Deep Learning — CNN·RNN/LSTM·Transformer·GNN
 hook: Classical ML은 사람이 특징을 설계하고 모델은 그 조합만 배우지만, 딥러닝은 특징 자체를 데이터로부터 배워요.
+related: 역전파(체인룰)의 정확성 · ResNet: 잔차연결로 깊이의 한계를 넘다 · LSTM/GRU: 게이트로 장기의존성을 다루는 순환망 · Transformer(2017): Attention Is All You Need
 ---
 
 ## 기본설명

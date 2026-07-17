@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 · 소스 추적
 title: 반사실 공정성: 보호속성만 바꾸면 예측도 바뀌는가
 hook: Kusner 등이 제시한 정의는 인과모델을 전제로 한다.
+related: 그룹별 성능 격차 · Equalized Odds 점검 · SHAP 기반 편향 소스 추적
 ---
 
 ## 기본설명

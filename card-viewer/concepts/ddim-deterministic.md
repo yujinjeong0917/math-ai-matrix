@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: DDIM: 비마르코프 결정론적 역과정의 일관성
 hook: DDPM의 샘플링은 매 스텝 새로운 무작위성을 더해가며 $x_T$에서 $x_0$까지 거슬러 내려와요.
+related: 
 ---
 
 ## 기본설명

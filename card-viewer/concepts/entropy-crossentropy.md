@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: 교차엔트로피와 엔트로피·KL발산의 관계
 hook: 분류 모델을 학습시킬 때는 거의 항상 교차엔트로피 손실을 씁니다.
+related: 
 ---
 
 ## 기본설명

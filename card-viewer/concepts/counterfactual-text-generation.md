@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 · 생성 기반
 title: 반사실 텍스트 생성: 한두 단어만 바꿔 예측을 뒤집기
 hook: 반사실 텍스트 생성은 다음 조건을 만족하는 문장 $x'$을 찾는 문제로 정식화할 수 있다.
+related: Rationale Extraction · LIME for Text
 ---
 
 ## 기본설명

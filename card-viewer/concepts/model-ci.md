@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 파이프라인 자동화
 title: 모델 CI: 데이터나 코드가 바뀌면 파이프라인을 자동으로 재검증하기
 hook: 전통적인 CI(Continuous Integration)는 코드 변경을 트리거로 삼아 빌드와 테스트를 자동 실행한다.
+related: 데이터 리니지 · 재현성 · 블루그린 배포
 ---
 
 ## 기본설명

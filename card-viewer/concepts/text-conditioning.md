@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Diffusion 아키텍처
 title: 텍스트 조건화: 크로스어텐션으로 프롬프트 주입하기
 hook: 텍스트 조건화는 U-Net의 각 블록 사이에 크로스어텐션 층을 끼워 넣는 방식으로 구현된다.
+related: U-Net · 크로스모달 어텐션
 ---
 
 ## 기본설명

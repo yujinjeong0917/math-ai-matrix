@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 가우시안 프로세스 회귀: 무한차원으로 확장한 가우시안 조건화
 hook: 베이지안 선형회귀는 파라미터 $w$ 위에 사전분포를 둡니다.
+related: 가우시안 조건부분포(Schur complement) · 베이지안 선형회귀 사후분포
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 가격 민감도 조사
 title: Gabor-Granger 방법: 여러 가격을 제시해 수요곡선 그리기
 hook: 응답자에게 가격 몇 개를 순서대로 제시하고 각각에 대해 예 또는 아니오로 답하게 한다.
+related: Van Westendorp PSM · 프리미엄 전환율
 ---
 
 ## 기본설명

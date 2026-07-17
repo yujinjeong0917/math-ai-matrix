@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: LlamaIndex: 데이터 연결과 RAG 파이프라인에 특화된 프레임워크
 hook: LlamaIndex의 핵심은 다양한 데이터 커넥터와 인덱스 구조다.
+related: LangChain · LangGraph
 ---
 
 ## 기본설명

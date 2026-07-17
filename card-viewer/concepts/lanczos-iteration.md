@@ -5,6 +5,7 @@ domainLabel: 수치해석 심화
 subLabel: 반복법
 title: Lanczos 반복법: 대칭행렬의 삼중대각화
 hook: 큰 희소 대칭행렬 $A$의 고유값을 구하고 싶을 때, QR 알고리즘처럼 $A$ 전체를 밀집행렬로 다루며 대각화하는 것은 비용이 너무 큽니다.
+related: 
 ---
 
 ## 기본설명

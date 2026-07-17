@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 교란 기반 설명
 title: Partition SHAP: 문장을 계층적으로 쪼개 Shapley값 근사하기
 hook: Shapley값은 원래 특징 $i$를 제외한 나머지 특징들의 모든 부분집합 $S$에 대해 $i$가 들어왔을 때와 안 들어왔을 때의 예측 차이를 조합 가짓수로 가중 평균한 값이다.
+related: LIME for Text · TreeSHAP
 ---
 
 ## 기본설명

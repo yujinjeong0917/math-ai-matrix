@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 임베딩기반 검색
 title: ANN 검색: 정확한 최근접 대신 빠른 근사로 후보 찾기
 hook: 전수조사 방식의 계산량은 아이템 수 $N$과 벡터 차원 $d$에 대해 $O(Nd)$입니다.
+related: Two-Tower 모델
 ---
 
 ## 기본설명

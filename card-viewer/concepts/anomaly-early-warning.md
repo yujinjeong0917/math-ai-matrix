@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 예측 기법
 title: 이상 케이스 조기 경고: 정상 패턴에서 벗어나는 걸 미리 잡아내기
 hook: 접근은 크게 두 갈래입니다.
+related: Next Activity Prediction · Remaining Time Prediction
 ---
 
 ## 기본설명

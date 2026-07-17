@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 예측 평가
 title: ROC-AUC의 확률적 해석: Mann-Whitney U 통계량과의 동치
 hook: 분류기가 각 샘플에 점수를 매기면, 그 점수에 문턱값을 바꿔가며 ROC 곡선(참양성률 대 거짓양성률)을 그릴 수 있습니다.
+related: 진짜 스코어링 규칙
 ---
 
 ## 기본설명

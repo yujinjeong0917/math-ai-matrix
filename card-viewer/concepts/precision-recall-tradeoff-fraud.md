@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 사기 탐지
 title: Precision-Recall 트레이드오프: 사기 탐지는 둘 다 잡을 수 없다
 hook: 정밀도(Precision)는 모델이 사기라고 예측한 거래 중 실제로 사기였던 비율이다.
+related: 결제 이상 패턴 탐지 · 결제 사기율
 ---
 
 ## 기본설명

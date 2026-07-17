@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 안정성 검증
 title: Sanity Check: 무작위 가중치로도 그럴듯한 saliency가 나온다면
 hook: Adebayo 등이 2018년에 제안한 검사는 두 가지다.
+related: 설명 안정성 · 설명 근사오차
 ---
 
 ## 기본설명

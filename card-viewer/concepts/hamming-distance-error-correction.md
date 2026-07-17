@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 부호이론 · 조합최적화
 title: 오류정정부호와 해밍거리: Error-Correcting Codes
 hook: 통신 채널에 잡음이 있어 비트 몇 개가 뒤집혀도 원래 메시지를 복구하고 싶습니다.
+related: 
 ---
 
 ## 기본설명

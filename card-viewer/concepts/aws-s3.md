@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 네트워크 · 스토리지
 title: S3: 학습 데이터와 모델을 담는 객체 스토리지
 hook: S3는 폴더 구조를 가진 것처럼 보이지만 실제로는 버킷 안에 키와 값으로 이루어진 객체를 저장하는 구조입니다.
+related: SageMaker · VPC · CloudWatch
 ---
 
 ## 기본설명

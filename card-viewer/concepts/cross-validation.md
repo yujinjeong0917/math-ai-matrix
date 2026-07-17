@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 교차검증(k-fold)의 분산 감소
 hook: 홀드아웃 검증은 데이터를 딱 한 번만 나눠서 검증합니다.
+related: 
 ---
 
 ## 기본설명

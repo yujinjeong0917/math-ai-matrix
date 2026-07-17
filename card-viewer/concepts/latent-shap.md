@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 게임이론 기반
 title: 잠재변수 SHAP: 압축된 표현의 기여도 분해
 hook: 대상 모델이 인코더 $E$와 디코더 혹은 다음 단계 함수 $D$로 이루어져 있다고 하자.
+related: SHAP값 · 잠재공간 교란 · 잠재차원 중요도
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 전환 · 참여 지표
 title: CVR: 방문한 만큼 전환으로 이어졌는가
 hook: $CVR = \frac{x}{v}$다.
+related: CTR · CPA
 ---
 
 ## 기본설명

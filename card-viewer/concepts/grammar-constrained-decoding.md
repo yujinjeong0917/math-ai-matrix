@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 문법 제약 디코딩
 title: Grammar-constrained Decoding: 문법에 맞는 토큰만 고르게 하기
 hook: 구현은 생성과 동시에 파서 상태를 함께 유지하는 방식으로 이루어진다.
+related: JSON mode · 정규식/유한상태 제약 · 구조화 출력의 트레이드오프
 ---
 
 ## 기본설명

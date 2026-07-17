@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 인과적 임팩트 측정
 title: Synthetic Control: 있을 수 없는 대조군을 가상으로 합성하기
 hook: 처치를 받은 단위를 1번이라 하고 처치를 받지 않은 $J$개의 후보 단위 즉 도너풀이 있다고 하자.
+related: Uplift Modeling · 샤플리 기반 어트리뷰션
 ---
 
 ## 기본설명

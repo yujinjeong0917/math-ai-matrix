@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 비전-언어 모델
 title: Cross-attention 결합: 이미지 특징을 언어모델 어텐션에 주입하기
 hook: 이미지 토큰을 시퀀스에 그대로 이어붙이는 방식(LLaVA류)은 이미지 인코더의 출력을 언어모델 임베딩 차원으로 투영한 뒤 텍스트 토큰들과 함께 하나의 시퀀스로 만들어 기존 셀프어텐션에 통째로 넣습니다.
+related: Vision-Language Model · 패치 토큰화
 ---
 
 ## 기본설명

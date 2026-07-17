@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 증강 · 재순위화
 title: Self-RAG: 검색이 필요한지도 모델이 스스로 판단하기
 hook: Self-RAG는 모델이 일반 텍스트 토큰과 함께 특수한 판단 토큰을 같이 생성하도록 학습합니다.
+related: RAG-Fusion · ReAct · Reranking
 ---
 
 ## 기본설명

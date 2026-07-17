@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 근사 · 적분
 title: 부스팅과 함수공간 경사하강법: AdaBoost에서 그래디언트 부스팅까지
 hook: 약한 분류기 여러 개를 순차적으로 더해서 강한 분류기를 만드는 부스팅은 언뜻 보면 임의적인 휴리스틱처럼 보입니다.
+related: SGD의 확률적 수렴(Robbins-Monro 조건)
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 신뢰성
 title: SLO와 오차예산: 얼마나 실패해도 괜찮은지 미리 정해두기
 hook: SLO(Service Level Objective)는 예를 들어 이번 달 요청의 $99.9\%$는 정상 응답을 반환한다처럼 구체적인 목표치로 표현한다.
+related: 성능 저하 감지 · 롤백 전략
 ---
 
 ## 기본설명

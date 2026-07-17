@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 어텐션 기반
 title: Attention Rollout: 층을 거친 어텐션을 하나로 누적하기
 hook: 층 $l$의 (행 방향으로 정규화된) 어텐션 행렬을 $A^{(l)}$이라 하자.
+related: Cross-Attention 시각화 · 정책 어텐션 시각화
 ---
 
 ## 기본설명

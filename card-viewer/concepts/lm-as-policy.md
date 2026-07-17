@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: 언어모델을 정책으로: 토큰 생성의 연쇄법칙과 MDP
 hook: 언어모델은 다음 토큰의 확률 $p_\theta(y_t\mid y_1,\dots,y_{t-1})$을 내놓고, 전체 문장의 확률은 연쇄법칙으로 이 조건부확률들을 전부 곱한 것과 같아요.
+related: 
 ---
 
 ## 기본설명

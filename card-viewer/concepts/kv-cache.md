@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: KV Cache: 자기회귀 생성의 재계산 제거
 hook: 셀프어텐션에서 매 스텝 새로 계산해야 하는 건 사실 새로 생성된 토큰의 쿼리뿐이다.
+related: GPT 계열 · Transformer(2017)
 ---
 
 ## 기본설명

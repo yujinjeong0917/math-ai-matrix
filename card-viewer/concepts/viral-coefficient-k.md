@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 바이럴 측정
 title: 바이럴 계수 K: 루프 안에서 확산력을 재는 숫자
 hook: 이 사이트의 마케팅 지표 공식 그룹에서는 K-factor를 $K = i \times c$로 정의한다.
+related: 그로스 루프 · 바이럴 사이클 타임
 ---
 
 ## 기본설명

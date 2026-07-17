@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 딥러닝 랭킹
 title: Wide&Deep: 암기와 일반화를 함께 학습하기
 hook: wide 부분은 원본 피처와 사람이 직접 만든 교차피처 $\phi(x)$를 입력받는 일반화 선형모델입니다.
+related: DIN · Two-Tower 모델
 ---
 
 ## 기본설명

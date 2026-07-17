@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 다양성 지표
 title: Intra-List Diversity: 추천 목록 안이 얼마나 다채로운가
 hook: 가장 흔한 정의는 목록 안 아이템 쌍의 평균 비유사도다.
+related: 커버리지 · 세렌디피티
 ---
 
 ## 기본설명

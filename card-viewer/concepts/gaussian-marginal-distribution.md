@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 다변량 가우시안의 주변분포
 hook: 결합분포에서 일부 변수를 '적분해서 지워버리면' 남는 변수들의 분포를 주변분포라 부릅니다.
+related: 가우시안 조건부분포(Schur complement)
 ---
 
 ## 기본설명

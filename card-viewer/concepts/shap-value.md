@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 게임이론 기반
 title: SHAP값: Shapley Value로 공정하게 기여도 나누기
 hook: 섀플리 값은 전체 특징 집합 $N$($|N|=n$)의 부분집합 $S$마다 정의되는 특성함수 $v(S)$에서 출발한다.
+related: DeepSHAP · 잠재변수 SHAP · LIME
 ---
 
 ## 기본설명

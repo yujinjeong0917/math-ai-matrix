@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 알고리즘 기초
 title: 교차검증 fold 분할의 조합론적 개수
 hook: k-겹 교차검증은 데이터를 k개의 fold로 나눠서 매번 하나의 fold를 테스트셋으로 남기고 나머지로 학습한다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: SGD의 확률적 수렴 조건: Robbins-Monro 조건
 hook: 확률적 경사하강법(SGD)은 매 스텝마다 잡음 섞인 그래디언트를 쓰기 때문에, 학습률을 어떻게 줄여나가느냐가 수렴 여부를 결정해요.
+related: 경사하강법의 O(1/k) 수렴률
 ---
 
 ## 기본설명

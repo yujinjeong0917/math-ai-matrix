@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 출력 형식 강제
 title: 함수 스키마 강제: 인자를 미리 정한 형식에 맞춰 뽑아내기
 hook: 메커니즘은 JSON mode의 확장판에 가깝다.
+related: JSON mode · 타입 검증 파싱
 ---
 
 ## 기본설명

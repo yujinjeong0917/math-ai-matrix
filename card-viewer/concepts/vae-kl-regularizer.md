@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: VAE KL 정규화항의 닫힌 형태와 사후붕괴
 hook: VAE의 ELBO에는 $D_{KL}(q(z|x)\|p(z))$라는 정규화항이 들어갑니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 설명
 title: 반사실 이미지 생성: 속성을 바꾼 가상의 이미지 만들기
 hook: 전형적인 절차는 이렇다.
+related: Counterfactual 설명 · 재구성 충실도
 ---
 
 ## 기본설명

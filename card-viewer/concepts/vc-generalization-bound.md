@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 계산학습이론
 title: VC 차원 기반 일반화 바운드의 유도
 hook: 유한한 가설공간에서는 학습이 왜 잘 되는지를 $\ln|H|$가 들어간 바운드로 설명할 수 있었습니다.
+related: Sauer's Lemma와 증가함수 · VC 차원과 선형분류기 · 불가지 PAC 학습 바운드
 ---
 
 ## 기본설명

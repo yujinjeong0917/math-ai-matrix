@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 인과적 임팩트 측정
 title: Uplift Modeling: 마케팅에 반응할 사람만 골라내기
 hook: 인과추론의 근본적인 문제는 한 사람에 대해 처치를 받았을 때의 결과와 안 받았을 때의 결과를 동시에 관측할 수 없다는 데 있다.
+related: Synthetic Control · MMM
 ---
 
 ## 기본설명

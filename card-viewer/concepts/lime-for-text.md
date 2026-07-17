@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 교란 기반 설명
 title: LIME for Text: 단어를 지워보며 근거를 찾기
 hook: LIME은 입력 문장을 단어가 있는지 없는지를 나타내는 이진벡터 $z' \in \{0,1\}^d$로 바꾼다.
+related: Partition SHAP · Integrated Gradients(텍스트)
 ---
 
 ## 기본설명

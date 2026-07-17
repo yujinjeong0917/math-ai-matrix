@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 확률적 주성분분석(PPCA)의 주변분포와 결정론적 PCA로의 수렴
 hook: PCA는 원래 '분산을 최대로 보존하는 방향을 찾는' 결정론적 최적화 문제로 소개되지만, 같은 결과를 확률적 생성모델로도 얻을 수 있습니다.
+related: 가우시안 조건부분포(Schur complement) · 주성분분석(PCA)의 최적 방향
 ---
 
 ## 기본설명

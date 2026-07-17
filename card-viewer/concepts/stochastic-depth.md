@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: Stochastic Depth: 학습 때 층을 확률적으로 건너뛰면 왜 앙상블이 되는가
 hook: 레즈넷의 각 블록은 $y=x+f(x)$ 형태로 입력을 그대로 지나가는 지름길에 잔차 $f(x)$를 더해요.
+related: 인버티드 드롭아웃과 기댓값 보존 · MC 드롭아웃 · 그래디언트 소실·폭발
 ---
 
 ## 기본설명

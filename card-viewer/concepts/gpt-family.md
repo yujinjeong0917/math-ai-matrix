@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: GPT 계열: 디코더 전용 자기회귀 언어모델
 hook: Transformer 원 논문은 인코더가 전체 입력을 양방향으로 보고 디코더가 그 결과를 참고해 출력을 순차 생성하는 인코더디코더 구조였다.
+related: Transformer(2017) · KV Cache · 스케일링 법칙
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 함수의 성질
 title: 리워드 연속성과 정책 성능의 립시츠 상한
 hook: 정책경사법이 수렴한다는 보장은 그냥 나오지 않습니다.
+related: 
 ---
 
 ## 기본설명

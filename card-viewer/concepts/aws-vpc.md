@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 네트워크 · 스토리지
 title: VPC: 계정 안에 격리된 가상 네트워크
 hook: VPC 안은 서브넷이라는 더 작은 구역으로 나뉩니다.
+related: ELB · EC2 · SageMaker
 ---
 
 ## 기본설명

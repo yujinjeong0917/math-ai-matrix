@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 비선형성 없는 순전파의 붕괴
 hook: 신경망의 각 층은 순전파에서 $h=Wx+b$라는 선형변환 하나를 계산합니다.
+related: 
 ---
 
 ## 기본설명

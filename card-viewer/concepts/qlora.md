@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 파라미터효율 튜닝(PEFT)
 title: QLoRA: 4비트로 양자화한 모델 위에 LoRA 얹기
 hook: QLoRA는 기본 모델의 가중치를 NF4(4비트 NormalFloat)라는 자료형으로 양자화해 저장한다.
+related: LoRA · GPTQ/AWQ · Adapter
 ---
 
 ## 기본설명

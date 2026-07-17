@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: CrewAI: 역할 기반 멀티에이전트 협업을 정의하는 프레임워크
 hook: CrewAI의 세 축은 에이전트와 태스크와 크루다.
+related: AutoGen · 역할 분담형 협업 · Supervisor 패턴
 ---
 
 ## 기본설명

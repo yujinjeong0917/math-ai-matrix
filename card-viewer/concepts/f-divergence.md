@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: f-발산: KL발산과 전체변동거리의 통합
 hook: KL발산과 전체변동거리는 서로 다른 지표처럼 보이지만 사실 하나의 틀 안에 들어갑니다.
+related: 
 ---
 
 ## 기본설명

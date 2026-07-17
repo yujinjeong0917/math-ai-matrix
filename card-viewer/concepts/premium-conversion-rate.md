@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 가격 실험과 전환
 title: 프리미엄 전환율: 무료 사용자 중 몇 명이 결제로 넘어가는가
 hook: 정의는 단순하다. $\text{CVR}_{\text{free to paid}} = \dfrac{N_{\text{paid}}}{N_{\text{free}}}$.
+related: Gabor-Granger 방법 · A/B 가격 테스트의 함정
 ---
 
 ## 기본설명

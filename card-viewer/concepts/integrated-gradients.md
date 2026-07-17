@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 그래디언트 기반
 title: Integrated Gradients: 기준점에서 경로적분으로 기여도 구하기
 hook: 기준점 $x'$(검은 이미지나 0 벡터처럼 아무 정보가 없다고 볼 수 있는 입력)에서 실제 입력 $x$까지를 $\alpha \in [0,1]$로 매개변수화한 직선 경로로 잇는다.
+related: Saliency Map · 선형모델 계수
 ---
 
 ## 기본설명

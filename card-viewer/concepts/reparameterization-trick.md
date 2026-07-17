@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 재매개변수화 트릭과 그래디언트-기댓값 교환
 hook: VAE의 인코더는 입력마다 평균 $\mu_\phi$와 표준편차 $\sigma_\phi$를 내놓고 여기서 잠재변수 $z$를 샘플링합니다.
+related: 
 ---
 
 ## 기본설명

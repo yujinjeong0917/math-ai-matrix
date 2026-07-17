@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 메모리 · 상태관리
 title: 단기 vs 장기 메모리: 지금 대화와 쌓인 과거를 다르게 다루기
 hook: 단기 메모리는 현재 컨텍스트 윈도우 안에 있는 토큰 그 자체다.
+related: 메모리 압축 · 에이전트 상태 머신
 ---
 
 ## 기본설명

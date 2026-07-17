@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: ML 특화 서비스
 title: SageMaker: 학습부터 배포까지 관리하는 ML 플랫폼
 hook: SageMaker의 핵심은 학습과 호스팅을 분리된 두 단계로 다룬다는 점입니다.
+related: S3 · EC2 · CloudWatch
 ---
 
 ## 기본설명

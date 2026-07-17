@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 획득 지표
 title: CPM: 천 번 보여주는 데 드는 비용
 hook: $CPM = \frac{S}{I/1000}$다.
+related: CAC · CTR
 ---
 
 ## 기본설명

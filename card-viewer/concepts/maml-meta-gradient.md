@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: MAML의 메타그래디언트: 그래디언트를 통한 그래디언트
 hook: 빠르게 새로운 과제에 적응하는 모델을 만들고 싶습니다.
+related: 혼합편미분의 대칭성(Clairaut/Schwarz)
 ---
 
 ## 기본설명

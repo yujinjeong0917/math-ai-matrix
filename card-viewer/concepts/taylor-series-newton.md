@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 근사 · 적분
 title: 뉴턴법: 2차 테일러 근사의 꼭짓점
 hook: 뉴턴법은 경사하강법보다 훨씬 빨리 수렴할 때가 많습니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 범위 구분
 title: 전역 설명: 모델 전체는 평균적으로 어떻게 행동하는가
 hook: 전역 설명을 얻는 방법은 크게 두 갈래다.
+related: 국소 설명 · Surrogate Model · Global SHAP 요약
 ---
 
 ## 기본설명

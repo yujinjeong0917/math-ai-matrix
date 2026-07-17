@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: AutoGen: 멀티에이전트 대화를 오케스트레이션하는 프레임워크
 hook: AutoGen의 기본 단위는 대화형 에이전트다.
+related: CrewAI · Supervisor 패턴 · 역할 분담형 협업
 ---
 
 ## 기본설명

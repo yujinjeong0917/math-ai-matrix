@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: YOLOv1: 그리드 기반 단일 CNN 객체탐지
 hook: 입력 이미지를 $S \times S$ 격자로 나눈다(논문 기준 $S=7$).
+related: YOLOv3 · IoU와 NMS · Focal Loss
 ---
 
 ## 기본설명

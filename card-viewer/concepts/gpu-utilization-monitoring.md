@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 자원 관리
 title: GPU 활용률 모니터링: 할당한 GPU가 정말 일하고 있는가
 hook: 가장 널리 보는 지표는 GPU 사용률로 특정 구간 동안 GPU 연산 코어가 실제로 작업 중이었던 시간의 비율입니다.
+related: 멀티테넌시 · 잡 스케줄링 · 유휴 자원 탐지
 ---
 
 ## 기본설명

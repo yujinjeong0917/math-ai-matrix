@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: TRPO 신뢰영역 제약의 KKT 정상성 조건
 hook: 정책을 한 번에 너무 크게 바꾸면 대리목적함수의 근사가 깨지면서 학습이 무너질 수 있습니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 구조 특화 설명
 title: Grad-CAM: 클래스별로 어디를 보고 판단했는가
 hook: 선택한 합성곱층의 채널별 특징맵을 $A^k$, 목표 클래스 점수를 $y_c$라 하자.
+related: Saliency Map · 정책 네트워크 CAM · GAN Dissection
 ---
 
 ## 기본설명

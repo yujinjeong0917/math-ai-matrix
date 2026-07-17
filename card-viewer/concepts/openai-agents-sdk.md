@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: OpenAI Agents SDK: OpenAI가 제공하는 에이전트 오케스트레이션 도구
 hook: OpenAI Agents SDK에서 에이전트는 이름과 지시문과 사용할 도구 목록을 가진 단위로 정의된다.
+related: LangGraph · 에이전트 메시지 프로토콜 · Semantic Kernel
 ---
 
 ## 기본설명

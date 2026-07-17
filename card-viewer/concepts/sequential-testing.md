@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: A/B 테스트
 title: 순차검정: 실험 중간에 계속 들여다봐도 안전하게 만들기
 hook: 고정 표본 검정에서 유의수준 5%는 딱 한 번 정해진 시점에 검정할 때만 보장되는 숫자다.
+related: 표본크기 산정 · Multi-armed Bandit
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 로그 구조 · 품질 이슈
 title: 이벤트 로그의 필수 3요소: 케이스ID, 활동명, 타임스탬프
 hook: 케이스ID(case id)는 같은 프로세스 인스턴스에 속한 이벤트들을 묶는 열쇠입니다.
+related: 로그 불완전성 · 노이즈 필터링
 ---
 
 ## 기본설명

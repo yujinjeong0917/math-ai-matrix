@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 트래픽 품질
 title: 결제 사기율: 거래 중 몇 퍼센트가 사기로 확인되는가
 hook: Fraud Rate는 건수 기준과 금액 기준 두 가지로 함께 본다.
+related: Precision-Recall 트레이드오프 · 스팸/봇 트래픽 필터링 · 결제 이상 패턴 탐지
 ---
 
 ## 기본설명

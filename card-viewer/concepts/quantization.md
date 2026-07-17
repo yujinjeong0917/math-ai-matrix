@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 모델 압축
 title: 양자화: 가중치 정밀도를 낮춰 가볍게 만들기
 hook: 양자화는 연속적인 실수 값을 정해진 간격의 정수 값으로 매핑합니다.
+related: 프루닝 · 지식증류
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: CNN 백본 계보
 title: LeNet/AlexNet: 합성곱 신경망의 출발점
 hook: LeNet-5는 1998년 얀 르쿤이 우편번호 숫자 인식을 위해 설계한 구조다.
+related: ResNet · EfficientNet
 ---
 
 ## 기본설명

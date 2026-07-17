@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 품질 검증
 title: 데이터 품질 체크: null 비율과 분포 이상을 자동으로 잡아내기
 hook: 가장 기본적인 체크는 각 컬럼의 null 비율이 평소 범위를 벗어나지 않는지 보는 것입니다.
+related: 데이터 계약 · 스키마 진화 관리
 ---
 
 ## 기본설명

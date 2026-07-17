@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 가격 실험과 전환
 title: A/B 가격 테스트의 함정: 같은 상품을 다른 값에 팔면 생기는 문제
 hook: 가장 먼저 발견 가능성 문제가 있다.
+related: Van Westendorp PSM · 프리미엄 전환율
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: Slow Feature Analysis: 느림 목적함수의 일반화 고유값문제 환원
 hook: 센서로 들어오는 원시 신호는 빠르게 요동치지만, 그 신호가 나타내는 "의미"(예: 물체의 위치)는 보통 천천히 변합니다.
+related: 판별분석(LDA)
 ---
 
 ## 기본설명

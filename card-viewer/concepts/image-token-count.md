@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 이미지 토큰화
 title: 이미지 토큰 수: 해상도가 커질수록 컨텍스트를 많이 먹는다
 hook: 패치 토큰화에서 본 것처럼 토큰 수는 대략 $(H/p)\times(W/p)$입니다.
+related: 패치 토큰화 · 타일링
 ---
 
 ## 기본설명

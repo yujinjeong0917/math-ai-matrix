@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 세션 기반 추천
 title: Next-item Prediction: 다음에 클릭할 아이템 예측하기
 hook: 정식으로 쓰면 세션 또는 사용자의 클릭 이력 $x_1, \ldots, x_t$가 주어졌을 때 다음 아이템 $x_{t+1}$을 전체 아이템 카탈로그 $\mathca
+related: 세션 기반 추천 · GRU4Rec
 ---
 
 ## 기본설명

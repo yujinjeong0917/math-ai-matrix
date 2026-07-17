@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: Transformer(2017): Attention Is All You Need
 hook: 핵심 연산은 셀프어텐션이다.
+related: ViT · GPT 계열 · KV Cache
 ---
 
 ## 기본설명

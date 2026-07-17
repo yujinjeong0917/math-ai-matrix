@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 수익성 지표
 title: Payback Period: 들인 돈을 회수하는 데 몇 달이 걸리는가
 hook: $T = \frac{CAC}{ARPU}$다.
+related: CAC · LTV:CAC 비율
 ---
 
 ## 기본설명

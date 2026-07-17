@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 검색 · 인덱싱
 title: 하이브리드 검색: 키워드와 임베딩을 함께 쓰기
 hook: 키워드 검색 쪽에서 가장 널리 쓰이는 방법은 BM25입니다.
+related: 벡터DB(HNSW) · RAG-Fusion · Reranking
 ---
 
 ## 기본설명

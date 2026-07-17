@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 중요도샘플링(Importance Sampling): 가중치 재정의와 자기정규화 추정량의 편향
 hook: 몬테카를로 적분은 $\mathbb{E}_p[f(X)]=\int f(x)p(x)\,dx$를 $p$에서 직접 뽑은 표본의 평균으로 근사합니다.
+related: 거부샘플링 · 입자필터(순차중요도샘플링) · 어닐드 중요도샘플링
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: State-Space 모델
 title: S4: 구조화된 상태공간과 HiPPO 초기화
 hook: 상태공간모델은 연속시간에서 $h'(t)=Ah(t)+Bx(t)$, $y(t)=Ch(t)$라는 선형 미분방정식으로 시스템을 정의한다.
+related: Mamba · SSM 추론 특성
 ---
 
 ## 기본설명

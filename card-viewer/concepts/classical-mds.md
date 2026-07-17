@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 고전적 다차원척도법(Classical MDS): 이중중심화로 좌표 복원하기
 hook: 점들의 좌표는 모르고 점들 사이의 거리(비유사도)만 주어졌다고 합시다.
+related: 에카르트-영 정리 · 특이값분해(SVD)
 ---
 
 ## 기본설명

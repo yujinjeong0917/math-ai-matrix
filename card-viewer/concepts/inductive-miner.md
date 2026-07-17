@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 발견 알고리즘
 title: Inductive Miner: 재귀적 분할로 항상 유효한 모델 보장하기
 hook: 먼저 로그에서 활동 사이의 직접후행 빈도를 담은 그래프를 만듭니다.
+related: Alpha Algorithm · Heuristic Miner · 프로세스 트리
 ---
 
 ## 기본설명

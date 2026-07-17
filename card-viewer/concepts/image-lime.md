@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 국소 근사 기반
 title: 이미지 LIME: 슈퍼픽셀 단위로 교란하기
 hook: 먼저 분할 알고리즘(quickshift나 SLIC 등)으로 원본 이미지를 $M$개의 슈퍼픽셀로 나눈다.
+related: LIME · 잠재공간 교란
 ---
 
 ## 기본설명

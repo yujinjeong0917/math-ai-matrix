@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 예측 평가
 title: 진짜 스코어링 규칙: 브라이어 점수와 로그점수의 유인합치성
 hook: 확률 예측 $p$를 내놓는 예측자를 점수로 평가하려 합니다.
+related: KL 발산 · ROC-AUC의 확률적 해석
 ---
 
 ## 기본설명

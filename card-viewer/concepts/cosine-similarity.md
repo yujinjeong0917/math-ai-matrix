@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 코사인 유사도의 유계성과 각도 해석
 hook: 두 특징벡터가 얼마나 비슷한 방향을 가리키는지 재고 싶습니다.
+related: 
 ---
 
 ## 기본설명

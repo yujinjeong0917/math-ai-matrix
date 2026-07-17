@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 판별분석(LDA): 베이즈 결정경계와 Fisher 판별비의 일치
 hook: 두 집단을 가장 잘 가르는 방향을 찾고 싶습니다.
+related: 주성분분석(PCA) · Slow Feature Analysis
 ---
 
 ## 기본설명

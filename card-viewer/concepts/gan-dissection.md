@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 구조 특화 설명
 title: GAN Dissection: 뉴런 하나가 만드는 개념 찾기
 hook: 먼저 상관관계를 점수화한다.
+related: Grad-CAM · Cross-Attention 시각화
 ---
 
 ## 기본설명

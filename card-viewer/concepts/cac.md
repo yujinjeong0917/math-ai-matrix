@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 획득 지표
 title: CAC: 고객 한 명을 데려오는 데 든 돈
 hook: $CAC = \frac{S}{N}$이다.
+related: CPA · LTV:CAC 비율 · Payback Period
 ---
 
 ## 기본설명

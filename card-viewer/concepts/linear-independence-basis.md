@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 기저가 주는 좌표 표현의 유일성
 hook: 특징벡터들을 모아 하나의 좌표계처럼 쓰고 싶습니다.
+related: 
 ---
 
 ## 기본설명

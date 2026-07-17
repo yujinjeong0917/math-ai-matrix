@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 선형회귀 정규방정식의 유도
 hook: 데이터에 가장 잘 맞는 직선 하나를 긋고 싶습니다.
+related: 
 ---
 
 ## 기본설명

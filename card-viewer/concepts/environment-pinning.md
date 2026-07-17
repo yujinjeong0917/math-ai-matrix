@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 환경 고정
 title: 환경 고정: 라이브러리 버전까지 얼려서 재현성을 지키기
 hook: 가장 기본적인 방법은 lock file이다.
+related: 시드 고정 · 재현성 · 모델 CI
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: Skip-gram과 암묵적 PMI 행렬분해 (Levy & Goldberg)
 hook: word2vec의 Skip-gram with Negative Sampling(SGNS)은 신경망처럼 보이지만, 그 학습 목표를 수학적으로 뜯어보면 단어-문맥 쌍의
+related: 가중치 공유: 입력 임베딩과 출력 소프트맥스
 ---
 
 ## 기본설명

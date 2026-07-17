@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 네트워크 · 스토리지
 title: ELB: 여러 서버로 요청을 고르게 나누는 로드밸런서
 hook: ELB는 주기적으로 각 대상 서버에 상태 확인(health check) 요청을 보냅니다.
+related: Auto Scaling · EC2 · VPC
 ---
 
 ## 기본설명

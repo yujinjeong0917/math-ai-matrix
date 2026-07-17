@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 검색 · 인덱싱
 title: 청킹 전략: 문서를 얼마나 잘게, 얼마나 겹치게 자를까
 hook: 가장 단순한 방식은 고정 토큰 수로 자르는 것입니다.
+related: 벡터DB(HNSW) · 하이브리드 검색
 ---
 
 ## 기본설명

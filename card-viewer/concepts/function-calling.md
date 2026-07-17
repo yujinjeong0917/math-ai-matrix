@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 도구 사용 · 함수 호출
 title: Function Calling: 모델이 함수 이름과 인자를 구조화해서 뱉기
 hook: 개발자는 요청할 때 사용 가능한 함수 목록을 이름과 설명과 인자 스키마 형태로 모델에 함께 전달한다.
+related: Tool Use 스키마 설계 · MCP
 ---
 
 ## 기본설명

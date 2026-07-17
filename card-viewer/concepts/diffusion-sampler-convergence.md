@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 수치적 안정성
 title: Diffusion 샘플러의 스텝 수와 근사오차
 hook: Diffusion 모델은 역과정을 한 번에 계산하지 않고 유한한 스텝 $T$개로 쪼개서 근사합니다.
+related: 
 ---
 
 ## 기본설명

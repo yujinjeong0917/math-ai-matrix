@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 파라미터효율 튜닝(PEFT)
 title: LoRA: 원가중치는 고정하고 저랭크 행렬만 학습하기
 hook: LoRA는 사전학습된 가중치 행렬 $W_0$를 고정한 채 그 옆에 저랭크 분해 행렬 $B$와 $A$를 새로 둔다.
+related: QLoRA · Adapter
 ---
 
 ## 기본설명

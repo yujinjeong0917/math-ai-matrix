@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: LTV · 이탈예측
 title: LTV 모델링: 고객 한 명이 평생 벌어다 줄 돈 추정하기
 hook: 가장 널리 쓰이는 단순 공식은 $LTV = \frac{ARPU \times m}{c}$다.
+related: Churn 예측 · LTV:CAC 비율 · Payback Period
 ---
 
 ## 기본설명

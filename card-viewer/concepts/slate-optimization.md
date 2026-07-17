@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 강화학습 추천
 title: 슬레이트 최적화: 한 화면 전체를 하나의 조합으로 최적화하기
 hook: 단순한 상위 $k$개 방식은 $\sum_i \mathrm{score}(i)$가 큰 순서로 아이템을 골라 채워 넣습니다.
+related: 장기보상 최적화 · Contextual Bandit
 ---
 
 ## 기본설명

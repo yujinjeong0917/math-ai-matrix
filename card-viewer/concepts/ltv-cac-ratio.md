@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 수익성 지표
 title: LTV:CAC 비율: 벌어들이는 돈이 들인 돈보다 충분히 큰가
 hook: $\frac{LTV}{CAC}$로 계산한다.
+related: CAC · LTV 모델링 · Payback Period
 ---
 
 ## 기본설명

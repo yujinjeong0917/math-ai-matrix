@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 잠재결과 프레임워크
 title: Rubin 인과모형: 잠재결과와 근본문제
 hook: 어떤 사람이 신약을 먹었을 때와 먹지 않았을 때 몸무게가 어떻게 달라질지 알고 싶다고 하자.
+related: 
 ---
 
 ## 기본설명

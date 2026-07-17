@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 풀링의 근사적 이동불변성과 합성곱의 정확한 등변성 비교
 hook: 합성곱은 입력이 이동하면 출력도 정확히 같은 만큼 이동하는 "등변성(equivariance)"을 모든 이동량에 대해 정확하게 만족합니다.
+related: Tangent Prop과 매니폴드 접선 불변성
 ---
 
 ## 기본설명

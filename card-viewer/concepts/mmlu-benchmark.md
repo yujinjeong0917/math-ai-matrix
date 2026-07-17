@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 일반 벤치마크 · 평가
 title: MMLU류 벤치마크: 여러 분야 객관식으로 지식을 재기
 hook: 이 부류의 벤치마크는 보통 수십 개 과목에 걸쳐 수천에서 수만 문항을 제공하고 각 문항은 네 개 안팎의 선택지 중 하나를 고르는 형식이다.
+related: LLM-as-judge · 환각 측정
 ---
 
 ## 기본설명

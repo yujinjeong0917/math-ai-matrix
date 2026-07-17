@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 온라인 평가
 title: CTR: 클릭률로 관심을 재기
 hook: $CTR = \frac{c}{n}$로 정의되며 $c$는 클릭 수이고 $n$은 노출 수다.
+related: 체류시간 · A/B테스트 연계
 ---
 
 ## 기본설명

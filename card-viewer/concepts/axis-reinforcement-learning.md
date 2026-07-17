@@ -5,6 +5,7 @@ domainLabel: 매트릭스 읽는 법
 subLabel: 매트릭스 열 · AI 4갈래
 title: Reinforcement Learning — 가치기반·정책기반·Actor-Critic·모델기반
 hook: 앞의 세 열은 전부 정적인 데이터셋을 놓고 배워요.
+related: Q-러닝: 시간차 업데이트 · 정책경사 정리(REINFORCE)의 유도 · Actor-Critic 베이스라인의 무편향성 · MCTS의 UCT 선택 공식 유도
 ---
 
 ## 기본설명

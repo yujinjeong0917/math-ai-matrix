@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: Focal Loss: 클래스 불균형 완화
 hook: 표준 이진 크로스엔트로피는 $\mathrm{CE}(p_t) = -\log(p_t)$로 정의된다.
+related: YOLOv1 · IoU와 NMS
 ---
 
 ## 기본설명

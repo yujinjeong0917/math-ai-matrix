@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: IoU와 NMS: 박스 겹침과 중복 제거
 hook: IoU(Intersection over Union)는 두 박스 $A$, $B$에 대해 $\mathrm{IoU}(A,B) = \dfrac{|A \cap B|}{|A \cup B|}$로 정의된다.
+related: YOLOv1 · Focal Loss
 ---
 
 ## 기본설명

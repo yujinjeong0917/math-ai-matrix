@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 성과 지표
 title: 추천 클릭률 상승분: 추천이 정말 클릭을 더 끌어냈는가
 hook: 클릭률(CTR)은 노출수 대비 클릭수로 정의된다.
+related: 커버리지 · Intra-List Diversity
 ---
 
 ## 기본설명

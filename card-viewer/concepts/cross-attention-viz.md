@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 어텐션 기반
 title: Cross-Attention 시각화: 텍스트와 이미지가 어떻게 정렬되는가
 hook: Stable Diffusion의 텍스트 조건부 U-Net이나 이미지 캡션 트랜스포머를 예로 들면 이미지는 패치들의 공간적 격자로, 텍스트는 토큰들의 시퀀스로 표현된다.
+related: Attention Rollout · Grad-CAM
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 정보이론 심화
 subLabel: 레이트-왜곡 · 채널용량
 title: 레이트-왜곡 함수의 볼록성
 hook: 손실압축에서는 원본을 조금 뭉개는 대신 비트를 아끼죠.
+related: 
 ---
 
 ## 기본설명

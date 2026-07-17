@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 에이전트 평가
 title: 태스크 성공률: 시도 중 실제로 목표를 달성한 비율
 hook: 태스크 성공률은 $\dfrac{S}{N}$로 정의된다.
+related: 궤적 평가 · 도구 호출 정확도
 ---
 
 ## 기본설명

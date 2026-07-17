@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 독립성분분석(ICA): 가우시안 소스의 회전 비식별성
 hook: 여러 신호가 섞인 관측에서 원래 독립적인 소스 신호들을 복원하는 것이 ICA입니다.
+related: 확률적 PCA(PPCA)
 ---
 
 ## 기본설명

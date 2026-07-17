@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인-온라인 지표 괴리
 title: Replay 평가: 과거 로그를 재생해 온라인에 가까운 추정치 얻기
 hook: 기존 시스템이 무작위로 아이템을 노출했던 로그가 있다고 하자.
+related: 지표 괴리 · Interleaving
 ---
 
 ## 기본설명

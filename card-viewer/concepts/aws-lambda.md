@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 컴퓨트
 title: Lambda: 서버 없이 요청 단위로 실행되는 함수
 hook: Lambda 함수는 요청이 들어올 때마다 실행 환경을 얻어 코드를 실행합니다.
+related: EC2 · CloudWatch
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 문법 제약 디코딩
 title: 구조화 출력의 트레이드오프: 형식을 조이면 표현력과 속도가 준다
 hook: 속도 쪽 비용은 계산 구조에서 나온다.
+related: Grammar-constrained Decoding · 정규식/유한상태 제약
 ---
 
 ## 기본설명

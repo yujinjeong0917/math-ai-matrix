@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 범용 설명 라이브러리
 title: InterpretML: 글래스박스와 블랙박스 설명을 함께
 hook: 핵심 모델은 Explainable Boosting Machine(EBM)이다.
+related: shap · Alibi Explain · Surrogate Model
 ---
 
 ## 기본설명

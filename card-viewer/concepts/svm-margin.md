@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: SVM 서포트 벡터 마진의 폭 2/‖w‖
 hook: SVM은 두 클래스를 가르는 초평면 $w^Tx+b=0$을 찾을 때 아무 초평면이나 고르지 않습니다.
+related: 
 ---
 
 ## 기본설명

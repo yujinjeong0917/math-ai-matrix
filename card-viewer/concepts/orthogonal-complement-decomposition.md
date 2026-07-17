@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 직교여공간과 직합분해: V = U ⊕ U⊥
 hook: 부분공간 $U$가 있을 때, $U$에 완전히 수직인 벡터들을 모아놓은 집합 $U^\perp$를 생각할 수 있어요.
+related: Gram-Schmidt 직교화 · 직교 사영 정리(일반형)
 ---
 
 ## 기본설명

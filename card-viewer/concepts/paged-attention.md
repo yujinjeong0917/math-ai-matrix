@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: KV 캐시 · 메모리
 title: PagedAttention: KV 캐시를 페이지 단위로 관리하기
 hook: PagedAttention은 각 시퀀스의 KV 캐시를 고정 크기 블록(페이지) 여러 개로 쪼개 관리한다.
+related: Multi/Grouped-Query Attention · 프리픽스 캐싱
 ---
 
 ## 기본설명

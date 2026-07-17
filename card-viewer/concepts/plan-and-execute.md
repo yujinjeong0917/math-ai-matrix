@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 에이전트 설계 패턴
 title: Plan-and-Execute: 계획부터 세우고 하나씩 실행하기
 hook: Plan-and-Execute는 계획자와 실행자로 나뉜다.
+related: Tree of Thoughts · 에이전트 상태 머신 · Reflexion
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 기댓값전파(Expectation Propagation)와 모멘트매칭 갱신
 hook: 변분추론은 근사분포 $q$를 실제 사후분포 $p$에 최대한 가깝게 맞추되 $D_{KL}(q\|p)$(역방향 KL)를 최소화합니다.
+related: 평균장 변분추론(CAVI) · 지수족의 로그분배함수와 충분통계량의 평균
 ---
 
 ## 기본설명

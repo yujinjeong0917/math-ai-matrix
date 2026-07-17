@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 멀티헤드 어텐션: 왜 하나의 큰 어텐션 대신 여러 개의 작은 어텐션을 이어붙이는가
 hook: 셀프어텐션 한 번은 쿼리와 키의 내적으로 얻은 하나의 가중치 행렬 $A$로 값 벡터들을 섞습니다.
+related: 소프트맥스 어텐션이 만드는 확률분포 · Transformer(2017) · Multi/Grouped-Query Attention
 ---
 
 ## 기본설명

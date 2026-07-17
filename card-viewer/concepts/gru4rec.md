@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 세션 기반 추천
 title: GRU4Rec: RNN으로 세션 안의 클릭 순서를 학습하기
 hook: GRU 셀은 매 시점 입력 $x_t$와 이전 은닉 상태 $h_{t-1}$을 받아 새 은닉 상태 $h_t$를 만든다.
+related: 세션 기반 추천 · Next-item Prediction
 ---
 
 ## 기본설명

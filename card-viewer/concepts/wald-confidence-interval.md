@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 신뢰구간 · 순차분석
 title: Wald 신뢰구간: MLE의 점근정규성에서 유도되는 커버리지
 hook: 점추정값 하나만으로는 불확실성을 표현할 수 없습니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 3D · 포인트클라우드
 title: PointNet: 순서 없는 점군을 다루는 대칭함수
 hook: 점군은 $n$개의 점 $\{p_1,\dots,p_n\}$의 집합이고 원칙적으로 순서가 없는 자료구조다.
+related: 복셀 기반 3D CNN · NeRF
 ---
 
 ## 기본설명

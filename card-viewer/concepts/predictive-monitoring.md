@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 분석 · 예측
 title: 예측 모니터링: 진행중인 케이스가 어떻게 끝날지 미리 보기
 hook: 지금 보고 있는 케이스는 아직 끝나지 않았으므로 지금까지 일어난 이벤트만 담은 부분 트레이스입니다.
+related: 병목구간 분석
 ---
 
 ## 기본설명

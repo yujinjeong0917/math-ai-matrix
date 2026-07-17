@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: 정규화 절단(Normalized Cut)의 완화: 조합최적화에서 일반화 고유값 문제로
 hook: 그래프를 두 조각으로 잘라 군집을 나누고 싶습니다.
+related: 마르코프랜덤필드 인수분해
 ---
 
 ## 기본설명

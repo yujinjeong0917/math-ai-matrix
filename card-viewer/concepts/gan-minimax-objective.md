@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: GAN 목적함수의 최적 판별자
 hook: GAN은 판별자와 생성자가 서로 겨루는 게임입니다.
+related: 
 ---
 
 ## 기본설명

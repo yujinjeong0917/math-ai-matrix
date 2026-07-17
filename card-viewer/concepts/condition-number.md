@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 수치적 안정성
 title: 조건수와 선형시스템의 오차 민감도
 hook: 컴퓨터로 계산할 땐 아주 작은 반올림 오차가 늘 섞여요.
+related: 
 ---
 
 ## 기본설명

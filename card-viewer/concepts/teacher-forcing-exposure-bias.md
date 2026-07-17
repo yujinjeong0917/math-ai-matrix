@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: 교사강요와 노출편향: 학습과 생성이 서로 다른 입력분포를 보는 문제
 hook: rnn-hidden-state에서 본 것처럼 순환신경망은 $h_t=f(h_{t-1},x_t)$로 과거를 은닉상태에 압축하고, autoregressive-chain
+related: 은닉상태가 과거를 압축하는 재귀 구조 · 교사강요가 그대로 옮긴 확률 연쇄법칙
 ---
 
 ## 기본설명

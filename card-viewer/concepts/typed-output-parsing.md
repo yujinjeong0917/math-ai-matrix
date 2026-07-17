@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 출력 형식 강제
 title: 타입 검증 파싱: 나온 출력을 타입으로 검증하고 실패하면 다시 시키기
 hook: 구현은 애플리케이션 코드 쪽에서 이루어진다.
+related: 함수 스키마 강제 · JSON mode
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인 평가
 title: Recall@K: 상위 K개 안에 정답이 얼마나 들어있는가
 hook: $Recall@K$는 다음과 같이 정의된다.
+related: NDCG · MAP
 ---
 
 ## 기본설명

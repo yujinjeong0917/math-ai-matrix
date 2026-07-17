@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 컨텍스트 관리
 title: 대화 요약: 긴 대화를 압축해 다시 넣기
 hook: 구현은 보통 두 단계로 이뤄집니다.
+related: 컨텍스트 윈도우 · 프롬프트 압축
 ---
 
 ## 기본설명

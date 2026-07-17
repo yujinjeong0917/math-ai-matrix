@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 프롬프트 캐싱
 title: 프리픽스 캐싱: 앞부분이 같으면 그 구간만 재사용하기
 hook: 프리픽스 캐싱은 입력 토큰 시퀀스를 앞에서부터 훑으면서 이전에 캐시해둔 시퀀스와 얼마나 겹치는지를 확인한다.
+related: PagedAttention · 캐시 TTL · 캐시 히트율
 ---
 
 ## 기본설명

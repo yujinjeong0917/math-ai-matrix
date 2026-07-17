@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: KV 캐시 · 메모리
 title: Multi/Grouped-Query Attention: Key/Value 헤드 수를 줄여 캐시 아끼기
 hook: 표준 멀티헤드 어텐션(MHA)은 쿼리 헤드 수 $h$개마다 키 헤드와 밸류 헤드도 각각 $h$개씩 따로 둔다.
+related: PagedAttention
 ---
 
 ## 기본설명

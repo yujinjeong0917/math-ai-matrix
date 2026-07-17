@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 다양성 · 공정성 · 탐색
 title: 노출 공정성: 인기 아이템 쏠림을 막고 기회를 고르게 나누기
 hook: 추천 서비스의 노출 분포는 대개 멱법칙을 따른다.
+related: 필터버블 · Exploration-Exploitation
 ---
 
 ## 기본설명

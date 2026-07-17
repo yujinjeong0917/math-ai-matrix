@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 긴 컨텍스트 배치
 title: 컨텍스트 순서 민감도: 같은 정보라도 순서가 답을 바꾼다
 hook: 순서가 결과를 바꾸는 이유는 두 가지로 나눌 수 있다.
+related: Lost-in-the-middle · 정보 배치 전략
 ---
 
 ## 기본설명

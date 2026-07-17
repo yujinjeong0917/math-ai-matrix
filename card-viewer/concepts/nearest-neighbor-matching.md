@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 식별과 추정
 title: 최근접이웃 매칭과 ATT로의 수렴
 hook: 매칭의 아이디어는 단순해요.
+related: 
 ---
 
 ## 기본설명

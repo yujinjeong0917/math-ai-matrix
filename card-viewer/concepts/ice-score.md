@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 우선순위화
 title: ICE 스코어: 영향력, 확신도, 실행난이도를 곱해 우선순위 매기기
 hook: ICE는 Impact, Confidence, Ease 세 요소의 곱이다.
+related: PIE 프레임워크 · 인풋 지표 트리
 ---
 
 ## 기본설명

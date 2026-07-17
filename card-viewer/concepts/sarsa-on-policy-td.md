@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: SARSA: Q-러닝과 딱 한 글자 다른 온폴리시 시간차 학습
 hook: q-learning-td-update에서 본 갱신식은 다음 상태에서 최댓값을 취하는 $\max_{a'}Q(s',a')$을 씁니다.
+related: Q-러닝: 벨만 최적방정식을 표본 하나로 근사하는 시간차 업데이트 · ε-greedy의 무한탐험 보장 · 벨만 기대방정식의 유도
 ---
 
 ## 기본설명

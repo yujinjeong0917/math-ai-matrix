@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 확률의 기초
 title: 무상관과 독립성의 차이: X~N(0,1), Y=X²
 hook: 두 확률변수가 서로 아무 관계가 없다는 것을 나타내는 방법에는 여러 층위가 있습니다.
+related: Simpson의 역설
 ---
 
 ## 기본설명

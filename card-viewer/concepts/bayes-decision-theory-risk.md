@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 결정이론
 title: 베이즈 리스크 최소화: 0-1 손실의 MAP와 제곱손실의 사후평균
 hook: 통계적 결정이론에서는 관측 $x$를 보고 미지의 상태 $\theta$에 대해 행동 $a$를 하나 골라야 합니다.
+related: MAP 추정 · ROC-AUC의 확률적 해석
 ---
 
 ## 기본설명

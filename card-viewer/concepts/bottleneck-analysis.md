@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 분석 · 예측
 title: 병목구간 분석: 어디서 가장 오래 기다리는가
 hook: 활동 $a$가 끝난 시각과 다음 활동 $b$가 시작된 시각의 차이를 모든 케이스에 대해 모으면 그 구간의 대기시간 분포가 나옵니다.
+related: 예측 모니터링 · Token Replay
 ---
 
 ## 기본설명

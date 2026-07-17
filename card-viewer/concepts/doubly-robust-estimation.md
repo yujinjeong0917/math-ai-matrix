@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 식별과 추정
 title: 이중강건추정(Doubly Robust / AIPW)
 hook: 역확률가중(IPW)은 성향점수모형이 틀리면 무너지고, 회귀보정(outcome regression)은 결과모형이 틀리면 무너져요.
+related: 
 ---
 
 ## 기본설명

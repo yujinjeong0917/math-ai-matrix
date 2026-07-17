@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 리플레이버퍼와 상관관계 제거
 hook: 환경과 상호작용하며 얻는 전이(transition)들을 순서대로 그대로 학습에 쓰면 문제가 생깁니다.
+related: 
 ---
 
 ## 기본설명

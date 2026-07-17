@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 범용 설명 라이브러리
 title: Alibi Explain: 여러 설명 기법을 하나의 인터페이스로
 hook: Anchors는 if-then 형태의 규칙을 찾는다.
+related: 반사실 공정성 · InterpretML · shap
 ---
 
 ## 기본설명

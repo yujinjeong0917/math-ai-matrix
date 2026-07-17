@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 정렬(Alignment)
 title: Constitutional AI: 원칙에 따라 스스로 비평하고 다시 학습하기
 hook: Constitutional AI는 두 단계로 진행된다.
+related: RLHF
 ---
 
 ## 기본설명

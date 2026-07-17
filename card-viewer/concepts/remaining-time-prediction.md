@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 예측 기법
 title: Remaining Time Prediction: 이 케이스는 언제 끝날까
 hook: Next Activity Prediction과 데이터를 만드는 방식은 비슷합니다.
+related: Next Activity Prediction · 이상 케이스 조기 경고
 ---
 
 ## 기본설명

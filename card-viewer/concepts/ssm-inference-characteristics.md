@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: State-Space 모델
 title: SSM의 추론 특성: KV 캐시 없는 상수 메모리
 hook: Transformer 기반 모델이 추론할 때는 지금까지 나온 모든 토큰의 키와 값 벡터를 KV 캐시라는 형태로 저장해두고 매 스텝 새 토큰의 질의를 이 캐시 전체와 비교한다.
+related: Mamba · S4
 ---
 
 ## 기본설명

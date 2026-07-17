@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: 라그랑주 쌍대성과 약쌍대성 정리
 hook: 제약 있는 최적화 문제는 직접 풀기 어려울 때가 많습니다.
+related: 
 ---
 
 ## 기본설명

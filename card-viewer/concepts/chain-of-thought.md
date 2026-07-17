@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 프롬프팅 기법
 title: Chain-of-Thought: 중간 추론과정을 말로 풀어내게 하기
 hook: CoT는 프롬프트에 "단계별로 생각해보자" 같은 트리거 문장을 넣는 제로샷 방식이나, 풀이 과정이 포함된 예시 몇 개를 미리 보여주는 퓨샷 방식으로 적용합니다.
+related: Few-shot Prompting · ReAct
 ---
 
 ## 기본설명

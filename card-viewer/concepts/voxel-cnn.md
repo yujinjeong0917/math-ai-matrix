@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 3D · 포인트클라우드
 title: 복셀 기반 3D CNN: 점군을 격자로 양자화
 hook: 점군을 규칙적인 3D 격자로 양자화하는 과정을 복셀화라 한다.
+related: PointNet · NeRF
 ---
 
 ## 기본설명

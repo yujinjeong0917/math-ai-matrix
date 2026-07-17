@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: Fano의 부등식: 추정 오류확률의 정보이론적 하한
 hook: 관측 $Y$로부터 원래 값 $X$를 추정하려 합니다.
+related: 
 ---
 
 ## 기본설명

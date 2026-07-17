@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Diffusion 아키텍처
 title: U-Net: 노이즈를 예측하는 인코더-디코더
 hook: U-Net은 원래 의료영상을 픽셀 단위로 분할하기 위해 고안된 구조다.
+related: Latent Diffusion · 텍스트 조건화
 ---
 
 ## 기본설명

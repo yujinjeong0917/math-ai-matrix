@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인-온라인 지표 괴리
 title: Interleaving: 두 랭킹을 섞어서 실제 클릭으로 우열 가리기
 hook: 가장 널리 쓰는 방식은 team-draft interleaving이다.
+related: 지표 괴리 · Replay 평가
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 표현 형식
 title: Petri Net: 플레이스와 트랜지션으로 동시성을 표현하기
 hook: Petri Net은 튜플 $N=(P,T,F)$로 정의됩니다.
+related: Token Replay · 프로세스 트리 · Alpha Algorithm
 ---
 
 ## 기본설명

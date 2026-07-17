@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 일반 벤치마크 · 평가
 title: 환각 측정: 모델이 없는 사실을 지어내는지 재기
 hook: 환각을 재는 방법은 크게 참조 자료가 있는 경우와 없는 경우로 나뉜다.
+related: LLM-as-judge · MMLU류 벤치마크
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: ML 특화 서비스
 title: CloudWatch: 지표와 로그를 모아보는 관측 서비스
 hook: CloudWatch는 크게 지표(metrics)와 로그(logs)와 알람(alarms) 세 가지로 이루어집니다.
+related: Auto Scaling · SageMaker · ELB
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: GMM의 M-step: 파라미터 갱신식 유도
 hook: gmm-em에서 책임값 $\gamma_{ji}$를 베이즈 정리로 유도했다.
+related: GMM의 E-step: 책임값의 유도 · k-평균은 왜 GMM의 특수한 경우인가
 ---
 
 ## 기본설명

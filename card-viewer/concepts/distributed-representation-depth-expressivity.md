@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 조합론 심화
 title: 분산표현의 지수적 구별력과 얕은 망의 지수적 폭 요구
 hook: 특징 하나하나가 '이 범주다/아니다'를 나타내는 지역표현(local/one-hot representation)과 달리, $n$개의 이진 특징을 켜고 끄는 조합으로
+related: 희소코딩과 사전학습
 ---
 
 ## 기본설명

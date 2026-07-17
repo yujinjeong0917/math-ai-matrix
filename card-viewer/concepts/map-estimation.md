@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: MAP 추정과 MLE로의 환원
 hook: MLE는 데이터만 보고 파라미터를 추정합니다.
+related: 
 ---
 
 ## 기본설명

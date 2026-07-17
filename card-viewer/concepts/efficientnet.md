@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: CNN 백본 계보
 title: EfficientNet: 깊이·너비·해상도의 동시 스케일링
 hook: 신경망의 용량을 키우는 세 축은 층 수를 늘리는 깊이, 채널 수를 늘리는 너비, 입력 이미지 크기를 키우는 해상도다.
+related: ResNet · LeNet/AlexNet
 ---
 
 ## 기본설명

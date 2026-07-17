@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: KL 신뢰영역의 2차 근사와 피셔정보 노름 제약
 hook: TRPO는 정책을 한 번에 너무 많이 바꾸지 않도록 매 업데이트마다 KL발산 제약을 겁니다.
+related: 
 ---
 
 ## 기본설명

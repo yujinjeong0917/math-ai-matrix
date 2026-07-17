@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 · 생성 기반
 title: Rationale Extraction: 예측을 정당화하는 최소 문장 찾기
 hook: 일반적인 구현은 선택기(selector)와 예측기(predictor) 두 부분을 함께 학습한다.
+related: 반사실 텍스트 생성 · Attention 설명의 한계
 ---
 
 ## 기본설명

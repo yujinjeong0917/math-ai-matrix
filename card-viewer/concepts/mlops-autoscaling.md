@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 모델 서빙
 title: 오토스케일링: 트래픽에 맞춰 서빙 자원을 자동으로 조절하기
 hook: 일반 웹 서버의 오토스케일링은 대개 CPU 사용률을 기준 지표로 씁니다.
+related: 온라인서빙 · 배치추론
 ---
 
 ## 기본설명

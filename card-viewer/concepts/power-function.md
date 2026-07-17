@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 가설검정 이론
 title: 검정력함수: $\beta(\theta)=P_\theta(\text{기각})$와 표본크기의 극한
 hook: 어떤 검정이 좋은 검정인지 판단하려면 그 검정이 각 모수값에서 얼마나 자주 귀무가설을 기각하는지를 모수의 함수로 봐야 합니다.
+related: 
 ---
 
 ## 기본설명

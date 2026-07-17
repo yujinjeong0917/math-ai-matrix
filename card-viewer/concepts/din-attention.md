@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 딥러닝 랭킹
 title: DIN: 과거 행동에 어텐션을 걸어 관심사를 짚어내기
 hook: 과거 행동 임베딩 $e_1,\dots,e_T$와 후보 아이템 임베딩 $e_c$가 있을 때 각 과거 행동의 가중치는 둘을 함께 보는 작은 신경망으로 계산됩니다.
+related: Wide&Deep · Transformer 기반 랭킹
 ---
 
 ## 기본설명

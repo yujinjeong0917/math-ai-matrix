@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 컴퓨트
 title: Auto Scaling: 트래픽에 맞춰 인스턴스를 늘리고 줄이기
 hook: Auto Scaling은 Auto Scaling Group(ASG)이라는 단위로 인스턴스 묶음을 관리합니다.
+related: EC2 · ELB · CloudWatch
 ---
 
 ## 기본설명

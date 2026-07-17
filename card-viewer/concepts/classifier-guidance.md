@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: Classifier Guidance: 조건부 스코어의 분해
 hook: 디퓨전 모델에서 원하는 클래스 $y$로 생성을 유도하고 싶을 때 조건부 분포의 그래디언트 $\nabla\log p(x|y)$를 직접 학습하지 않고도 만들어낼 수 있습니다.
+related: 
 ---
 
 ## 기본설명

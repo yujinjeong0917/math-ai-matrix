@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 컴퓨트
 title: EC2: 필요한 만큼 빌려 쓰는 가상 서버
 hook: EC2는 인스턴스 타입이라는 단위로 컴퓨팅 자원을 판매합니다.
+related: Auto Scaling · Lambda · SageMaker
 ---
 
 ## 기본설명

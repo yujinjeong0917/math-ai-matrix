@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 프롬프팅 기법
 title: Few-shot Prompting: 예시 몇 개로 태스크 형식 암시하기
 hook: 제로샷 프롬프팅은 태스크 설명만 주고 바로 답을 요구합니다.
+related: Chain-of-Thought · ReAct
 ---
 
 ## 기본설명

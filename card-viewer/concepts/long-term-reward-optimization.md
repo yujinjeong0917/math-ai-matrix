@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 강화학습 추천
 title: 장기보상 최적화: 클릭 대신 리텐션을 보상으로
 hook: 여태 다룬 GBDT나 DIN이나 Transformer 기반 랭킹은 모두 이번 노출에서 클릭이 났는지만 보는 즉각보상으로 학습됩니다.
+related: 슬레이트 최적화 · Contextual Bandit
 ---
 
 ## 기본설명

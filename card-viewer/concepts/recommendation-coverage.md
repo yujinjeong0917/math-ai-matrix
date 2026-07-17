@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 성과 지표
 title: 커버리지: 전체 아이템 중 실제로 추천되는 비율
 hook: 카탈로그 커버리지는 한 번이라도 추천된 서로 다른 상품수를 전체 상품수로 나눈 값이다.
+related: 추천 클릭률 상승분 · Intra-List Diversity
 ---
 
 ## 기본설명

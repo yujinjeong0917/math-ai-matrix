@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 네트워크 흐름
 title: 자원할당과 최소비용유량: Min-Cost Flow & MDP
 hook: 한정된 자원을 여러 수요처에 나눠줘야 하는데, 경로마다 단가와 한도가 다릅니다.
+related: 
 ---
 
 ## 기본설명

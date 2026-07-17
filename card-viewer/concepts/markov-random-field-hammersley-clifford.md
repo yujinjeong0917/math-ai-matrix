@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: 마르코프랜덤필드의 인수분해: Hammersley-Clifford 정리
 hook: 무방향 그래프로 변수들 사이의 의존관계를 표현하고 싶습니다.
+related: RBM의 이분그래프 조건부독립 · 정규화 절단의 완화
 ---
 
 ## 기본설명

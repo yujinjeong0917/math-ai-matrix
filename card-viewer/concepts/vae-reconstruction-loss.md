@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: VAE 재구성 손실과 평균제곱오차의 관계
 hook: VAE를 구현할 때 재구성 손실 자리에 흔히 평균제곱오차(MSE)를 그냥 씁니다.
+related: 
 ---
 
 ## 기본설명

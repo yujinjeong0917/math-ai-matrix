@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: ML 특화 서비스
 title: ECS/EKS: 컨테이너로 서빙 서버를 오케스트레이션하기
 hook: ECS는 AWS가 만든 컨테이너 오케스트레이션 서비스입니다.
+related: EC2 · Auto Scaling · CloudWatch
 ---
 
 ## 기본설명

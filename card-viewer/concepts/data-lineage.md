@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 데이터 버저닝
 title: 데이터 리니지: 이 데이터가 어디서 왔는지 추적하기
 hook: 데이터 리니지는 그래프로 표현한다.
+related: 재현성 · 모델 CI · 데이터 드리프트
 ---
 
 ## 기본설명

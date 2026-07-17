@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: 가중치 감쇠와 릿지회귀의 닫힌형 해 (MAP 관점)
 hook: 가중치 감쇠는 학습 중 손실에 $\lambda\|\beta\|^2$ 항을 더해서 가중치가 너무 커지지 않게 누르는 기법입니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 분산학습
 title: 모델 병렬: 모델 자체를 여러 장비에 나눠 담기
 hook: 모델 병렬은 크게 두 방식으로 나뉩니다.
+related: 데이터 병렬 · ZeRO
 ---
 
 ## 기본설명

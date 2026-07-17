@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 증강 · 재순위화
 title: RAG-Fusion: 질문을 여러 갈래로 바꿔 검색결과를 합치기
 hook: 과정은 세 단계로 이뤄집니다.
+related: 하이브리드 검색 · Self-RAG · Reranking
 ---
 
 ## 기본설명

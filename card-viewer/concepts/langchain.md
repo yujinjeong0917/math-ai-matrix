@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: LangChain: 체인과 에이전트를 조립하는 범용 프레임워크
 hook: LangChain의 핵심 개념은 체인이다.
+related: LangGraph · LlamaIndex · 에이전트 메시지 프로토콜
 ---
 
 ## 기본설명

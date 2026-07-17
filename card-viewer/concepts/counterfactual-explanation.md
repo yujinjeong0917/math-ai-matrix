@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 설명
 title: Counterfactual 설명: 무엇이 바뀌어야 결과가 달라지는가
 hook: Wachter 등이 2017년에 정식화한 형태는 최적화 문제다.
+related: 대조적 설명 · 반사실 이미지 생성
 ---
 
 ## 기본설명

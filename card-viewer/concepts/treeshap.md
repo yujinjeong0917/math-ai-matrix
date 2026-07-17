@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 규칙 · 트리 특화
 title: TreeSHAP: 트리 구조를 이용해 SHAP값을 빠르게 계산하기
 hook: 일반적인 모델에서 정확한 Shapley값을 구하려면 특징이 $M$개일 때 $2^M$에 가까운 부분집합 조합을 다 따져야 한다.
+related: Partition SHAP · Anchors
 ---
 
 ## 기본설명

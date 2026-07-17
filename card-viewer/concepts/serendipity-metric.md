@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 다양성 지표
 title: 세렌디피티: 예상 밖인데도 만족스러운 추천
 hook: 세렌디피티를 정의하려면 먼저 무엇이 예상된 추천인지 기준이 있어야 한다.
+related: Intra-List Diversity · 추천 클릭률 상승분
 ---
 
 ## 기본설명

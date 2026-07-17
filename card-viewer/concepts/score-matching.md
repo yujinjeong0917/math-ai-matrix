@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 스코어매칭: 분배함수 없이 밀도모델을 학습하는 법
 hook: 정규화되지 않은 에너지모델 $p_\theta(x)\propto \tilde p_\theta(x)$을 최대우도로 학습하려면 분배함수(정규화상수) $Z_\theta=
+related: 디노이징 오토인코더가 학습하는 것은 데이터 분포의 스코어다
 ---
 
 ## 기본설명

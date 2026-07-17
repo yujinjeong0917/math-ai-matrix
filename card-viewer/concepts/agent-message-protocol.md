@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 멀티에이전트 오케스트레이션
 title: 에이전트 간 메시지 프로토콜: 서로 어떤 형식으로 주고받을까
 hook: 가장 단순한 형태는 발신자와 수신자와 메시지 내용만 있는 대화 로그다.
+related: Supervisor 패턴 · 역할 분담형 협업 · LangGraph
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 특징 중요도
 title: 잠재차원 중요도: 어떤 축이 재구성에 기여하는가
 hook: 인코더 $E$와 디코더 $D$로 이루어진 오토인코더에서 $z=E(x)$라 하자.
+related: 잠재변수 SHAP · 잠재공간 교란 · Feature Ablation
 ---
 
 ## 기본설명

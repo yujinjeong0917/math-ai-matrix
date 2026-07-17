@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 3D · 포인트클라우드
 title: NeRF: 장면을 신경망 하나로 표현하기
 hook: NeRF는 위치 $(x,y,z)$와 시선 방향 $(\theta,\phi)$를 입력받아 색상 $c=(r,g,b)$와 부피밀도 $\sigma$를 출력하는 작은 MLP $F_\Theta: (x,d) \to (c,\sigma)$로 장면을 표현한다.
+related: PointNet · 복셀 기반 3D CNN
 ---
 
 ## 기본설명

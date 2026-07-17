@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 동시성 · 검증
 title: AND-split/AND-join: 여러 흐름이 동시에 갈라지고 합쳐지기
 hook: 페트리넷에서 트랜지션 $t$가 AND-split이라는 것은 $t$의 출력 자리(place) 집합 $t^\bullet$의 원소가 두 개 이상이라는 뜻입니다.
+related: XOR 분기 · 데드락 · 라이브락 검증
 ---
 
 ## 기본설명

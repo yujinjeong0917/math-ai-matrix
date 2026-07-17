@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 시계열
 title: TCN: 인과적 팽창합성곱으로 시퀀스를 다루기
 hook: 인과적 합성곱은 시점 $t$의 출력이 $t$ 이전 시점의 입력에만 의존하도록 필터를 왼쪽으로만 펼치는 합성곱이다.
+related: LSTM/GRU · 시계열 Transformer
 ---
 
 ## 기본설명

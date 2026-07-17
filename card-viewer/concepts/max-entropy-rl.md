@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: 최대엔트로피 강화학습의 소프트맥스 최적정책
 hook: SAC 같은 최대엔트로피 강화학습은 보상뿐 아니라 정책의 엔트로피 $\alpha H(\pi)$까지 함께 최대화합니다.
+related: 
 ---
 
 ## 기본설명

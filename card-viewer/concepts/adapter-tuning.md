@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 파라미터효율 튜닝(PEFT)
 title: Adapter: 층 사이에 작은 모듈을 끼워 학습하기
 hook: Adapter 모듈은 보통 트랜스포머 한 블록 안에서 어텐션이나 피드포워드 다음에 삽입된다.
+related: LoRA · QLoRA
 ---
 
 ## 기본설명

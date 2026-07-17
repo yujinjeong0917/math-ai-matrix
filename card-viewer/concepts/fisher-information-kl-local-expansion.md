@@ -5,6 +5,7 @@ domainLabel: 정보이론 심화
 subLabel: 정보기하 · PAC-베이즈
 title: 피셔정보와 KL 발산의 국소근사
 hook: 파라미터를 아주 조금 움직였을 때 확률분포가 얼마나 달라지는지 재고 싶습니다.
+related: 
 ---
 
 ## 기본설명

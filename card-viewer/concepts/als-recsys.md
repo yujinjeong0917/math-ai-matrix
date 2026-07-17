@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 협업필터링
 title: ALS: 두 행렬을 번갈아 고정하며 최적화하기
 hook: $P$와 $Q$를 동시에 움직이는 원래 목적함수는 $p_u^\top q_i$라는 곱 때문에 비볼록입니다.
+related: Matrix Factorization
 ---
 
 ## 기본설명

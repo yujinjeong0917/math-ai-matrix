@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 식별과 추정
 title: 성향점수(Propensity Score)와 균형성 정리
 hook: 교란변수 $X$가 나이, 소득, 병력처럼 여러 개라면 처치군과 대조군을 $X$의 모든 차원에서 동시에 맞추는 건 사실상 불가능해요.
+related: 
 ---
 
 ## 기본설명

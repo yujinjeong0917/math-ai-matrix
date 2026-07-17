@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 그래디언트 기반
 title: Saliency Map: 입력에 대한 출력의 그래디언트
 hook: 목표 클래스의 점수 $y_c$를 입력 $x$로 미분한 값 $S_i = \partial y_c / \partial x_i$가 saliency 값이다.
+related: 선형모델 계수 · Integrated Gradients · Grad-CAM
 ---
 
 ## 기본설명

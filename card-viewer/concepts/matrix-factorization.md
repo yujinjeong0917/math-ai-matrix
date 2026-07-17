@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 협업필터링
 title: Matrix Factorization: 평점행렬을 저랭크로 분해하기
 hook: 사용자 수를 $m$, 아이템 수를 $n$이라 하면 평점행렬은 $R \in \mathbb{R}^{m\times n}$입니다.
+related: ALS · Two-Tower 모델
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 전체분산의 법칙(Law of Total Variance)
 hook: $Y$의 전체 변동성은 서로 다른 두 원천에서 옵니다.
+related: 편향-분산 분해 · 계층적 베이즈모델과 부분풀링
 ---
 
 ## 기본설명

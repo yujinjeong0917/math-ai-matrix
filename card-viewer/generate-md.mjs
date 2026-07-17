@@ -67,6 +67,7 @@ function toSlugMd(slug, concept) {
   const answer = bq ? `정답: $${bq.answer}$` : "";
   const commentary = bq ? bq.why : (concept.intuition ? stripHtml(concept.intuition) : "");
   const example = stripHtml(concept.example || "");
+  const related = (concept.related || []).slice(0, 4).map(function (r) { return r.label; }).join(" · ");
 
   return `---
 slug: ${slug}
@@ -75,6 +76,7 @@ domainLabel: ${domainLabel}
 subLabel: ${concept.subLabel || ""}
 title: ${concept.title}
 hook: ${hook}
+related: ${related}
 ---
 
 ## 기본설명

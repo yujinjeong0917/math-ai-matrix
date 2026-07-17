@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 대조발산(Contrastive Divergence): 에너지기반모델의 그래디언트를 짧은 MCMC로 근사하기
 hook: 에너지기반모델(EBM)은 $p_\theta(x)=\dfrac{e^{-E_\theta(x)}}{Z(\theta)}$로 확률을 정의합니다.
+related: 깁스샘플링(내부 MCMC 커널) · 메트로폴리스-헤이스팅스
 ---
 
 ## 기본설명

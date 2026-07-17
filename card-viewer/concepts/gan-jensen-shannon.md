@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: GAN 최적 판별자와 젠슨-섀넌 발산
 hook: GAN의 원래 목적함수는 판별자와 생성자가 벌이는 미니맥스 게임입니다.
+related: 
 ---
 
 ## 기본설명

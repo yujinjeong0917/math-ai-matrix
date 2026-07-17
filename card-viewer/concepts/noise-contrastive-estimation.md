@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: 잡음대조추정(NCE): 밀도추정을 이진분류로 바꾸기
 hook: 분배함수(정규화 상수) $Z(\theta)=\int\tilde p_\theta(x)\,dx$를 계산할 수 없는 비정규화 모델 $\tilde p_\theta$를 최대우도로 학습하기는 어렵습니다.
+related: 
 ---
 
 ## 기본설명

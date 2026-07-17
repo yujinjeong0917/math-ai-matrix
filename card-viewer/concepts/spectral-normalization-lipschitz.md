@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 스펙트럴 정규화: 가중치를 최대특이값으로 나눠 립시츠 상수를 1로 고정하기
 hook: wasserstein-gan에서 본 쌍대형은 critic이 1-립시츠라는 제약을 요구했지만 그 제약을 실제로 어떻게 지킬지는 별도의 문제로 남겨두었습니다.
+related: Wasserstein 거리의 쌍대형과 1-립시츠 제약 · L1/L2 정규화
 ---
 
 ## 기본설명

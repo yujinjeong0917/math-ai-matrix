@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인 평가
 title: NDCG: 순위에 할인 가중치를 준 누적 이득
 hook: 순위 $i$에 있는 아이템의 관련도를 $rel_i$라 하면 상위 $K$개까지의 누적 이득은 $DCG@K = \sum_{i=1}^{K} \frac{rel_i}{\log_2(i+1)}$로 정의된다.
+related: MAP · Recall@K · A/B테스트 연계
 ---
 
 ## 기본설명

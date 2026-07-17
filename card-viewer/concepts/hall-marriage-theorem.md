@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 네트워크 흐름
 title: 이분매칭과 홀의 결혼정리: Hall's Marriage Theorem
 hook: 일꾼들을 서로 다른 일자리에 하나씩 배정하고 싶습니다.
+related: 
 ---
 
 ## 기본설명

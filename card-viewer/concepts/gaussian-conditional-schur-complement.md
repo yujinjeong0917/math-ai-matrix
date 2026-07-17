@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 다변량 가우시안의 조건부분포와 Schur complement
 hook: 다변량 가우시안에서 일부 변수를 관측했을 때 나머지 변수의 분포는 어떻게 바뀔까요?
+related: 다변량 가우시안의 주변분포 · 확률적 PCA(PPCA) · 가우시안 프로세스 회귀 · 베이지안 선형회귀 사후분포
 ---
 
 ## 기본설명

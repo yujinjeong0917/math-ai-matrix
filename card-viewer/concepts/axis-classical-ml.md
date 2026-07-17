@@ -5,6 +5,7 @@ domainLabel: 매트릭스 읽는 법
 subLabel: 매트릭스 열 · AI 4갈래
 title: Classical ML — 회귀·분류·앙상블·군집·차원축소
 hook: Classical ML은 AI 네 갈래 중 가장 오래됐고, 통계적 가정이 명시적으로 드러나는 계열이에요.
+related: 주성분분석(PCA)의 최적 방향 · 선형회귀 정규방정식 · 결정트리의 정보이득 · 부스팅과 함수공간 경사하강법
 ---
 
 ## 기본설명

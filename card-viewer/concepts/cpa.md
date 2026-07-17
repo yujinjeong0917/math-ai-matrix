@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 획득 지표
 title: CPA: 전환 하나에 들어간 광고비
 hook: $CPA = \frac{S}{X}$다.
+related: CAC · CVR
 ---
 
 ## 기본설명

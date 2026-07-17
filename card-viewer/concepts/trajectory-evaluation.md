@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 에이전트 평가
 title: 궤적 평가: 정답만이 아니라 과정을 채점하기
 hook: 궤적 평가는 크게 두 가지 방식으로 이뤄진다.
+related: 태스크 성공률 · 도구 호출 정확도 · 역할 분담형 협업
 ---
 
 ## 기본설명

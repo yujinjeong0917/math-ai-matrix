@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 행렬식과 가역성의 동치 (det(A)≠0 ⟺ 자명해)
 hook: 정사각행렬 $A$가 있을 때 역행렬이 존재하는지 알고 싶은 상황은 아주 흔합니다.
+related: 
 ---
 
 ## 기본설명

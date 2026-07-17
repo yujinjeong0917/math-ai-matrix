@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 가설검정 이론
 title: 우도비검정과 Wilks 정리: $-2\log\Lambda \to \chi^2$
 hook: 복잡한 모형에서 두 모형(제약된 귀무모형 vs 전체모형)의 적합도를 비교할 표준화된 척도가 필요합니다.
+related: 
 ---
 
 ## 기본설명

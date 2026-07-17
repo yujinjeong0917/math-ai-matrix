@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인 평가
 title: MAP: 여러 쿼리의 평균 정밀도
 hook: 한 쿼리의 Average Precision은 $AP = \frac{1}{|R|} \sum_{k=1}^{n} P(k) \cdot rel(k)$로 정의된다.
+related: NDCG · Recall@K
 ---
 
 ## 기본설명

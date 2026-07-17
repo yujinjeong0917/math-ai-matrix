@@ -5,6 +5,7 @@ domainLabel: 수치해석 심화
 subLabel: 직접법
 title: 벨만방정식의 선형시스템 풀이와 가역성
 hook: 정책 $\pi$를 고정하면 가치함수 $V^\pi$는 벨만 기대방정식 $V^\pi(s)=R(s)+\gamma\sum_{s'}P(s'|s)V^\pi(s')$을 만족합니다.
+related: 벨만 기대방정식의 1스텝 갱신 · 벨만 연산자의 수렴성 논증
 ---
 
 ## 기본설명

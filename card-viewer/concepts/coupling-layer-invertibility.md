@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 커플링 레이어: 절반만 변환해서 야코비안을 삼각행렬로 만드는 트릭
 hook: change-of-variables-flow에서 본 변수변환 공식을 실제로 쓰려면 매 층마다 야코비안 행렬식을 계산해야 합니다.
+related: 재매개변수화 트릭 · Diffusion 순방향 과정의 분산보존과 닫힌형 노이즈 주입
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: Gram-Schmidt 직교화의 귀납적 정당화
 hook: 선형독립인 벡터 여러 개가 있을 때 이들을 서로 수직인 벡터들로 바꾸는 절차가 Gram-Schmidt 직교화입니다.
+related: 
 ---
 
 ## 기본설명

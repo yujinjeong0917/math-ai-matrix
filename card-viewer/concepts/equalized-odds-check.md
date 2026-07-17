@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 격차 진단
 title: Equalized Odds 점검: 집단마다 오류율이 같은가
 hook: 참양성률과 위양성률을 집단별로 정의한다.
+related: 그룹별 성능 격차 · 반사실 공정성 · SHAP 기반 편향 소스 추적
 ---
 
 ## 기본설명

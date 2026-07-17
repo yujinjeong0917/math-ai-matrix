@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 북극성지표 · OMTM
 title: North Star Metric: 조직 전체가 함께 보는 단 하나의 지표
 hook: North Star Metric을 고를 때 흔히 하는 실수는 매출을 그대로 쓰는 것이다.
+related: 가드레일 지표 · 퍼널분석
 ---
 
 ## 기본설명

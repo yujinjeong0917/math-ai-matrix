@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 의존도 시각화
 title: ALE: 상관관계 있는 특징에서도 안전하게 의존도 보기
 hook: 관심 특징의 범위를 여러 구간 $[z_{k-1}, z_k]$로 나눈다.
+related: PDP · ICE plot
 ---
 
 ## 기본설명

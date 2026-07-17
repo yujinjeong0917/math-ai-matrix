@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 가격 민감도 조사
 title: Van Westendorp PSM: 네 가지 질문으로 수용 가격대 찾기
 hook: 모든 응답자에게 이 네 질문을 하고 각 질문마다 가격이 오를수록 응답이 누적되는 비율을 그래프로 그린다.
+related: Gabor-Granger 방법 · A/B 가격 테스트의 함정
 ---
 
 ## 기본설명

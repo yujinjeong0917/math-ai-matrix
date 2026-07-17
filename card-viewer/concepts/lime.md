@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 국소 근사 기반
 title: LIME: 국소 선형 근사로 블랙박스 설명하기
 hook: 설명하고 싶은 입력 $x$ 주변에 교란된 샘플 $z'$들을 여러 개 만든다.
+related: 이미지 LIME · SHAP값 · 잠재공간 교란
 ---
 
 ## 기본설명

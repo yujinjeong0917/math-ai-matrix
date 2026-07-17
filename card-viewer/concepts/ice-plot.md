@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 의존도 시각화
 title: ICE plot: PDP를 샘플 단위로 쪼개보기
 hook: 샘플 $i$마다 나머지 특징 $x_C^{(i)}$는 그 샘플의 실제 값으로 고정한 채 관심 특징만 격자값을 바꿔가며 예측을 구하면 그 샘플만의 곡선이 나온다.
+related: PDP · ALE
 ---
 
 ## 기본설명

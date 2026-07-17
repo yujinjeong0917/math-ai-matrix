@@ -5,6 +5,7 @@ domainLabel: 수치해석 심화
 subLabel: 안정성과 조건화
 title: 전처리(Preconditioning): 조건수를 낮춰 반복법을 가속하기
 hook: CG나 GMRES 같은 Krylov 방법의 수렴속도는 시스템 행렬 $A$의 고유값이 얼마나 넓게 퍼져 있는지, 즉 조건수 $\kappa(A)$에 크게 좌우됩니다.
+related: 
 ---
 
 ## 기본설명

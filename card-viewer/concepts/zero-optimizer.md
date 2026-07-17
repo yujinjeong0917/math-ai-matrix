@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 분산학습
 title: ZeRO: 옵티마이저 상태와 그래디언트도 나눠 저장하기
 hook: 혼합정밀도로 Adam을 쓰는 일반적인 데이터 병렬 학습에서 파라미터 수가 $\Psi$개라면 GPU 한 장이 들고 있어야 하는 메모리는 대략 $16\Psi$바이트입니다.
+related: 데이터 병렬 · 모델 병렬
 ---
 
 ## 기본설명

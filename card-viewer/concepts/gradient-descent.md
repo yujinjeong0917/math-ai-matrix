@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: 경사하강법의 하강 보장
 hook: 경사하강법은 딥러닝 학습에서 가장 기본적인 방법이에요.
+related: 
 ---
 
 ## 기본설명

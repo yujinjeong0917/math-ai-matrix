@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 도구 사용 · 함수 호출
 title: Tool Use 스키마 설계: 함수 명세를 잘 써야 모델이 잘 부른다
 hook: 스키마는 보통 함수 이름과 무엇을 하는 함수인지 설명하는 문장과 인자 목록으로 이루어진다.
+related: Function Calling · MCP
 ---
 
 ## 기본설명

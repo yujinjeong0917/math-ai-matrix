@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 지수족의 로그분배함수와 충분통계량의 평균
 hook: 가우시안, 베르누이, 포아송처럼 흔히 쓰는 분포들은 대부분 $p(x|\eta)=h(x)\exp(\eta^TT(x)-A(\eta))$라는 공통된 형태로 쓸 수 있습니다.
+related: 
 ---
 
 ## 기본설명

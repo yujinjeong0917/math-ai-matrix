@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 어텐션 · 그래디언트 기반
 title: Attention 설명의 한계: 어텐션은 정말 설명일까
 hook: 2019년 Jain과 Wallace의 연구는 두 가지를 보였다.
+related: Integrated Gradients(텍스트) · Rationale Extraction
 ---
 
 ## 기본설명

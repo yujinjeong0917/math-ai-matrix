@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 혼합편미분의 대칭성: Clairaut-Schwarz 정리
 hook: $x$로 먼저 미분하고 $y$로 미분하는 것과, $y$로 먼저 미분하고 $x$로 미분하는 것, 순서를 바꿔도 결과가 같을까요?
+related: 헤시안과 2차 최적성 조건
 ---
 
 ## 기본설명

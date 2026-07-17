@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 랭킹 모델
 title: LambdaMART: 순위 변화량을 그래디언트로 바꾸기
 hook: 순서가 뒤바뀐 두 아이템 $i$, $j$ 사이의 람다는 다음과 같이 정의됩니다.
+related: GBDT 랭킹
 ---
 
 ## 기본설명

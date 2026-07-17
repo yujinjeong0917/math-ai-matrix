@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 검사 기법
 title: Token Replay: 로그를 모델 위에서 재생시켜 이탈 찾기
 hook: 재생 도중 네 가지를 셉니다.
+related: Alignment 기반 적합성 · Petri Net
 ---
 
 ## 기본설명

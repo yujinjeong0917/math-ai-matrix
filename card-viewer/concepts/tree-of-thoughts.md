@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 에이전트 설계 패턴
 title: Tree of Thoughts: 여러 추론 경로를 트리로 펼쳐보고 고르기
 hook: Tree of Thoughts는 문제 풀이 과정을 하나의 이어진 문장이 아니라 트리로 다룬다.
+related: Reflexion · Plan-and-Execute
 ---
 
 ## 기본설명

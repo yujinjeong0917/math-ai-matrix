@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: CNN 백본 계보
 title: ResNet: 잔차연결로 깊이의 한계를 넘다
 hook: 일반적인 층은 입력 $x$를 받아 원하는 목표 함수 $H(x)$를 곧바로 근사하도록 학습된다.
+related: LeNet/AlexNet · EfficientNet
 ---
 
 ## 기본설명

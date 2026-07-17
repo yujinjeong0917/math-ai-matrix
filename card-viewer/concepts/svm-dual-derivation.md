@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: SVM 라그랑주 쌍대문제의 유도
 hook: svm-margin에서 마진을 최대화하는 문제가 $\min_{w,b}\frac12\|w\|^2$ s.t.
+related: SVM 서포트 벡터 마진의 폭
 ---
 
 ## 기본설명

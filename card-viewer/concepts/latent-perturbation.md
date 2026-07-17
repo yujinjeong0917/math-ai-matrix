@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 국소 근사 기반
 title: 잠재공간 교란: 국소 민감도로 생성모델 설명하기
 hook: 잠재벡터 $z$에서 생성 함수 $G(z)$를 얻는다고 하자.
+related: 잠재변수 SHAP · 잠재차원 중요도
 ---
 
 ## 기본설명

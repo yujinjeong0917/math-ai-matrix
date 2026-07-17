@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 에카르트-영 정리: SVD 절단이 최적의 저랭크 근사인 이유
 hook: 행렬을 압축하려면 랭크를 낮춰야 합니다.
+related: 특이값분해(SVD) · 주성분분석(PCA)의 최적 방향
 ---
 
 ## 기본설명

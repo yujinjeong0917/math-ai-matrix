@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: RNN 은닉상태는 전체 과거를 압축한다 (귀납법)
 hook: RNN의 은닉상태는 $h_t=f(h_{t-1},x_t)$처럼 딱 바로 이전 은닉상태와 지금 입력만 보고 갱신돼요.
+related: 
 ---
 
 ## 기본설명

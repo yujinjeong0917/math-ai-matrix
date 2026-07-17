@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 특징 중요도
 title: Feature Ablation: 특징을 지워서 영향 측정하기
 hook: 가장 엄밀한 형태는 특징 $j$를 뺀 데이터로 모델을 처음부터 다시 학습시켜 비교하는 것이다.
+related: Permutation Importance · 잠재차원 중요도
 ---
 
 ## 기본설명

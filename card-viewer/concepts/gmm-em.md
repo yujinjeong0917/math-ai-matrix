@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: GMM의 E-step: 책임값(responsibility)의 유도
 hook: 군집이 여러 개 섞여 있는 데이터가 있어요.
+related: 
 ---
 
 ## 기본설명

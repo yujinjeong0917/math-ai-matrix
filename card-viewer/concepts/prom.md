@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 대표 도구
 title: ProM: 대표적인 오픈소스 프로세스 마이닝 툴킷
 hook: ProM은 아인트호벤 공과대학교(TU/e) 프로세스 마이닝 그룹이 주도해 만든 오픈소스 자바 기반 프레임워크입니다.
+related: PM4Py · Celonis
 ---
 
 ## 기본설명

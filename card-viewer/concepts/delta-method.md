@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 점근이론
 title: 델타법: 변환된 추정량의 점근분포
 hook: 추정량 $\hat\theta_n$의 점근분포를 알고 있다고 해서 $g(\hat\theta_n)$처럼 이를 변환한 값의 점근분포까지 저절로 알 수 있는 것은 아닙니다.
+related: 일치추정량 · 중심극한정리 · Slutsky 정리
 ---
 
 ## 기본설명

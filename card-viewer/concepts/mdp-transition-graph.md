@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: 가치반복과 벨만 연산자의 축소사상
 hook: 최단경로 그래프에서 $d(v)=\min_u(d(u)+w(u,v))$라는 재귀식을 반복 적용하면 결국 진짜 최단거리에 도달했다.
+related: 
 ---
 
 ## 기본설명

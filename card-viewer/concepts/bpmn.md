@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 표현 형식
 title: BPMN: 실무에서 가장 널리 쓰는 프로세스 표기법
 hook: 기본 요소는 세 가지입니다.
+related: Petri Net · 프로세스 트리
 ---
 
 ## 기본설명

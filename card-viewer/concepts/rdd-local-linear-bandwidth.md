@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 실험 설계 확장
 title: 회귀불연속의 국소선형추정: 대역폭과 편향-분산 트레이드오프
 hook: 샤프 RDD는 임계점 좌우 극한의 차이 $\tau_{SRD}=\lim_{x\downarrow c}E[Y\mid X=x]-\lim_{x\uparrow c}E[Y\mid X=x]$ 로 식별된다는 것을 이미 알고 있습니다.
+related: 회귀불연속설계(RDD) · 이중차분법 · 이중강건추정
 ---
 
 ## 기본설명

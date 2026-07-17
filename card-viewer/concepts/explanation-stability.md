@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 안정성 검증
 title: 설명 안정성: 비슷한 입력엔 비슷한 설명이 나와야 한다
 hook: 안정성을 재는 대표적인 방법은 국소 립시츠 상수다.
+related: Sanity Check(Saliency) · 설명 재현성 · 정책 설명 안정성
 ---
 
 ## 기본설명

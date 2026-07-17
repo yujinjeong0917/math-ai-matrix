@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: State-Space 모델
 title: Mamba: 선택적 상태공간모델
 hook: 기존의 선형 시불변 상태공간모델은 $h_t=\bar A h_{t-1}+\bar B x_t$, $y_t=Ch_t$처럼 상태전이행렬 $\bar A$와 입력행렬 $\bar B$가 시간에 따라 고정되어 있다.
+related: S4 · SSM 추론 특성
 ---
 
 ## 기본설명

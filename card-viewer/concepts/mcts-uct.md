@@ -5,6 +5,7 @@ domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: MCTS의 UCT 선택 공식 유도
 hook: 몬테카를로 트리 탐색은 트리를 내려가며 매번 어느 자식 노드로 갈지 골라야 한다.
+related: 
 ---
 
 ## 기본설명

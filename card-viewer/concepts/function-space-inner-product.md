@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 함수공간의 내적: ⟨f,g⟩=∫f(x)g(x)dx
 hook: 벡터는 화살표만이 아니에요.
+related: 머서 정리와 커널트릭 · 일반화된 내적과 마할라노비스 거리
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 멀티에이전트 오케스트레이션
 title: Supervisor 패턴: 한 에이전트가 나머지를 조율하기
 hook: 단일 에이전트가 검색과 코드 작성과 검증까지 한 번에 처리하도록 설계하면 프롬프트 안에 서로 다른 목적의 지시가 뒤섞인다.
+related: 역할 분담형 협업 · 에이전트 메시지 프로토콜 · LangGraph
 ---
 
 ## 기본설명

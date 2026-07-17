@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 게임이론 기반
 title: 보상분해 Shapley: 멀티에이전트의 공로 배분
 hook: 에이전트 집합을 $N$이라 하고 부분집합 $S \subseteq N$이 협력할 때 얻는 보상을 특성함수 $v(S)$로 정의한다.
+related: SHAP값 · 정책 국소설명
 ---
 
 ## 기본설명

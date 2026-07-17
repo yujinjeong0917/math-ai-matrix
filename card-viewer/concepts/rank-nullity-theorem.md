@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 랭크-널리티 정리(차원정리)
 hook: 선형사상은 정의역의 정보를 일부는 완전히 없애버리고(핵, kernel) 나머지는 상(image)으로 보존합니다.
+related: 
 ---
 
 ## 기본설명

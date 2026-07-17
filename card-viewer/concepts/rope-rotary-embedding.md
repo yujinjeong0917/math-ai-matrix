@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: RoPE: 회전행렬로 상대위치를 내적에 새겨넣기
 hook: 사인 코사인 위치인코딩은 위치 정보를 토큰 임베딩에 더해서 주입합니다.
+related: 사인 코사인 위치 임베딩의 상대위치 선형성 · Transformer(2017) · GPT 계열
 ---
 
 ## 기본설명

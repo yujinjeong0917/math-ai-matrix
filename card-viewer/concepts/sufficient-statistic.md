@@ -5,6 +5,7 @@ domainLabel: 추론통계
 subLabel: 추정이론
 title: 충분통계량과 피셔-네이만 인수분해정리
 hook: 표본 전체 $X_1,\ldots,X_n$을 저장하지 않고도 모수 $\theta$에 대한 정보를 하나도 잃지 않고 압축할 수 있다면 무척 편리할 것입니다.
+related: 최대우도추정(MLE)
 ---
 
 ## 기본설명

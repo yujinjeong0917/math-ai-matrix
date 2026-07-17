@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 프롬프트 캐싱
 title: 캐시 TTL: 캐시도 유효기간이 있다
 hook: TTL은 캐시 항목이 마지막으로 쓰인 시점부터 다음 요청이 오기까지 허용되는 최대 대기 시간이다.
+related: 캐싱 비용 구조 · 캐시 히트율 · 프리픽스 캐싱
 ---
 
 ## 기본설명

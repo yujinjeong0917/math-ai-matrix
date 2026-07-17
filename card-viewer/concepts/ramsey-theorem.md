@@ -5,6 +5,7 @@ domainLabel: 이산수학 심화
 subLabel: 조합론 심화
 title: 램지 정리: R(3,3) ≤ 6의 비둘기집 증명
 hook: 아무리 무질서하게 색칠해도, 충분히 큰 구조 안에는 반드시 어떤 질서가 숨어 있다는 것이 램지 이론(Ramsey theory)의 정신입니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 베이지안 신경망의 변분추론과 ELBO
 hook: 베이지안 신경망은 가중치를 하나의 고정된 값이 아니라 확률분포로 다룹니다.
+related: 
 ---
 
 ## 기본설명

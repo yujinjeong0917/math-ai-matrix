@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 실험관리
 title: 실험추적: 지표와 아티팩트를 버전으로 관리하기
 hook: 실험추적 도구는 학습 실행 하나를 런(run)이라는 단위로 취급합니다.
+related: 하이퍼파라미터 탐색
 ---
 
 ## 기본설명

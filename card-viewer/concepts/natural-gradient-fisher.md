@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 자연그래디언트와 피셔정보행렬: KL의 이차근사
 hook: 두 확률분포가 얼마나 다른지 재는 표준 척도는 KL발산입니다.
+related: 
 ---
 
 ## 기본설명

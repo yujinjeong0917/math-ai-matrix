@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 거부샘플링(Rejection Sampling)의 정확성: 제안분포에서 목표분포로
 hook: 목표분포 $p(x)$에서 곧바로 표본을 뽑기 어려울 때가 많습니다.
+related: 중요도샘플링(일반) · 메트로폴리스-헤이스팅스
 ---
 
 ## 기본설명

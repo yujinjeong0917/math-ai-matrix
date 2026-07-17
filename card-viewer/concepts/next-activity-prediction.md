@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 예측 기법
 title: Next Activity Prediction: 다음에 무슨 일이 일어날까
 hook: 예측 대상은 지금까지 관찰된 부분 트레이스(trace prefix) $\langle a_1, \dots, a_k \rangle$이고 출력은 다음에 올 활동 $a_{k+1}$이 무엇일지에 대한 확률분포입니다.
+related: Remaining Time Prediction · 이상 케이스 조기 경고
 ---
 
 ## 기본설명

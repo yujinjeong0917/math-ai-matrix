@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 에너지기반모델의 그래디언트: 양성위상과 음성위상
 hook: 에너지기반모델(EBM)은 각 데이터 지점에 "에너지"를 부여하고, 에너지가 낮을수록 확률이 높다고 정의합니다.
+related: 대조발산(Contrastive Divergence) · 스코어매칭(Hyvärinen)
 ---
 
 ## 기본설명

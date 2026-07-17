@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: 라그랑주 승수법과 KKT 조건
 hook: 조건을 지키면서 가장 작은 값을 찾는 문제가 있어요.
+related: 
 ---
 
 ## 기본설명

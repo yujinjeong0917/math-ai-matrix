@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 문법 제약 디코딩
 title: 정규식/유한상태 제약: 정규식을 오토마타로 바꿔 토큰을 거르기
 hook: 정규식을 오토마타로 바꾸는 컴파일 작업은 생성이 시작되기 전에 딱 한 번만 이루어진다.
+related: Grammar-constrained Decoding · 구조화 출력의 트레이드오프
 ---
 
 ## 기본설명

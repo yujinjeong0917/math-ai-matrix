@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 반사실 설명
 title: 대조적 설명: 왜 A이고 B가 아닌가
 hook: 계산 방식은 크게 두 갈래다.
+related: Counterfactual 설명
 ---
 
 ## 기본설명

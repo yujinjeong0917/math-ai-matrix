@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: Diffusion 순방향 과정의 분산보존과 닫힌형 노이즈 주입
 hook: Diffusion 모델의 순방향 과정은 원본 데이터에 아주 조금씩 여러 스텝에 걸쳐 가우시안 노이즈를 섞어 나갑니다.
+related: 
 ---
 
 ## 기본설명

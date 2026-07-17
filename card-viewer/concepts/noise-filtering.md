@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 로그 구조 · 품질 이슈
 title: 노이즈 필터링: 드물게 일어나는 이상경로 걸러내기
 hook: 가장 흔한 방식은 빈도 기반 임계값입니다.
+related: 필수 3요소 · 로그 불완전성
 ---
 
 ## 기본설명

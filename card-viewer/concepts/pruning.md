@@ -5,6 +5,7 @@ domainLabel: MLOps · 인프라
 subLabel: 모델 압축
 title: 프루닝: 중요도 낮은 파라미터 잘라내기
 hook: 가장 단순한 기준은 크기 기반 프루닝입니다.
+related: 양자화 · 지식증류
 ---
 
 ## 기본설명

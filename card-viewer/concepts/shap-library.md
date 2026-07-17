@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 범용 설명 라이브러리
 title: shap: SHAP값 계산의 사실상 표준 라이브러리
 hook: TreeExplainer는 XGBoost, LightGBM, 랜덤포레스트 같은 트리 앙상블 전용이다.
+related: Global SHAP 요약 · SHAP 기반 편향 소스 추적 · Captum
 ---
 
 ## 기본설명

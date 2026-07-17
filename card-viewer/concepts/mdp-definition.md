@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: 마르코프 성질과 벨만방정식의 잘 정의됨
 hook: MDP는 $(S,A,P,R,\gamma)$ 다섯 가지로 정의돼요.
+related: 
 ---
 
 ## 기본설명

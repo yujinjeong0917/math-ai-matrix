@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 긴 컨텍스트 배치
 title: 정보 배치 전략: 중요한 건 앞이나 뒤에 놓기
 hook: 이 전략은 모델의 주의 편향을 없애려는 시도가 아니라 그 편향을 그대로 이용하는 방식이다.
+related: Lost-in-the-middle · 컨텍스트 순서 민감도 · 컨텍스트 토큰 예산 관리
 ---
 
 ## 기본설명

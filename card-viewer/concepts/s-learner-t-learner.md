@@ -5,6 +5,7 @@ domainLabel: 인과추론
 subLabel: 이질적 효과와 개인화
 title: S-러너와 T-러너: 두 메타러너의 일치성과 취약점
 hook: CATE $\tau(x)=E[Y(1)-Y(0)\mid X=x]$를 실제로 추정하려면 회귀모델이 필요합니다.
+related: 이질적 처치효과(CATE) · X-러너 · Double/Debiased ML
 ---
 
 ## 기본설명

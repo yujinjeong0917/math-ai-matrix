@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 동시성 · 검증
 title: 데드락 · 라이브락 검증: 멈추거나 영원히 도는 상태 찾아내기
 hook: 페트리넷의 상태는 마킹(marking)이라 부르는 자리들의 토큰 분포로 표현됩니다.
+related: AND-split/AND-join · XOR 분기
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 밴딧 기반 추천
 title: Contextual Bandit: 문맥을 보고 팔을 고르는 탐색과 활용
 hook: 문맥을 보지 않는 밴딧은 각 팔의 보상을 팔 하나당 분포 하나로만 관리합니다.
+related: Thompson Sampling
 ---
 
 ## 기본설명

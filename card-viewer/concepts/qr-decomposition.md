@@ -5,6 +5,7 @@ domainLabel: 수치해석 심화
 subLabel: 직접법
 title: QR분해와 최소제곱: 정규방정식 없이 풀기
 hook: 관측이 많고 미지수가 적은 과결정계 $Ax=b$($A\in\mathbb{R}^{m\times n}$, $m>n$)는 보통 정확히 풀 수 없어서 잔차 $\|Ax-b\|$를 최소화하는 $x$를 찾습니다.
+related: 그람-슈미트 정규직교화
 ---
 
 ## 기본설명

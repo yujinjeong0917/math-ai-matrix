@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Diffusion 아키텍처
 title: Latent Diffusion: 압축된 잠재공간에서 확산하기
 hook: latent diffusion은 먼저 오토인코더 계열의 인코더 $E$와 디코더 $D$를 학습시켜 이미지 $x$를 훨씬 낮은 차원의 잠재표현 $z=E(x)$로 압축하고 $D(z)\approx x$가 되도록 만든다.
+related: U-Net · 텍스트 조건화
 ---
 
 ## 기본설명

@@ -69,6 +69,7 @@
     background: var(--card-bg); color: var(--card-ink); overflow: hidden;
     transform: scale(0.5); transform-origin: top left;
   }
+  /* ===== 헤더 — 고정(측정값 그대로) ===== */
   .brand { position: absolute; top: 20pt; left: 28pt; right: 28pt; font-size: 11pt; color: var(--card-dim); letter-spacing: 0.04em; }
   .divider { position: absolute; left: 28pt; right: 28pt; height: 1pt; background: var(--card-border); }
   .theme-tag {
@@ -81,32 +82,35 @@
   .cat-row { position: absolute; left: 38pt; top: 184pt; right: 38pt; text-align: center; }
   .cat-row .category { font-size: 10pt; color: var(--card-dim); display: block; margin-bottom: 4pt; }
   .cat-row .subconcept { font-size: 14pt; font-weight: 800; }
-  .box-fill {
-    position: absolute; left: 38pt; right: 38pt; top: 252pt;
-    background: var(--card-fill); border-radius: 8pt;
-    padding: 16pt 18pt; font-size: 11pt; line-height: 1.65; overflow: hidden;
-  }
-  .front .box-fill { height: 168pt; }
-  .back .box-fill { height: 242pt; }
-  .box-outline {
-    position: absolute; left: 39pt; right: 39pt; height: 320pt;
-    border: 1pt solid var(--card-border); border-radius: 8pt;
-    padding: 16pt 18pt; font-size: 11pt; line-height: 1.75; overflow: hidden;
-  }
-  .front .box-outline { top: 447pt; }
-  .back .box-outline { top: 425pt; }
-  .box-label { font-size: 9.5pt; color: var(--card-dim); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 8pt; }
-  .answers { position: absolute; right: 38pt; display: flex; gap: 8pt; }
-  .front .answers { top: 787pt; }
-  .back .answers { top: 761pt; }
-  .answer-chip {
-    display: flex; align-items: center; gap: 6pt;
-    background: var(--card-fill); border-radius: 999pt; padding: 4pt 12pt 4pt 4pt; font-size: 9.5pt; color: var(--card-ink);
-  }
-  .answer-chip .dot { width: 18pt; height: 18pt; border-radius: 50%; background: #bdbdbd; }
   .back .concept-title-row { position: absolute; left: 38pt; right: 38pt; top: 100pt; display: flex; justify-content: space-between; align-items: baseline; }
   .back .concept-title-row .concept-title-inline { font-size: 15pt; font-weight: 800; }
   .back .concept-title-row .cat-inline { text-align: right; font-size: 10pt; color: var(--card-dim); }
+
+  /* ===== 콘텐츠 영역 — 헤더 아래는 내용 길이에 맞춰 유연하게 ===== */
+  .content-zone {
+    position: absolute; left: 38pt; right: 38pt; display: flex; flex-direction: column; gap: 14pt;
+    overflow: hidden;
+  }
+  .front .content-zone { top: 210pt; bottom: 44pt; }
+  .back .content-zone { top: 138pt; bottom: 34pt; }
+  .box-fill {
+    background: var(--card-fill); border-radius: 8pt;
+    padding: 14pt 18pt; font-size: 11pt; line-height: 1.6; flex: 0 0 auto; overflow: visible;
+  }
+  .box-outline {
+    border: 1pt solid var(--card-border); border-radius: 8pt;
+    padding: 14pt 18pt; font-size: 11pt; line-height: 1.68; flex: 0 0 auto; overflow: visible; min-height: 60pt;
+  }
+  .box-label { font-size: 9.5pt; color: var(--card-dim); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 7pt; }
+  .footer-note {
+    position: absolute; left: 38pt; right: 38pt; font-size: 9pt; color: var(--card-dim);
+  }
+  .front .footer-note { bottom: 18pt; text-align: right; }
+  .back .footer-note { bottom: 12pt; }
+  .related-chips { display: flex; flex-wrap: wrap; gap: 5pt; }
+  .related-chip {
+    background: var(--card-fill); border-radius: 999pt; padding: 3pt 10pt; font-size: 8.5pt; color: var(--card-ink);
+  }
   .back .concept-title-row .cat-inline strong { display: block; font-size: 13pt; color: var(--card-ink); font-weight: 800; }
   .blank { border-bottom: 1.5pt dashed var(--card-ink); padding: 0 3pt; }
   .box-fill p, .box-outline p { margin: 0 0 8pt; }
@@ -157,10 +161,16 @@
   </div>
 
   <div class="panel preview-panel" id="previewPanel">
-    <p class="card-pair-label">앞면 (문제)</p>
+    <p class="card-pair-label">카드 1 · 앞면 (문제)</p>
     <div class="page-a6"><div class="card front" id="cardFront"></div></div>
-    <p class="card-pair-label">뒷면 (해설)</p>
+    <p class="card-pair-label">카드 1 · 뒷면 (해설)</p>
     <div class="page-a6"><div class="card back" id="cardBack"></div></div>
+    <div id="card2Wrap" style="display:none">
+      <p class="card-pair-label">카드 2 · 앞면 (예시, 내용이 길어 자동 확장됨)</p>
+      <div class="page-a6"><div class="card front" id="card2Front"></div></div>
+      <p class="card-pair-label">카드 2 · 뒷면</p>
+      <div class="page-a6"><div class="card back" id="card2Back"></div></div>
+    </div>
   </div>
 </div>
 
@@ -206,36 +216,60 @@
 
   function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-  function render(raw) {
-    var parsed = parseMd(raw);
-    var m = parsed.meta, s = parsed.sections;
-    var category = (m.domainLabel || "") + (m.subLabel ? " · " + m.subLabel : "");
-
-    document.getElementById("cardFront").innerHTML =
-      '<p class="brand">수학 × AI 매트릭스</p>' +
+  function headerHtml(m, category, isBack) {
+    if (isBack) {
+      return '<p class="brand">수학 × AI 매트릭스</p>' +
+        '<div class="divider" style="top:62pt;"></div>' +
+        '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
+        '<div class="concept-title-row">' +
+          '<span class="concept-title-inline">' + esc(m.title || "") + '</span>' +
+          '<span class="cat-inline">' + esc(category) + '<strong>' + esc(m.title || "") + '</strong></span>' +
+        '</div>' +
+        '<div class="divider" style="top:126pt;"></div>';
+    }
+    return '<p class="brand">수학 × AI 매트릭스</p>' +
       '<div class="divider" style="top:62pt;"></div>' +
       '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
       '<p class="concept-title">' + esc(m.title || "") + '</p>' +
       '<div class="divider" style="top:144pt;"></div>' +
       '<p class="hook">' + esc(m.hook || "") + '</p>' +
       '<div class="divider" style="top:176pt;"></div>' +
-      '<div class="cat-row"><span class="category">' + esc(category) + '</span><span class="subconcept">' + esc(m.title || "") + '</span></div>' +
-      '<div class="box-fill"><p class="box-label">기본 설명</p>' + mdToHtml(s["기본설명"]) + '</div>' +
-      '<div class="box-outline"><p class="box-label">문제</p>' + mdToHtml(s["문제"]) + '</div>' +
-      '<div class="answers"><span class="answer-chip"><span class="dot"></span>힌트 보기</span><span class="answer-chip"><span class="dot"></span>정답 보기</span></div>';
+      '<div class="cat-row"><span class="category">' + esc(category) + '</span><span class="subconcept">' + esc(m.title || "") + '</span></div>';
+  }
+
+  function relatedChipsHtml(related) {
+    if (!related) return "";
+    var items = related.split("·").map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4);
+    if (!items.length) return "";
+    return '<div class="related-chips">' + items.map(function (t) {
+      return '<span class="related-chip">' + esc(t) + '</span>';
+    }).join("") + '</div>';
+  }
+
+  function render(raw) {
+    var parsed = parseMd(raw);
+    var m = parsed.meta, s = parsed.sections;
+    var category = (m.domainLabel || "") + (m.subLabel ? " · " + m.subLabel : "");
+
+    document.getElementById("cardFront").innerHTML =
+      headerHtml(m, category, false) +
+      '<div class="content-zone">' +
+        '<div class="box-fill"><p class="box-label">기본 설명</p>' + mdToHtml(s["기본설명"]) + '</div>' +
+        '<div class="box-outline"><p class="box-label">문제</p>' + mdToHtml(s["문제"]) + '</div>' +
+      '</div>' +
+      '<p class="footer-note">정답은 뒷면에 →</p>';
+
+    var relatedHtml = relatedChipsHtml(m.related);
 
     document.getElementById("cardBack").innerHTML =
-      '<p class="brand">수학 × AI 매트릭스</p>' +
-      '<div class="divider" style="top:62pt;"></div>' +
-      '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
-      '<div class="concept-title-row">' +
-        '<span class="concept-title-inline">' + esc(m.title || "") + '</span>' +
-        '<span class="cat-inline">' + esc(category) + '<strong>' + esc(m.title || "") + '</strong></span>' +
+      headerHtml(m, category, true) +
+      '<div class="content-zone" id="backZone">' +
+        '<div class="box-fill"><p class="box-label">해설</p>' + mdToHtml(s["해설"]) + '</div>' +
+        '<div class="box-outline" id="backExample"><p class="box-label">예시</p>' + mdToHtml(s["예시"]) + '</div>' +
       '</div>' +
-      '<div class="divider" style="top:126pt;"></div>' +
-      '<div class="box-fill"><p class="box-label">해설</p>' + mdToHtml(s["해설"]) + '</div>' +
-      '<div class="box-outline"><p class="box-label">예시</p>' + mdToHtml(s["예시"]) + '</div>' +
-      '<div class="answers"><span class="answer-chip"><span class="dot"></span>관련 개념</span><span class="answer-chip"><span class="dot"></span>다음 문제</span></div>';
+      (relatedHtml ? '<div class="footer-note">' + relatedHtml + '</div>' : '');
+
+    document.getElementById("card2Wrap").style.display = "none";
 
     if (window.renderMathInElement) {
       window.renderMathInElement(document.getElementById("previewPanel"), {
@@ -243,6 +277,36 @@
         throwOnError: false,
       });
     }
+
+    // 렌더 후 실제 높이를 재서, 뒷면 콘텐츠가 카드 하나에 안 들어가면
+    // "예시" 전체를 카드 2 앞면으로 옮기고 뒷면엔 짧은 안내만 남긴다.
+    requestAnimationFrame(function () {
+      var zone = document.getElementById("backZone");
+      if (zone.scrollHeight > zone.clientHeight + 2) {
+        var exampleHtml = mdToHtml(s["예시"]);
+        document.getElementById("backExample").innerHTML =
+          '<p class="box-label">예시</p><p>내용이 길어 카드 2 앞면에 이어집니다 →</p>';
+
+        document.getElementById("card2Front").innerHTML =
+          headerHtml(m, category, false).replace('<p class="hook">' + esc(m.hook || "") + '</p>', '<p class="hook">숫자로 먼저 보기 (이어서)</p>') +
+          '<div class="content-zone">' +
+            '<div class="box-outline" style="flex:1 1 auto;"><p class="box-label">예시 (이어서)</p>' + exampleHtml + '</div>' +
+          '</div>';
+        document.getElementById("card2Back").innerHTML =
+          headerHtml(m, category, true) +
+          '<div class="content-zone">' +
+            (relatedHtml ? '<div class="box-fill"><p class="box-label">관련 개념</p>' + relatedHtml + '</div>' : '<div class="box-fill"><p class="box-label">메모</p><p>&nbsp;</p></div>') +
+          '</div>';
+        document.getElementById("card2Wrap").style.display = "block";
+
+        if (window.renderMathInElement) {
+          window.renderMathInElement(document.getElementById("card2Wrap"), {
+            delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
+            throwOnError: false,
+          });
+        }
+      }
+    });
   }
 
   var sourceEl = document.getElementById("mdSource");

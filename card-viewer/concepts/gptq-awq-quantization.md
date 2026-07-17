@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 스케일링 · 양자화
 title: GPTQ/AWQ: LLM 가중치를 저비트로 정밀하게 눌러 담기
 hook: GPTQ는 층 하나씩 순서대로 가중치를 양자화하면서 한 값을 양자화할 때 생기는 오차를 아직 양자화하지 않은 나머지 가중치들에 보정값으로 나누어 반영한다.
+related: QLoRA · 스펙큘레이티브 디코딩
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 대표 프레임워크 · 라이브러리
 title: LangGraph: 상태 그래프로 에이전트 흐름을 명시적으로 제어하기
 hook: LangGraph에서 노드는 상태를 입력받아 상태를 갱신해 돌려주는 함수다.
+related: LangChain · Supervisor 패턴 · 에이전트 메시지 프로토콜
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 규칙 · 트리 특화
 title: 규칙 추출: 블랙박스를 if-then 규칙으로 근사하기
 hook: 일반적인 절차는 이렇다.
+related: 트리 시각화 · 선형모델 계수
 ---
 
 ## 기본설명

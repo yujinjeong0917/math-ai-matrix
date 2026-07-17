@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 도구 사용 · 함수 호출
 title: MCP: 도구와 데이터 소스를 표준 방식으로 모델에 연결하기
 hook: MCP는 클라이언트와 서버로 나뉘는 프로토콜이다.
+related: Function Calling · Tool Use 스키마 설계
 ---
 
 ## 기본설명

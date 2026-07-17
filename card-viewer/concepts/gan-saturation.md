@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: GAN 생성자 손실의 그래디언트 포화 비교
 hook: GAN의 원래 목적함수에서 생성자는 $\log(1-D(G(z)))$를 최소화하도록 학습됩니다.
+related: 
 ---
 
 ## 기본설명

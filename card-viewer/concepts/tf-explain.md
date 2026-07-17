@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 딥러닝 특화 도구
 title: tf-explain: TensorFlow/Keras를 위한 시각화 도구
 hook: Grad-CAM, Occlusion Sensitivity, Vanilla Gradients, Gradients*Inputs, SmoothGrad, Integrat
+related: Captum · shap · Alibi Explain
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: Mixup: 두 샘플을 섞어 학습하면 왜 결정경계가 더 부드러워지는가
 hook: 보통의 경험위험최소화(ERM)는 관측된 $n$개의 데이터 점에서만 손실을 재는 경험분포 $P_{emp}(x,y)=\frac1n\sum_i\delta(x-x_i)\delta(y-y_i)$ 위에서 학습합니다.
+related: 무작위 마스킹으로 학습을 정칙화하는 또다른 방식 · 사전믿음을 통한 파라미터 정칙화와의 비교
 ---
 
 ## 기본설명

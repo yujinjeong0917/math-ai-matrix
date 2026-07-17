@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 밴딧 기반 추천
 title: Thompson Sampling: 사후분포에서 뽑아서 탐색하기
 hook: 클릭 여부처럼 베르누이 보상을 다룰 때는 팔마다 클릭확률에 대한 사후분포를 베타분포로 관리합니다.
+related: Contextual Bandit
 ---
 
 ## 기본설명

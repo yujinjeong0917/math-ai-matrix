@@ -5,6 +5,7 @@ domainLabel: XAI · 해석가능성
 subLabel: 구조 특화 설명
 title: 정책 네트워크 CAM: 에이전트가 화면의 어디를 보는가
 hook: Grad-CAM과 같은 절차를 그대로 따른다.
+related: Grad-CAM · 정책 그래디언트 saliency · 정책 어텐션 시각화
 ---
 
 ## 기본설명

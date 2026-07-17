@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: State-Space Model 재귀식의 고유기저 대각화
 hook: State-space model은 $h_t=Ah_{t-1}+Bx_t$라는 재귀식으로 시퀀스를 처리합니다.
+related: 
 ---
 
 ## 기본설명

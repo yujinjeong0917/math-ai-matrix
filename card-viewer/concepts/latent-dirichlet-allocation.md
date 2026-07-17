@@ -5,6 +5,7 @@ domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 잠재디리클레할당(LDA) 토픽모델: 생성구조와 collapsed Gibbs 업데이트
 hook: 문서 하나가 여러 주제를 섞어 쓴 것이라는 직관을 확률모델로 만든 것이 LDA 토픽모델입니다.
+related: 켤레사전분포 3종
 ---
 
 ## 기본설명

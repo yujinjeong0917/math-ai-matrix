@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 자연정책경사: 신뢰영역 아래에서의 라그랑주 방향
 hook: 정책을 개선할 때 그냥 그래디언트 $\nabla J(\theta)$ 방향으로 움직이면, natural-gradient-fisher 항목에서 본 것처럼 파라미터공간의 작은 걸음이 분포공간에서는 방향에 따라 다르게 부풀려질 수 있습니다.
+related: 
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: 엔트로피 보너스와 균등분포를 향한 KL 정규화
 hook: 강화학습에서 탐험을 유지하려고 목적함수에 엔트로피 보너스 $\alpha H(\pi)$를 더합니다.
+related: 
 ---
 
 ## 기본설명

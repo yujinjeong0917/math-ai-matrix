@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 비전-언어 모델
 title: CLIP류 정렬 사전학습: 이미지와 텍스트를 같은 공간에 나란히 놓기
 hook: 구조는 두 개의 인코더로 이루어집니다.
+related: Vision-Language Model · 패치 토큰화
 ---
 
 ## 기본설명

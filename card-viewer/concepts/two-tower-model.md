@@ -5,6 +5,7 @@ domainLabel: 추천시스템 · 랭킹
 subLabel: 임베딩기반 검색
 title: Two-Tower 모델: 사용자와 아이템을 각자의 탑에서 임베딩하기
 hook: 점수는 두 탑이 각자 만든 벡터의 내적입니다.
+related: ANN 검색 · Matrix Factorization · Wide&Deep
 ---
 
 ## 기본설명

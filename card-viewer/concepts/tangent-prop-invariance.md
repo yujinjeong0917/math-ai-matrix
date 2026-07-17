@@ -5,6 +5,7 @@ domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: Tangent Prop: 매니폴드 접선 방향의 불변성 정칙화
 hook: 이미지를 살짝 회전하거나 평행이동해도 "같은 숫자"라는 사실은 바뀌지 않아야 합니다.
+related: 풀링과 근사적 이동불변성
 ---
 
 ## 기본설명

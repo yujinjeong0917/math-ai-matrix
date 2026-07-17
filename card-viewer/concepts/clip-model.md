@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: 멀티모달 아키텍처
 title: CLIP: 이미지와 텍스트를 한 공간에 정렬하기
 hook: CLIP은 이미지 인코더 $f_I$와 텍스트 인코더 $f_T$를 동시에 학습시킨다.
+related: VLM 이미지 토큰화 · 크로스모달 어텐션
 ---
 
 ## 기본설명

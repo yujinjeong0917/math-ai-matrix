@@ -5,6 +5,7 @@ domainLabel: 서비스 · 프로덕트 분석
 subLabel: 실험 함정
 title: Novelty Effect: 새로워서 좋아 보이는 착시
 hook: novelty effect는 시간에 따라 처치 효과 자체가 변한다는 점에서 표본크기나 유의성과는 다른 종류의 함정이다.
+related: SRM · 순차검정
 ---
 
 ## 기본설명

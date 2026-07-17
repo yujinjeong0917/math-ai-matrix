@@ -5,6 +5,7 @@ domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: 디퓨전 손실의 재정식화: ELBO가 왜 결국 노이즈 예측 MSE로 단순화되는가
 hook: elbo-derivation에서 확인한 하한은 디퓨전 모델에서 $T$개의 KL항으로 더 잘게 쪼개집니다.
+related: ELBO: 로그가능도의 옌센 하한 · 확산모델 정방향과정의 닫힌형 주변분포
 ---
 
 ## 기본설명

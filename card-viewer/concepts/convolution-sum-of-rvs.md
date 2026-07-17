@@ -5,6 +5,7 @@ domainLabel: 미적분 · 최적화
 subLabel: 근사 · 적분
 title: 독립 확률변수 합의 밀도: 콘볼루션 정리
 hook: 두 개의 독립적인 확률변수를 더하면 그 합의 분포는 어떻게 될까요?
+related: Log-Sum-Exp 트릭과 수치안정 소프트맥스
 ---
 
 ## 기본설명

@@ -5,6 +5,7 @@ domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 주성분분석(PCA)의 최적 방향
 hook: 데이터를 한 방향으로 압축해서 보고 싶습니다.
+related: 
 ---
 
 ## 기본설명

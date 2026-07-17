@@ -5,6 +5,7 @@ domainLabel: Process Mining
 subLabel: 대표 도구
 title: PM4Py: 파이썬으로 하는 프로세스 마이닝
 hook: PM4Py는 Fraunhofer FIT에서 처음 개발되었고 지금은 그 스핀오프인 Process Intelligence Solutions가 이어받아 관리하는 오픈소스 파이썬 라이브러리입니다.
+related: ProM · Celonis
 ---
 
 ## 기본설명

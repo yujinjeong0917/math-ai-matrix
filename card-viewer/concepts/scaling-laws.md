@@ -5,6 +5,7 @@ domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: 스케일링 법칙: 모델·데이터·연산량의 거듭제곱 관계
 hook: Kaplan 등(2020)의 관찰에 따르면 다른 자원이 병목이 아닐 때 테스트 손실 $L$은 모델 파라미터 수 $N$, 데이터 토큰 수 $D$, 학습 연산량 $C$ 각각에 대해 거듭제곱 법칙 형태를 따른다.
+related: GPT 계열 · KV Cache
 ---
 
 ## 기본설명

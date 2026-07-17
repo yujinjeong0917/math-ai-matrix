@@ -5,6 +5,7 @@ domainLabel: LLM/Agent
 subLabel: 일반 벤치마크 · 평가
 title: LLM-as-judge: 다른 LLM에게 답변을 채점시키기
 hook: LLM-as-judge를 쓰는 방식은 크게 두 가지다.
+related: MMLU류 벤치마크 · 환각 측정 · 궤적 평가
 ---
 
 ## 기본설명
