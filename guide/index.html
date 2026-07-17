@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>매트릭스 읽는 법 · 수학 × AI</title>
+<meta name="description" content="이 매트릭스의 행(수학 대분류)과 열(Classical ML·Deep Learning·생성모델·RL)이 각각 무엇을 뜻하는지, 왜 이렇게 나눴는지 설명하는 안내 챕터." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});"></script>
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") {
+      document.documentElement.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+<style>
+  :root {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+
+    --c-linalg: #33569e; --c-calc: #b85c26; --c-prob: #1c7f68;
+    --c-info: #7d3d92; --c-disc: #93701f; --c-numeric: #a13b52;
+    --c-causal: #2f7d6b; --c-mlcol: #3a5a94; --c-dlcol: #8a3f6e;
+    --c-gencol: #b8631f; --c-rlcol: #2f6a4a;
+
+    --c-linalg-bg: #e9edf7; --c-calc-bg: #f6e8dd; --c-prob-bg: #e1f0ea;
+    --c-info-bg: #efe1f3; --c-disc-bg: #f2ead9; --c-numeric-bg: #f5e3e7;
+    --c-causal-bg: #e2f0ec;
+
+    --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo,
+      Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+      --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+      --line: #2c3240; --line-soft: #232834;
+      --highlight: #eab35a; --highlight-bg: #3a2c14;
+      --c-linalg: #7d9be4; --c-calc: #e3966a; --c-prob: #5cc7a6;
+      --c-info: #cb8fdd; --c-disc: #d3b25c; --c-numeric: #db8fa0;
+      --c-causal: #6fc2ac; --c-mlcol: #8aa8d8; --c-dlcol: #cf8fb5;
+      --c-gencol: #e5a366; --c-rlcol: #6fc2ac;
+      --c-linalg-bg: #1c2333; --c-calc-bg: #2b2119; --c-prob-bg: #162a24;
+      --c-info-bg: #291f2e; --c-disc-bg: #2a2216; --c-numeric-bg: #3a2028;
+      --c-causal-bg: #16261f;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #12151b; --surface: #171b23; --surface-2: #1d222c;
+    --ink: #e8eaef; --ink-dim: #a3aab8; --ink-faint: #6b7383;
+    --line: #2c3240; --line-soft: #232834;
+    --highlight: #eab35a; --highlight-bg: #3a2c14;
+    --c-linalg: #7d9be4; --c-calc: #e3966a; --c-prob: #5cc7a6;
+    --c-info: #cb8fdd; --c-disc: #d3b25c; --c-numeric: #db8fa0;
+    --c-causal: #6fc2ac; --c-mlcol: #8aa8d8; --c-dlcol: #cf8fb5;
+    --c-gencol: #e5a366; --c-rlcol: #6fc2ac;
+    --c-linalg-bg: #1c2333; --c-calc-bg: #2b2119; --c-prob-bg: #162a24;
+    --c-info-bg: #291f2e; --c-disc-bg: #2a2216; --c-numeric-bg: #3a2028;
+    --c-causal-bg: #16261f;
+  }
+  :root[data-theme="light"] {
+    --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
+    --ink: #1a2130; --ink-dim: #566072; --ink-faint: #8a92a3;
+    --line: #d7dbe2; --line-soft: #e4e7ec;
+    --highlight: #d98c14; --highlight-bg: #fbe9cd;
+    --c-linalg: #33569e; --c-calc: #b85c26; --c-prob: #1c7f68;
+    --c-info: #7d3d92; --c-disc: #93701f; --c-numeric: #a13b52;
+    --c-causal: #2f7d6b; --c-mlcol: #3a5a94; --c-dlcol: #8a3f6e;
+    --c-gencol: #b8631f; --c-rlcol: #2f6a4a;
+    --c-linalg-bg: #e9edf7; --c-calc-bg: #f6e8dd; --c-prob-bg: #e1f0ea;
+    --c-info-bg: #efe1f3; --c-disc-bg: #f2ead9; --c-numeric-bg: #f5e3e7;
+    --c-causal-bg: #e2f0ec;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-kr); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 56px 28px 90px; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin: 0 0 14px; }
+  .eyebrow { font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
+
+  .theme-toggle {
+    display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--ink-faint); }
+  .theme-toggle .dot-bw { width: 12px; height: 12px; border-radius: 50%; flex: none; background: linear-gradient(135deg, #fff 50%, #14151a 50%); border: 1px solid var(--line); }
+
+  .matrix-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 24px; }
+  .matrix-nav a {
+    padding: 7px 15px; border-radius: 999px; text-decoration: none;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+    background: var(--surface); border: 1px solid var(--line-soft);
+  }
+  .matrix-nav a:hover { border-color: var(--ink-faint); color: var(--ink); }
+  .matrix-nav a.active { background: var(--ink); border-color: var(--ink); color: var(--surface-2); font-weight: 700; }
+
+  h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.22; margin: 0 0 16px; text-wrap: balance; }
+  h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--highlight-bg) 62%); }
+  .lede { max-width: 640px; color: var(--ink-dim); font-size: 16px; margin: 0 0 40px; }
+
+  h2 { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; margin: 46px 0 6px; scroll-margin-top: 20px; }
+  h2 .idx { font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint); font-weight: 700; margin-right: 8px; }
+  .section-lede { color: var(--ink-dim); font-size: 14.5px; margin: 0 0 22px; max-width: 640px; }
+
+  .axis-item { border-radius: 14px; border: 1px solid var(--line-soft); background: var(--surface); padding: 18px 20px; margin: 0 0 14px; }
+  .axis-item .axis-name { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 15px; margin: 0 0 4px; }
+  .axis-item .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .axis-item .axis-sub { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-faint); margin: 0 0 10px; }
+  .axis-item p { margin: 0 0 8px; font-size: 14.5px; color: var(--ink-dim); }
+  .axis-item p:last-child { margin-bottom: 0; }
+  .axis-item strong { color: var(--ink); }
+
+  .cross-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 8px 0 0; }
+  @media (min-width: 620px) { .cross-grid { grid-template-columns: 1fr 1fr; } }
+  .cross-card { border-radius: 12px; background: var(--surface); border: 1px solid var(--line-soft); padding: 14px 16px; }
+  .cross-card .cc-title { font-weight: 800; font-size: 13.5px; margin: 0 0 6px; }
+  .cross-card .cc-title .tag { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-faint); font-weight: 500; display: block; margin-top: 2px; }
+  .cross-card p { margin: 0; font-size: 13.5px; color: var(--ink-dim); }
+
+  .crosslink-note {
+    margin-top: 12px; padding: 18px 20px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--line-soft);
+    font-size: 13.5px; color: var(--ink-dim); max-width: 720px;
+  }
+  .crosslink-note strong { color: var(--ink); }
+
+  .ext-table { width: 100%; border-collapse: collapse; margin: 10px 0 0; font-size: 13.5px; }
+  .ext-table th, .ext-table td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  .ext-table th { color: var(--ink-faint); font-weight: 700; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .ext-table td.name { font-weight: 700; }
+  .ext-table td.desc { color: var(--ink-dim); }
+
+  footer { margin-top: 52px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--ink-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 680px) {
+    .wrap { padding: 36px 16px 60px; }
+    footer { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <p class="eyebrow">Reading Guide · Math for AI</p>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="흑백 테마 전환">
+      <span class="dot-bw"></span>
+      <span id="themeToggleLabel">라이트</span>
+    </button>
+  </div>
+
+  <nav class="matrix-nav">
+    <a href="./index.html" class="active">매트릭스 읽는 법</a>
+    <a href="../index.html">기초 매트릭스</a>
+    <a href="../advanced/index.html">심화 매트릭스</a>
+    <a href="../xai/index.html">XAI · 해석가능성</a>
+    <a href="../llm/index.html">LLM/Agent</a>
+    <a href="../product/index.html">서비스 · 프로덕트 분석</a>
+    <a href="../mlops/index.html">MLOps · 인프라</a>
+    <a href="../recsys/index.html">추천시스템 · 랭킹</a>
+    <a href="../architectures/index.html">모델 아키텍처 심화</a>
+    <a href="../process-mining/index.html">Process Mining</a>
+  </nav>
+
+  <h1>이 표, 가로세로가<br /><em>무슨 뜻인지</em> 알고 보면 다르게 읽혀요</h1>
+  <p class="lede">
+    매트릭스 자체는 표 하나예요. 그런데 표 하나에 담긴 결정이 생각보다 많습니다.
+    왜 열이 4개인지, 왜 행이 6개(그리고 심화에서는 더 늘어나는지), 그 둘이 만나는
+    한 칸(cell)이 정확히 뭘 뜻하는지 알고 보면, 다음에 새 논문이나 모델을 만났을 때
+    "이건 어느 칸 얘기구나"를 스스로 짐작할 수 있게 돼요.
+  </p>
+
+  <h2><span class="idx">01</span>왜 표로 만들었나</h2>
+  <p class="section-lede">
+    수학책은 대분류(선형대수·확률론·해석학...)로 나뉘고, AI책은 알고리즘(회귀·CNN·GAN...)으로
+    나뉩니다. 두 책 사이를 잇는 지도가 마땅히 없어요. 이 매트릭스는 그 지도예요.
+    행은 "이 개념이 어느 수학에서 왔는가", 열은 "이 개념이 AI의 어느 갈래에서 쓰이는가"고,
+    한 칸은 그 교차점에서 실제로 등장하는 구체적 기법·공식이에요. PCA를 예로 들면
+    행은 선형대수(고유값분해), 열은 Classical ML이고, 칸에는 "PCA — 고유벡터·SVD"가 놓입니다.
+  </p>
+
+  <h2><span class="idx">02</span>열(가로) — AI가 갈라지는 4갈래</h2>
+  <p class="section-lede">
+    같은 데이터를 놓고 AI가 하려는 일은 크게 넷으로 갈립니다. 예측할 것인가, 표현을
+    직접 배울 것인가, 데이터 자체를 새로 만들어낼 것인가, 아니면 행동을 최적화할
+    것인가. 이 넷은 서로 대체재가 아니라 실무에서 늘 섞여 쓰여요.
+  </p>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-mlcol)"></span>Classical ML</p>
+    <p class="axis-sub">회귀 · 분류 · 앙상블 · 군집 · 차원축소</p>
+    <p>
+      가장 오래됐고 가장 잘 검증된 계열이에요. 통계적 가정이 눈에 보이게 드러나 있어서
+      "왜 되는가"를 수식으로 끝까지 밀어붙일 수 있는 몇 안 되는 영역이기도 해요.
+      데이터가 적거나, 설명 책임이 있거나(의료·금융·심사), 배포 환경이 가볍고 안정적이어야
+      할 때 여전히 이쪽이 먼저 시도됩니다. 딥러닝이 이긴 영역은 생각보다 좁고, 정형
+      데이터·표 형태 데이터에서는 그래디언트 부스팅 계열이 지금도 최상위권이에요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-dlcol)"></span>Deep Learning</p>
+    <p class="axis-sub">CNN · RNN/LSTM · Transformer · GNN</p>
+    <p>
+      Classical ML은 사람이 특징(feature)을 설계하고 모델은 그 특징들의 조합만 배웁니다.
+      딥러닝은 그 특징 자체를 데이터로부터 배워요. 층을 쌓을수록 선형변환(선형대수)과
+      비선형 활성함수의 합성이 깊어지고, 그 깊은 합성함수를 미분(체인룰)으로 거꾸로
+      훑어 내려가는 게 역전파예요. 결국 딥러닝 한 칸 한 칸은 "행렬곱 + 미분"이 반복되는
+      구조라서, 이 매트릭스의 선형대수·미적분 행과 가장 촘촘히 얽혀 있는 열이기도 해요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-gencol)"></span>생성모델</p>
+    <p class="axis-sub">VAE · GAN · Diffusion · Autoregressive(LLM)</p>
+    <p>
+      나머지 셋은 전부 "데이터를 보고 무언가를 맞히는" 쪽이라면, 생성모델은 반대예요.
+      데이터가 나온 확률분포 자체를 어떻게든 흉내 내서 그 분포에서 새 샘플을 뽑아내요.
+      그런데 "분포를 흉내 낸다"는 방법이 네 가지나 있다는 게 흥미로운 지점이에요.
+      <strong>VAE</strong>는 각 데이터를 잠재변수의 확률분포로 인코딩하고 그 분포에서
+      다시 디코딩하는, 변분추론(확률·통계) 기반의 접근이에요. <strong>GAN</strong>은
+      아예 다르게 풀어요 — 생성자와 판별자가 서로를 속고 속이며 겨루는 게임이론적
+      구도로, 명시적인 확률분포 수식 없이 암묵적으로 분포를 배워요. <strong>Diffusion</strong>은
+      데이터에 노이즈를 서서히 섞었다가 그 과정을 거꾸로 되돌리는 법을 배우는데, 이
+      되돌리는 과정을 확률미분방정식과 점수함수(score function) 추정이라는 확률론의
+      최신 도구로 풀어요. <strong>Autoregressive</strong>는 확률의 연쇄법칙 하나로
+      끝까지 밀어붙여요 — 전체 데이터의 결합확률을 "다음 걸 하나씩 순서대로 맞히기"의
+      곱으로 쪼개는 방식이고, 지금의 LLM이 바로 이 계열이에요. 네 접근이 전부
+      "확률분포를 어떻게 다루기 쉬운 형태로 쪼갤 것인가"라는 같은 질문에 대한 서로
+      다른 답인 셈이에요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-rlcol)"></span>Reinforcement Learning</p>
+    <p class="axis-sub">가치기반 · 정책기반 · Actor-Critic · 모델기반</p>
+    <p>
+      앞의 셋이 정적인 데이터셋을 놓고 배운다면, RL은 행동의 결과가 다시 다음 상황을
+      바꾸는 순환 구조(마르코프 결정과정) 안에서 배웁니다. "지금 이 선택이 당장은
+      손해여도 나중에 더 큰 보상을 준다"는 걸 수식으로 다루려면 동적계획법과 확률,
+      그리고 정책을 직접 최적화하는 경사법이 다 같이 필요해요. 최근 LLM을 사람 선호에
+      맞추는 RLHF도 결국 이 열의 도구를 언어모델에 그대로 얹은 거예요.
+    </p>
+  </div>
+
+  <h2><span class="idx">03</span>행(세로) — 그 밑에 깔린 수학</h2>
+  <p class="section-lede">
+    기초 매트릭스는 6개 대분류로 시작하지만, 심화 매트릭스로 넘어가면 그중 넷(확률·통계,
+    이산수학, 수치해석, 그리고 인과추론)이 훨씬 깊어져요. 반대로 선형대수·미적분·정보이론은
+    지금 심화 확장이 아직 없는데, 이건 이 사이트가 다음에 채워야 할 여백이기도 해요.
+  </p>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-linalg)"></span>선형대수</p>
+    <p class="axis-sub">벡터·행렬 연산 · 고유값·분해 · 노름·사영</p>
+    <p>
+      데이터를 숫자 배열로 표현하고, 그 배열을 다른 배열로 옮기는 것 자체가 선형대수예요.
+      "특징 벡터", "임베딩", "가중치 행렬" 같은 AI 용어 절반이 사실 선형대수 용어의
+      번역이고요. 고유값분해 하나만 알아도 PCA·스펙트럴 클러스터링·추천시스템의
+      행렬분해가 전부 같은 그림이라는 걸 알아챌 수 있어요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-calc)"></span>미적분 · 최적화</p>
+    <p class="axis-sub">미분·그래디언트 · 제약 최적화 · 경사기반 옵티마이저 · 함수의 성질 · 근사·적분</p>
+    <p>
+      "학습한다"는 말은 실제로는 손실함수라는 산의 계곡을 찾아 내려가는 것뿐이에요.
+      그 계곡으로 가는 방향을 알려주는 게 그래디언트고, 얼마나 크게 내려갈지 정하는
+      게 학습률이에요. 이 하나의 아이디어(경사하강법) 위에 Adam·모멘텀 같은 온갖
+      변형이 얹혀 있고, 딥러닝 학습 과정 전체가 사실상 이 행 하나의 응용이라고 봐도
+      크게 틀리지 않아요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-prob)"></span>확률 · 통계</p>
+    <p class="axis-sub">분포·추정 · 마르코프·확률과정 · 표집·불확실성 · 확률의 기초 · 통계적 추론</p>
+    <p class="axis-sub" style="margin-top:-4px;">심화: 추정이론 · 점근이론 · 가설검정 이론 · 신뢰구간·순차분석 · 결정이론 · 예측 평가 · 모델선택 이론</p>
+    <p>
+      데이터는 항상 잡음을 포함하고 있고, 모델은 항상 불확실성을 안은 채 결정을
+      내려야 해요. 확률·통계는 그 불확실성을 "그냥 모르겠다"가 아니라 계산 가능한
+      숫자로 바꿔주는 언어예요. 분류기의 출력이 왜 확률(소프트맥스)로 나오는지,
+      GAN·VAE·Diffusion이 왜 전부 "분포를 다루는 문제"로 환원되는지가 전부 여기서
+      나옵니다. 기초 매트릭스가 "확률을 어떻게 계산하는가"를 다룬다면, 심화 매트릭스의
+      추정이론·가설검정·모델선택은 "그 확률적 결론을 얼마나 믿을 수 있는가"를 다뤄요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-info)"></span>정보이론</p>
+    <p class="axis-sub">엔트로피·손실 · 발산·상호정보</p>
+    <p>
+      "얼마나 놀라운 정보인가"를 숫자로 재는 게 엔트로피예요. 분류 모델이 쓰는
+      크로스엔트로피 손실도, VAE의 KL 발산 항도, 결국 이 하나의 아이디어(정보량)를
+      "내 예측이 실제 분포와 얼마나 다른가"에 적용한 것이고요. 손실함수 이름에
+      "엔트로피"나 "발산"이 들어가 있으면 거의 예외 없이 이 행에서 온 개념이에요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-disc)"></span>이산수학 · 그래프</p>
+    <p class="axis-sub">트리·앙상블 구조 · 그래프·탐색 · 알고리즘 기초</p>
+    <p class="axis-sub" style="margin-top:-4px;">심화: 그래프 이론 심화 · 조합론 심화 · 네트워크 흐름 · 부호이론·조합최적화</p>
+    <p>
+      데이터가 항상 실수 벡터로 깔끔하게 떨어지는 건 아니에요. 소셜 네트워크, 분자
+      구조, 의사결정 트리처럼 "이어짐" 자체가 의미인 데이터가 있고, 이걸 다루는
+      수학이 이산수학이에요. GNN(그래프 신경망)이 딥러닝 열에서 유독 다른 계열과
+      느낌이 다른 이유도, 그 밑에 깔린 행이 선형대수가 아니라 그래프 이론이기 때문이에요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-numeric)"></span>수치해석 · 기하</p>
+    <p class="axis-sub">수치적 안정성 · 기하·측도</p>
+    <p class="axis-sub" style="margin-top:-4px;">심화: 직접법 · 고유값 알고리즘 · 반복법 · 안정성과 조건화 · 고속변환·합성곱</p>
+    <p>
+      종이 위의 수식과 컴퓨터 안의 부동소수점은 다른 세계예요. 이론적으로는 맞는
+      식이 실제로는 오차가 누적돼 깨지기도 하고, 큰 행렬을 그대로 뒤집는 대신
+      반복법으로 근사해야 계산이 끝나기도 해요. "이론이 실전에서 버티는가"를
+      묻는 행이 바로 이거고, 딥러닝 학습이 실제로 발산하지 않고 수렴하는 이유의
+      상당 부분이 여기서 설명돼요.
+    </p>
+  </div>
+
+  <div class="axis-item">
+    <p class="axis-name"><span class="dot" style="background:var(--c-causal)"></span>인과추론</p>
+    <p class="axis-sub">심화 전용 · 잠재결과 프레임워크 · 그래프 인과모형 · 식별과 추정 · 도구변수·준실험 · 선형회귀와 편향제거 · 이질적 효과와 개인화 · 실험 설계 확장</p>
+    <p>
+      나머지 행이 전부 "상관관계를 얼마나 정확히 잡아내는가"를 묻는다면, 이 행만
+      혼자 다른 질문을 해요. "만약 이 처치를 하지 않았다면 어떻게 됐을까." 추천시스템의
+      개인화 효과, 마케팅 캠페인의 진짜 효과, A/B 테스트의 해석이 전부 여기 걸려
+      있어요. 예측을 아무리 잘해도 인과를 모르면 "왜"에는 답할 수 없다는 게
+      이 행이 존재하는 이유예요.
+    </p>
+  </div>
+
+  <h2><span class="idx">04</span>행과 열이 만나는 곳</h2>
+  <p class="section-lede">
+    같은 개념이 서로 다른 칸에서 다른 얼굴로 등장하기도 해요. 몇 가지 교차점을
+    구체적으로 짚어볼게요.
+  </p>
+  <div class="cross-grid">
+    <div class="cross-card">
+      <p class="cc-title">PCA<span class="tag">선형대수 × Classical ML</span></p>
+      <p>공분산행렬의 고유값분해 하나로 "가장 정보를 많이 남기는 방향"을 찾아요.</p>
+    </div>
+    <div class="cross-card">
+      <p class="cc-title">VAE 인코더<span class="tag">선형대수·확률 × 생성모델</span></p>
+      <p>선형변환으로 잠재공간의 평균·분산을 만들고, 그 분포에서 샘플을 뽑아요.</p>
+    </div>
+    <div class="cross-card">
+      <p class="cc-title">정책 경사<span class="tag">확률·미적분 × RL</span></p>
+      <p>기대 보상을 정책 파라미터로 미분해서, 보상이 커지는 방향으로 정책을 밀어요.</p>
+    </div>
+    <div class="cross-card">
+      <p class="cc-title">Diffusion의 점수함수<span class="tag">확률 × 생성모델</span></p>
+      <p>노이즈를 걷어내는 방향을 로그확률의 그래디언트(점수함수)로 추정해요.</p>
+    </div>
+  </div>
+  <div class="crosslink-note">
+    <strong>경계는 깔끔하지 않아요.</strong> 어텐션은 선형대수(행렬곱 QKᵀ)이자
+    확률·통계(소프트맥스 분포)고, 역전파는 미적분(체인룰)이자 선형대수(야코비안)예요.
+    각 페이지의 매트릭스는 "주로 어디서, 어떤 중분류로 등장하는가"를 기준으로 나눈
+    대표 예시지, 두 수학이 겹치는 개념에 점(•) 표기가 붙어 있으면 그 개념이 실제로
+    행 경계를 넘나든다는 뜻이에요. 마우스를 올리면 다른 칸에 있는 같은 개념도 같이
+    밝아져요.
+  </div>
+
+  <h2><span class="idx">05</span>이 4열 구조가 아닌 페이지들</h2>
+  <p class="section-lede">
+    나머지 페이지(XAI 제외)는 이 매트릭스와 형태가 달라요. 왜 다른 형태를 택했는지도
+    같이 알아두면 헷갈리지 않아요.
+  </p>
+  <table class="ext-table">
+    <tr><th>페이지</th><th>구조가 다른 이유</th></tr>
+    <tr><td class="name">XAI · 해석가능성</td><td class="desc">열은 그대로 Classical ML·DL·생성모델·RL이지만, 행이 수학 대분류 대신 "설명 기법의 계열"(게임이론 기반·국소 근사 기반·그래디언트 기반 등)이에요. 해석가능성 자체가 여러 수학을 가로질러 쓰는 응용 분야라 수학 대분류로 줄 세우기가 어려워서예요.</td></tr>
+    <tr><td class="name">LLM/Agent · 서비스·프로덕트 · MLOps · 추천시스템 · 아키텍처 심화 · Process Mining</td><td class="desc">이쪽은 "어떤 수학에서 왔는가"보다 "실무에서 어떤 순서로 마주치는가"가 더 중요한 영역이에요. 그래서 수학 행 × AI 열 매트릭스 대신, 주제(프롬프팅·검색·튜닝·배포·평가 등)별로 묶은 실전 토픽 그리드로 구성했어요. 이 매트릭스에서 "이 개념이 어느 수학인지" 감을 잡은 다음 보면 훨씬 잘 읽혀요.</td></tr>
+  </table>
+
+  <h2><span class="idx">06</span>다음엔 뭘 보면 될까</h2>
+  <p class="section-lede">
+    아직 대학 수학 이전 단계 — 고교 교육과정에서 학교마다, 세대마다 다르게 배웠거나
+    아예 배우지 않았을 가능성이 있는 벡터·행렬 같은 기초가 걱정된다면
+    <a href="../foundations/index.html">예비수학 챕터</a>부터 보는 걸 추천해요.
+    그 다음 <a href="../index.html">기초 매트릭스</a>로 와서 6개 행을 훑고, 관심 있는
+    열(예: 생성모델)을 따라 내려가면서 칸을 하나씩 열어보면 돼요. 증명 하나하나가
+    빈칸채우기로 되어 있어서, 눈으로 읽는 대신 손으로 채워보면 훨씬 오래 남습니다.
+  </p>
+
+  <footer>
+    <span>매트릭스를 처음 읽는 사람을 위한 안내 챕터</span>
+    <span>2026.07.17</span>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var label = document.getElementById("themeToggleLabel");
+    function current() {
+      var attr = root.getAttribute("data-theme");
+      if (attr === "dark" || attr === "light") return attr;
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function render() {
+      label.textContent = current() === "dark" ? "다크" : "라이트";
+    }
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

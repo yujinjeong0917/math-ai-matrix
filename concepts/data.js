@@ -16071,4 +16071,316 @@ $$H_b(0.2)+0.2\log_2 3 = 0.7219+0.2\times 1.585=1.039\text{ bits}$$
       { id: "s7", text: String.raw`$D=10000$, $m=100$, $\mu=1$을 넣으면 상대손실은 $\approx0.35\%$로 거의 최적인데도, 오염 좌표의 표본평균은 참값에서 $10$표준편차나 떨어져 있어 사실상 확실하게 탐지된다. 이렇게 (1) 표본은 완벽에 가까우면서 우도는 임의로 나쁜 모델과, (2) 우도는 임의로 최적에 가까우면서 표본은 확률 $\to1$로 나쁘다고 탐지되는 모델이 각각 구성되었으므로, 우도와 표본 품질은 서로를 함의하지 않는다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
   },
+
+  "convexity-first-order-condition": {
+    title: "볼록함수의 1차 조건: 접선과 전역최소",
+    domain: "calc2",
+    subLabel: "볼록최적화 이론",
+    explanation: String.raw`함수 그래프 위에 접선을 하나 그어봅니다. 그 함수가 볼록하다면 이 접선은 늘 그래프 전체보다 아래에 머물러요. 신기하게도 이 성질은 볼록성 그 자체와 정확히 동치입니다. 그리고 이 동치 관계 속에 아주 실용적인 사실이 하나 숨어 있어요. 그래디언트가 0인 점이라면, 그곳이 어디든 상관없이 전역에서 가장 작은 값이 된다는 것입니다.<br><br><strong>명제.</strong> 미분가능한 함수 $f:\mathbb{R}^n\to\mathbb{R}$가 볼록일 필요충분조건은 임의의 $x,y\in\mathbb{R}^n$에 대해 $f(y)\ge f(x)+\nabla f(x)^T(y-x)$가 성립하는 것이다.`,
+    example: String.raw`<p>추상적인 동치 증명에 들어가기 전에, 가장 단순한 볼록함수 하나로 "접선이 항상 함수 아래에 있다"는 말이 정확히 무슨 뜻인지 확인해봅니다.</p>
+<p>$f(x)=x^2$을 생각합니다. $x=1$에서의 그래디언트는 $f'(1)=2$이므로, $x=1$에서의 접선은 $L(y)=f(1)+f'(1)(y-1)=1+2(y-1)=2y-1$입니다.</p>
+<p>이 접선과 원래 함수값을 몇 개의 $y$에서 비교해봅니다.</p>
+$$f(3)=9,\quad L(3)=2\times3-1=5\qquad(9\ge5)$$
+$$f(0)=0,\quad L(0)=2\times0-1=-1\qquad(0\ge-1)$$
+$$f(-2)=4,\quad L(-2)=2\times(-2)-1=-5\qquad(4\ge-5)$$
+<p>어느 $y$를 넣어도 $f(y)\ge L(y)$가 성립합니다. 접선이 곡선을 절대 뚫고 올라가지 못하고 항상 그 아래에 머무는 것입니다.</p>
+<p>이번엔 $x^*=0$처럼 그래디언트가 정확히 $0$인 점을 봅니다. $f'(0)=0$이므로 접선은 수평선 $L(y)=0$이 되고, 방금 확인한 부등식은 곧 $f(y)\ge0=f(0)$을 뜻합니다. 실제로 $f(y)=y^2$은 어떤 $y$를 넣어도 $0$보다 작아지지 않으므로 $x^*=0$은 정말로 전역최소점입니다. 아래 증명은 이 두 관찰, 즉 접선이 항상 아래에 있다는 사실과 그래디언트가 0인 점이 전역최소가 된다는 사실이 $x^2$ 하나만의 특수한 성질이 아니라 모든 미분가능한 볼록함수에서 항상 성립한다는 것을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`지금 보이려는 것은 두 가지 서로 다른 볼록성의 정의, 즉 두 점 사이의 부등식으로 쓰는 정의와 그래디언트로 쓰는 정의가 사실은 같은 것이라는 사실이다. 먼저 익숙한 정의부터 다시 적어본다. $f$가 볼록하다는 것은 임의의 $x,y$와 $t\in[0,1]$에 대해 $f(tx+(1-t)y)\le tf(x)+(1-t)f(y)$가 성립한다는 뜻이다. 이 정의를 그래디언트 부등식과 잇는 다리로, 두 점 $x,y$를 잇는 선분 위의 점 $z_t=x+t(y-x)=(1-t)x+ty$를 쓴다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 (⟹) 방향을 본다. $f$가 볼록하다고 가정하고 방금 쓴 정의를 점 $x,y$와 $z_t=(1-t)x+ty$에 그대로 적용하면 $f(z_t)\le (1-t)f(x)+tf(y)$이다. 양변에서 $f(x)$를 빼고 $t\in(0,1]$로 나누면 $\dfrac{f(z_t)-f(x)}{t}\le f(y)-f(x)$를 얻는다. $t\to0^+$인 극한을 취하면 좌변은 방향미분의 정의에 의해 $\nabla f(x)^T(y-x)$로 수렴한다($f$가 미분가능하므로 방향미분이 그래디언트와 방향벡터의 내적과 정확히 일치한다). 따라서 $\nabla f(x)^T(y-x) \le $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`f(y)-f(x)`, why: String.raw`직전 부등식 $\big(f(z_t)-f(x)\big)/t \le f(y)-f(x)$에서 $t\to0^+$ 극한을 취해도 우변에는 $t$가 전혀 들어있지 않으므로 그대로 남습니다. 좌변만 방향미분으로 바뀌어요.` }] },
+      { id: "s3", text: String.raw`정리하면 임의의 $x,y$에 대해 $f(y)\ge f(x)+\nabla f(x)^T(y-x)$가 성립한다. 이것으로 (⟹) 방향이 끝났다. 이제 반대로 이 그래디언트 부등식이 모든 $x,y$에서 성립한다고 가정하고, 이로부터 $f$가 실제로 볼록함수임을 보이는 (⟸) 방향을 확인한다. 임의의 $x,y\in\mathbb{R}^n$과 $\lambda\in[0,1]$을 고정하고 두 점을 $\lambda$ 비율로 섞은 점 $z=\lambda x+(1-\lambda)y$를 둔다.`, blanks: [] },
+      { id: "s4", text: String.raw`가정한 부등식을 점 $z$에 두 번 적용한다. 한 번은 $y$ 자리에 $x$를 넣어 $f(x)\ge f(z)+\nabla f(z)^T(x-z)$를 얻고, 다른 한 번은 $y$를 그대로 넣어 $f(y)\ge f(z)+\nabla f(z)^T(y-z)$를 얻는다. 첫 부등식에는 $\lambda$를, 둘째 부등식에는 $(1-\lambda)$를 곱한 뒤 두 식을 더하면 $\lambda f(x)+(1-\lambda)f(y) \ge f(z) + \nabla f(z)^T\big[\lambda(x-z)+(1-\lambda)(y-z)\big]$ 를 얻는다. 그런데 $z=\lambda x+(1-\lambda)y$라는 정의를 그대로 쓰면 대괄호 안은 $\lambda(x-z)+(1-\lambda)(y-z) = \lambda x+(1-\lambda)y - z = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$\lambda x+(1-\lambda)y$는 $z$의 정의 그 자체이므로 $z-z=0$이 됩니다. 두 계수 $\lambda,(1-\lambda)$가 정확히 $z$를 만드는 가중치이기 때문에 대괄호가 통째로 사라져요.` }] },
+      { id: "s5", text: String.raw`대괄호 안이 $0$이므로 그래디언트 항 전체가 사라지고 $\lambda f(x)+(1-\lambda)f(y) \ge f(z) = f(\lambda x+(1-\lambda)y)$ 만 남는다. 이것이 정확히 볼록성의 두 점 정의다. $x,y,\lambda$는 처음부터 임의로 골랐으므로 이 부등식은 모든 경우에 성립하고, 따라서 $f$는 볼록함수다. (⟸) 방향도 확인되었으니 두 정의는 동치다. 이 동치 관계에서 아주 실용적인 따름정리 하나가 곧바로 나온다. 어떤 점 $x^*$에서 그래디언트가 $\nabla f(x^*)=0$이라면 어떤 일이 벌어지는지 살펴보자.`, blanks: [] },
+      { id: "s6", text: String.raw`(⟹) 방향에서 증명한 부등식 $f(y)\ge f(x^*)+\nabla f(x^*)^T(y-x^*)$에 $\nabla f(x^*)=0$을 그대로 대입하면 둘째 항이 통째로 사라져서, 임의의 $y$에 대해 $f(y) \ge $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`f(x^*)`, why: String.raw`그래디언트가 $0$이므로 내적항 $\nabla f(x^*)^T(y-x^*)$가 $0$이 되어 사라지고, 부등식 우변에는 $f(x^*)$만 남습니다.` }] },
+      { id: "s7", text: String.raw`이는 $x^*$가 그 근방에서만 작은 값이 아니라 정의역 전체를 통틀어 가장 작은 값을 갖는 전역최소점이라는 뜻이다. 볼록함수에서는 그래디언트가 0인 점이 어디에 있든 상관없이 국소최소가 곧바로 전역최소가 된다. 국소해와 전역해를 구분할 필요가 없다는 이 성질이 볼록최적화 이론 전체를 떠받치는 근거다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "볼록함수와 옌센 부등식", slug: "convex-jensen" },
+      { label: "강볼록성과 유일한 전역최소값의 존재", slug: "strong-convexity-unique-minimum" },
+      { label: "KKT 필요조건의 유도", slug: "kkt-necessary-conditions" }
+    ]
+  },
+
+  "kkt-necessary-conditions": {
+    title: "KKT 필요조건의 유도: 정류성·원시실현가능성·쌍대실현가능성·상보슬랙성",
+    domain: "calc2",
+    subLabel: "볼록최적화 이론",
+    explanation: String.raw`제약이 하나만 있을 때 KKT 조건을 본 적이 있다면, 질문은 자연스럽게 이어져요. 제약이 여러 개로 늘어나도 같은 논리가 통할까요. 답은 그렇다는 것이고, 그 논리를 일반적인 형태로 완성하면 이름이 붙은 네 개의 조건, 즉 정류성·원시실현가능성·쌍대실현가능성·상보슬랙성으로 깔끔하게 정리됩니다. 이 네 조건은 SVM부터 강화학습의 신뢰영역 제약까지 부등식 제약이 등장하는 거의 모든 최적화 문제에서 반복해서 등장해요.<br><br><strong>명제.</strong> 제약이 지나치게 특이하지 않다는 constraint qualification이 성립할 때, $\min_x f(x)\ \text{s.t.}\ g_i(x)\le0\ (i=1,\dots,m)$ 의 최적해 $x^*$에서는 어떤 $\mu^*_i\ge0\ (i=1,\dots,m)$이 존재해 다음 네 조건이 모두 성립한다: 정류성 $\nabla f(x^*)+\sum_{i=1}^m\mu_i^*\nabla g_i(x^*)=0$, 원시실현가능성 $g_i(x^*)\le0$, 쌍대실현가능성 $\mu_i^*\ge0$, 상보슬랙성 $\mu_i^*g_i(x^*)=0$.`,
+    example: String.raw`<p>추상적인 유도에 들어가기 전에, 제약이 두 개인 아주 구체적인 문제 하나를 직접 풀어서 KKT의 네 조건이 실제로 어떻게 나타나는지 확인해봅니다.</p>
+<p>$f(x,y)=(x-2)^2+(y-2)^2$ 을 $g_1(x,y)=x+y-2\le0$ 과 $g_2(x,y)=x-3\le0$ 아래 최소화합니다. 제약이 없다면 최적해는 $(2,2)$이지만 $g_1(2,2)=2>0$이라 허용되지 않습니다. 기하학적으로 직선 $x+y=2$ 위에서 점 $(2,2)$에 가장 가까운 점을 찾으면 되고, 그 점은 $(1,1)$입니다.</p>
+<p>이 점에서 그래디언트들을 계산합니다.</p>
+$$\nabla f(1,1)=(2(1-2),2(1-2))=(-2,-2),\qquad \nabla g_1(1,1)=(1,1),\qquad \nabla g_2(1,1)=(1,0)$$
+<p>정류조건 $\nabla f+\mu_1\nabla g_1+\mu_2\nabla g_2=0$을 성분별로 풀어봅니다. $y$성분에서 $-2+\mu_1=0$이므로 $\mu_1=2$이고, $x$성분에서 $-2+\mu_1+\mu_2=0$에 $\mu_1=2$를 넣으면 $\mu_2=0$이 나옵니다.</p>
+<p>네 조건을 하나씩 확인합니다. 원시실현가능성: $g_1(1,1)=0\le0$, $g_2(1,1)=-2\le0$. 쌍대실현가능성: $\mu_1=2\ge0$, $\mu_2=0\ge0$. 상보슬랙성: $\mu_1g_1(1,1)=2\times0=0$, $\mu_2g_2(1,1)=0\times(-2)=0$. 경계에 딱 붙은 $g_1$은 양의 승수를 받고, 여유가 있는 $g_2$는 승수가 정확히 $0$으로 꺼집니다. 아래 증명은 이 패턴, 즉 활성 제약과 비활성 제약이 항상 이렇게 다른 방식으로 조건을 만족한다는 사실이 우연이 아니라 임의의 문제에서 일반적으로 성립함을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`지금 풀려는 문제는 $g_i(x)\le0$ ($i=1,\dots,m$)을 만족하는 $x$ 중에서 $f(x)$를 최소화하는 것이다. 최적해를 $x^*$라 하고, 이 지점에서 등호로 딱 맞아떨어지는 제약들의 집합을 활성집합(active set) $A=\{i : g_i(x^*)=0\}$이라 부른다. 지금 목표는 어떤 $\mu^*_i\ge0$이 존재해서 정류성·원시실현가능성·쌍대실현가능성·상보슬랙성이라는 네 조건이 동시에 성립함을 보이는 것이다. 핵심 아이디어는, $x^*$가 최적해라면 그 지점에서 목적함수를 더 줄이면서 동시에 제약을 어기지 않는 방향은 존재할 수 없다는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`실현가능한 하강방향이 있다는 것은 어떤 $d$가 있어서 $\nabla f(x^*)^Td<0$이면서 동시에 활성 제약들에 대해 $\nabla g_i(x^*)^Td\le0$ ($i\in A$)이 성립한다는 뜻이다. 만약 이런 $d$가 하나라도 존재한다면, 그 방향으로 충분히 작게 $t>0$만큼 움직인 $x^*+td$는 목적함수값이 줄어들면서도(1차 근사에서) 모든 제약을 계속 만족한다(비활성 제약은 애초에 여유가 있어 작은 이동으로는 어길 수 없다). 이는 $x^*$가 최적해라는 가정과 모순이다. 그러므로 $x^*$가 최적해라면 다음 부등식 시스템 $\nabla f(x^*)^Td<0,\ \nabla g_i(x^*)^Td\le0\ (i\in A)$ 은 해 $d$를 [[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\text{갖지 않는다}`, why: String.raw`만약 이 시스템의 해 $d$가 존재한다면 그 방향으로 조금 움직였을 때 목적함수가 줄어들면서 제약도 어기지 않게 되어, $x^*$가 최적해라는 가정과 곧바로 모순됩니다. 그래서 해가 없어야만 합니다.` }] },
+      { id: "s3", text: String.raw`이렇게 '동시에 만족하는 방향이 없다'는 사실을 승수의 존재로 바꿔주는 것이 선형부등식 시스템에 대한 표준적인 정리(Farkas의 보조정리와 그 일반화인 Gordan의 정리)다. 이 정리는, 제약이 지나치게 특이하지 않다는 constraint qualification 아래, 위 시스템이 해를 갖지 않는다는 것과 $\nabla f(x^*)$가 활성 제약들의 그래디언트 $\{\nabla g_i(x^*)\}_{i\in A}$의 음이 아닌 계수 조합으로 표현된다는 것이 동치임을 보장한다.`, blanks: [] },
+      { id: "s4", text: String.raw`Gordan의 정리를 적용하면, 어떤 $\mu_i^*\ge0\ (i\in A)$가 존재해서 $\nabla f(x^*) = $[[blank:나]] 를 만족한다.`,
+        blanks: [{ id: "나", latex: String.raw`-\sum_{i\in A}\mu_i^*\nabla g_i(x^*)`, why: String.raw`Gordan의 정리가 보장하는 '음이 아닌 계수 조합' 관계를 그대로 옮겨 적은 것입니다. $\nabla f(x^*)$가 활성 제약 그래디언트들의 음이 아닌 조합의 반대 부호로 표현돼요.` }] },
+      { id: "s5", text: String.raw`이제 활성집합 바깥의 인덱스, 즉 $i\notin A$에 대해서는 $\mu_i^*=0$으로 정의를 확장한다. 그러면 방금 얻은 관계식은 활성이든 비활성이든 상관없이 $\nabla f(x^*)+\sum_{i=1}^m\mu_i^*\nabla g_i(x^*)=0$ 이라는 전체 합으로 다시 쓸 수 있다. 비활성 제약의 승수가 $0$이라 더해도 값이 바뀌지 않기 때문이다. 이것이 바로 정류조건(stationarity)이다.`, blanks: [] },
+      { id: "s6", text: String.raw`남은 세 조건을 확인한다. 원시실현가능성 $g_i(x^*)\le0$은 애초에 $x^*$가 실현가능한 점이라는 가정 그 자체에서 나온다. 쌍대실현가능성 $\mu_i^*\ge0$은 활성 제약에서는 Gordan의 정리가 보장하고 비활성 제약에서는 $0$으로 정의했으니 자명하게 성립한다. 상보슬랙성은 두 경우로 나눠 확인한다. $i\in A$이면 정의상 $g_i(x^*)=0$이라 $\mu_i^*g_i(x^*)=\mu_i^*\times0=0$이고, $i\notin A$이면 $\mu_i^*=0$이라 $\mu_i^*g_i(x^*)=0\times g_i(x^*)=0$이다. 어느 경우든 $\mu_i^*g_i(x^*) = $[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`활성 제약에서는 $g_i(x^*)=0$이라서, 비활성 제약에서는 $\mu_i^*=0$이라서, 두 경우 모두 곱이 $0$이 됩니다. 상보슬랙성은 이렇게 항상 두 경우 중 하나로 성립해요.` }] },
+      { id: "s7", text: String.raw`정리하면 $x^*$에서 정류조건 $\nabla f(x^*)+\sum_i\mu_i^*\nabla g_i(x^*)=0$, 원시실현가능성 $g_i(x^*)\le0$, 쌍대실현가능성 $\mu_i^*\ge0$, 상보슬랙성 $\mu_i^*g_i(x^*)=0$이 모두 동시에 성립한다. 이 네 조건을 통틀어 KKT 조건이라 부른다. 제약이 하나뿐이었던 lagrange-kkt 항목의 논증은 이 일반적인 유도에서 $m=1$인 특수한 경우일 뿐이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "라그랑주 승수법과 KKT 조건", slug: "lagrange-kkt" },
+      { label: "라그랑주 쌍대성과 약쌍대성 정리", slug: "lagrangian-duality" },
+      { label: "볼록함수의 1차 조건과 전역최소", slug: "convexity-first-order-condition" }
+    ]
+  },
+
+  "euler-lagrange-equation": {
+    title: "오일러-라그랑주 방정식의 유도",
+    domain: "calc2",
+    subLabel: "변분법",
+    explanation: String.raw`신경망 학습은 유한한 개수의 파라미터를 조정하는 최적화처럼 보이지만, 더 넓게 보면 사실 함수 하나를 통째로 최적화하는 문제의 특수한 경우예요. 함수 하나, 혹은 곡선 하나를 입력받아서 숫자 하나를 내놓는 것을 범함수(functional)라고 부릅니다. 이 범함수를 최소화하는 함수 자체를 찾는 이론이 변분법이고, 그 답이 만족해야 하는 미분방정식이 오일러-라그랑주 방정식이에요. 확산모델을 시간을 촘촘하게 쪼개는 대신 연속시간 극한으로 보낼 때도, 신경망을 무한히 넓은 함수공간에서의 경사하강으로 볼 때도 결국 이 방정식과 같은 논리가 배경에 깔려 있습니다.<br><br><strong>명제.</strong> $F(x,y,y')$가 매끄러운 함수이고, 양 끝점 $y(a)=y_a$, $y(b)=y_b$가 고정된 함수들 중에서 범함수 $J[y]=\displaystyle\int_a^b F(x,y,y')\,dx$ 를 최소화하는 함수 $y$가 있다면, $y$는 모든 $x\in[a,b]$에서 오일러-라그랑주 방정식 $\dfrac{\partial F}{\partial y} - \dfrac{d}{dx}\dfrac{\partial F}{\partial y'} = 0$ 을 만족한다.`,
+    example: String.raw`<p>추상적인 변분 논증에 들어가기 전에, 가장 유명한 범함수인 평면 위 두 점 사이의 곡선 길이로 감을 잡아봅니다.</p>
+<p>$(0,0)$에서 $(1,1)$까지 가는 곡선 $y(x)$의 길이는 $J[y]=\int_0^1\sqrt{1+y'(x)^2}\,dx$ 입니다. 직선 $y=x$를 따라가면 $y'=1$이라 길이는 다음과 같습니다.</p>
+$$J[x\mapsto x]=\int_0^1\sqrt{1+1^2}\,dx=\sqrt2\approx1.4142$$
+<p>이번엔 양 끝점은 그대로 고정한 채 살짝 흔들어본 곡선 $y(x)=x+0.1\sin(\pi x)$를 씁니다. $\sin(0)=\sin(\pi)=0$이라 끝점 조건은 그대로 지켜집니다. 이 곡선의 길이를 심프슨 공식으로 근사하면 다음과 같습니다.</p>
+$$J[x\mapsto x+0.1\sin(\pi x)]\approx1.4230$$
+<p>직선보다 살짝 구불거리게 만들었을 뿐인데 길이가 $\sqrt2\approx1.4142$보다 커졌습니다. 아래 증명은 이 직선이 우연히 짧은 게 아니라, $F(x,y,y')=\sqrt{1+y'^2}$를 오일러-라그랑주 방정식에 넣으면 정확히 직선만이 해가 된다는 사실을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$y^*(x)$가 양 끝점 조건 $y(a)=y_a,\,y(b)=y_b$를 만족하는 함수들 중에서 $J[y]=\int_a^b F(x,y,y')\,dx$를 실제로 최소화하는 함수라고 하자. 지금 목표는 $y^*$가 만족해야 하는 미분방정식을 찾는 것이다. 핵심 아이디어는, 유한차원에서 극값의 조건이 '어느 방향으로 조금 움직여도 함숫값이 늘지 않는다'는 것이었듯이, 함수공간에서도 $y^*$를 임의의 방향으로 살짝 흔들었을 때 범함수값이 늘지 않아야 한다는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`이 '흔드는 방향'을 구체적으로 만들기 위해, 양 끝점에서 $0$이 되는 임의의 매끄러운 함수 $\eta(x)$($\eta(a)=\eta(b)=0$)와 작은 실수 $\varepsilon$을 써서 $y(x,\varepsilon)=y^*(x)+\varepsilon\eta(x)$ 라는 섭동을 만든다. $\eta(a)=\eta(b)=0$이므로 이 섭동도 여전히 같은 끝점 조건을 만족한다. 이 섭동을 넣은 범함수값을 $\varphi(\varepsilon)=J[y^*+\varepsilon\eta]$ 라 하면, $\varphi$는 이제 $\varepsilon$ 하나짜리 보통의 실함수다. $y^*$가 $J$를 최소화하므로 $\varphi(\varepsilon)$는 $\varepsilon=0$에서 최솟값을 갖고, 따라서 $\varphi'(0) = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`보통의 일변수함수가 극값을 갖는 지점에서는 도함수가 0이 된다는 미적분의 가장 기본적인 성질을 $\varphi(\varepsilon)$에 그대로 적용한 것입니다.` }] },
+      { id: "s3", text: String.raw`$\varphi(\varepsilon)=\int_a^b F(x,\,y^*+\varepsilon\eta,\,y^{*\prime}+\varepsilon\eta')\,dx$ 를 $\varepsilon$으로 미분한다. 적분 기호 아래에서 미분해도 되는 매끄러움 조건 아래, 연쇄법칙을 각 항에 적용하면 $\varphi'(\varepsilon)=\int_a^b\left[\dfrac{\partial F}{\partial y}\eta+\dfrac{\partial F}{\partial y'}\eta'\right]dx$ 를 얻는다. 여기서 편미분들은 모두 $(x,\,y^*+\varepsilon\eta,\,y^{*\prime}+\varepsilon\eta')$에서 계산된 값이다.`, blanks: [] },
+      { id: "s4", text: String.raw`$\varepsilon=0$을 대입하면 $\varphi'(0)=\int_a^b\left[\dfrac{\partial F}{\partial y}\eta+\dfrac{\partial F}{\partial y'}\eta'\right]dx=0$ 이고, 이제 편미분은 모두 $(x,y^*,y^{*\prime})$에서 계산된 값이다. 둘째 항 $\int_a^b \dfrac{\partial F}{\partial y'}\eta'\,dx$ 에 부분적분을 적용하면, $u=\partial F/\partial y'$, $dv=\eta'dx$로 두어 $\int_a^b \dfrac{\partial F}{\partial y'}\eta'\,dx = \left[\dfrac{\partial F}{\partial y'}\eta\right]_a^b - \int_a^b \dfrac{d}{dx}\left(\dfrac{\partial F}{\partial y'}\right)\eta\,dx$ 를 얻는데, $\eta(a)=\eta(b)=0$이므로 경계항은 [[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`$\eta$가 양 끝점에서 $0$으로 정의된 함수이므로, 경계에서 값을 매기는 $\left[\frac{\partial F}{\partial y'}\eta\right]_a^b$는 양쪽 다 $0$을 곱한 값이라 사라집니다.` }] },
+      { id: "s5", text: String.raw`경계항이 사라지므로 $\varphi'(0)=\int_a^b\left[\dfrac{\partial F}{\partial y}-\dfrac{d}{dx}\dfrac{\partial F}{\partial y'}\right]\eta\,dx = 0$ 을 얻는다. 그런데 이 등식은 특정 $\eta$ 하나에서만 성립하는 게 아니라, 양 끝점에서 $0$이 되는 매끄러운 함수 $\eta$라면 어떤 것을 골라도 성립해야 한다. $y^*$가 최소화 함수라면 그 방향이 어느 쪽이든 $\varphi'(0)=0$이 항상 성립하기 때문이다.`, blanks: [] },
+      { id: "s6", text: String.raw`임의의 $\eta$에 대해 $\int_a^b\left[\dfrac{\partial F}{\partial y}-\dfrac{d}{dx}\dfrac{\partial F}{\partial y'}\right]\eta\,dx=0$ 이 성립하려면, 대괄호 안의 식이 어느 한 점에서라도 $0$이 아니라면 그 점 근처에서만 값이 크고 나머지에서는 $0$인 $\eta$를 골라 적분값을 $0$이 아니게 만들 수 있어 모순이 생긴다(변분법의 기본정리). 그러므로 대괄호 안은 모든 $x\in[a,b]$에서 [[blank:다]] 이어야 한다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`적분이 임의의 $\eta$에 대해 항상 $0$이 되려면, 피적분함수의 나머지 부분(대괄호 안)이 어느 구간에서라도 $0$이 아니면 그 구간에 집중된 $\eta$로 적분값을 $0$이 아니게 만들 수 있어 모순이 됩니다. 그래서 대괄호 자체가 항등적으로 $0$이어야 해요.` }] },
+      { id: "s7", text: String.raw`정리하면 $\dfrac{\partial F}{\partial y} - \dfrac{d}{dx}\dfrac{\partial F}{\partial y'} = 0$ 이 $[a,b]$의 모든 점에서 성립한다. 이것이 오일러-라그랑주 방정식이다. 유한차원에서 그래디언트가 0이라는 조건이, 함수공간에서는 이렇게 미분방정식 하나로 바뀐 셈이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "볼록 범함수의 유일한 전역최소", slug: "functional-convexity-unique-minimizer" },
+      { label: "부스팅과 함수공간 경사하강법", slug: "boosting-functional-gradient" }
+    ]
+  },
+
+  "functional-convexity-unique-minimizer": {
+    title: "볼록 범함수의 유일한 전역최소: 오일러-라그랑주 해의 최적성",
+    domain: "calc2",
+    subLabel: "변분법",
+    explanation: String.raw`convexity-first-order-condition 항목에서, 유한차원에서는 그래디언트가 0인 점이 볼록함수라면 곧바로 전역최소가 된다는 것을 봤어요. 그런데 이 논리가 함수 하나를 통째로 최적화하는 변분법에서도 그대로 통할까요. 답은 그렇다는 것이고, 그 다리를 놓아주는 것이 오일러-라그랑주 방정식이에요. 오일러-라그랑주 방정식을 만족하는 함수라도 범함수가 볼록하지 않다면 그저 안장점 같은 후보에 그칠 수 있어요. 하지만 범함수 자체가 볼록하다면, 그 방정식을 만족하는 해는 국소적인 후보가 아니라 함수공간 전체에서 가장 작은 값을 주는 진짜 전역최소가 됩니다.<br><br><strong>명제.</strong> 각 $x$에서 $F(x,\cdot,\cdot)$가 $(y,y')$에 대해 볼록이라 하자. $y^*$가 끝점 조건을 만족하며 오일러-라그랑주 방정식 $\dfrac{\partial F}{\partial y}=\dfrac{d}{dx}\dfrac{\partial F}{\partial y'}$ 을 만족하면, $y^*$는 같은 끝점 조건을 만족하는 모든 admissible 함수 $y$에 대해 $J[y^*]\le J[y]$를 만족하는 전역최소 함수이다. 나아가 $F(x,\cdot,\cdot)$가 $y'$에 대해 엄격하게 볼록이면 이 전역최소 함수는 유일하다.`,
+    example: String.raw`<p>추상적인 논증에 들어가기 전에 가장 다루기 쉬운 볼록 범함수인 $J[y]=\int_0^1 y'(x)^2\,dx$ (끝점 $y(0)=0,\ y(1)=1$ 고정)로 감을 잡아봅니다. $F(x,y,y')=y'^2$은 $y$와 무관하고 $y'$에 대해서는 아래로 볼록한 이차함수라 $y'$에 대해 엄격하게 볼록합니다(다만 $y$ 방향으로는 상수함수라 $(y,y')$ 전체를 기준으로 보면 엄격하지 않은, 그냥 볼록함수입니다).</p>
+<p>오일러-라그랑주 방정식을 적용하면 $\partial F/\partial y=0$이고 $d/dx(\partial F/\partial y')=d/dx(2y')=2y''$ 이므로 $y''=0$, 즉 $y$는 직선이어야 합니다. 끝점 조건까지 맞추면 $y^*(x)=x$ 이고 그 값은 다음과 같습니다.</p>
+$$J[y^*]=\int_0^1 1^2\,dx=1$$
+<p>양 끝점은 그대로 두고 살짝 흔든 곡선 $y(x)=x+0.1\sin(\pi x)$를 대신 넣어봅니다. $y'(x)=1+0.1\pi\cos(\pi x)$이고 이 곡선의 $J$값을 심프슨 공식으로 근사하면 다음과 같습니다.</p>
+$$J[x\mapsto x+0.1\sin(\pi x)]\approx1.0494$$
+<p>직선이 아닌 다른 admissible 함수를 넣었더니 값이 어김없이 $1$보다 커졌습니다. 아래 증명은 이 부등식이 $\sin(\pi x)$로 흔든 이 곡선 하나만의 우연이 아니라, $F$가 $(y,y')$에 대해 볼록하기만 하면 오일러-라그랑주 해가 어떤 admissible 함수와 비교해도 항상 이렇게 이기거나 최소한 지지 않는다는 사실을 일반적으로 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`같은 끝점 조건 $y(a)=y_a,\,y(b)=y_b$를 만족하는 함수들의 모임을 admissible 함수들이라 부르자. $y^*$는 이 모임 안에서 오일러-라그랑주 방정식을 만족하는 함수라 하고, 각 $x$에서 $F(x,\cdot,\cdot)$는 $(y,y')$에 대해 볼록이라 가정한다. 지금 목표는 $y^*$가 admissible 함수들 중에서 $J$를 가장 작게 만드는 전역최소 함수임을 보이는 것이다. 임의의 admissible 함수 $y$를 하나 골라 $\varphi(t)=J[(1-t)y^*+ty]$ ($t\in[0,1]$)를 정의하면 $\varphi(0)=J[y^*]$, $\varphi(1)=J[y]$이다.`, blanks: [] },
+      { id: "s2", text: String.raw`각 $x$에서 $F(x,\cdot,\cdot)$가 $(y,y')$에 대해 볼록이므로, 두 점 $(y^*,y^{*\prime})$과 $(y,y')$을 $(1-t):t$ 비율로 섞은 값에 대해 $F\big(x,(1-t)y^*+ty,\ (1-t)y^{*\prime}+ty'\big) \le (1-t)F(x,y^*,y^{*\prime})+tF(x,y,y')$ 가 모든 $x$에서 점별로 성립한다. 이 부등식을 $x$에 대해 $a$부터 $b$까지 적분하면(부등식은 적분해도 방향이 유지되므로) $\varphi(t) \le $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`(1-t)\varphi(0)+t\varphi(1)`, why: String.raw`점별 부등식의 우변을 그대로 $x$에 대해 적분하면 $(1-t)\int_a^bF(x,y^*,y^{*\prime})dx+t\int_a^bF(x,y,y')dx$가 되고, 이 두 적분은 각각 정의상 $\varphi(0)$과 $\varphi(1)$입니다.` }] },
+      { id: "s3", text: String.raw`이 부등식 $\varphi(t)\le(1-t)\varphi(0)+t\varphi(1)$ 은 정확히 $\varphi$가 (실수 하나짜리 변수 $t$에 대한) 볼록함수라는 정의 그 자체다. convexity-first-order-condition 항목에서 확인한 것처럼, 미분가능한 볼록함수는 $\varphi(1)\ge\varphi(0)+\varphi'(0)(1-0)=\varphi(0)+\varphi'(0)$ 을 만족한다. 그러니 $\varphi'(0)$이 정확히 얼마인지만 구하면 $J[y]$와 $J[y^*]$를 직접 비교할 수 있다.`, blanks: [] },
+      { id: "s4", text: String.raw`$h=y-y^*$ 라 두면 $h(a)=h(b)=0$이다(두 함수 모두 같은 끝점 조건을 만족하는 admissible 함수이기 때문이다). $\varphi(t)=J[y^*+th]$ 를 $t$로 미분해서 $t=0$에 대입하면(euler-lagrange-equation 항목의 s2, s3와 정확히 같은 계산이다) $\varphi'(0)=\int_a^b\left[\dfrac{\partial F}{\partial y}h+\dfrac{\partial F}{\partial y'}h'\right]dx$ 를 얻는다. 여기서 $y^*$가 오일러-라그랑주 방정식 $\dfrac{\partial F}{\partial y}=\dfrac{d}{dx}\dfrac{\partial F}{\partial y'}$ 를 만족한다는 가정을 대입하면, 곱셈미분 공식 $\dfrac{d}{dx}\big(\dfrac{\partial F}{\partial y'}h\big)=\dfrac{d}{dx}\big(\dfrac{\partial F}{\partial y'}\big)h+\dfrac{\partial F}{\partial y'}h'$ 을 거꾸로 읽으면 $\varphi'(0)=\int_a^b\dfrac{d}{dx}\Big(\dfrac{\partial F}{\partial y'}h\Big)dx = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\left[\frac{\partial F}{\partial y'}h\right]_a^b`, why: String.raw`미적분학의 기본정리에 의해 어떤 함수의 도함수를 적분하면 그 함수 자체의 경계값 차이가 나옵니다. $\frac{\partial F}{\partial y'}h$를 $x$로 미분한 걸 다시 적분했으니 원래 함수 $\frac{\partial F}{\partial y'}h$의 $[a,b]$ 경계값 차이가 남아요.` }] },
+      { id: "s5", text: String.raw`그런데 $h(a)=h(b)=0$이므로 이 경곗값은 $\dfrac{\partial F}{\partial y'}(b)h(b)-\dfrac{\partial F}{\partial y'}(a)h(a)=0-0=0$ 으로 완전히 사라진다. 그러니 $\varphi'(0)=0$ 이다. 오일러-라그랑주 방정식을 만족하는 함수는, 어떤 방향의 admissible 변화를 줘도 범함수값이 1차 근사에서 전혀 움직이지 않는다는 뜻이다.`, blanks: [] },
+      { id: "s6", text: String.raw`s3의 부등식 $\varphi(1)\ge\varphi(0)+\varphi'(0)$ 에 $\varphi'(0)=0$을 대입하면 $\varphi(1)\ge\varphi(0)$, 즉 $J[y] \ge $[[blank:다]] 이다. $y$는 처음부터 끝점 조건을 공유하는 임의의 admissible 함수였으므로, 이 부등식은 $y^*$가 그 함수 공간 전체에서 범함수값이 가장 작은 전역최소 함수임을 뜻한다.`,
+        blanks: [{ id: "다", latex: String.raw`J[y^*]`, why: String.raw`$\varphi(0)=J[y^*]$, $\varphi(1)=J[y]$로 정의했으므로 $\varphi(1)\ge\varphi(0)$을 원래 표기로 되돌리면 $J[y]\ge J[y^*]$가 됩니다.` }] },
+      { id: "s7", text: String.raw`만약 $F(x,\cdot,\cdot)$가 $y'$에 대해 엄격하게 볼록하다면, 유일성도 따라온다. $y\ne y^*$인 admissible 함수를 하나 잡으면 $h=y-y^*$는 양 끝점에서 $0$이지만 항등적으로 $0$은 아니므로, $h$가 상수함수가 아니려면 $h'$은 어떤 양의 측도를 가진 구간에서 반드시 $0$이 아니어야 한다. $h'\ne0$인 그 구간에서는 s2의 점별 부등식이 엄격해지고, 이는 적분한 뒤에도 $\varphi(t)<(1-t)\varphi(0)+t\varphi(1)$ 이라는 엄격한 부등식으로 이어진다. 이 엄격한 볼록성과 $\varphi'(0)=0$을 함께 쓰면 $\varphi(1)>\varphi(0)$, 즉 $J[y]>J[y^*]$가 되어 $y^*$와 같은 최소값을 갖는 다른 admissible 함수는 존재할 수 없다. 유한차원에서 강볼록성이 유일한 전역최소를 보장했던 논리가, 함수공간에서는 $F$의 $y'$에 대한 엄격한 볼록성이라는 조건으로 그대로 이어지는 것이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "오일러-라그랑주 방정식의 유도", slug: "euler-lagrange-equation" },
+      { label: "볼록함수의 1차 조건과 전역최소", slug: "convexity-first-order-condition" },
+      { label: "강볼록성과 유일한 전역최소값의 존재", slug: "strong-convexity-unique-minimum" }
+    ]
+  },
+
+  "shannon-channel-capacity": {
+    title: String.raw`섀넌의 채널용량 정리`,
+    domain: "info2",
+    subLabel: String.raw`레이트-왜곡 · 채널용량`,
+    explanation: String.raw`통신선에 잡음이 섞여 들어오면 아무리 좋은 부호를 써도 오류를 완전히 없앨 수는 없을 것 같습니다. 그런데 섀넌은 그렇지 않다고 말합니다. 잡음이 있어도 전송률이 어떤 문턱값 아래이기만 하면 오류확률을 원하는 만큼 $0$에 가깝게 만드는 부호가 반드시 존재한다는 거예요. 문제는 그 문턱값이 왜 하필 상호정보량의 최댓값 $C=\max_{p(x)} I(X;Y)$인가 하는 것입니다.<br><br><strong>명제.</strong> 이산 무기억 채널 $(\mathcal{X}, p(y|x), \mathcal{Y})$의 용량을 $C = \max_{p(x)} I(X;Y)$라 하자. 전송률 $R$인 부호열 $(2^{nR}, n)$의 오류확률 $P_e^{(n)}$이 $n\to\infty$일 때 $0$으로 수렴한다면 $R \le C$이다.`,
+    example: String.raw`<p>추상적인 부등식에 들어가기 전에 가장 단순한 채널로 감을 잡아봅니다.</p>
+<p>이진대칭채널(BSC)에서 비트가 뒤집힐 확률이 $p=0.1$이라고 합시다. 이 채널의 용량은 $C = 1 - H_b(0.1)$이고, $H_b(0.1) = -0.1\log_2 0.1 - 0.9\log_2 0.9 \approx 0.469$ 비트이므로 $C\approx 0.531$ 비트/사용입니다.</p>
+$$C = 1 - H_b(0.1) \approx 1 - 0.469 = 0.531 \text{ bits}$$
+<p>이 말은, 전송률을 $R=0.5$ 비트/사용으로 잡으면 오류확률을 원하는 만큼 $0$에 가깝게 만드는 부호가 존재하지만, $R=0.6$처럼 $C$를 넘겨버리면 부호를 아무리 정교하게 짜도 오류확률이 어떤 양수 아래로는 절대 내려가지 않는다는 뜻입니다. 아래 증명은 후자, 즉 $R>C$가 왜 불가능한지(역정리)를 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`먼저 문제를 세팅한다. 메시지 $W$는 $\{1,\dots,2^{nR}\}$ 위에서 균등분포를 따르고, 부호기는 이를 $X^n(W)$로 사상하며, 채널은 무기억적으로 $Y^n$을 만들어낸다. 복호기는 $\hat W = g(Y^n)$으로 추정한다. 목표는 오류확률 $P_e^{(n)} = \Pr(\hat W \ne W)$가 $n\to\infty$에서 $0$으로 수렴하면 $R\le C$임을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$W$가 $2^{nR}$개 값 위에서 균등분포이므로 $H(W) = nR$이다. 엔트로피와 상호정보량의 관계로 $nR = H(W) = H(W|Y^n) + ($[[blank:가]]$)$ 로 쓸 수 있다.`,
+        blanks: [{ id: "가", latex: String.raw`I(W;Y^n)`, why: String.raw`엔트로피는 항상 조건부엔트로피와 상호정보량의 합으로 쪼개져요 ($H(W)=H(W|Y^n)+I(W;Y^n)$). 여기서는 그 항등식을 그대로 적용한 것뿐입니다.` }] },
+      { id: "s3", text: String.raw`$\hat W = g(Y^n)$은 $Y^n$의 함수이므로 조건을 걸수록 불확실성이 줄어 $H(W|Y^n) \le H(W|\hat W)$이다. 여기에 파노(Fano)의 부등식을 적용하면 $H(W|\hat W) \le H_b(P_e^{(n)}) + P_e^{(n)}\log(2^{nR}-1) \le ($[[blank:나]]$)$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`1 + P_e^{(n)}\, nR`, why: String.raw`이진엔트로피 $H_b(\cdot)$는 어떤 확률을 넣어도 $1$비트를 넘지 않고, $\log(2^{nR}-1)\le \log 2^{nR} = nR$이라서 두 항을 각각 위에서 눌러 더한 거예요.` }] },
+      { id: "s4", text: String.raw`한편 $W \to X^n \to Y^n$은 마르코프 연쇄를 이룬다. $W$가 정해지면 부호기가 결정적으로 $X^n$을 만들고, 채널은 $X^n$에만 의존해 $Y^n$을 낳기 때문이다. 데이터처리부등식에 의해 $I(W;Y^n) \le I(X^n;Y^n)$이다.`, blanks: [] },
+      { id: "s5", text: String.raw`채널이 무기억적이므로 $n$번 사용에 걸친 상호정보량은 각 사용 시점의 상호정보량 합을 넘지 않아 $I(X^n;Y^n) \le \sum_{i=1}^n I(X_i;Y_i)$이다. 그런데 용량의 정의 $C=\max_{p(x)} I(X;Y)$에 의해 각 항은 $I(X_i;Y_i)\le C$이므로 $\sum_{i=1}^n I(X_i;Y_i) \le ($[[blank:다]]$)$ 이다.`,
+        blanks: [{ id: "다", latex: String.raw`nC`, why: String.raw`$C$는 입력분포를 무엇으로 고르든 상호정보량이 넘을 수 없는 최댓값이에요. 그러니 $n$개 항을 각각 $C$로 누르고 더하면 $nC$가 나옵니다.` }] },
+      { id: "s6", text: String.raw`이제 모두 합치면 $nR = H(W|Y^n) + I(W;Y^n) \le \big(1+P_e^{(n)} nR\big) + nC$ 이다. 양변을 $n$으로 나누면 $($[[blank:라]]$)$ 가 되고, $n\to\infty$일 때 $P_e^{(n)}\to 0$이라는 가정을 넣으면 우변의 앞 두 항이 모두 사라진다.`,
+        blanks: [{ id: "라", latex: String.raw`R \le \frac{1}{n} + P_e^{(n)} R + C`, why: String.raw`$nR \le (1+P_e^{(n)}nR)+nC$의 양변을 $n$으로 나누면 그대로 나오는 식이에요. $P_e^{(n)}$이 붙은 항과 $1/n$항은 $n\to\infty$에서 모두 $0$으로 사라집니다.` }] },
+      { id: "s7", text: String.raw`따라서 $R \le C$이다. 전송률이 용량을 넘어서면($R>C$) 아무리 정교한 부호를 써도 오류확률을 $0$으로 보낼 수 없다는 뜻이고, 이 논증이 바로 $C=\max_{p(x)} I(X;Y)$라는 형태가 나오는 이유다. 정보병목(information bottleneck)에서 표현 $Z$가 예측정보 $I(Z;Y)$를 최대화하려는 것도 같은 논리, 즉 상호정보량이 "전달 가능한 정보의 한계"라는 성질에서 나온다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "rate-distortion-convexity": {
+    title: String.raw`레이트-왜곡 함수의 볼록성`,
+    domain: "info2",
+    subLabel: String.raw`레이트-왜곡 · 채널용량`,
+    explanation: String.raw`손실압축에서는 원본을 조금 뭉개는 대신 비트를 아끼죠. 그런데 "허용 왜곡을 얼마나 늘리면 비트가 얼마나 줄어드나"를 그래프로 그리면 항상 특정한 모양이 나옵니다. 왜곡을 조금씩 늘려갈 때 비트가 줄어드는 속도가 점점 느려지는 모양, 즉 볼록함수 모양이에요. 이게 우연이 아니라 정보량의 구조에서 나오는 필연이라는 걸 보이려고 합니다.<br><br><strong>명제.</strong> 레이트-왜곡함수 $R(D) = \min_{p(\hat x|x):\, E[d(X,\hat X)]\le D} I(X;\hat X)$ 는 $D$에 대한 볼록함수다. 즉 임의의 $D_1, D_2$와 $\lambda\in[0,1]$에 대해 $R(\lambda D_1+(1-\lambda)D_2) \le \lambda R(D_1) + (1-\lambda) R(D_2)$ 가 성립한다.`,
+    example: String.raw`<p>추상적 정의에 들어가기 전에 가장 단순한 소스로 감을 잡아봅니다. $X\sim \text{Bernoulli}(1/2)$이고 해밍 왜곡을 쓰면 레이트-왜곡함수는 닫힌 형태로 $R(D) = 1 - H_b(D)$ ($0\le D\le 1/2$, $H_b$는 이진 엔트로피함수)로 알려져 있습니다.</p>
+<p>왜곡 한계를 $D_1=0.1$, $D_2=0.3$으로 잡으면 $R(0.1)=1-H_b(0.1)\approx 0.531$, $R(0.3)=1-H_b(0.3)\approx 0.119$ 비트입니다. 그 중간인 $D=0.2$에서는 $R(0.2)=1-H_b(0.2)\approx 0.278$ 비트입니다.</p>
+$$\frac{R(0.1)+R(0.3)}{2} \approx 0.325 \;\ge\; R(0.2) \approx 0.278$$
+<p>직선으로 이은 값($0.325$)이 실제 곡선 값($0.278$)보다 크죠. 곡선이 현(chord) 아래에 있다는 것, 이게 바로 볼록성입니다. 아래 증명은 이 성질이 임의의 소스와 왜곡함수에서 항상 성립함을 보입니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`레이트-왜곡함수는 왜곡 한계 $D$마다 그 한계를 만족하는 조건분포 $p(\hat x|x)$ 중 상호정보량 $I(X;\hat X)$을 최소로 만드는 값으로 정의된다. 전략은 $D_1, D_2$ 각각에서 최적을 이루는 조건분포 $p_1(\hat x|x), p_2(\hat x|x)$를 잡고, 이 둘을 섞어서 $D_\lambda = \lambda D_1+(1-\lambda)D_2$에서도 성립하는 후보를 직접 만들어보는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`두 조건분포를 같은 비율로 섞은 $p_\lambda(\hat x|x) := \lambda\, p_1(\hat x|x) + (1-\lambda)\, p_2(\hat x|x)$ 를 정의한다. 각 $x$에 대해 $p_\lambda(\cdot|x)$는 두 확률분포의 볼록결합이므로 그 자체로 유효한 확률분포다.`, blanks: [] },
+      { id: "s3", text: String.raw`이 $p_\lambda$가 만드는 기대왜곡은 $\mathbb E_\lambda[d(X,\hat X)] = \lambda\,\mathbb E_1[d(X,\hat X)] + (1-\lambda)\,\mathbb E_2[d(X,\hat X)]$ 인데, $d(x,\hat x)$가 $p(\hat x|x)$에 대해 선형인 기댓값이기 때문이다. 두 항이 각각 $D_1, D_2$였으므로 이는 $($[[blank:가]]$)$ 와 같다.`,
+        blanks: [{ id: "가", latex: String.raw`\lambda D_1 + (1-\lambda) D_2 = D_\lambda`, why: String.raw`기대왜곡은 확률분포에 대해 선형인 범함수라서, 두 분포를 $\lambda:(1-\lambda)$ 비율로 섞으면 왜곡값도 정확히 같은 비율로 섞여요. 그래서 $p_\lambda$는 왜곡 한계 $D_\lambda$를 정확히 만족하는 후보가 됩니다.` }] },
+      { id: "s4", text: String.raw`$p_\lambda$가 왜곡 제약 $\mathbb E_\lambda[d(X,\hat X)] \le D_\lambda$를 만족하는 하나의 후보이므로, $R(D_\lambda)$는 최소값이라는 정의에 의해 $R(D_\lambda) \le I_\lambda(X;\hat X)$ 이다. 여기서 $I_\lambda(X;\hat X)$는 $p_\lambda$가 만드는 상호정보량이다.`, blanks: [] },
+      { id: "s5", text: String.raw`이제 $I_\lambda(X;\hat X)$를 위에서 눌러야 한다. $I(X;\hat X) = D\big(p(x,\hat x)\,\|\,p(x)p(\hat x)\big)$로 쓰면, $p_\lambda(x,\hat x)$와 $p(x)p_\lambda(\hat x)$는 각각 $(p_1(x,\hat x), p(x)p_1(\hat x))$와 $(p_2(x,\hat x), p(x)p_2(\hat x))$의 $\lambda$-혼합이다. KL 발산이 두 인자에 대해 결합볼록(jointly convex)이라는 사실을 적용하면 $I_\lambda(X;\hat X) \le ($[[blank:나]]$)$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\lambda\, I_1(X;\hat X) + (1-\lambda)\, I_2(X;\hat X)`, why: String.raw`KL 발산 $D(p\|q)$는 $(p,q)$ 쌍에 대해 결합볼록이에요. 두 분포쌍을 $\lambda$로 섞은 결과의 KL은 각각의 KL을 $\lambda$로 섞은 값을 넘지 않는다는 뜻이고, 이걸 결합분포와 곱분포 쌍에 그대로 적용한 것입니다.` }] },
+      { id: "s6", text: String.raw`$p_1, p_2$는 각각 $D_1, D_2$에서 최적이었으므로 $I_1(X;\hat X)=R(D_1)$, $I_2(X;\hat X)=R(D_2)$이다. 앞 단계들을 모두 이으면 $R(D_\lambda) \le I_\lambda(X;\hat X) \le ($[[blank:다]]$)$ 를 얻는다.`,
+        blanks: [{ id: "다", latex: String.raw`\lambda R(D_1) + (1-\lambda) R(D_2)`, why: String.raw`바로 앞에서 얻은 부등식의 우변에 $I_1=R(D_1)$, $I_2=R(D_2)$를 대입하기만 하면 돼요.` }] },
+      { id: "s7", text: String.raw`따라서 임의의 $D_1, D_2, \lambda\in[0,1]$에 대해 $R(\lambda D_1+(1-\lambda)D_2) \le \lambda R(D_1)+(1-\lambda) R(D_2)$가 성립하고, 이는 정확히 볼록함수의 정의다. VAE의 재구성 손실과 KL 정규화 항 사이의 트레이드오프(ELBO)도 같은 곡선 위의 한 점을 고르는 문제이며, 이 곡선이 볼록하기 때문에 두 목표를 적절히 섞어도 "공짜 점심"은 없다는 사실이 보장된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "fisher-information-kl-local-expansion": {
+    title: String.raw`피셔정보와 KL 발산의 국소근사`,
+    domain: "info2",
+    subLabel: String.raw`정보기하 · PAC-베이즈`,
+    explanation: String.raw`파라미터를 아주 조금 움직였을 때 확률분포가 얼마나 달라지는지 재고 싶습니다. 유클리드 거리로 파라미터 차이 $\|d\theta\|$를 재면 분포가 실제로 얼마나 달라지는지는 반영되지 않아요. 그런데 KL 발산으로 재면 파라미터 공간에 자연스러운 "곡률"이 생깁니다. 그 곡률의 정체가 바로 피셔정보행렬이에요.<br><br><strong>명제.</strong> 매끄러운 파라메트릭 분포족 $p_\theta(x)$에 대해 $\theta$ 근방에서 $KL(p_\theta \,\|\, p_{\theta+d\theta}) = \frac{1}{2} d\theta^T I(\theta) d\theta + o(\|d\theta\|^2)$ 가 성립한다. 여기서 $I(\theta)_{ij} = \mathbb{E}_\theta\!\left[\frac{\partial \log p_\theta(x)}{\partial \theta_i}\frac{\partial \log p_\theta(x)}{\partial \theta_j}\right]$ 는 피셔정보행렬이다.`,
+    example: String.raw`<p>가장 단순한 경우로 감을 잡아봅니다. $p_\theta(x) = \mathcal N(\theta, 1)$, 평균이 파라미터인 정규분포족입니다.</p>
+<p>평균만 다른 두 정규분포 사이의 KL 발산은 잘 알려진 닫힌 형태를 갖습니다.</p>
+$$KL\big(\mathcal N(\theta,1)\,\|\,\mathcal N(\theta+d\theta,1)\big) = \frac{(d\theta)^2}{2}$$
+<p>예를 들어 $d\theta=0.1$이면 $KL=0.005$입니다. 이 분포족의 피셔정보는 $I(\theta)=1$로 상수입니다(평균 하나짜리 등분산 정규분포이기 때문입니다). 명제가 말하는 근사값은 $\frac12 (d\theta)^2 \cdot 1 = \frac{(d\theta)^2}{2}$로, 정규분포의 경우에는 근사가 아니라 정확히 일치합니다. 고차항이 전부 사라지는 특수한 경우인 셈이에요.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $f(d\theta) := KL\big(p_\theta \,\|\, p_{\theta+d\theta}\big)$ 를 $d\theta=0$ 근방에서 $2$차까지 테일러 전개하는 것이다. 정의를 풀어 쓰면 $f(d\theta) = \int p_\theta(x) \log\dfrac{p_\theta(x)}{p_{\theta+d\theta}(x)}\,dx$ 이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$d\theta=0$이면 $f(0) = \int p_\theta(x)\log 1\,dx = 0$이다. 즉 테일러 전개의 $0$차항은 사라진다. 이제 $1$차항과 $2$차항을 차례로 구한다.`, blanks: [] },
+      { id: "s3", text: String.raw`$d\theta$에 대해 $1$차 미분하면 $\dfrac{\partial f}{\partial d\theta_i}\Big|_{d\theta=0} = -\mathbb E_\theta[\partial_i \log p_\theta(x)]$ 이다. 그런데 $\partial_i p_\theta(x) = p_\theta(x)\,\partial_i \log p_\theta(x)$ 이므로 $\mathbb E_\theta[\partial_i \log p_\theta(x)] = \int \partial_i p_\theta(x)\,dx = \partial_i\!\int p_\theta(x)\,dx$ 이고, 확률분포는 전체적분이 항상 $1$이므로 이는 $($[[blank:가]]$)$ 이다. 따라서 $1$차항은 모두 사라진다.`,
+        blanks: [{ id: "가", latex: String.raw`\partial_i (1) = 0`, why: String.raw`어떤 $\theta$에서도 확률분포 전체의 적분은 상수 $1$이에요. 상수를 미분하면 $0$이니까, 스코어함수의 기댓값은 항상 $0$이라는 유명한 항등식이 나옵니다.` }] },
+      { id: "s4", text: String.raw`같은 방식으로 $2$차 미분을 구하면 $\dfrac{\partial^2 f}{\partial d\theta_i \partial d\theta_j}\Big|_{d\theta=0} = -\mathbb E_\theta[\partial_i\partial_j \log p_\theta(x)]$ 이다. 이것이 정말 피셔정보행렬 $I(\theta)_{ij} = \mathbb E_\theta[\partial_i\log p_\theta(x) \cdot \partial_j \log p_\theta(x)]$ 와 같은 양인지는 아직 확인하지 않았다. 다음 단계에서 직접 보인다.`, blanks: [] },
+      { id: "s5", text: String.raw`앞서 얻은 항등식 $\int \partial_i p_\theta(x)\,dx = 0$ 을 다시 $\theta_j$로 미분하면, 곱미분 $\partial_i\partial_j p_\theta = p_\theta\big(\partial_i\partial_j\log p_\theta + \partial_i\log p_\theta\cdot\partial_j \log p_\theta\big)$ 을 이용해 $0 = \mathbb E_\theta[\partial_i\partial_j \log p_\theta(x)] + ($[[blank:나]]$)$ 를 얻는다. 정리하면 $-\mathbb E_\theta[\partial_i\partial_j\log p_\theta(x)] = \mathbb E_\theta[\partial_i\log p_\theta(x)\cdot \partial_j \log p_\theta(x)] = I(\theta)_{ij}$ 이다. 즉 헤시안 형태와 스코어 곱 형태, 두 피셔정보 정의가 실제로 같은 것임이 확인된다.`,
+        blanks: [{ id: "나", latex: String.raw`\mathbb{E}_\theta[\partial_i \log p_\theta(x)\cdot \partial_j \log p_\theta(x)]`, why: String.raw`곱미분한 식을 $p_\theta$에 대해 적분하면, 이차항 $\partial_i\log p_\theta \cdot \partial_j \log p_\theta$의 기댓값이 그대로 남아요. 이게 피셔정보행렬의 표준적인 정의식입니다.` }] },
+      { id: "s6", text: String.raw`이제 $2$차 테일러 전개를 조립한다. $f(d\theta) = f(0) + \nabla f(0)^T d\theta + \frac12 d\theta^T H_f(0)\, d\theta + o(\|d\theta\|^2)$ 이고, 앞서 $f(0)=0$, $\nabla f(0)=0$, $H_f(0)_{ij} = I(\theta)_{ij}$ 임을 보였으므로 $f(d\theta) = ($[[blank:다]]$) + o(\|d\theta\|^2)$ 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\frac{1}{2} d\theta^T I(\theta)\, d\theta`, why: String.raw`$0$차항과 $1$차항이 모두 사라졌으니 남는 건 $2$차항, 즉 헤시안이 만드는 이차형식뿐이에요. 그 헤시안이 바로 피셔정보행렬이었죠.` }] },
+      { id: "s7", text: String.raw`따라서 $KL\big(p_\theta\|p_{\theta+d\theta}\big) = \dfrac12 d\theta^T I(\theta)\, d\theta + o(\|d\theta\|^2)$ 이다. 피셔정보행렬은 파라미터 공간 위에서 "분포가 실제로 얼마나 다른가"를 재는 국소 계량(metric)이 되고, 자연그래디언트는 유클리드 계량이 아니라 이 계량 기준으로 가장 가파른 방향을 따라간다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "pac-bayes-bound": {
+    title: String.raw`PAC-베이즈 일반화 경계`,
+    domain: "info2",
+    subLabel: String.raw`정보기하 · PAC-베이즈`,
+    explanation: String.raw`모델 하나만 고정해서 일반화 오차를 논하는 대신, 가설들에 대한 분포 $Q$ 전체의 평균 성능을 논하면 어떨까요. 그러면 "얼마나 복잡한 $Q$를 썼는가"가 일반화 오차에 그대로 값으로 나타납니다. 그 복잡도를 재는 자가 다름 아닌 KL 발산이에요.<br><br><strong>명제.</strong> 손실이 $[0,1]$에 있다고 하자. 가설공간 $\mathcal H$ 위의 사전분포 $P$(데이터를 보기 전에 고정)와 $n$개의 i.i.d. 샘플이 주어졌을 때, 확률 $1-\delta$ 이상으로, $\mathcal H$ 위의 모든 사후분포 $Q$에 대해 동시에 다음이 성립한다. $$\mathbb E_{h\sim Q}[L(h)] \;\le\; \mathbb E_{h\sim Q}[\hat L(h)] + \sqrt{\frac{KL(Q\|P) + \log(1/\delta)}{2n}}$$`,
+    example: String.raw`<p>추상적인 부등식이 실제로 어떤 크기인지 숫자로 먼저 봅니다.</p>
+<p>샘플 $n=1000$개, 사전 대비 사후분포의 복잡도가 $KL(Q\|P)=5$, 신뢰수준 $\delta=0.05$라고 합시다.</p>
+$$\sqrt{\frac{KL(Q\|P)+\log(1/\delta)}{2n}} = \sqrt{\frac{5 + \log(20)}{2000}} = \sqrt{\frac{5+2.996}{2000}} \approx 0.063$$
+<p>즉 경험오차가 $0.1$이었다면 진짜 위험도는 $0.163$을 넘지 않는다고 $95\%$ 확신할 수 있습니다. 만약 사후분포 $Q$를 사전 $P$에서 아주 멀리 옮겨서 $KL(Q\|P)=500$까지 커지면 여유항은 $\sqrt{502.996/2000}\approx 0.501$로 훌쩍 뛰어버립니다. $Q$가 데이터에 복잡하게 맞춰질수록 보장이 헐거워지는 거예요.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`손실 $\ell(h,z)\in[0,1]$이 주어졌다고 하자. 가설 $h$의 진짜위험도를 $L(h) := \mathbb E_z[\ell(h,z)]$, $n$개의 i.i.d. 표본에 대한 경험위험도를 $\hat L(h) := \frac1n\sum_{k=1}^n \ell(h,z_k)$ 라 하자. 데이터를 보기 전에 고정한 사전분포 $P$가 주어졌을 때, $\mathcal H$ 위의 모든 사후분포 $Q$에 대해 $\mathbb E_{h\sim Q}[L(h)]$를 $\mathbb E_{h\sim Q}[\hat L(h)]$와 $KL(Q\|P)$로 위에서 누르는 것이 목표다.`, blanks: [] },
+      { id: "s2", text: String.raw`고정된 $h$에 대해 $\hat L(h)$는 $[0,1]$에 있는 $n$개의 독립표본 평균이므로 평균이 $L(h)$이다. Hoeffding의 보조정리에 의해 임의의 $\lambda>0$에 대해 $\mathbb E_S\!\left[e^{\lambda(L(h)-\hat L(h))}\right] \le ($[[blank:가]]$)$ 이 성립한다.`,
+        blanks: [{ id: "가", latex: String.raw`e^{\lambda^2/(8n)}`, why: String.raw`$[0,1]$에 있는 확률변수 $n$개의 평균은 Hoeffding 보조정리에 의해 서브가우시안 성질을 갖고, 폭이 $1$인 표본 하나의 서브가우시안 파라미터가 $1/4$이라 $n$개 평균을 내면 지수 안의 계수가 $\lambda^2/(8n)$으로 줄어들어요.` }] },
+      { id: "s3", text: String.raw`이 부등식을 데이터와 무관하게 고정된 사전분포 $P$에 대해 기댓값을 취하면 $\mathbb E_{h\sim P}\,\mathbb E_S\!\left[e^{\lambda(L(h)-\hat L(h))}\right] \le e^{\lambda^2/(8n)}$ 이다. 두 기댓값이 모두 음이 아니므로 푸비니 정리로 순서를 바꾸면 $\mathbb E_S\,\mathbb E_{h\sim P}\!\left[e^{\lambda(L(h)-\hat L(h))}\right] \le e^{\lambda^2/(8n)}$ 이고, 마르코프 부등식을 적용하면 확률 $1-\delta$ 이상으로 $\mathbb E_{h\sim P}\!\left[e^{\lambda(L(h)-\hat L(h))}\right] \le \dfrac1\delta e^{\lambda^2/(8n)}$ 이 성립한다.`, blanks: [] },
+      { id: "s4", text: String.raw`도너스커-바라단(Donsker-Varadhan) 부등식은 임의의 함수 $\phi$와 분포 $Q$에 대해 $\mathbb E_{h\sim Q}[\phi(h)] \le KL(Q\|P) + \log \mathbb E_{h\sim P}[e^{\phi(h)}]$ 임을 말해준다. $\phi(h) = \lambda(L(h)-\hat L(h))$ 로 두고 앞 단계에서 얻은 확률 $1-\delta$ 사건 위에서 대입하면, $\mathcal H$ 위의 모든 $Q$에 대해 동시에 $\mathbb E_{h\sim Q}[\lambda(L(h)-\hat L(h))] \le ($[[blank:나]]$)$ 이 성립한다.`,
+        blanks: [{ id: "나", latex: String.raw`KL(Q\|P) + \log\dfrac{1}{\delta} + \dfrac{\lambda^2}{8n}`, why: String.raw`도너스커-바라단 부등식 우변의 $\log \mathbb E_{h\sim P}[e^{\phi(h)}]$ 자리에, 방금 마르코프 부등식으로 구한 상한 $\log(1/\delta)+\lambda^2/(8n)$을 그대로 대입한 거예요.` }] },
+      { id: "s5", text: String.raw`양변을 $\lambda>0$으로 나누면 $\mathbb E_{h\sim Q}[L(h)] - \mathbb E_{h\sim Q}[\hat L(h)] \le \dfrac{KL(Q\|P)+\log(1/\delta)}{\lambda} + \dfrac{\lambda}{8n}$ 이다. 이제 우변을 $\lambda$에 대해 최소화하는 문제가 남는다.`, blanks: [] },
+      { id: "s6", text: String.raw`우변 $\dfrac{A}{\lambda} + \dfrac{\lambda}{8n}$ (단 $A := KL(Q\|P)+\log(1/\delta)$)은 $\lambda = \sqrt{8nA}$에서 최솟값 $2\sqrt{A/(8n)} = \sqrt{A/(2n)}$을 갖는다. 이를 대입해 정리하면 $\mathbb E_{h\sim Q}[L(h)] \le \mathbb E_{h\sim Q}[\hat L(h)] + ($[[blank:다]]$)$ 를 얻는다.`,
+        blanks: [{ id: "다", latex: String.raw`\sqrt{\dfrac{KL(Q\|P)+\log(1/\delta)}{2n}}`, why: String.raw`$A/\lambda+\lambda/(8n)$ 꼴은 $\lambda=\sqrt{8nA}$에서 최소가 되고, 그 최솟값이 $\sqrt{A/(2n)}$이에요. $A$자리에 $KL(Q\|P)+\log(1/\delta)$를 다시 채운 것이 최종 형태입니다.` }] },
+      { id: "s7", text: String.raw`따라서 확률 $1-\delta$ 이상으로 $\mathcal H$ 위의 모든 사후분포 $Q$에 대해 동시에 $\mathbb E_{h\sim Q}[L(h)] \le \mathbb E_{h\sim Q}[\hat L(h)] + \sqrt{\dfrac{KL(Q\|P)+\log(1/\delta)}{2n}}$ 이 성립한다. $KL(Q\|P)$가 커질수록, 즉 사후분포가 사전분포에서 멀리 벗어나 데이터에 복잡하게 맞춰질수록 여유항이 커진다는 점에서 이 항이 사실상 모델 복잡도를 재는 자 역할을 한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "matrix-calculus-chain-rule": {
+    title: "행렬미적분의 연쇄법칙: 그래디언트의 전치 야코비안 전파",
+    domain: "linalg2",
+    subLabel: "행렬미적분 · 텐서",
+    explanation: String.raw`신경망은 여러 층을 통과하는 함수 합성이에요. 순전파는 입력을 층마다 선형변환하고 비선형함수를 씌워 출력을 만드는 과정이고, 역전파는 정확히 그 반대 방향으로 그래디언트를 실어 나르는 과정이에요. 그런데 왜 역전파에서는 그래디언트에 원래 가중치행렬이 아니라 그 전치행렬이 곱해질까요. 답은 다변수 함수의 연쇄법칙을 성분 하나하나 풀어보면 저절로 나옵니다.<br><br><strong>명제.</strong> $W\in\mathbb{R}^{m\times n}$, $x\in\mathbb{R}^n$, $y=Wx\in\mathbb{R}^m$이고 $z=f(y)$가 스칼라값을 내는 함수라 하자. 그래디언트를 열벡터로 표기할 때 $\dfrac{\partial z}{\partial x} = W^T\dfrac{\partial z}{\partial y}$ 가 성립한다.`,
+    example: String.raw`<p>추상적인 지표(인덱스) 계산에 들어가기 전에 작은 행렬 하나로 직접 확인해보면 명제가 말하는 바가 분명해집니다.</p>
+<p>$W=\begin{pmatrix}1&2\\3&4\end{pmatrix}$, $x=(1,1)^T$이라 하고 $y=Wx$를 계산하면 $y=(1\times1+2\times1,\ 3\times1+4\times1)^T=(3,7)^T$입니다.</p>
+<p>$z=f(y)=y_1^2+y_2^2$ 이라 두면 $\dfrac{\partial z}{\partial y}=(2y_1,\,2y_2)^T=(6,14)^T$입니다.</p>
+<p>이제 $z$를 아예 $x$만의 함수로 풀어써서 직접 미분해봅니다. $y_1=x_1+2x_2$, $y_2=3x_1+4x_2$이므로 $z=(x_1+2x_2)^2+(3x_1+4x_2)^2$이고, 이를 그대로 미분하면 $\dfrac{\partial z}{\partial x_1}=2y_1+6y_2=2(3)+6(7)=48$, $\dfrac{\partial z}{\partial x_2}=4y_1+8y_2=4(3)+8(7)=68$입니다.</p>
+<p>명제가 말하는 $W^T\dfrac{\partial z}{\partial y}$도 계산해봅니다. $W^T=\begin{pmatrix}1&3\\2&4\end{pmatrix}$이므로 $W^T(6,14)^T=(1\times6+3\times14,\ 2\times6+4\times14)^T=(48,68)^T$입니다. 직접 미분한 결과와 정확히 일치합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`목표는 $z$를 $x$의 각 성분 $x_j$로 미분한 값을 구하는 것이다. $x_j$가 $z$에 직접 영향을 주는 게 아니라, 먼저 $y=Wx$를 거쳐서 $y_1,\ldots,y_m$ 전부에 영향을 준 다음, 그 $y_1,\ldots,y_m$을 통해서만 $z=f(y)$에 영향을 준다는 구조를 그대로 수식에 반영해야 한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$z$가 $y_1,\ldots,y_m$이라는 $m$개의 경로를 거쳐 $x_j$에 의존하므로, 다변수 함수의 연쇄법칙에 따르면 $z$를 $x_j$ 하나로 미분한 값은 각 경로의 기여를 모두 더한 것과 같다: $\dfrac{\partial z}{\partial x_j} = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\sum_{i=1}^m \dfrac{\partial z}{\partial y_i}\dfrac{\partial y_i}{\partial x_j}`, why: String.raw`$z$가 $y_1,\ldots,y_m$이라는 여러 중간변수를 거쳐서 $x_j$ 하나에 의존할 때, 다변수 연쇄법칙은 각 중간변수를 통과하는 경로의 기여 $\frac{\partial z}{\partial y_i}\frac{\partial y_i}{\partial x_j}$를 전부 더하라고 말해줘요.` }] },
+      { id: "s3", text: String.raw`이제 $\dfrac{\partial y_i}{\partial x_j}$부터 구한다. $y=Wx$의 $i$번째 성분은 $y_i=\sum_{k=1}^n W_{ik}x_k$로 쓸 수 있고, 이를 $x_j$로 미분하면 $x_j$가 곱해진 항 $W_{ij}x_j$ 하나만 살아남아 $\dfrac{\partial y_i}{\partial x_j}=W_{ij}$를 얻는다.`, blanks: [] },
+      { id: "s4", text: String.raw`$\dfrac{\partial y_i}{\partial x_j}=W_{ij}$를 s2에서 얻은 식에 대입하면 $\dfrac{\partial z}{\partial x_j} = \sum_{i=1}^m W_{ij}\dfrac{\partial z}{\partial y_i}$ 를 얻는다. 전치행렬의 정의 $(W^T)_{ji}=W_{ij}$를 쓰면 이 합은 $W^T\dfrac{\partial z}{\partial y}$라는 벡터의 $j$번째 성분과 정확히 같은 식이다. 즉 $\Big(W^T\dfrac{\partial z}{\partial y}\Big)_j = \sum_{i=1}^m (W^T)_{ji}\dfrac{\partial z}{\partial y_i} = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sum_{i=1}^m W_{ij}\dfrac{\partial z}{\partial y_i}`, why: String.raw`전치행렬은 $(W^T)_{ji}=W_{ij}$를 만족하므로, $(W^T)_{ji}$ 자리에 $W_{ij}$를 그대로 바꿔 넣으면 나오는 식이에요. 이 값이 바로 앞서 얻은 $\frac{\partial z}{\partial x_j}$의 식과 똑같아요.` }] },
+      { id: "s5", text: String.raw`모든 $j=1,\ldots,n$에 대해 $\dfrac{\partial z}{\partial x_j} = \Big(W^T\dfrac{\partial z}{\partial y}\Big)_j$가 성립하므로, 이 값들을 하나의 열벡터로 모으면 $\dfrac{\partial z}{\partial x} = W^T\dfrac{\partial z}{\partial y}$를 얻는다. 이것이 이 정리의 핵심 등식이다.`, blanks: [] },
+      { id: "s6", text: String.raw`이 등식은 층이 여러 개 쌓인 신경망에도 그대로 반복 적용된다. $x^{(0)}\xrightarrow{W_1}x^{(1)}\xrightarrow{W_2}\cdots\xrightarrow{W_L}x^{(L)}$이고 $z=f(x^{(L)})$이라 하자. 맨 마지막 층부터 거꾸로 이 등식을 한 번씩 적용하면 $\dfrac{\partial z}{\partial x^{(L-1)}}=W_L^T\dfrac{\partial z}{\partial x^{(L)}}$을 얻고, 그다음 층에서 다시 적용하면 $\dfrac{\partial z}{\partial x^{(L-2)}}=W_{L-1}^T\dfrac{\partial z}{\partial x^{(L-1)}}$을 얻는 식으로 반복된다. 이를 맨 앞 층까지 이어가면 $\dfrac{\partial z}{\partial x^{(0)}} = W_1^TW_2^T\cdots$[[blank:다]]$\dfrac{\partial z}{\partial x^{(L)}}$ 형태로, 그래디언트가 각 층의 전치 가중치행렬을 순서대로 곱하며 거꾸로 흘러간다.`,
+        blanks: [{ id: "다", latex: String.raw`W_L^T`, why: String.raw`반복 적용을 끝까지 이어가면 맨 마지막 층의 전치행렬 $W_L^T$까지 곱해지는 사슬이 완성돼요. 그래서 $W_1^TW_2^T\cdots W_L^T$처럼 층 순서 그대로(앞에서부터) 전치행렬들을 곱한 것이 전체 그래디언트가 돼요.` }] },
+      { id: "s7", text: String.raw`역전파가 그래디언트에 매번 전치 가중치행렬 $W_l^T$를 곱하며 입력 쪽으로 되돌아가는 이유가 바로 이것이다. 순전파에서 $W_l$을 곱해 다음 층으로 정보를 밀어넣었다면, 역전파에서는 정확히 같은 $W_l$의 전치가 그래디언트를 이전 층으로 되돌리는 역할을 한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "kronecker-vec-identity": {
+    title: "크로네커 곱과 벡터화(vec) 항등식",
+    domain: "linalg2",
+    subLabel: "행렬미적분 · 텐서",
+    explanation: String.raw`행렬 하나를 통째로 다루는 대신 길게 편 벡터로 바꿔서 다루고 싶을 때가 있어요. 배치 연산이나 텐서 라이브러리에서 이런 변환은 아주 흔합니다. 그런데 $AXB$처럼 행렬 $X$를 양쪽에서 다른 행렬로 감싼 식을 벡터화하면 단순히 $X$를 늘어놓은 벡터에 뭘 곱해야 나올까요. 답은 크로네커 곱이에요. 이 항등식 하나로 복잡한 다중선형연산이 표준적인 행렬-벡터 곱 하나로 정리됩니다.<br><br><strong>명제.</strong> $A\in\mathbb{R}^{m\times n}$, $X\in\mathbb{R}^{n\times p}$, $B\in\mathbb{R}^{p\times q}$라 하자. $\mathrm{vec}(\cdot)$이 행렬의 열을 위에서부터 차례로 쌓아 하나의 열벡터로 만드는 연산이라 할 때, $\mathrm{vec}(AXB) = (B^T\otimes A)\,\mathrm{vec}(X)$ 가 성립한다.`,
+    example: String.raw`<p>추상적인 블록행렬 계산 전에 작은 숫자로 먼저 확인해봅니다.</p>
+<p>$A=\begin{pmatrix}1&2\\3&4\end{pmatrix}$, $X=\begin{pmatrix}1&0\\0&1\end{pmatrix}$, $B=\begin{pmatrix}5&6\\7&8\end{pmatrix}$ 이라 하자. 먼저 $AXB=AB$를 직접 계산하면 다음과 같습니다.</p>
+$$AXB=\begin{pmatrix}1&2\\3&4\end{pmatrix}\begin{pmatrix}5&6\\7&8\end{pmatrix}=\begin{pmatrix}19&22\\43&50\end{pmatrix}$$
+<p>열을 위에서부터 순서대로 쌓으면 $\mathrm{vec}(AXB)=(19,\,43,\,22,\,50)^T$입니다.</p>
+<p>이제 명제의 우변을 계산해봅니다. $B^T=\begin{pmatrix}5&7\\6&8\end{pmatrix}$이므로 크로네커 곱은 다음과 같습니다.</p>
+$$B^T\otimes A=\begin{pmatrix}5A&7A\\6A&8A\end{pmatrix}=\begin{pmatrix}5&10&7&14\\15&20&21&28\\6&12&8&16\\18&24&24&32\end{pmatrix}$$
+<p>$X=I_2$이므로 $\mathrm{vec}(X)=(1,0,0,1)^T$입니다. 이 벡터를 곱하면 행렬의 $1$열과 $4$열을 그대로 더한 것과 같으므로 $(5,15,6,18)^T+(14,28,16,32)^T=(19,43,22,50)^T$를 얻습니다. $\mathrm{vec}(AXB)$와 정확히 일치합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`$\mathrm{vec}(\cdot)$은 행렬의 $1$열, $2$열, $\ldots$을 순서대로 이어 붙여 하나의 열벡터로 만드는 연산이고, 크로네커 곱 $B^T\otimes A$는 $(j,k)$ 블록이 $(B^T)_{jk}A$인 $p\times p$짜리 블록행렬(각 블록의 크기는 $m\times n$)로 정의된다. 목표는 $Y:=AXB$의 벡터화가 정확히 $(B^T\otimes A)\mathrm{vec}(X)$와 같음을 보이는 것이다. 이를 위해 양변을 $p$개의 블록(=$Y$의 각 열)으로 나누어 하나씩 비교한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$Y=AXB$의 $j$번째 열은 오른쪽에서 표준기저벡터 $e_j$를 곱해 뽑아낼 수 있다: $y_j:=Ye_j = AXBe_j = AX b_j$ (여기서 $b_j:=Be_j$는 $B$의 $j$번째 열이다). $X$의 $k$번째 열을 $x_k$라 쓰면, 행렬-벡터 곱 $Xb_j$는 $X$의 열들을 $b_j$의 성분으로 가중합한 것이므로 $Xb_j = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\sum_{k=1}^p B_{kj}x_k`, why: String.raw`$Xb_j$는 $X$의 각 열 $x_k$를 $b_j$의 $k$번째 성분 $B_{kj}$만큼 가중해서 더한 것과 같아요. 행렬과 벡터를 곱할 때 결과가 그 행렬의 열들의 가중합으로 나온다는 가장 기본적인 성질이에요.` }] },
+      { id: "s3", text: String.raw`이를 대입하면 $y_j = A\Big(\sum_{k=1}^p B_{kj}x_k\Big) = \sum_{k=1}^p B_{kj}(Ax_k)$ 를 얻는다. 즉 $Y$의 $j$번째 열은 $\{Ax_k\}_{k=1}^p$를 $B$의 $j$번째 열의 성분들로 가중합한 것이다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 우변 $(B^T\otimes A)\mathrm{vec}(X)$ 쪽을 본다. $B^T\otimes A$는 $(j,k)$ 블록이 $(B^T)_{jk}A=B_{kj}A$인 블록행렬이므로, 그 $j$번째 블록행은 $[B_{1j}A\ \ B_{2j}A\ \cdots\ B_{pj}A]$ 이다. $\mathrm{vec}(X)$가 $x_1,\ldots,x_p$를 세로로 쌓은 벡터이므로, 블록행렬과 블록벡터의 곱에서 $j$번째 블록(길이 $m$)은 $\big[(B^T\otimes A)\mathrm{vec}(X)\big]_j = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sum_{k=1}^p B_{kj}Ax_k`, why: String.raw`블록행렬과 블록벡터의 곱은 같은 위치의 블록끼리 보통의 행렬곱을 한 뒤 전부 더하는 방식으로 계산돼요. $j$번째 블록행의 $k$번째 조각 $B_{kj}A$와 $\mathrm{vec}(X)$의 $k$번째 조각 $x_k$를 곱해서 $k=1$부터 $p$까지 더한 거예요.` }] },
+      { id: "s5", text: String.raw`s3에서 얻은 $y_j=\sum_{k=1}^p B_{kj}(Ax_k)$와 s4에서 얻은 $\big[(B^T\otimes A)\mathrm{vec}(X)\big]_j=\sum_{k=1}^p B_{kj}Ax_k$는 정확히 같은 식이다. 이 등식이 $j=1,\ldots,p$ 모두에서 성립하므로, $Y$의 $j$번째 열과 $(B^T\otimes A)\mathrm{vec}(X)$의 $j$번째 블록이 모든 $j$에서 일치한다. $\mathrm{vec}(Y)$도 정확히 $Y$의 열들을 순서대로 쌓은 것이므로 두 벡터는 완전히 같다.`, blanks: [] },
+      { id: "s6", text: String.raw`이 항등식이 왜 유용한지는 특수한 경우를 살펴보면 잘 드러난다. $B=I_p$로 두면 $B^T=I_p$이므로 명제는 $\mathrm{vec}(AX) = $[[blank:다]] 로 단순화된다. 즉 왼쪽에서만 선형변환을 가하는 연산도 벡터화하면 하나의 큰 행렬-벡터 곱으로 표현된다는 뜻이다.`,
+        blanks: [{ id: "다", latex: String.raw`(I_p\otimes A)\mathrm{vec}(X)`, why: String.raw`명제의 $(B^T\otimes A)$에 $B=I_p$(따라서 $B^T=I_p$)를 그대로 대입하면 나오는 식이에요.` }] },
+      { id: "s7", text: String.raw`이렇게 $\mathrm{vec}(AXB)=(B^T\otimes A)\mathrm{vec}(X)$라는 하나의 항등식으로, 행렬을 양쪽에서 감싸는 다중선형연산이 표준적인 행렬-벡터 곱으로 바뀐다. 실베스터 방정식 $AX+XB=C$를 벡터화해서 큰 선형시스템으로 한 번에 푸는 것부터, 배치 텐서 연산에서 여러 개의 작은 선형변환을 하나의 거대한 행렬곱으로 묶어 처리하는 것까지 이 항등식이 표준 도구로 쓰인다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "eckart-young-theorem": {
+    title: "에카르트-영(Eckart–Young) 정리: 프로베니우스 노름 최적 저랭크 근사",
+    domain: "linalg2",
+    subLabel: "랜덤행렬 · 저랭크",
+    explanation: String.raw`추천시스템이나 모델압축에서는 큰 행렬 $A$를 랭크가 훨씬 작은 행렬로 대체하고 싶을 때가 많아요. 그런데 "가장 닮은" 저랭크 행렬을 어떻게 골라야 원본 정보를 최대한 남길 수 있을까요. 놀랍게도 정답은 이미 알고 있는 도구인 특이값분해(SVD) 안에 그대로 들어 있습니다. 특이값이 작은 성분들을 잘라내기만 하면 그게 바로 최적의 답이에요.<br><br><strong>명제.</strong> $A\in\mathbb{R}^{m\times n}$의 특이값분해를 $A=\sum_{i=1}^r \sigma_i u_iv_i^T$ ($\sigma_1\ge\cdots\ge\sigma_r>0$, $r=\mathrm{rank}(A)$, $\{u_i\},\{v_i\}$는 각각 정규직교) 라 하자. $k<r$에 대해 절단된 SVD $A_k:=\sum_{i=1}^k\sigma_iu_iv_i^T$ 를 정의하면, $\mathrm{rank}(B)\le k$인 모든 행렬 $B$ 중 $A_k$가 프로베니우스 노름 $\|A-B\|_F$를 최소화하며, 그 최솟값은 $\|A-A_k\|_F=\sqrt{\sum_{i=k+1}^r\sigma_i^2}$ 이다.`,
+    example: String.raw`<p>추상적인 최적화 논증에 앞서, 대칭행렬 하나로 절단된 SVD가 실제로 최적인지 직접 확인해봅니다.</p>
+<p>$A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$는 대칭이라 SVD가 고유분해와 일치합니다. 고유값은 $3$과 $1$이고 각각의 고유벡터는 $(1,1)/\sqrt2$, $(1,-1)/\sqrt2$이므로 $\sigma_1=3,\,u_1=v_1=(1,1)/\sqrt2$이고 $\sigma_2=1,\,u_2=v_2=(1,-1)/\sqrt2$입니다.</p>
+<p>랭크-$1$ 절단 $A_1=\sigma_1u_1v_1^T$을 계산하면 다음과 같습니다.</p>
+$$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix}$$
+<p>오차는 $A-A_1=\begin{pmatrix}0.5&-0.5\\-0.5&0.5\end{pmatrix}$이고 $\|A-A_1\|_F=\sqrt{4\times0.25}=1$입니다. 명제가 예측하는 값 $\sqrt{\sigma_2^2}=\sqrt1=1$과 정확히 같습니다.</p>
+<p>이제 랭크가 같은 $1$인 다른 행렬과 비교해봅니다. $B=\begin{pmatrix}2&0\\0&0\end{pmatrix}$ (랭크 $1$)을 고르면 $A-B=\begin{pmatrix}0&1\\1&2\end{pmatrix}$이고 $\|A-B\|_F=\sqrt{0+1+1+4}=\sqrt6\approx2.449$로, $A_1$일 때의 오차 $1$보다 훨씬 큽니다. 절단된 SVD가 임의로 고른 저랭크 행렬보다 실제로 더 낫습니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 단계로 나눈다. 먼저 $A_k$ 자체의 오차 $\|A-A_k\|_F$를 직접 계산한다. 그다음 랭크가 $k$ 이하인 어떤 $B$를 골라도 이보다 오차를 더 줄일 수 없음을 보인다. 두 단계를 합치면 $A_k$가 최적임이 확정된다.`, blanks: [] },
+      { id: "s2", text: String.raw`$A-A_k=\sum_{i=k+1}^r\sigma_iu_iv_i^T$이다. 서로 다른 $i\neq j$에 대해 $\langle u_iv_i^T,\,u_jv_j^T\rangle_F=\mathrm{tr}(v_iu_i^Tu_jv_j^T)=(u_i^Tu_j)(v_i^Tv_j)=0$ 이므로(정규직교성), 이 랭크-$1$ 조각들은 프로베니우스 내적 기준으로 서로 수직이다. 따라서 프로베니우스 노름의 제곱은 각 조각의 노름 제곱을 그냥 더한 것과 같아 $\|A-A_k\|_F^2 = $[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\sum_{i=k+1}^r\sigma_i^2`, why: String.raw`서로 수직인 조각들의 합에서는 피타고라스 정리처럼 노름의 제곱이 각 조각 노름 제곱의 합이 돼요. 각 조각 $\sigma_iu_iv_i^T$의 프로베니우스 노름 제곱은 $\sigma_i^2\|u_i\|^2\|v_i\|^2=\sigma_i^2$이므로(단위벡터라 노름이 1) 이걸 $i=k+1$부터 $r$까지 더한 값이에요.` }] },
+      { id: "s3", text: String.raw`이제 $\mathrm{rank}(B)\le k$인 임의의 $B$를 잡고 $\|A-B\|_F^2\ge\sum_{i=k+1}^r\sigma_i^2$임을 보인다. $B$의 열공간(차원 $\le k$) 위로의 직교사영행렬을 $P$라 하면 $PB=B$이다. $(I-P)A$의 각 열은 $P$의 치역과 수직인 공간에 있고 $PA-B$의 각 열은 $P$의 치역 안에 있으므로, 두 행렬은 프로베니우스 내적 기준으로 서로 수직이다. 피타고라스 정리를 쓰면 $\|A-B\|_F^2 = \|(I-P)A\|_F^2+\|PA-B\|_F^2 \ge \|(I-P)A\|_F^2 = \|A\|_F^2-\|PA\|_F^2$ 를 얻는다.`, blanks: [] },
+      { id: "s4", text: String.raw`그러므로 $\|A-B\|_F^2$를 최소화하는 문제는 랭크가 $k$ 이하인 직교사영행렬 $P$ 중에서 $\|PA\|_F^2$를 최대화하는 문제로 바뀐다. $\|PA\|_F^2=\mathrm{tr}\big((PA)^T(PA)\big)=\mathrm{tr}(A^TP^TPA)$인데 $P$는 사영행렬이라 $P^TP=P^2=P$이므로, 대각합의 순환성질을 쓰면 $\|PA\|_F^2 = $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\mathrm{tr}(P\,AA^T)`, why: String.raw`$P^TP=P$를 대입하면 $\mathrm{tr}(A^TPA)$가 되고, 대각합은 $\mathrm{tr}(XY)=\mathrm{tr}(YX)$처럼 순환시켜도 값이 같으니 $\mathrm{tr}(A^TPA)=\mathrm{tr}(PAA^T)$로 다시 쓸 수 있어요.` }] },
+      { id: "s5", text: String.raw`$AA^T$는 대칭이고 $AA^T=\sum_{i=1}^r\sigma_i^2u_iu_i^T$처럼 고유분해된다(고유값 $\sigma_i^2$, 고유벡터 $u_i$). 대칭행렬과 랭크 제한이 있는 직교사영행렬 사이의 대각합을 최대화하는 표준적인 사실(극단적 대각합, 이른바 Ky Fan의 정리)에 따르면, 랭크가 $k$ 이하인 사영행렬 중 $\mathrm{tr}(P\,AA^T)$를 최대화하는 것은 $AA^T$의 가장 큰 고유값 $k$개에 대응하는 고유벡터들이 펼치는 공간 위로의 사영이며, 이때 최댓값은 $\sum_{i=1}^k\sigma_i^2$ 이다.`, blanks: [] },
+      { id: "s6", text: String.raw`s4·s5를 s3의 부등식에 대입하면 $\|A-B\|_F^2 \ge \|A\|_F^2-\sum_{i=1}^k\sigma_i^2$ 를 얻는다. 그런데 $\|A\|_F^2=\sum_{i=1}^r\sigma_i^2$이므로(SVD의 표준 성질), 이는 $\|A-B\|_F^2 \ge $[[blank:다]] 로 정리된다.`,
+        blanks: [{ id: "다", latex: String.raw`\sum_{i=k+1}^r\sigma_i^2`, why: String.raw`$\sum_{i=1}^r\sigma_i^2-\sum_{i=1}^k\sigma_i^2$는 처음 $k$개를 뺀 나머지, 즉 $i=k+1$부터 $r$까지의 합만 남아요.` }] },
+      { id: "s7", text: String.raw`s2에서 $\|A-A_k\|_F^2=\sum_{i=k+1}^r\sigma_i^2$임을 보였고, s3~s6에서 랭크 $k$ 이하인 어떤 $B$를 골라도 이 값 아래로는 내려갈 수 없음을 보였다. 두 결과를 합치면 $A_k$가 정확히 이 하한을 달성하는 최소해다. 이것이 추천시스템의 행렬분해에서 잠재요인의 개수를 정하는 절단 SVD, 그리고 신경망 가중치행렬을 저랭크로 압축하는 기법들이 모두 절단된 SVD를 표준 선택으로 삼는 이유다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
+
+  "marchenko-pastur-law": {
+    title: "마르첸코-파스투르(Marchenko–Pastur) 법칙: 표본공분산 고유값의 극한분포",
+    domain: "linalg2",
+    subLabel: "랜덤행렬 · 저랭크",
+    explanation: String.raw`PCA는 표본공분산행렬의 고유벡터를 신호로 해석합니다. 그런데 표본 수 $n$이 변수 개수 $p$에 비해 그리 크지 않다면, 진짜 신호가 하나도 없는 순수한 잡음에서조차 표본공분산행렬의 고유값들이 전부 $1$ 근처에 모이지 않고 넓은 구간에 퍼져버립니다. 마르첸코-파스투르 법칙은 이 퍼짐이 정확히 어떤 모양인지를 알려주는 정리예요. 여기서는 완전한 확률론적 증명 대신, 정리가 말하는 바를 정확히 세우고 $n\approx p$인 정방행렬에 가까운 극단 사례에서 핵심 모멘트 계산으로 그 논거를 확인합니다.<br><br><strong>명제.</strong> $X\in\mathbb{R}^{n\times p}$의 성분이 서로 독립이고 평균 $0$, 분산 $1$(4차 모멘트 $\mu_4$는 유한)인 확률변수들이라 하자. 표본공분산행렬을 $S=\frac1nX^TX$라 하고 $n,p\to\infty$일 때 $p/n\to c\in(0,\infty)$라 하자. 그러면 $S$의 고유값들의 경험분포(empirical spectral distribution)는 마르첸코-파스투르 분포로 수렴하며, 그 분포는 $[(1-\sqrt c)^2,(1+\sqrt c)^2]$ 구간에서 밀도를 가지고(첫 번째 모멘트는 $1$, 두 번째 모멘트는 $1+c$) $c>1$이면 $0$에 $1-1/c$만큼의 점질량을 추가로 갖는다.`,
+    example: String.raw`<p>$n=p=2$처럼 아주 작은 경우에는 극한법칙 자체가 정확히 나타나진 않지만, 손으로 계산해보면 잡음뿐인 행렬의 고유값이 왜 $1$ 하나로 뭉치지 않는지 직관을 얻을 수 있습니다.</p>
+<p>$X=\begin{pmatrix}1&1\\1&1\end{pmatrix}$ (평균 $0$, 분산 $1$인 $\pm1$ 확률변수의 한 실현값이라 하자)이라 하면 $S=\frac12X^TX=\frac12\begin{pmatrix}2&2\\2&2\end{pmatrix}=\begin{pmatrix}1&1\\1&1\end{pmatrix}$이고, 이 행렬의 고유값은 $2$와 $0$입니다. 두 값 모두 $1$이 아닙니다.</p>
+<p>$c=p/n=1$일 때 명제가 말하는 극한분포의 지지구간은 $[(1-\sqrt1)^2,(1+\sqrt1)^2]=[0,4]$인데, 방금 얻은 고유값 $0,2$는 정확히 이 구간 안에 있습니다. 다른 부호 조합을 뽑으면 고유값이 또 달라지겠지만(예: $X=\begin{pmatrix}1&-1\\1&1\end{pmatrix}$이면 $X^TX=2I$가 되어 $S=I$, 고유값이 둘 다 $1$), 매번 $[0,4]$ 구간 안에서 요동칩니다.</p>
+<p>아래 증명은 $n,p\to\infty$로 보냈을 때 이 요동의 크기(분산)가 정확히 $c$로 수렴한다는 것을 모멘트 계산으로 확인합니다.</p>`,
+    sections: [
+      { id: "s1", text: String.raw`엄밀한 증명은 스틸체스 변환이나 레졸번트(resolvent) 방법으로 전체 분포의 수렴을 보이지만, 여기서는 그 핵심을 담고 있는 첫걸음인 모멘트법(method of moments)만 수행한다. 경험분포의 $k$번째 모멘트는 $m_k:=\frac1p E[\mathrm{tr}(S^k)]$로 정의되는데, $k=1,2$에 대해 이 값이 마르첸코-파스투르 분포의 모멘트($m_1=1$, $m_2=1+c$)와 정확히 일치함을 확인한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$S=\frac1nX^TX$의 $i$번째 대각성분은 $S_{ii}=\frac1n\sum_{k=1}^nX_{ki}^2$이다. $X$의 성분들이 평균 $0$, 분산 $1$이므로 $E[X_{ki}^2]=1$이고, 따라서 $E[S_{ii}] = \frac1n\sum_{k=1}^n E[X_{ki}^2] = $[[blank:가]] 이다. 이는 $i$에 상관없이 항상 같으므로 $m_1=\frac1pE[\mathrm{tr}(S)]$도 같은 값이다.`,
+        blanks: [{ id: "가", latex: String.raw`1`, why: String.raw`$\frac1n$과 $n$개 항 각각의 기댓값 $1$을 곱해서 더하면 $\frac1n\times n\times1=1$이 돼요. 표본 수 $n$과 무관하게 항상 $1$이라는 게 핵심이에요.` }] },
+      { id: "s3", text: String.raw`이제 $E[\mathrm{tr}(S^2)]=\frac1{n^2}E[\mathrm{tr}((X^TX)^2)]$을 구한다. $X^TX$가 대칭이므로 $\mathrm{tr}((X^TX)^2)=\sum_{i,j=1}^p(X^TX)_{ij}^2=\sum_{i,j=1}^p\Big(\sum_{k=1}^nX_{ki}X_{kj}\Big)^2=\sum_{i,j=1}^p\sum_{k,l=1}^nX_{ki}X_{kj}X_{li}X_{lj}$ 로 전개된다. 성분들이 서로 독립이고 평균이 $0$이므로, 네 인자 $X_{ki},X_{kj},X_{li},X_{lj}$ 중 어느 하나라도 나머지와 짝을 이루지 못하고 홀로 남으면 기댓값이 $0$이 된다. 그래서 살아남는 항은 $(i=j,\,k=l)$, $(i=j,\,k\neq l)$, $(i\neq j,\,k=l)$ 세 가지 경우뿐이다.`, blanks: [] },
+      { id: "s4", text: String.raw`세 경우를 각각 세어본다. $(i=j,k=l)$인 경우는 $X_{ki}^4$의 기댓값 $\mu_4$가 나오고 이런 $(i,k)$ 쌍은 $pn$개다. $(i=j,k\neq l)$인 경우는 $X_{ki}^2X_{li}^2$의 기댓값이 $1\times1=1$이고 이런 $(i,k,l)$ 조합은 $pn(n-1)$개다. $(i\neq j,k=l)$인 경우는 $X_{ki}^2X_{kj}^2$의 기댓값이 $1$이고 이런 $(i,j,k)$ 조합은 $p(p-1)n$개다. 이를 모두 더하면 $E[\mathrm{tr}((X^TX)^2)] = pn\mu_4 + pn(n-1) + $[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`p(p-1)n`, why: String.raw`$(i\neq j,\,k=l)$ 경우의 조합 개수 $p(p-1)n$에 그 경우의 기댓값 $1$을 곱한 항이에요. 앞의 두 항과 같은 방식으로 (조합 개수)×(기댓값)을 계산한 거예요.` }] },
+      { id: "s5", text: String.raw`양변을 $pn^2$으로 나누면 $m_2=\frac1pE[\mathrm{tr}(S^2)] = \frac{\mu_4}{n} + \frac{n-1}{n} + \frac{p-1}{n}$ 을 얻는다. $n,p\to\infty$이고 $p/n\to c$라 하면, $\mu_4/n\to0$(고정된 상수를 무한히 커지는 $n$으로 나누므로), $\frac{n-1}{n}\to1$, $\frac{p-1}{n}=\frac pn-\frac1n\to c$ 이므로 $m_2\to0+1+c=1+c$ 로 수렴한다.`, blanks: [] },
+      { id: "s6", text: String.raw`$m_2=1+c$는 명제에서 말한 마르첸코-파스투르 분포의 두 번째 모멘트와 정확히 일치한다. 그런데 $m_1=1$이므로, 경험 고유값분포의 분산은 $m_2-m_1^2=(1+c)-1^2=$[[blank:다]] 이다. 종횡비 $c=p/n$이 그대로 고유값들이 $1$ 주위로 퍼지는 정도(분산)가 된다는 뜻이다.`,
+        blanks: [{ id: "다", latex: String.raw`c`, why: String.raw`$(1+c)-1=c$로 바로 정리돼요. $n,p$가 얼마나 크든 상관없이 종횡비 $c$가 고정되어 있으면 분산도 $c$로 고정된다는 게 핵심이에요.` }] },
+      { id: "s7", text: String.raw`$c>0$인 한 이 분산은 결코 $0$으로 줄지 않는다. 즉 $p$가 $n$과 같은 정도의 크기를 유지하는 한(예: $c=1$이면 지지구간이 $[0,4]$), 참 공분산행렬이 항등행렬(순수한 잡음)이어도 표본공분산행렬의 고유값들은 $1$ 하나로 뭉치지 않고 넓게 퍼진 채로 남는다. 이것이 PCA가 변수 개수 $p$가 표본 수 $n$에 비견될 만큼 클 때 신뢰할 수 없는 이유다. 잡음만으로도 큰 고유값이 나올 수 있으므로, 실제 신호인지 판단하려면 관측된 고유값을 이 마르첸코-파스투르 분포가 예측하는 잡음 구간과 비교해야 한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ]
+  },
 };

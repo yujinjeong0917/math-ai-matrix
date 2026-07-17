@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>심화 매트릭스 · 수학 × AI</title>
-<meta name="description" content="추론통계·인과추론·이산수학 심화·수치해석 심화가 ML/DL/생성모델/RL의 어떤 기법으로 이어지는지 정리한 심화 레퍼런스 매트릭스." />
+<meta name="description" content="선형대수 심화·미적분 심화·추론통계·인과추론·이산수학 심화·정보이론 심화·수치해석 심화가 ML/DL/생성모델/RL의 어떤 기법으로 이어지는지 정리한 심화 레퍼런스 매트릭스." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧬</text></svg>" />
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -28,6 +28,8 @@
 
     --c-stat: #3d5a80; --c-causal: #bf5b4d; --c-disc2: #5f7a3d; --c-num2: #2d7d8a;
     --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
+    --c-linalg2: #4a3d8a; --c-calc2: #8a6a1f; --c-info2: #8a2f5a;
+    --c-linalg2-bg: #ece9f7; --c-calc2-bg: #f2ecdb; --c-info2-bg: #f5e3ec;
 
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -42,6 +44,8 @@
       --highlight: #eab35a; --highlight-bg: #3a2c14;
       --c-stat: #8ba3c9; --c-causal: #e0917f; --c-disc2: #98b56e; --c-num2: #6fc1cc;
       --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
+      --c-linalg2: #a89bdb; --c-calc2: #d4bb6f; --c-info2: #d68fac;
+      --c-linalg2-bg: #23203a; --c-calc2-bg: #2c2618; --c-info2-bg: #2e1f28;
     }
   }
   :root[data-theme="dark"] {
@@ -51,6 +55,8 @@
     --highlight: #eab35a; --highlight-bg: #3a2c14;
     --c-stat: #8ba3c9; --c-causal: #e0917f; --c-disc2: #98b56e; --c-num2: #6fc1cc;
     --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
+    --c-linalg2: #a89bdb; --c-calc2: #d4bb6f; --c-info2: #d68fac;
+    --c-linalg2-bg: #23203a; --c-calc2-bg: #2c2618; --c-info2-bg: #2e1f28;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -59,6 +65,8 @@
     --highlight: #d98c14; --highlight-bg: #fbe9cd;
     --c-stat: #3d5a80; --c-causal: #bf5b4d; --c-disc2: #5f7a3d; --c-num2: #2d7d8a;
     --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
+    --c-linalg2: #4a3d8a; --c-calc2: #8a6a1f; --c-info2: #8a2f5a;
+    --c-linalg2-bg: #ece9f7; --c-calc2-bg: #f2ecdb; --c-info2-bg: #f5e3ec;
   }
 
   * { box-sizing: border-box; }
@@ -158,6 +166,9 @@
   tr[data-group="causal"] > th, tr[data-group="causal"] > td { background: var(--c-causal-bg); }
   tr[data-group="disc2"]  > th, tr[data-group="disc2"]  > td { background: var(--c-disc2-bg); }
   tr[data-group="num2"]   > th, tr[data-group="num2"]   > td { background: var(--c-num2-bg); }
+  tr[data-group="linalg2"] > th, tr[data-group="linalg2"] > td { background: var(--c-linalg2-bg); }
+  tr[data-group="calc2"]  > th, tr[data-group="calc2"]  > td { background: var(--c-calc2-bg); }
+  tr[data-group="info2"]  > th, tr[data-group="info2"]  > td { background: var(--c-info2-bg); }
 
   .matrix td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); min-width: 230px; }
   .matrix td:last-child, .matrix th:last-child { border-right: none; }
@@ -190,6 +201,8 @@
   </div>
 
   <nav class="matrix-nav">
+    <a href="../foundations/index.html">예비수학</a>
+    <a href="../guide/index.html">매트릭스 읽는 법</a>
     <a href="../index.html">기초 매트릭스</a>
     <a href="./index.html" class="active">심화 매트릭스</a>
     <a href="../xai/index.html">XAI · 해석가능성</a>
@@ -201,25 +214,29 @@
     <a href="../process-mining/index.html">Process Mining</a>
   </nav>
 
-  <h1>추론통계 · 인과추론 · 이산수학 · 수치해석<br /><em>심화</em> 매트릭스</h1>
+  <h1>선형대수 · 미적분 · 추론통계 · 인과추론<br />이산수학 · 정보이론 · 수치해석<br /><em>심화</em> 매트릭스</h1>
   <p class="lede">
     기초 매트릭스가 다루지 못한 대학원 수준 수학을 같은 틀로 이어갑니다.
-    추정이론부터 인과추론의 식별 전략, 그래프 이론의 극단적 결과, 수치선형대수의
-    반복법까지, 각각이 Classical ML · Deep Learning · 생성모델 · RL의 어떤
-    기법으로 연결되는지 정리했습니다.
+    행렬미적분·저랭크 근사부터 볼록최적화·변분법, 추정이론, 인과추론의 식별 전략,
+    그래프 이론의 극단적 결과, 채널용량·PAC-베이즈, 수치선형대수의 반복법까지,
+    각각이 Classical ML · Deep Learning · 생성모델 · RL의 어떤 기법으로 연결되는지
+    정리했습니다.
   </p>
 
   <div class="source-note">
     <strong>참고 커리큘럼.</strong> MIT 18.655(Mathematical Statistics), Stanford STATS200/300B,
     Trefethen &amp; Bau의 Numerical Linear Algebra, MIT 18.225(Graph Theory and Additive Combinatorics),
+    Boyd &amp; Vandenberghe의 Convex Optimization, Cover &amp; Thomas의 Elements of Information Theory,
     그리고 Rubin의 잠재결과 프레임워크와 Pearl의 do-계산 체계를 뼈대로 구성했습니다.
-    지금은 개념 매트릭스 단계이고, 기초 매트릭스처럼 빈칸 증명 페이지로 이어가는 작업은 다음 단계입니다.
   </div>
 
   <div class="legend">
+    <span class="legend-item"><span class="dot" style="background:var(--c-linalg2)"></span>선형대수 심화</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-calc2)"></span>미적분 심화</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-stat)"></span>추론통계</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-causal)"></span>인과추론</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-disc2)"></span>이산수학 심화</span>
+    <span class="legend-item"><span class="dot" style="background:var(--c-info2)"></span>정보이론 심화</span>
     <span class="legend-item"><span class="dot" style="background:var(--c-num2)"></span>수치해석 심화</span>
   </div>
   <p class="hint">
@@ -239,6 +256,66 @@
         </tr>
       </thead>
       <tbody>
+
+        <!-- ================= 선형대수 심화 ================= -->
+        <tr class="group-start" data-group="linalg2">
+          <th><p class="row-eyebrow" style="color:var(--c-linalg2)">선형대수 심화</p><p class="row-name">행렬미적분 · 텐서</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=matrix-calculus-chain-rule" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg2)"><p class="name">행렬미적분의 연쇄법칙</p><p class="formula">역전파의 야코비안 곱</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=matrix-calculus-chain-rule" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg2)"><p class="name">행렬미적분의 연쇄법칙</p><p class="formula">∂z/∂x = Wᵀ∂z/∂y</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="linalg2">
+          <th><p class="row-eyebrow" style="color:var(--c-linalg2)">선형대수 심화</p><p class="row-name">행렬미적분 · 텐서</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=kronecker-vec-identity" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg2)"><p class="name">크로네커 곱 · vec 항등식</p><p class="formula">vec(AXB)=(Bᵀ⊗A)vec(X)</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=kronecker-vec-identity" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg2)"><p class="name">배치 텐서 연산의 근거</p><p class="formula">다중선형변환의 벡터화</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="linalg2">
+          <th><p class="row-eyebrow" style="color:var(--c-linalg2)">선형대수 심화</p><p class="row-name">랜덤행렬 · 저랭크</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=eckart-young-theorem" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg2)"><p class="name">에카르트-영 정리</p><p class="formula">최적 랭크-k 근사 = 절단 SVD</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="linalg2">
+          <th><p class="row-eyebrow" style="color:var(--c-linalg2)">선형대수 심화</p><p class="row-name">랜덤행렬 · 저랭크</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=marchenko-pastur-law" target="_blank" rel="noopener" style="--chip-c:var(--c-linalg2)"><p class="name">마르첸코-파스투르 법칙</p><p class="formula">랜덤 공분산행렬 고유값의 극한분포</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+
+        <!-- ================= 미적분 심화 ================= -->
+        <tr class="group-start" data-group="calc2">
+          <th><p class="row-eyebrow" style="color:var(--c-calc2)">미적분 심화</p><p class="row-name">볼록최적화 이론</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=convexity-first-order-condition" target="_blank" rel="noopener" style="--chip-c:var(--c-calc2)"><p class="name">볼록성의 1차 조건</p><p class="formula">f(y)≥f(x)+∇f(x)ᵀ(y-x)</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="calc2">
+          <th><p class="row-eyebrow" style="color:var(--c-calc2)">미적분 심화</p><p class="row-name">볼록최적화 이론</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=kkt-necessary-conditions" target="_blank" rel="noopener" style="--chip-c:var(--c-calc2)"><p class="name">KKT 필요조건</p><p class="formula">정류·원시실현·쌍대실현·상보슬랙</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="calc2">
+          <th><p class="row-eyebrow" style="color:var(--c-calc2)">미적분 심화</p><p class="row-name">변분법</p></th>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=euler-lagrange-equation" target="_blank" rel="noopener" style="--chip-c:var(--c-calc2)"><p class="name">오일러-라그랑주 방정식</p><p class="formula">∂F/∂y − d/dx(∂F/∂y′)=0</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=euler-lagrange-equation" target="_blank" rel="noopener" style="--chip-c:var(--c-calc2)"><p class="name">확산모델 연속시간 극한의 배경</p><p class="formula">함수공간에서의 변분 원리</p></a></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="calc2">
+          <th><p class="row-eyebrow" style="color:var(--c-calc2)">미적분 심화</p><p class="row-name">변분법</p></th>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=functional-convexity-unique-minimizer" target="_blank" rel="noopener" style="--chip-c:var(--c-calc2)"><p class="name">범함수의 볼록성과 유일해</p><p class="formula">정류점 = 전역 최소</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
 
         <!-- ================= 추론통계 ================= -->
         <tr class="group-start" data-group="stat">
@@ -379,6 +456,36 @@
           <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=tsp-policy-gradient" target="_blank" rel="noopener" style="--chip-c:var(--c-disc2)"><p class="name">조합최적화 RL</p><p class="formula">외판원문제(TSP)의 RL 해법</p></a></div></td>
         </tr>
 
+        <!-- ================= 정보이론 심화 ================= -->
+        <tr class="group-start" data-group="info2">
+          <th><p class="row-eyebrow" style="color:var(--c-info2)">정보이론 심화</p><p class="row-name">레이트-왜곡 · 채널용량</p></th>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=shannon-channel-capacity" target="_blank" rel="noopener" style="--chip-c:var(--c-info2)"><p class="name">섀넌의 채널용량 정리</p><p class="formula">C = max I(X;Y)</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=shannon-channel-capacity" target="_blank" rel="noopener" style="--chip-c:var(--c-info2)"><p class="name">정보병목 관점</p><p class="formula">압축-예측 트레이드오프</p></a></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="info2">
+          <th><p class="row-eyebrow" style="color:var(--c-info2)">정보이론 심화</p><p class="row-name">레이트-왜곡 · 채널용량</p></th>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=rate-distortion-convexity" target="_blank" rel="noopener" style="--chip-c:var(--c-info2)"><p class="name">레이트-왜곡 함수의 볼록성</p><p class="formula">R(D) = min I(X;X̂)</p></a></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="info2">
+          <th><p class="row-eyebrow" style="color:var(--c-info2)">정보이론 심화</p><p class="row-name">정보기하 · PAC-베이즈</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=fisher-information-kl-local-expansion" target="_blank" rel="noopener" style="--chip-c:var(--c-info2)"><p class="name">피셔정보 · KL 국소근사</p><p class="formula">KL≈½dθᵀI(θ)dθ</p></a></div></td>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=fisher-information-kl-local-expansion" target="_blank" rel="noopener" style="--chip-c:var(--c-info2)"><p class="name">자연그래디언트의 배경</p><p class="formula">파라미터 공간의 리만 계량</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+        <tr data-group="info2">
+          <th><p class="row-eyebrow" style="color:var(--c-info2)">정보이론 심화</p><p class="row-name">정보기하 · PAC-베이즈</p></th>
+          <td><div class="cell"><a class="chip chip-link" href="../concepts/index.html?c=pac-bayes-bound" target="_blank" rel="noopener" style="--chip-c:var(--c-info2)"><p class="name">PAC-베이즈 일반화 경계</p><p class="formula">일반화오차 ≤ 경험오차+√(KL/n)</p></a></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+          <td><div class="cell"></div></td>
+        </tr>
+
         <!-- ================= 수치해석 심화 ================= -->
         <tr class="group-start" data-group="num2">
           <th><p class="row-eyebrow" style="color:var(--c-num2)">수치해석 심화</p><p class="row-name">직접법</p></th>
@@ -422,8 +529,8 @@
   </div>
 
   <footer>
-    <span>대분류 4 × 중분류 16 × AI 4갈래, 개념 매트릭스 단계, 빈칸 증명 페이지는 다음 단계로 이어집니다</span>
-    <span>2026.07.12</span>
+    <span>대분류 7 × 중분류 27 × AI 4갈래, 전 항목 빈칸 증명 페이지 연결</span>
+    <span>2026.07.17</span>
   </footer>
 </div>
 
