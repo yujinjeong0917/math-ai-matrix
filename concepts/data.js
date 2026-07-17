@@ -20359,6 +20359,25 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     example: String.raw`<p>잠재결과 프레임워크에서는 rubin-causal-model이 한 사람이 처치를 받았을 때의 결과 $Y(1)$과 받지 않았을 때의 결과 $Y(0)$을 동시에 정의해요. 한 사람에게는 이 둘 중 하나만 관측된다는 게 인과추론의 근본문제예요.</p>
 <p>그래프 인과모형에서는 do-operator가 "관측해서 조건화하는 것"과 "실제로 개입하는 것"이 왜 다른 계산인지를 구분해요. 식별과 추정에서는 propensity-score가 처치받을 확률을 추정해 집단 간 균형을 맞추는 법을 보여주고, 도구변수·준실험에서는 instrumental-variables가 무작위 실험이 불가능할 때 자연실험으로 효과를 식별하는 법을 다뤄요.</p>
 <p>이질적 효과와 개인화에서는 cate-conditional-ate가 평균처치효과 하나로 뭉치지 않고 사람마다 다르게 나타나는 효과를 추정하는 법을 다뤄요. 추천시스템의 개인화가 실제로 먹히는지를 검증하는 작업이 결국 여기로 이어져요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="190" y1="68" x2="118" y2="182" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="118,182 126,172 132,180" class="dg-line"/>
+<line x1="210" y1="68" x2="282" y2="182" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="282,182 274,172 268,180" class="dg-line"/>
+<line x1="128" y1="200" x2="272" y2="200" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="272,200 261,195 261,205" class="dg-stroke-accent"/>
+<circle cx="200" cy="50" r="18" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="200" y="55" font-size="13" text-anchor="middle">Z</text>
+<circle cx="100" cy="200" r="18" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="100" y="205" font-size="13" text-anchor="middle">T</text>
+<circle cx="300" cy="200" r="18" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="300" y="205" font-size="13" text-anchor="middle">Y</text>
+<text x="200" y="25" font-size="11" class="dg-dim" text-anchor="middle">교란변수</text>
+<text x="100" y="235" font-size="11" class="dg-dim" text-anchor="middle">처치</text>
+<text x="300" y="235" font-size="11" class="dg-dim" text-anchor="middle">결과</text>
+<text x="200" y="180" font-size="11" class="dg-dim" text-anchor="middle">추정하려는 인과효과</text>
+</svg>`,
+    diagramCaption: String.raw`처치 T가 결과 Y에 미치는 인과효과(굵은 실선)를 추정하려면, T와 Y 모두에 영향을 주는 교란변수 Z(점선)를 통제해야 한다.`,
     sections: [],
     related: [
       { label: "Rubin 인과모형: 잠재결과와 근본문제", slug: "rubin-causal-model" },
