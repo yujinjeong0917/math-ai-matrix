@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>수학 × AI 매트릭스 — 인쇄 카드 템플릿 (챕터별 예시)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});"></script>
+<style>
+  /* =========================================================
+     컬러칩 — front.jpg / back.jpg 목업을 픽셀 단위로 측정해 추출.
+     이 값들이 카드의 "포맷"이므로 임의로 바꾸지 않는다.
+     ========================================================= */
+  :root {
+    --card-bg: #f7f5f6;       /* 페이지 배경 */
+    --card-fill: #d9d9d9;     /* 채움 박스(basic_context / commentary) */
+    --card-border: #d5d3d4;   /* 테두리 박스(Question_sector / examples) 선 */
+    --card-black: #000000;    /* THEME 태그 배경 */
+    --card-ink: #1a1a1a;      /* 본문 텍스트 */
+    --card-dim: #8a8a8a;      /* Brand, category 등 흐린 라벨 */
+  }
+
+  /* 측정된 그리드(px = pt, 72dpi 기준 A4):
+     페이지 594×840 / 콘텐츠 좌우 여백 각 38 / 디바이더 좌우 여백 각 28
+     basic_context/commentary 채움박스: front 168px, back 242px
+     Question_sector/examples 테두리박스: 두 면 모두 320px 고정
+     채움박스→테두리박스 사이 간격: 27px 고정 */
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #444; font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; }
+
+  /* 인쇄 시 화면 배율에 영향받지 않도록 pt 고정 단위만 사용 — 반응형 단위(%, vw, vh) 금지 */
+  .card {
+    position: relative;
+    width: 595pt;
+    height: 842pt;
+    margin: 24pt auto;
+    background: var(--card-bg);
+    color: var(--card-ink);
+    overflow: hidden;
+    box-shadow: 0 2pt 12pt rgba(0,0,0,0.25);
+  }
+  @media print {
+    body { background: none; }
+    .card { margin: 0; box-shadow: none; page-break-after: always; }
+    .card:last-child { page-break-after: auto; }
+    @page { size: A4; margin: 0; }
+  }
+
+  .brand { position: absolute; top: 20pt; left: 28pt; right: 28pt; font-size: 11pt; color: var(--card-dim); letter-spacing: 0.04em; }
+  .divider { position: absolute; left: 28pt; right: 28pt; height: 1pt; background: var(--card-border); }
+
+  .theme-tag {
+    position: absolute; left: 36pt; top: 76pt; height: 16pt; padding: 0 10pt;
+    background: var(--card-black); color: #fff; font-size: 9.5pt; font-weight: 700;
+    display: flex; align-items: center; letter-spacing: 0.06em; border-radius: 2pt;
+  }
+  .concept-title { position: absolute; left: 132pt; top: 78pt; font-size: 15pt; font-weight: 800; }
+
+  .hook { position: absolute; left: 38pt; top: 152pt; right: 38pt; font-size: 10.5pt; color: var(--card-dim); }
+
+  .cat-row { position: absolute; left: 38pt; top: 184pt; right: 38pt; text-align: center; }
+  .cat-row .category { font-size: 10pt; color: var(--card-dim); display: block; margin-bottom: 4pt; }
+  .cat-row .subconcept { font-size: 14pt; font-weight: 800; }
+
+  .box-fill {
+    position: absolute; left: 38pt; right: 38pt; top: 252pt;
+    background: var(--card-fill); border-radius: 8pt;
+    padding: 16pt 18pt; font-size: 11pt; line-height: 1.65; overflow: hidden;
+  }
+  .front .box-fill { height: 168pt; }
+  .back .box-fill { height: 242pt; }
+
+  .box-outline {
+    position: absolute; left: 39pt; right: 39pt; height: 320pt;
+    border: 1pt solid var(--card-border); border-radius: 8pt;
+    padding: 16pt 18pt; font-size: 11pt; line-height: 1.75; overflow: hidden;
+  }
+  .front .box-outline { top: 447pt; }
+  .back .box-outline { top: 425pt; }
+
+  .box-label { font-size: 9.5pt; color: var(--card-dim); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 8pt; }
+
+  .answers { position: absolute; right: 38pt; display: flex; gap: 8pt; }
+  .front .answers { top: 787pt; }
+  .back .answers { top: 761pt; }
+  .answer-chip {
+    display: flex; align-items: center; gap: 6pt;
+    background: var(--card-fill); border-radius: 999pt; padding: 4pt 12pt 4pt 4pt; font-size: 9.5pt; color: var(--card-ink);
+  }
+  .answer-chip .dot { width: 18pt; height: 18pt; border-radius: 50%; background: #bdbdbd; }
+
+  /* back면 제목행: front와 달리 Concept + category/subconcept이 한 줄 */
+  .back .concept-title-row { position: absolute; left: 38pt; right: 38pt; top: 100pt; display: flex; justify-content: space-between; align-items: baseline; }
+  .back .concept-title-row .concept-title-inline { font-size: 15pt; font-weight: 800; position: static; }
+  .back .concept-title-row .cat-inline { text-align: right; font-size: 10pt; color: var(--card-dim); }
+  .back .concept-title-row .cat-inline strong { display: block; font-size: 13pt; color: var(--card-ink); font-weight: 800; }
+
+  .blank { border-bottom: 1.5pt dashed var(--card-ink); padding: 0 3pt; }
+  .section-title { font-size: 20pt; font-weight: 800; color: #fff; text-align: center; padding-top: 20pt; }
+</style>
+</head>
+<body>
+
+<!-- ================= 01. 선형대수 — PCA ================= -->
+<p class="section-title">01 · 선형대수 (LINALG)</p>
+
+<div class="card front">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">LINALG</div>
+  <p class="concept-title">주성분분석(PCA)의 최적 방향</p>
+  <div class="divider" style="top:144pt;"></div>
+  <p class="hook">데이터를 한 방향으로 압축할 때, 정보를 가장 많이 남기는 방향은 어떻게 고를까요.</p>
+  <div class="divider" style="top:176pt;"></div>
+  <div class="cat-row"><span class="category">선형대수 · 고유값 · 분해</span><span class="subconcept">PCA의 최적 방향</span></div>
+  <div class="box-fill">
+    <p class="box-label">기본 설명</p>
+    중심화된 데이터 행렬 $X\in\mathbb{R}^{n\times d}$의 공분산행렬을 $\Sigma=\frac{1}{n}X^TX$ 라 하자. $\|w\|=1$인 $w$ 중 사영분산 $w^T\Sigma w$를 최대화하는 것은 $\Sigma$의 최대 고유값에 대응하는 고유벡터이다.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">문제</p>
+    제약이 있는 최댓값 문제이므로 라그랑주 승수법을 쓴다. 라그랑지안은 $L(w,\lambda) = w^T\Sigma w - \lambda($<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>$)$ 로 쓴다. 빈칸을 채우시오.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>힌트 보기</span>
+    <span class="answer-chip"><span class="dot"></span>정답 보기</span>
+  </div>
+</div>
+
+<div class="card back">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">LINALG</div>
+  <div class="concept-title-row">
+    <span class="concept-title-inline">주성분분석(PCA)의 최적 방향</span>
+    <span class="cat-inline">선형대수 · 고유값 · 분해<strong>PCA의 최적 방향</strong></span>
+  </div>
+  <div class="divider" style="top:126pt;"></div>
+  <div class="box-fill">
+    <p class="box-label">해설</p>
+    괄호 안에는 제약이 지켜졌는지를 0이 되는 식으로 적어요. 우리 제약은 $\|w\|=1$이에요. 이걸 $w^Tw-1=0$ 형태로 바꿔서 그대로 넣은 거예요. <strong>정답: $w^Tw-1$</strong>
+  </div>
+  <div class="box-outline">
+    <p class="box-label">숫자로 먼저 보기</p>
+    공분산행렬이 $\Sigma=\begin{pmatrix}3&amp;1\\1&amp;3\end{pmatrix}$ 이면 고유값은 4와 2, 고유벡터는 $(1,1)/\sqrt2$와 $(1,-1)/\sqrt2$. $w=(1,1)/\sqrt2$에서 사영분산 $w^T\Sigma w=4$로 최댓값을 얻는다.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>관련 개념</span>
+    <span class="answer-chip"><span class="dot"></span>다음 문제</span>
+  </div>
+</div>
+
+<!-- ================= 02. 미적분·최적화 — 경사하강법 ================= -->
+<p class="section-title">02 · 미적분 · 최적화 (CALC)</p>
+
+<div class="card front">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">CALC</div>
+  <p class="concept-title">경사하강법의 하강 보장</p>
+  <div class="divider" style="top:144pt;"></div>
+  <p class="hook">학습률이 너무 크면 오히려 손실이 늘어날 수 있어요. 얼마나 작아야 안전할까요.</p>
+  <div class="divider" style="top:176pt;"></div>
+  <div class="cat-row"><span class="category">미적분 · 최적화 · 경사기반 옵티마이저</span><span class="subconcept">경사하강법의 하강 보장</span></div>
+  <div class="box-fill">
+    <p class="box-label">기본 설명</p>
+    $\nabla L$이 립시츠 상수 $K$로 립시츠 연속이면, $\eta&lt;1/K$일 때 $\theta'=\theta-\eta\nabla L(\theta)$는 $L(\theta')\le L(\theta)$를 만족한다.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">문제</p>
+    경사하강법의 갱신식 $\theta'=\theta-\eta\nabla L(\theta)$을 2차 상한식에 대입할 차례다. 이항만 하면 $\theta'-\theta = $<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 이다. 빈칸을 채우시오.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>힌트 보기</span>
+    <span class="answer-chip"><span class="dot"></span>정답 보기</span>
+  </div>
+</div>
+
+<div class="card back">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">CALC</div>
+  <div class="concept-title-row">
+    <span class="concept-title-inline">경사하강법의 하강 보장</span>
+    <span class="cat-inline">미적분 · 최적화<strong>경사기반 옵티마이저</strong></span>
+  </div>
+  <div class="divider" style="top:126pt;"></div>
+  <div class="box-fill">
+    <p class="box-label">해설</p>
+    갱신식을 그대로 옮겨 적으면 나오는 식이에요. 별도의 계산이 필요 없어요. <strong>정답: $-\eta\nabla L(\theta)$</strong>
+  </div>
+  <div class="box-outline">
+    <p class="box-label">숫자로 먼저 보기</p>
+    $L(\theta)=\theta^2$, $\theta=3$, $\eta=0.2$로 한 스텝: $\theta'=3-0.2\times6=1.8$. $L(3)=9$, $L(1.8)=3.24$ — 손실이 5.76만큼 줄었다.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>관련 개념</span>
+    <span class="answer-chip"><span class="dot"></span>다음 문제</span>
+  </div>
+</div>
+
+<!-- ================= 03. 확률·통계 — 베이즈 정리 ================= -->
+<p class="section-title">03 · 확률 · 통계 (PROB)</p>
+
+<div class="card front">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">PROB</div>
+  <p class="concept-title">베이즈 정리</p>
+  <div class="divider" style="top:144pt;"></div>
+  <p class="hook">평소에 믿던 확률에 새 증거가 더해지면, 믿음은 정확히 어떻게 바뀔까요.</p>
+  <div class="divider" style="top:176pt;"></div>
+  <div class="cat-row"><span class="category">확률 · 통계 · 분포 · 추정</span><span class="subconcept">베이즈 정리</span></div>
+  <div class="box-fill">
+    <p class="box-label">기본 설명</p>
+    사건 $A,B$($P(B)>0$)에 대해 $P(A|B) = \dfrac{P(B|A)P(A)}{P(B)}$. 나이브베이즈부터 베이지안 딥러닝까지 확률적 추론의 뿌리.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">문제</p>
+    $P(B|A)=\dfrac{P(A\cap B)}{P(A)}$ 의 양변에 $P(A)$를 곱하면 $P(A\cap B) = $<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 입니다. 빈칸을 채우시오.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>힌트 보기</span>
+    <span class="answer-chip"><span class="dot"></span>정답 보기</span>
+  </div>
+</div>
+
+<div class="card back">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">PROB</div>
+  <div class="concept-title-row">
+    <span class="concept-title-inline">베이즈 정리</span>
+    <span class="cat-inline">확률 · 통계<strong>분포 · 추정</strong></span>
+  </div>
+  <div class="divider" style="top:126pt;"></div>
+  <div class="box-fill">
+    <p class="box-label">해설</p>
+    조건부확률의 정의를 그대로 이항한 것뿐이에요. <strong>정답: $P(B|A)P(A)$</strong> — 이 공통항이 베이즈 정리 양변을 잇는 다리가 됩니다.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">숫자로 먼저 보기</p>
+    질병 검사 예시: 유병률 1%, 검사 민감도 99%, 위양성률 5%일 때 양성 판정을 받아도 실제 감염 확률은 약 16.7%에 불과하다 — 사전확률의 영향력을 보여주는 대표 사례.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>관련 개념</span>
+    <span class="answer-chip"><span class="dot"></span>다음 문제</span>
+  </div>
+</div>
+
+<!-- ================= 04. 정보이론 — 교차엔트로피 ================= -->
+<p class="section-title">04 · 정보이론 (INFO)</p>
+
+<div class="card front">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">INFO</div>
+  <p class="concept-title">교차엔트로피와 엔트로피·KL발산의 관계</p>
+  <div class="divider" style="top:144pt;"></div>
+  <p class="hook">분류 모델의 교차엔트로피 손실, 사실은 두 조각으로 쪼개져 있어요.</p>
+  <div class="divider" style="top:176pt;"></div>
+  <div class="cat-row"><span class="category">정보이론 · 엔트로피 · 손실</span><span class="subconcept">교차엔트로피 = 엔트로피 + KL발산</span></div>
+  <div class="box-fill">
+    <p class="box-label">기본 설명</p>
+    두 분포 $p,q$에 대해 $H(p,q) = H(p) + D_{KL}(p\|q)$. 교차엔트로피를 줄이는 일이 왜 예측을 정답에 가깝게 만드는지 이 관계로 설명된다.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">문제</p>
+    로그의 성질 $\log(p/q)=\log p-\log q$를 쓰면 $D_{KL}(p\|q) = \sum_x p(x)\log p(x) - \sum_x $<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 입니다. 빈칸을 채우시오.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>힌트 보기</span>
+    <span class="answer-chip"><span class="dot"></span>정답 보기</span>
+  </div>
+</div>
+
+<div class="card back">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">INFO</div>
+  <div class="concept-title-row">
+    <span class="concept-title-inline">교차엔트로피와 엔트로피·KL발산의 관계</span>
+    <span class="cat-inline">정보이론<strong>엔트로피 · 손실</strong></span>
+  </div>
+  <div class="divider" style="top:126pt;"></div>
+  <div class="box-fill">
+    <p class="box-label">해설</p>
+    $D_{KL}$의 정의 $\sum_x p(x)\log\frac{p(x)}{q(x)}$에서 로그의 뺄셈 성질만 적용한 것. <strong>정답: $p(x)\log q(x)$</strong>
+  </div>
+  <div class="box-outline">
+    <p class="box-label">숫자로 먼저 보기</p>
+    $p=(0.5,0.5)$, $q=(0.9,0.1)$이면 $H(p)=1$bit, $D_{KL}(p\|q)\approx0.74$bit이므로 $H(p,q)\approx1.74$bit — 예측이 부정확할수록 교차엔트로피가 커진다.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>관련 개념</span>
+    <span class="answer-chip"><span class="dot"></span>다음 문제</span>
+  </div>
+</div>
+
+<!-- ================= 05. 이산수학 — 의사결정나무 ================= -->
+<p class="section-title">05 · 이산수학 (DISC)</p>
+
+<div class="card front">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">DISC</div>
+  <p class="concept-title">의사결정나무 재귀 분기의 정지성</p>
+  <div class="divider" style="top:144pt;"></div>
+  <p class="hook">계속 둘로 쪼개며 자라는 나무, 정말 유한 번 만에 멈춘다는 보장이 있을까요.</p>
+  <div class="divider" style="top:176pt;"></div>
+  <div class="cat-row"><span class="category">이산수학 · 트리 · 앙상블 구조</span><span class="subconcept">재귀 분기의 정지성</span></div>
+  <div class="box-fill">
+    <p class="box-label">기본 설명</p>
+    유한한 $n$개의 데이터로 시작한 의사결정나무에서, 매 분기가 노드의 데이터를 두 개의 비어있지 않은 부분집합으로 나눈다면, 전체 재귀적 분기 과정은 최대 $n-1$번의 분기 안에 멈춘다.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">문제</p>
+    분기가 한 번 일어날 때마다 잎 하나가 사라지고 잎 두 개가 새로 생긴다. 분기를 $k$번 반복한 뒤의 잎 개수는 <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 이다. 빈칸을 채우시오.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>힌트 보기</span>
+    <span class="answer-chip"><span class="dot"></span>정답 보기</span>
+  </div>
+</div>
+
+<div class="card back">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">DISC</div>
+  <div class="concept-title-row">
+    <span class="concept-title-inline">의사결정나무 재귀 분기의 정지성</span>
+    <span class="cat-inline">이산수학<strong>트리 · 앙상블 구조</strong></span>
+  </div>
+  <div class="divider" style="top:126pt;"></div>
+  <div class="box-fill">
+    <p class="box-label">해설</p>
+    처음엔 잎이 1개(뿌리)이고, 분기마다 정확히 1개씩 늘어난다. <strong>정답: $1+k$</strong>
+  </div>
+  <div class="box-outline">
+    <p class="box-label">숫자로 먼저 보기</p>
+    $n=8$개 데이터로 시작해 매번 정확히 반으로 쪼개면 최대 7번 분기(잎 8개)에서 멈춘다 — $n-1=7$과 정확히 일치.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>관련 개념</span>
+    <span class="answer-chip"><span class="dot"></span>다음 문제</span>
+  </div>
+</div>
+
+<!-- ================= 06. 수치해석 — 조건수 ================= -->
+<p class="section-title">06 · 수치해석 (NUMERIC)</p>
+
+<div class="card front">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">NUMERIC</div>
+  <p class="concept-title">조건수와 선형시스템의 오차 민감도</p>
+  <div class="divider" style="top:144pt;"></div>
+  <p class="hook">아주 작은 반올림 오차가 계산 과정에서 얼마나 크게 부풀려질 수 있을까요.</p>
+  <div class="divider" style="top:176pt;"></div>
+  <div class="cat-row"><span class="category">수치해석 · 수치적 안정성</span><span class="subconcept">조건수와 오차 민감도</span></div>
+  <div class="box-fill">
+    <p class="box-label">기본 설명</p>
+    $Ax=b$에서 $b$에 오차 $\delta b$가 생기면, 조건수가 클수록($A$가 ill-conditioned일수록) 해 $x$의 오차가 크게 증폭된다.
+  </div>
+  <div class="box-outline">
+    <p class="box-label">문제</p>
+    $A(x+\delta x)=b+\delta b$에서 원래 식 $Ax=b$를 빼면 $A\delta x=\delta b$. 양변에 $A^{-1}$을 곱하면 $\delta x = $<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> 입니다. 빈칸을 채우시오.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>힌트 보기</span>
+    <span class="answer-chip"><span class="dot"></span>정답 보기</span>
+  </div>
+</div>
+
+<div class="card back">
+  <p class="brand">수학 × AI 매트릭스</p>
+  <div class="divider" style="top:62pt;"></div>
+  <div class="theme-tag">NUMERIC</div>
+  <div class="concept-title-row">
+    <span class="concept-title-inline">조건수와 선형시스템의 오차 민감도</span>
+    <span class="cat-inline">수치해석<strong>수치적 안정성</strong></span>
+  </div>
+  <div class="divider" style="top:126pt;"></div>
+  <div class="box-fill">
+    <p class="box-label">해설</p>
+    양변에 역행렬을 곱해 $x$의 계수를 지운 것뿐이에요. <strong>정답: $A^{-1}\delta b$</strong>
+  </div>
+  <div class="box-outline">
+    <p class="box-label">숫자로 먼저 보기</p>
+    조건수가 100인 행렬이면, 입력 오차가 0.1%여도 해의 오차는 최대 10%까지 부풀려질 수 있다 — 선형회귀의 $(X^TX)^{-1}$ 계산에서 실제로 발생하는 문제.
+  </div>
+  <div class="answers">
+    <span class="answer-chip"><span class="dot"></span>관련 개념</span>
+    <span class="answer-chip"><span class="dot"></span>다음 문제</span>
+  </div>
+</div>
+
+</body>
+</html>
