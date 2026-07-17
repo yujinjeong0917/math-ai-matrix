@@ -192,6 +192,7 @@
     position: sticky; top: 0; z-index: 3;
     background: var(--surface-2); border-bottom: 1px solid var(--line);
     text-align: left; padding: 16px 18px; vertical-align: top;
+    transform: translateZ(0); will-change: transform; backface-visibility: hidden;
   }
   .matrix thead th.corner { left: 0; z-index: 4; width: 200px; }
 
