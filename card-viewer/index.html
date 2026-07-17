@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>카드 뷰어 · 수학 × AI 매트릭스</title>
+<meta name="description" content="개념 마크다운을 드롭하면 인쇄 카드 템플릿으로 바로 보여주고 PDF로 내려받을 수 있는 뷰어." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂️</text></svg>" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --card-bg: #f7f5f6; --card-fill: #d9d9d9; --card-border: #d5d3d4;
+    --card-black: #000000; --card-ink: #1a1a1a; --card-dim: #8a8a8a;
+    --app-bg: #12151b; --app-surface: #171b23; --app-line: #2c3240;
+    --app-ink: #e8eaef; --app-dim: #8a92a3; --app-accent: #eab35a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--app-bg); color: var(--app-ink);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+  }
+
+  .app-shell { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; }
+  .panel { padding: 22px; }
+  .editor-panel { border-right: 1px solid var(--app-line); display: flex; flex-direction: column; gap: 14px; }
+  .preview-panel { display: flex; flex-direction: column; align-items: center; gap: 18px; overflow-y: auto; max-height: 100vh; }
+
+  h1 { font-size: 17px; font-weight: 800; margin: 0 0 4px; }
+  .sub { font-size: 12px; color: var(--app-dim); margin: 0 0 6px; }
+
+  select, .drop-zone, textarea, button {
+    font-family: inherit; font-size: 13px; border-radius: 8px;
+    border: 1px solid var(--app-line); background: var(--app-surface); color: var(--app-ink);
+  }
+  select { padding: 8px 10px; }
+
+  .drop-zone {
+    padding: 22px; text-align: center; color: var(--app-dim); cursor: pointer;
+    border-style: dashed; transition: border-color .15s ease, color .15s ease;
+  }
+  .drop-zone.dragover { border-color: var(--app-accent); color: var(--app-ink); }
+
+  textarea {
+    flex: 1; min-height: 340px; padding: 12px; line-height: 1.55; resize: vertical;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px;
+  }
+
+  .toolbar { display: flex; gap: 8px; }
+  button {
+    padding: 9px 14px; cursor: pointer; font-weight: 700;
+  }
+  button:hover { border-color: var(--app-accent); }
+  button.primary { background: var(--app-accent); color: #1a1408; border-color: var(--app-accent); }
+
+  .hint { font-size: 11.5px; color: var(--app-dim); line-height: 1.6; }
+
+  /* ===== 카드(A6) 렌더 스타일 — card-template.html과 동일 스펙 ===== */
+  .page-a6 {
+    width: 105mm; height: 148mm; overflow: hidden; position: relative;
+    background: var(--card-bg); box-shadow: 0 2pt 16pt rgba(0,0,0,0.4); flex: none;
+  }
+  .card {
+    position: relative; width: 595pt; height: 842pt;
+    background: var(--card-bg); color: var(--card-ink); overflow: hidden;
+    transform: scale(0.5); transform-origin: top left;
+  }
+  .brand { position: absolute; top: 20pt; left: 28pt; right: 28pt; font-size: 11pt; color: var(--card-dim); letter-spacing: 0.04em; }
+  .divider { position: absolute; left: 28pt; right: 28pt; height: 1pt; background: var(--card-border); }
+  .theme-tag {
+    position: absolute; left: 36pt; top: 76pt; height: 16pt; padding: 0 10pt;
+    background: var(--card-black); color: #fff; font-size: 9.5pt; font-weight: 700;
+    display: flex; align-items: center; letter-spacing: 0.06em; border-radius: 2pt;
+  }
+  .concept-title { position: absolute; left: 132pt; top: 78pt; right: 28pt; font-size: 15pt; font-weight: 800; }
+  .hook { position: absolute; left: 38pt; top: 152pt; right: 38pt; font-size: 10.5pt; color: var(--card-dim); }
+  .cat-row { position: absolute; left: 38pt; top: 184pt; right: 38pt; text-align: center; }
+  .cat-row .category { font-size: 10pt; color: var(--card-dim); display: block; margin-bottom: 4pt; }
+  .cat-row .subconcept { font-size: 14pt; font-weight: 800; }
+  .box-fill {
+    position: absolute; left: 38pt; right: 38pt; top: 252pt;
+    background: var(--card-fill); border-radius: 8pt;
+    padding: 16pt 18pt; font-size: 11pt; line-height: 1.65; overflow: hidden;
+  }
+  .front .box-fill { height: 168pt; }
+  .back .box-fill { height: 242pt; }
+  .box-outline {
+    position: absolute; left: 39pt; right: 39pt; height: 320pt;
+    border: 1pt solid var(--card-border); border-radius: 8pt;
+    padding: 16pt 18pt; font-size: 11pt; line-height: 1.75; overflow: hidden;
+  }
+  .front .box-outline { top: 447pt; }
+  .back .box-outline { top: 425pt; }
+  .box-label { font-size: 9.5pt; color: var(--card-dim); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 8pt; }
+  .answers { position: absolute; right: 38pt; display: flex; gap: 8pt; }
+  .front .answers { top: 787pt; }
+  .back .answers { top: 761pt; }
+  .answer-chip {
+    display: flex; align-items: center; gap: 6pt;
+    background: var(--card-fill); border-radius: 999pt; padding: 4pt 12pt 4pt 4pt; font-size: 9.5pt; color: var(--card-ink);
+  }
+  .answer-chip .dot { width: 18pt; height: 18pt; border-radius: 50%; background: #bdbdbd; }
+  .back .concept-title-row { position: absolute; left: 38pt; right: 38pt; top: 100pt; display: flex; justify-content: space-between; align-items: baseline; }
+  .back .concept-title-row .concept-title-inline { font-size: 15pt; font-weight: 800; }
+  .back .concept-title-row .cat-inline { text-align: right; font-size: 10pt; color: var(--card-dim); }
+  .back .concept-title-row .cat-inline strong { display: block; font-size: 13pt; color: var(--card-ink); font-weight: 800; }
+  .blank { border-bottom: 1.5pt dashed var(--card-ink); padding: 0 3pt; }
+  .box-fill p, .box-outline p { margin: 0 0 8pt; }
+  .box-fill p:last-child, .box-outline p:last-child { margin-bottom: 0; }
+
+  .card-pair-label { font-size: 12px; color: var(--app-dim); text-align: center; }
+
+  @media print {
+    .app-shell { display: block; }
+    .editor-panel, .card-pair-label, h1, .sub { display: none !important; }
+    .preview-panel { max-height: none; overflow: visible; display: block; padding: 0; }
+    .page-a6 { box-shadow: none; page-break-before: always; page-break-after: avoid; }
+    .page-a6:first-of-type { page-break-before: avoid; }
+    body { background: none; }
+    @page { size: A6; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="panel editor-panel">
+    <div>
+      <h1>카드 뷰어</h1>
+      <p class="sub">개념 .md를 드롭 → 카드 미리보기 → PDF 다운로드. Pretendard 고정.</p>
+    </div>
+
+    <select id="conceptPicker">
+      <option value="">— 저장된 개념에서 불러오기 (676개) —</option>
+    </select>
+
+    <div class="drop-zone" id="dropZone">
+      여기로 .md 파일을 드래그하거나 클릭해서 불러오세요
+      <input type="file" id="fileInput" accept=".md" style="display:none" />
+    </div>
+
+    <textarea id="mdSource" spellcheck="false" placeholder="마크다운이 여기 표시됩니다. 자유롭게 수정하면 오른쪽 미리보기가 바로 갱신돼요."></textarea>
+
+    <div class="toolbar">
+      <button id="renderBtn" class="primary">미리보기 갱신</button>
+      <button id="pdfBtn">PDF 다운로드</button>
+    </div>
+    <p class="hint">
+      프론트매터(--- 사이) 필드: slug/theme/domainLabel/subLabel/title/hook.<br>
+      본문 섹션: ## 기본설명 · ## 문제 · ## 해설 · ## 예시.<br>
+      빈칸은 ==이렇게== 로, 굵게는 **이렇게**로 표시하면 카드에 반영돼요.<br>
+      PDF 다운로드는 브라우저 인쇄창에서 "PDF로 저장"을 고르면 돼요(A6 고정).
+    </p>
+  </div>
+
+  <div class="panel preview-panel" id="previewPanel">
+    <p class="card-pair-label">앞면 (문제)</p>
+    <div class="page-a6"><div class="card front" id="cardFront"></div></div>
+    <p class="card-pair-label">뒷면 (해설)</p>
+    <div class="page-a6"><div class="card back" id="cardBack"></div></div>
+  </div>
+</div>
+
+<script>
+  function parseMd(raw) {
+    var meta = {};
+    var body = raw;
+    var fm = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+    if (fm) {
+      body = fm[2];
+      fm[1].split("\n").forEach(function (line) {
+        var idx = line.indexOf(":");
+        if (idx === -1) return;
+        meta[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
+      });
+    }
+    var sections = {};
+    var chunks = body.split(/\n##\s+/);
+    chunks.forEach(function (chunk, i) {
+      var text = i === 0 ? chunk.replace(/^##\s+/, "") : chunk;
+      var nl = text.indexOf("\n");
+      if (nl === -1) return;
+      var name = text.slice(0, nl).trim();
+      var rest = text.slice(nl + 1).trim();
+      if (name) sections[name] = rest;
+    });
+    return { meta: meta, sections: sections };
+  }
+
+  function mdToHtml(text) {
+    if (!text) return "";
+    return text
+      .split(/\n\s*\n/)
+      .map(function (p) {
+        var t = p.trim()
+          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+          .replace(/==(.*?)==/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')
+          .replace(/\n/g, "<br>");
+        return t ? "<p>" + t + "</p>" : "";
+      })
+      .join("");
+  }
+
+  function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  function render(raw) {
+    var parsed = parseMd(raw);
+    var m = parsed.meta, s = parsed.sections;
+    var category = (m.domainLabel || "") + (m.subLabel ? " · " + m.subLabel : "");
+
+    document.getElementById("cardFront").innerHTML =
+      '<p class="brand">수학 × AI 매트릭스</p>' +
+      '<div class="divider" style="top:62pt;"></div>' +
+      '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
+      '<p class="concept-title">' + esc(m.title || "") + '</p>' +
+      '<div class="divider" style="top:144pt;"></div>' +
+      '<p class="hook">' + esc(m.hook || "") + '</p>' +
+      '<div class="divider" style="top:176pt;"></div>' +
+      '<div class="cat-row"><span class="category">' + esc(category) + '</span><span class="subconcept">' + esc(m.title || "") + '</span></div>' +
+      '<div class="box-fill"><p class="box-label">기본 설명</p>' + mdToHtml(s["기본설명"]) + '</div>' +
+      '<div class="box-outline"><p class="box-label">문제</p>' + mdToHtml(s["문제"]) + '</div>' +
+      '<div class="answers"><span class="answer-chip"><span class="dot"></span>힌트 보기</span><span class="answer-chip"><span class="dot"></span>정답 보기</span></div>';
+
+    document.getElementById("cardBack").innerHTML =
+      '<p class="brand">수학 × AI 매트릭스</p>' +
+      '<div class="divider" style="top:62pt;"></div>' +
+      '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
+      '<div class="concept-title-row">' +
+        '<span class="concept-title-inline">' + esc(m.title || "") + '</span>' +
+        '<span class="cat-inline">' + esc(category) + '<strong>' + esc(m.title || "") + '</strong></span>' +
+      '</div>' +
+      '<div class="divider" style="top:126pt;"></div>' +
+      '<div class="box-fill"><p class="box-label">해설</p>' + mdToHtml(s["해설"]) + '</div>' +
+      '<div class="box-outline"><p class="box-label">예시</p>' + mdToHtml(s["예시"]) + '</div>' +
+      '<div class="answers"><span class="answer-chip"><span class="dot"></span>관련 개념</span><span class="answer-chip"><span class="dot"></span>다음 문제</span></div>';
+
+    if (window.renderMathInElement) {
+      window.renderMathInElement(document.getElementById("previewPanel"), {
+        delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
+        throwOnError: false,
+      });
+    }
+  }
+
+  var sourceEl = document.getElementById("mdSource");
+  document.getElementById("renderBtn").addEventListener("click", function () { render(sourceEl.value); });
+  sourceEl.addEventListener("input", function () { render(sourceEl.value); });
+  document.getElementById("pdfBtn").addEventListener("click", function () { window.print(); });
+
+  function loadFile(file) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      sourceEl.value = e.target.result;
+      render(sourceEl.value);
+    };
+    reader.readAsText(file);
+  }
+
+  var dropZone = document.getElementById("dropZone");
+  var fileInput = document.getElementById("fileInput");
+  dropZone.addEventListener("click", function () { fileInput.click(); });
+  fileInput.addEventListener("change", function (e) { if (e.target.files[0]) loadFile(e.target.files[0]); });
+  ["dragenter", "dragover"].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) { e.preventDefault(); dropZone.classList.add("dragover"); });
+  });
+  ["dragleave", "drop"].forEach(function (evt) {
+    dropZone.addEventListener(evt, function (e) { e.preventDefault(); dropZone.classList.remove("dragover"); });
+  });
+  dropZone.addEventListener("drop", function (e) {
+    if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+  });
+
+  var picker = document.getElementById("conceptPicker");
+  fetch("./manifest.json").then(function (r) { return r.json(); }).then(function (list) {
+    list.forEach(function (item) {
+      var opt = document.createElement("option");
+      opt.value = item.slug;
+      opt.textContent = "[" + item.domain + "] " + item.title;
+      picker.appendChild(opt);
+    });
+  }).catch(function () {});
+  picker.addEventListener("change", function () {
+    if (!picker.value) return;
+    fetch("./concepts/" + picker.value + ".md").then(function (r) { return r.text(); }).then(function (text) {
+      sourceEl.value = text;
+      render(text);
+    });
+  });
+
+  // 초기 예시 로드
+  fetch("./concepts/pca.md").then(function (r) { return r.text(); }).then(function (text) {
+    sourceEl.value = text;
+    render(text);
+  }).catch(function () {});
+</script>
+</body>
+</html>

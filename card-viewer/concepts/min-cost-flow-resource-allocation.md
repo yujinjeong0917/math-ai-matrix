@@ -1,0 +1,22 @@
+---
+slug: min-cost-flow-resource-allocation
+theme: DISC2
+domainLabel: 이산수학 심화
+subLabel: 네트워크 흐름
+title: 자원할당과 최소비용유량: Min-Cost Flow & MDP
+hook: 한정된 자원을 여러 수요처에 나눠줘야 하는데, 경로마다 단가와 한도가 다릅니다.
+---
+
+## 기본설명
+할인율 $\gamma\in[0,1)$, 초기분포 $\mu_0$를 갖는 MDP에서 정책 $\pi$의 상태-행동 점유측도(occupancy measure)를 $x^\pi(s,a)=\sum_{t=0}^\infty\gamma^t\Pr(s_t=s,a_t=a\mid\pi,\mu_0)$라 하면, $x^\pi(s,a)\ge0$이고 모든 상태 $s$에 대해 $\sum_a x^\pi(s,a) = \mu_0(s)+\gamma\sum_{s',a'}P(s\mid s',a')x^\pi(s',a')$라는 유량보존제약을 만족한다. 역으로 이 제약을 만족하는 임의의 음이 아닌 $x$는 어떤 정상정책의 점유측도이며, 기대보상을 최대화하는 최적정책은 이 유량보존 다면체 위에서 선형목적함수를 최대화하는 최소비용유량류의 선형계획법 문제로 얻어진다.
+
+## 문제
+정의상 $x^\pi(s,a) = \sum_{t=0}^\infty \gamma^t \Pr(s_t=s,a_t=a\mid \pi,\mu_0)$ 이다. 시각 $t$에 상태 $s$에 있으려면 $t=0$에 바로 $s$에서 시작했거나($\mu_0(s)$), 아니면 이전 시각에 어떤 $(s',a')$에서 $P(s\mid s',a')$로 전이해온 것이므로, 모든 행동에 대해 합한 상태점유 $\rho^\pi(s)=\sum_a x^\pi(s,a)$는 $\rho^\pi(s) = \mu_0(s) + \gamma\sum_{s',a'} P(s\mid s',a')\,$==빈칸== 를 만족한다.
+
+## 해설
+직전 시각에 (s',a')에 머물렀던 할인점유량 x^π(s',a')가 전이확률을 타고 s로 흘러들어오는 양이에요.
+
+**정답: $x^\pi(s',a')$**
+
+## 예시
+상태 $\{s_1,s_2\}$, 행동 $\{a_1,a_2\}$인 MDP를 생각합니다. 항상 $s_1$에서 시작하므로 $\mu_0(s_1)=1,\mu_0(s_2)=0$이고 $\gamma=0.5$. 전이는 결정적으로 $s_1$에서 $a_2$를 하면 $s_2$로, $s_2$에서 $a_1$을 하면 $s_1$로 갑니다. 정책 $\pi$가 $s_1$에서는 항상 $a_2$, $s_2$에서는 항상 $a_1$을 택한다면, 궤적은 $s_1,s_2,s_1,s_2,\dots$로 진동합니다. 점유측도는 $x(s_1,a_2)=\sum_{t\text{ 짝수}}\gamma^t=\frac{1}{1-\gamma^2}=\frac43$, $x(s_2,a_1)=\sum_{t\text{ 홀수}}\gamma^t=\frac{\gamma}{1-\gamma^2}=\frac23$이고 $x(s_1,a_1)=x(s_2,a_2)=0$입니다.

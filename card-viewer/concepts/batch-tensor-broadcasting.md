@@ -1,0 +1,28 @@
+---
+slug: batch-tensor-broadcasting
+theme: LINALG
+domainLabel: 선형대수
+subLabel: 벡터 · 행렬 연산
+title: 배치 브로드캐스팅과 행별 연산의 동치성
+hook: 신경망은 샘플 하나가 아니라 여러 샘플을 한꺼번에 묶은 배치 단위로 계산합니다.
+---
+
+## 기본설명
+$X\in\mathbb{R}^{n\times d}$, $b\in\mathbb{R}^d$, $\mathbf{1}_n\in\mathbb{R}^n$을 모든 성분이 1인 벡터라 하면, 브로드캐스팅 덧셈 $Y=X+b$는 $Y=X+\mathbf{1}_nb^T$와 같고 이는 모든 $i$에서 $\mathrm{row}_i(Y)=\mathrm{row}_i(X)+b$를 만족한다.
+
+## 문제
+먼저 $b$를 $n$개의 행으로 복제한 행렬을 직접 만들어본다. 모든 성분이 1인 벡터 $\mathbf{1}_n\in\mathbb{R}^n$과 $b$의 외적을 취하면 된다. 외적의 성분은 정의상 두 벡터의 대응 성분을 곱한 것이므로 $(\mathbf{1}_nb^T)_{ij} = (\mathbf{1}_n)_ib_j = $==빈칸== 이다.
+
+## 해설
+$\mathbf{1}_n$의 모든 성분은 1이므로 $(\mathbf{1}_n)_i=1$이다. $1\times b_j$는 그대로 $b_j$가 된다. 결과적으로 이 성분값은 행 번호 $i$가 무엇이든 상관없이 항상 $b_j$로 똑같다는 뜻이다.
+
+**정답: $b_j$**
+
+## 예시
+브로드캐스팅 한 줄이 실제로 각 행에 같은 벡터를 더한 것과 같은지 작은 배치로 확인해봅니다.
+$$X=\begin{pmatrix}1&2\\3&4\\5&6\end{pmatrix},\quad b=\begin{pmatrix}10\\20\end{pmatrix}$$
+$b$를 세 행으로 복제한 행렬은 $\mathbf1_3b^T=\begin{pmatrix}10&20\\10&20\\10&20\end{pmatrix}$입니다. 이를 $X$에 더하면 다음과 같습니다.
+$$Y=X+\mathbf1_3b^T=\begin{pmatrix}11&22\\13&24\\15&26\end{pmatrix}$$
+각 행만 따로 떼어봐도 $\mathrm{row}_1(X)+b=(1,2)+(10,20)=(11,22)$, $\mathrm{row}_2(X)+b=(3,4)+(10,20)=(13,24)$, $\mathrm{row}_3(X)+b=(5,6)+(10,20)=(15,26)$으로 $Y$의 각 행과 정확히 일치합니다.
+
+반복문으로 한 행씩 더한 결과와 브로드캐스팅 한 줄로 처리한 결과가 완전히 같습니다. 아래 증명은 이 일치가 이 크기의 행렬뿐 아니라 임의의 $X$와 $b$에서 항상 성립함을 보입니다.

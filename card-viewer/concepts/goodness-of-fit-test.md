@@ -1,0 +1,28 @@
+---
+slug: goodness-of-fit-test
+theme: STAT
+domainLabel: 추론통계
+subLabel: 가설검정 이론
+title: 적합도 검정: 피어슨 카이제곱 통계량과 KL발산의 관계
+hook: 관찰빈도가 기대빈도에서 얼마나 벗어났는지를 재는 척도가 필요합니다.
+---
+
+## 기본설명
+$k$개 범주, 총 표본크기 $n$, 귀무가설 하 확률 $p_i$ ($i=1,\dots,k$, $\sum_i p_i=1$), 관측빈도 $O_i$, 기대빈도 $E_i=np_i$, 경험비율 $\hat p_i=O_i/n$이라 하자. 그러면 $H_0$ 하에서 $n\to\infty$일 때 (즉 $\hat p_i$가 $p_i$에 가까워질 때) $$X^2=\sum_{i=1}^k\frac{(O_i-E_i)^2}{E_i} = 2n\,D_{KL}(\hat p\,\|\,p)+o_p(1)$$ 이 성립한다. 여기서 $D_{KL}(\hat p\|p)=\sum_i\hat p_i\log(\hat p_i/p_i)$이다.
+
+## 문제
+$f(u)=u\log u - u\log p_i$이므로 $f(p_i)=p_i\log1=0$, $f'(u)=\log(u/p_i)+1$이라 $f'(p_i)=1$, $f''(u)=1/u$이라 $f''(p_i)=1/p_i$이다. 이를 이용해 $f(\hat p_i)=f(p_i+\delta_i)$를 2차항까지 전개하면 $f(\hat p_i)\approx f(p_i)+f'(p_i)\delta_i+\frac12f''(p_i)\delta_i^2 = $==빈칸==이다.
+
+## 해설
+$f(p_i)=0$, $f'(p_i)=1$, $f''(p_i)=1/p_i$를 그대로 대입하면 $0+1\cdot\delta_i+\frac12\cdot\frac1{p_i}\delta_i^2=\delta_i+\dfrac{\delta_i^2}{2p_i}$가 됩니다.
+
+**정답: $\delta_i+\dfrac{\delta_i^2}{2p_i}$**
+
+## 예시
+$k=3$개 범주, $n=100$, 귀무가설 확률 $p=(0.5,0.3,0.2)$이라 하고 관측빈도가 $O=(55,25,20)$이라 합시다. 기대빈도는 $E=(50,30,20)$입니다.
+
+피어슨 통계량은 $$X^2=\frac{5^2}{50}+\frac{(-5)^2}{30}+\frac{0^2}{20}=0.5+0.8333+0=1.3333$$
+
+한편 $\hat p=(0.55,0.25,0.20)$이므로 KL발산은 $$D_{KL}(\hat p\|p)=0.55\log\frac{0.55}{0.5}+0.25\log\frac{0.25}{0.3}+0.20\log\frac{0.20}{0.2}\approx0.55(0.0953)+0.25(-0.1823)+0=0.0068$$
+
+따라서 $2n\,D_{KL}(\hat p\|p)=200\times0.0068\approx1.368$이 되어, 피어슨 통계량 $1.333$과 매우 가깝습니다. $n$이 유한해서 생기는 작은 차이(고차항)를 빼면 두 값이 사실상 같은 양임을 확인할 수 있습니다.

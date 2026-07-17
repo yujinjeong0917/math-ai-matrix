@@ -1,0 +1,34 @@
+---
+slug: importance-sampling-general
+theme: PROB
+domainLabel: 확률 · 통계
+subLabel: 표집 · 불확실성
+title: 중요도샘플링(Importance Sampling): 가중치 재정의와 자기정규화 추정량의 편향
+hook: 몬테카를로 적분은 $\mathbb{E}_p[f(X)]=\int f(x)p(x)\,dx$를 $p$에서 직접 뽑은 표본의 평균으로 근사합니다.
+---
+
+## 기본설명
+$q(x)>0$인 곳 밖에서는 $p(x)f(x)=0$이라 하자(지지조건). $X_1,\dots,X_n\overset{iid}\sim q$이고 $w_i=p(X_i)/q(X_i)$라 하면 $\hat\mu_1=\frac1n\sum_i w_if(X_i)$는 $\mathbb E_p[f(X)]$의 불편추정량이다. 반면 $p$가 $\tilde p/Z$로만 알려져 $\tilde w_i=\tilde p(X_i)/q(X_i)$를 쓰는 자기정규화 추정량 $\hat\mu_2=\dfrac{\sum_i \tilde w_if(X_i)}{\sum_i \tilde w_i}$는 일치추정량(consistent)이지만 유한 표본에서는 일반적으로 $O(1/n)$ 크기의 편향을 갖는다.
+
+## 문제
+가중치의 정의를 대입하면 $\int w(x)f(x)q(x)\,dx = \int \dfrac{p(x)}{q(x)}f(x)q(x)\,dx = $==빈칸== 이다.
+
+## 해설
+$q(x)$가 분자분모에서 약분되어 사라지고 $p(x)f(x)$의 적분만 남아요. $q(x)=0$인 점은 지지조건에 의해 $p(x)f(x)=0$이라 적분값에 기여하지 않아요.
+
+**정답: $\int p(x)f(x)\,dx$**
+
+## 예시
+연속분포로 적분을 근사하기 전에, 이산적인 두 지점만 있는 작은 세계에서 가중치 계산을 손으로 확인해봅니다.
+
+목표분포가 정규화되지 않은 값 $\tilde p(1)=3,\ \tilde p(2)=1$로 주어진다고 합시다. 정규화상수는 $Z=4$이므로 참목표분포는 $p(1)=3/4,\ p(2)=1/4$입니다. 제안분포는 $q(1)=q(2)=1/2$로 균등하게 잡습니다.
+
+목표는 $\mathbb E_p[X]=1\cdot\frac34+2\cdot\frac14=\frac54=1.25$입니다.
+
+먼저 $p$를 정확히 안다고 가정한 표준 가중치 $v(x)=p(x)/q(x)$는 $v(1)=1.5,\ v(2)=0.5$이고, 실제로
+$$\mathbb E_q[v(X)X]=\tfrac12\cdot1.5\cdot1+\tfrac12\cdot0.5\cdot2=0.75+0.5=1.25=\mathbb E_p[X]$$
+로 불편성이 정확히 확인됩니다.
+
+이제 $Z$를 모른다고 하고 $\tilde w(x)=\tilde p(x)/q(x)$만 쓰면 $\tilde w(1)=6,\ \tilde w(2)=2$입니다($Z=4$가 분자분모 어디에도 등장하지 않는다는 점이 핵심입니다). 표본 $(x_1,x_2,x_3)=(1,1,2)$를 뽑았다고 하면 자기정규화 추정량은
+$$\hat\mu_2=\frac{6\cdot1+6\cdot1+2\cdot2}{6+6+2}=\frac{16}{14}\approx1.143$$
+로, 참값 $1.25$와 차이가 있습니다. 표본이 유한하기 때문에 생기는 이 차이가 바로 자기정규화 추정량의 편향입니다.

@@ -1,0 +1,22 @@
+---
+slug: hamming-distance-error-correction
+theme: DISC2
+domainLabel: 이산수학 심화
+subLabel: 부호이론 · 조합최적화
+title: 오류정정부호와 해밍거리: Error-Correcting Codes
+hook: 통신 채널에 잡음이 있어 비트 몇 개가 뒤집혀도 원래 메시지를 복구하고 싶습니다.
+---
+
+## 기본설명
+부호 $C\subseteq\{0,1\}^n$의 두 단어 사이 해밍거리를 $d_H(x,y)=|\{i:x_i\ne y_i\}|$, 최소거리를 $d=\min_{c\ne c'\in C}d_H(c,c')$라 하자. $t=\lfloor(d-1)/2\rfloor$라 하면, 임의의 $c\in C$를 보낸 후 $d_H(c,r)\le t$인 $r$을 받았을 때 $r$에 가장 가까운 부호단어는 $C$ 안에서 유일하게 $c$이다. 즉 최근접 부호단어 복호(nearest-codeword decoding)는 $t$개 이하의 비트 오류를 항상 정확히 정정한다.
+
+## 문제
+부호단어 $c\in C$를 전송했는데 $t$개 이하의 오류가 나서 $d_H(c,r)\le t$인 $r$을 받았다고 하자. $C$의 다른 임의의 부호단어 $c'\ne c$에 대해 삼각부등식을 적용하면 $d_H(c,c')\le d_H(c,r)+d_H(r,c')$이므로, 이를 $d_H(r,c')$에 대해 정리하면 $d_H(r,c')\ge d_H(c,c')-d_H(c,r)\ge$==빈칸== 이다.
+
+## 해설
+d_H(c,c')≥d(최소거리 정의)이고 d_H(c,r)≤t이므로, 가장 보수적인(작은 쪽) 값을 넣으면 d-t가 나와요.
+
+**정답: $d-t$**
+
+## 예시
+반복부호 $C=\{000,111\}\subset\{0,1\}^3$은 $d=d_H(000,111)=3$이므로 $t=\lfloor2/2\rfloor=1$개의 오류를 정정할 수 있어야 합니다. 반면 $C=\{0000,1111\}\subset\{0,1\}^4$는 $d=4$이므로 $t=\lfloor3/2\rfloor=1$이며, 이 두 예제로 정정 한계와 그 한계가 왜 딱 그만큼인지를 확인합니다.
