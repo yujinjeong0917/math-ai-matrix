@@ -4,16 +4,33 @@ theme: MLOPS
 domainLabel: MLOps · 인프라
 subLabel: 신뢰성
 title: SLO와 오차예산: 얼마나 실패해도 괜찮은지 미리 정해두기
-hook: SLO(Service Level Objective)는 예를 들어 이번 달 요청의 $99.9\%$는 정상 응답을 반환한다처럼 구체적인 목표치로 표현한다.
 related: 성능 저하 감지 · 롤백 전략
 ---
 
-## 기본설명
+## 도입
 SLO(Service Level Objective)는 예를 들어 이번 달 요청의 $99.9\%$는 정상 응답을 반환한다처럼 구체적인 목표치로 표현한다. 오차예산은 $\text{Error Budget} = 1 - \text{SLO}$로 정의한다. SLO가 $99.9\%$면 오차예산은 $0.1\%$고 이는 특정 기간 동안 허용되는 실패 요청 비율 또는 다운타임 비율을 뜻한다.
 
 오차예산은 단순한 숫자가 아니라 조직 안에서 배포 속도를 조절하는 신호로 쓰인다. 오차예산이 넉넉히 남아있으면 팀은 새로운 모델 버전이나 기능을 더 자주 더 과감하게 배포할 수 있다. 반대로 오차예산을 이미 다 소진했다면 다음 릴리스는 잠시 멈추고 안정성 개선에 집중하자는 합의가 자동으로 성립한다. SRE 관행에서는 이 규칙을 명문화해서 오차예산 소진 시 배포 동결 같은 정책으로 운영한다.
 
 ML 서빙에 적용할 때는 SLO를 지연시간이나 가용성뿐 아니라 예측 품질 관련 지표로도 잡을 수 있다. 예를 들어 예측 신뢰도가 일정 기준 이하인 응답의 비율이 특정 임계값을 넘지 않아야 한다는 식이다. 다만 예측 품질 지표는 인프라 가용성보다 측정이 늦고 애매할 수 있어 실무에서는 먼저 지연시간과 오류율 같은 인프라성 SLO부터 잡고 품질 SLO는 점진적으로 추가하는 경우가 많다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="25" font-size="13">이번 달 오차예산 (SLO 99.9%)</text>
+<rect x="40" y="40" width="520" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="40" width="340" height="30" class="dg-dim" stroke="none"/>
+<rect x="380" y="40" width="180" height="30" class="dg-accent" opacity="0.5"/>
+<line x1="380" y1="30" x2="380" y2="80" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="380" y="98" font-size="11" text-anchor="middle" class="dg-dim">오늘</text>
+<text x="210" y="60" font-size="11" text-anchor="middle">이미 소진</text>
+<text x="470" y="60" font-size="11" text-anchor="middle">남은 예산</text>
+<text x="300" y="150" font-size="12" text-anchor="middle" class="dg-dim">오차예산은 1에서 SLO를 뺀 값</text>
+</svg>
+
+_목표 기간 안에서 허용된 실패량 중 이미 쓴 만큼과 남은 만큼을 보여준다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

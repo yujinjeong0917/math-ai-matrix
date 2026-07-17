@@ -4,16 +4,45 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: YOLOv3: 멀티스케일 예측과 앵커박스
-hook: YOLOv3는 백본으로 Darknet-53을 쓴다.
 related: YOLOv1 · YOLOX/v8 · IoU와 NMS
 ---
 
-## 기본설명
+## 도입
 YOLOv3는 백본으로 Darknet-53을 쓴다. 잔차연결을 갖춘 53층짜리 CNN으로 YOLOv1의 단순한 CNN보다 훨씬 깊고 표현력이 크다. 이 백본에서 뽑은 특징을 얕은 층 특징과 업샘플링으로 다시 합쳐서 13×13, 26×26, 52×52 세 해상도의 특징맵을 만든다. 입력이 416×416이라면 13×13은 큰 물체, 52×52는 작은 물체를 담당한다.
 
 각 격자 칸은 이제 좌표를 통째로 예측하지 않고 미리 정해둔 앵커박스 대비 얼마나 어긋나야 하는지만 예측한다. 앵커는 학습 데이터의 박스들을 k-평균으로 군집화해서 자주 나오는 가로세로 비율 9개를 미리 뽑아둔 것이다(스케일마다 3개씩). 중심 좌표는 시그모이드로 격자 칸 안쪽으로 제한하고 폭과 높이는 앵커 크기에 지수함수로 곱해지는 보정값으로 예측한다.
 
 분류 부분도 바뀌었다. YOLOv1은 소프트맥스로 클래스 하나를 고르게 했지만 YOLOv3는 클래스마다 독립된 로지스틱 분류기를 둔다. 사람과 여성처럼 겹칠 수 있는 라벨을 동시에 예측해야 하는 다중 라벨 상황에 더 잘 맞는다. 결과적으로 YOLOv3는 다양한 크기의 물체를 한 번의 순전파 안에서 동시에 잡아내는 탐지기가 되었다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="40" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="90" y1="40" x2="90" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="30" y1="100" x2="150" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="220" y="40" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="260" y1="40" x2="260" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="40" x2="300" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="220" y1="80" x2="340" y2="80" class="dg-line" stroke-width="1.5"/>
+<line x1="220" y1="120" x2="340" y2="120" class="dg-line" stroke-width="1.5"/>
+<rect x="410" y="40" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="440" y1="40" x2="440" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="470" y1="40" x2="470" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="500" y1="40" x2="500" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="410" y1="70" x2="530" y2="70" class="dg-line" stroke-width="1"/>
+<line x1="410" y1="100" x2="530" y2="100" class="dg-line" stroke-width="1"/>
+<line x1="410" y1="130" x2="530" y2="130" class="dg-line" stroke-width="1"/>
+<circle cx="90" cy="100" r="14" class="dg-accent"/>
+<circle cx="280" cy="100" r="8" class="dg-accent"/>
+<circle cx="470" cy="100" r="4" class="dg-accent"/>
+<text x="90" y="185" font-size="12" text-anchor="middle">13×13 (큰 물체)</text>
+<text x="280" y="185" font-size="12" text-anchor="middle">26×26 (중간 물체)</text>
+<text x="470" y="185" font-size="12" text-anchor="middle">52×52 (작은 물체)</text>
+</svg>
+
+_세 해상도의 특징맵이 각각 크기가 다른 물체를 담당한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

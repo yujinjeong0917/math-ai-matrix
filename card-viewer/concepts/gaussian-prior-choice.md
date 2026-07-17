@@ -4,12 +4,38 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 확률의 기초
 title: 최대엔트로피 원리와 정규분포 사전분포
-hook: 생성모델에서는 잠재변수의 사전분포로 거의 항상 표준정규분포 $N(0,I)$를 씁니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+생성모델에서는 잠재변수의 사전분포로 거의 항상 표준정규분포 $N(0,I)$를 씁니다. 계산이 편해서 고르는 것처럼 보이지만 사실 더 근본적인 이유가 있습니다. 평균과 분산이 정해져 있다는 조건만 걸었을 때, 그 안에서 가장 정보가 적은, 즉 엔트로피가 가장 큰 분포가 바로 정규분포이기 때문입니다. 특정한 형태를 미리 가정하지 않으려면 가장 자유도가 높은 분포를 골라야 하고, 그게 정규분포라는 뜻입니다.
+
+## 명제
 평균 $\mu$, 분산 $\sigma^2$이 고정된 모든 확률밀도 $p(x)$ 중에서 엔트로피 $H[p]=-\int p(x)\log p(x)\,dx$를 최대화하는 것은 정규분포 $N(\mu,\sigma^2)$이다.
+
+## 그림
+<svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+  <line x1="60" y1="170" x2="500" y2="170" class="dg-line" stroke-width="1.3"/>
+  <line x1="280" y1="170" x2="280" y2="180" class="dg-line" stroke-width="1.3"/>
+  <text x="272" y="196" font-size="11" class="dg-dim">평균 0</text>
+  <path d="M90,168 C150,168 170,45 280,45 C390,45 410,168 470,168" fill="none" class="dg-stroke-accent" stroke-width="2.8"/>
+  <path d="M150,168 L150,108 L410,108 L410,168" fill="none" class="dg-stroke-ink" stroke-width="1.8" stroke-dasharray="7,5"/>
+  <path d="M105,168 Q150,85 195,112 Q240,140 280,140 Q320,140 365,112 Q410,85 455,168" fill="none" class="dg-line" stroke-width="1.6" stroke-dasharray="2,4"/>
+  <g>
+    <line x1="60" y1="20" x2="90" y2="20" class="dg-stroke-accent" stroke-width="2.8"/>
+    <text x="96" y="24" font-size="12">정규분포 N(0,1) — 엔트로피 최대(실선·굵게)</text>
+  </g>
+  <g>
+    <line x1="60" y1="40" x2="90" y2="40" class="dg-stroke-ink" stroke-width="1.8" stroke-dasharray="7,5"/>
+    <text x="96" y="44" font-size="12">균등분포 [-√3,√3] (파선)</text>
+  </g>
+  <g>
+    <line x1="60" y1="60" x2="90" y2="60" class="dg-line" stroke-width="1.6" stroke-dasharray="2,4"/>
+    <text x="96" y="64" font-size="12">이중봉 분포 (점선)</text>
+  </g>
+</svg>
+
+_평균 0·분산 1로 똑같이 맞춘 세 분포를 겹쳐 그리면, 정규분포(굵은 실선)가 가장 퍼진 형태이며 엔트로피가 가장 크다._
 
 ## 문제
 지금 목표는 이 라그랑지안이 최댓값을 갖는 지점에서 $p(x)$가 만족해야 할 조건을 구하는 것이다. 함수가 극값을 가지려면 기울기가 0이어야 한다는 원리를 여기서도 그대로 쓴다. 이번엔 미분 대상이 숫자 변수가 아니라 함수 $p(x)$ 자체이므로, 각 지점 $x$에서 $p(x)$를 아주 살짝 바꿨을 때 $\mathcal{L}$이 변하지 않는다는 조건을 쓴다. $-p\log p$를 $p$로 미분하면 $-\log p-1$이 되고 나머지 제약항들은 $p$에 대해 각각 선형이라 그대로 미분된다.

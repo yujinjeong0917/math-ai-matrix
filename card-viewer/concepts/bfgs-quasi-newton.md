@@ -4,12 +4,15 @@ theme: NUM2
 domainLabel: 수치해석 심화
 subLabel: 반복법
 title: 유사뉴턴법(BFGS): 시컨트 방정식에서 얻는 헤시안 역행렬 갱신
-hook: 뉴턴법은 매 스텝마다 헤시안 $\nabla^2f(x_k)$를 계산해서 그 역행렬을 구해야 하지만, 이는 계산 비용이 크고 때로는 접근조차 불가능합니다.
 related: 헤시안과 2차 최적성 조건
 ---
 
-## 기본설명
+## 도입
+뉴턴법은 매 스텝마다 헤시안 $\nabla^2f(x_k)$를 계산해서 그 역행렬을 구해야 하지만, 이는 계산 비용이 크고 때로는 접근조차 불가능합니다. 유사뉴턴법은 그래디언트의 변화량만 관찰해서 헤시안(또는 그 역행렬)을 근사적으로 갱신해 나갑니다. BFGS(Broyden-Fletcher-Goldfarb-Shanno)는 그중 가장 널리 쓰이는 갱신 공식입니다.
+
+## 명제
 $s_k=x_{k+1}-x_k$, $y_k=\nabla f(x_{k+1})-\nabla f(x_k)$라 하고 $\rho_k = 1/(y_k^Ts_k)$라 하자. 대칭행렬 $B_k$가 시컨트 방정식 $B_{k+1}s_k=y_k$를 만족하도록 랭크-2 갱신되면 $$B_{k+1}=B_k+\frac{y_ky_k^T}{y_k^Ts_k}-\frac{B_ks_ks_k^TB_k}{s_k^TB_ks_k}$$ 이고, 그 역행렬 $H_k=B_k^{-1}$은 $$H_{k+1}=(I-\rho_ks_ky_k^T)H_k(I-\rho_ky_ks_k^T)+\rho_ks_ks_k^T$$ 로 갱신되며 이는 시컨트 방정식의 역형태 $H_{k+1}y_k=s_k$를 정확히 만족한다.
+
 
 ## 문제
 시컨트 방정식 하나만으로는 $n\times n$ 대칭행렬 $B_{k+1}$이 유일하게 정해지지 않으므로, 자연스러운 두 벡터 $y_k$와 $B_ks_k$를 이용한 대칭 랭크-2 갱신 형태 $B_{k+1}=B_k+\alpha\,y_ky_k^T+\beta\,(B_ks_k)(B_ks_k)^T$를 가정한다. 여기에 시컨트 방정식 $B_{k+1}s_k=y_k$를 대입하면 $B_ks_k+\alpha(y_k^Ts_k)y_k+\beta(s_k^TB_ks_k)B_ks_k=y_k$가 되고, $y_k$의 계수와 $B_ks_k$의 계수를 각각 맞추면 $\alpha=1/(y_k^Ts_k)$이고 $\beta = $==빈칸== 이다.

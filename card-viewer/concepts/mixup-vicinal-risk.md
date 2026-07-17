@@ -4,12 +4,44 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: Mixup: 두 샘플을 섞어 학습하면 왜 결정경계가 더 부드러워지는가
-hook: 보통의 경험위험최소화(ERM)는 관측된 $n$개의 데이터 점에서만 손실을 재는 경험분포 $P_{emp}(x,y)=\frac1n\sum_i\delta(x-x_i)\delta(y-y_i)$ 위에서 학습합니다.
 related: 무작위 마스킹으로 학습을 정칙화하는 또다른 방식 · 사전믿음을 통한 파라미터 정칙화와의 비교
 ---
 
-## 기본설명
+## 도입
+보통의 경험위험최소화(ERM)는 관측된 $n$개의 데이터 점에서만 손실을 재는 경험분포 $P_{emp}(x,y)=\frac1n\sum_i\delta(x-x_i)\delta(y-y_i)$ 위에서 학습합니다. 이 분포는 관측된 점 바로 그 자리에만 확률 질량을 두므로, 두 데이터 점 사이의 공간에서 모델이 어떻게 행동하든 손실에는 전혀 반영되지 않습니다. Mixup은 두 표본을 직선으로 잇는 사이 공간에도 가상의 훈련 표본을 만들어 넣습니다. $x'=\lambda x_i+(1-\lambda)x_j$, $y'=\lambda y_i+(1-\lambda)y_j$ ($\lambda\sim\mathrm{Beta}(\alpha,\alpha)$)로 만든 이 가상 표본들이 정의하는 새로운 분포 위에서 위험을 최소화하는 것을 비시널 위험 최소화(vicinal risk minimization)라 부릅니다. 이 훈련 방식이 왜 모델을 두 표본 사이에서 선형적으로 보간하도록 유도하는지, 선형모델에서 정확히 무슨 일이 일어나는지부터 확인합니다.
+
+## 명제
 선형모델 $f(x)=w^Tx+b$와 제곱오차 손실을 쓸 때 $f(x')=\lambda f(x_i)+(1-\lambda)f(x_j)$가 $\lambda$에 관계없이 항상 정확히 성립하고, 그 결과 mixup 손실은 $\bigl(f(x')-y'\bigr)^2\le\lambda\bigl(f(x_i)-y_i\bigr)^2+(1-\lambda)\bigl(f(x_j)-y_j\bigr)^2$을 만족한다.
+
+## 그림
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="18" font-size="12">ERM: 관측점에서만 손실 정의</text>
+<circle cx="70" cy="70" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="100" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="130" cy="60" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="195" y="140" width="10" height="10" class="dg-accent"/>
+<rect x="225" y="115" width="10" height="10" class="dg-accent"/>
+<rect x="255" y="160" width="10" height="10" class="dg-accent"/>
+<polyline points="40,120 110,115 150,105 180,135 300,150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="40" y="200" font-size="11" class="dg-dim">각진 결정경계, 점 사이 공간은 손실에 반영되지 않음</text>
+<line x1="330" y1="20" x2="330" y2="205" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="360" y="18" font-size="12">Mixup: 직선 사이 가상 표본 추가</text>
+<circle cx="390" cy="70" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="420" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="450" cy="60" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="515" y="140" width="10" height="10" class="dg-accent"/>
+<rect x="545" y="115" width="10" height="10" class="dg-accent"/>
+<rect x="575" y="160" width="10" height="10" class="dg-accent"/>
+<line x1="420" y1="100" x2="545" y2="115" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="450" y1="60" x2="515" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<circle cx="482" cy="107" r="3" class="dg-dim"/>
+<circle cx="482" cy="100" r="3" class="dg-dim"/>
+<circle cx="470" cy="88" r="3" class="dg-dim"/>
+<path d="M360,140 Q450,105 620,150" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="360" y="200" font-size="11" class="dg-dim">보간점(λ)이 채워져 경계가 부드러워짐</text>
+</svg>
+
+_두 표본 사이 직선 위 가상 표본이 손실에 반영되면서 각진 결정경계가 완만해진다._
 
 ## 문제
 Mixup이 정의하는 비시널 분포는 다음과 같은 절차로 표본을 만든다. 훈련집합에서 두 인덱스 $i,j$를 균등하게 고르고 $\lambda\sim\mathrm{Beta}(\alpha,\alpha)$를 뽑은 뒤, 두 입력과 두 라벨을 각각 같은 비율로 섞는다. 즉 가상 표본은 $(x',y') = $==빈칸== 이다.

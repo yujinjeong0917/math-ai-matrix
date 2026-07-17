@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 추정이론
 title: 적률법 추정량: 모집단 적률과 표본 적률을 맞바꾸는 방법
-hook: 모수 $\theta$를 추정하는 가장 오래된 방법 중 하나는 최대우도법보다 단순합니다.
 related: 최대우도추정(MLE)
 ---
 
-## 기본설명
+## 도입
+모수 $\theta$를 추정하는 가장 오래된 방법 중 하나는 최대우도법보다 단순합니다. 모집단의 적률(평균, 분산 등)이 모수의 함수로 표현된다는 사실을 이용해서, 이 함수를 표본에서 계산한 적률과 같다고 놓고 거꾸로 모수를 풀어내는 것입니다. 계산이 간단하고 항상 닫힌 형태의 해를 주는 경우가 많다는 장점이 있고, 대수의 법칙 덕분에 표본이 커지면 참값으로 수렴하는 일치추정량이 됩니다.
+
+## 명제
 모수 $\theta=(\theta_1,\ldots,\theta_k)$를 가진 분포의 $j$차 적률이 $\mu_j(\theta)=E_\theta[X^j]$이고, 사상 $g:\theta\mapsto(\mu_1(\theta),\ldots,\mu_k(\theta))$가 연속이고 역함수 $g^{-1}$도 연속이라 하자. 표본적률 $m_j=\frac1n\sum_{i=1}^n X_i^j$에 대해 적률법 추정량을 $\hat\theta=g^{-1}(m_1,\ldots,m_k)$로 정의하면, $\hat\theta$는 $\theta$의 일치추정량이다. 즉 $n\to\infty$일 때 $\hat\theta\xrightarrow{p}\theta$이다.
+
 
 ## 문제
 실제로는 $\theta$를 모르므로 이론적 적률 대신 표본에서 직접 계산할 수 있는 표본적률 $m_j=\frac1n\sum_{i=1}^n X_i^j$을 쓴다. 적률법의 발상은 이론적 관계식 $\mu_j(\theta)=m_j$가 $j=1,\ldots,k$ 모두에서 성립한다고 놓고, 이 연립방정식을 $\theta$에 대해 풀어 $\hat\theta=$==빈칸== 를 얻는 것이다.

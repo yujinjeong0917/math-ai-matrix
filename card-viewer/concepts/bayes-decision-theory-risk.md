@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 결정이론
 title: 베이즈 리스크 최소화: 0-1 손실의 MAP와 제곱손실의 사후평균
-hook: 통계적 결정이론에서는 관측 $x$를 보고 미지의 상태 $\theta$에 대해 행동 $a$를 하나 골라야 합니다.
 related: MAP 추정 · ROC-AUC의 확률적 해석
 ---
 
-## 기본설명
+## 도입
+통계적 결정이론에서는 관측 $x$를 보고 미지의 상태 $\theta$에 대해 행동 $a$를 하나 골라야 합니다. 이때 행동이 얼마나 나쁜지를 손실함수 $L(\theta,a)$로 정하면, 좋은 결정이란 사후분포 $p(\theta\mid x)$ 아래에서 기대손실(사후위험) $\rho(a\mid x)=E[L(\theta,a)\mid x]$를 최소화하는 행동입니다. 그런데 손실을 어떻게 정의하느냐에 따라 최적 행동의 모습이 완전히 달라집니다. 정답을 맞히느냐 틀리느냐만 따지는 0-1 손실에서는 최적 행동이 사후분포에서 가장 확률이 높은 값(최빈값, MAP)이 되고, 틀린 정도의 제곱을 따지는 제곱손실에서는 최적 행동이 사후평균이 됩니다.
+
+## 명제
 $\theta$의 사후분포가 $p(\theta\mid x)$라 하자. (1) $\theta$가 이산값을 갖고 손실이 $L(\theta,a)=\mathbb{1}[\theta\neq a]$(0-1 손실)이면, 사후위험 $\rho(a\mid x)=E[L(\theta,a)\mid x]$를 최소화하는 $a$는 $a^*=\arg\max_\theta p(\theta\mid x)$(사후최빈값, MAP)이다. (2) 손실이 $L(\theta,a)=(\theta-a)^2$(제곱손실)이면, $\rho(a\mid x)$를 최소화하는 $a$는 $a^*=E[\theta\mid x]$(사후평균)이다.
+
 
 ## 문제
 $\theta$가 이산값을 가질 때 0-1 손실의 사후위험을 구하면 $\rho(a\mid x)=E[\mathbb{1}[\theta\neq a]\mid x]=\sum_{\theta\neq a}p(\theta\mid x)$이다. 전체 확률의 합이 $1$이므로 이 합은 $\theta=a$인 항 하나만 제외한 나머지 전부이고, 따라서 $\rho(a\mid x)=$==빈칸== 이다.

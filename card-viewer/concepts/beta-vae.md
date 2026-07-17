@@ -4,12 +4,34 @@ theme: INFO
 domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: 베타-VAE와 정보병목의 라그랑주 해석
-hook: 베타-VAE는 KL항 앞에 계수 $\beta$를 붙여서 $\mathbb{E}[\log p(x|z)] - \beta\cdot D_{KL}(q(z|x)\|p(z))$를 최적화합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+베타-VAE는 KL항 앞에 계수 $\beta$를 붙여서 $\mathbb{E}[\log p(x|z)] - \beta\cdot D_{KL}(q(z|x)\|p(z))$를 최적화합니다. $\beta$를 키우면 잠재변수가 더 정보를 적게 갖게 되고 그만큼 표현이 서로 분리되기 쉬워진다고 알려져 있습니다. 이 현상은 사실 lagrange-kkt에서 본 라그랑주 승수법의 정확한 결과이고, information-bottleneck과도 곧바로 이어집니다.
+
+## 명제
 재구성 품질을 정보량 $D$의 오목함수 $R(D)$로 나타낼 때, 라그랑지안 $\mathcal{L}(D,\beta)=R(D)-\beta D$를 최대화하는 최적 정보량 $D^*(\beta)$는 $\beta$가 커질수록 커지지 않는다(즉 정보병목이 조여진다).
+
+## 그림
+<svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="190" x2="470" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="50" y1="190" x2="50" y2="20" class="dg-line" stroke-width="1"/>
+<text x="470" y="205" font-size="11" text-anchor="end">D (정보량)</text>
+<text x="30" y="20" font-size="11">R(D)</text>
+<path d="M50,110 Q160,10 380,45" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="230" cy="65" r="4" class="dg-accent"/>
+<line x1="130" y1="105" x2="330" y2="25" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="335" y="22" font-size="10">기울기 = β</text>
+<line x1="230" y1="65" x2="230" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="230" y="205" font-size="10" text-anchor="middle">D*(β)</text>
+<circle cx="150" cy="86" r="4" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<line x1="150" y1="86" x2="150" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="150" y="205" font-size="10" text-anchor="middle" class="dg-dim">D*(β′), β′&gt;β</text>
+<text x="60" y="40" font-size="11" class="dg-dim">R(D): 오목함수</text>
+</svg>
+
+_β가 커질수록 접선의 기울기가 커지고 최적 접점 D*는 왼쪽으로, 즉 더 작은 값으로 이동한다._
 
 ## 문제
 제약이 있는 문제 $\max_DR(D)\ \text{s.t.}\ D\le C$의 라그랑지안을 lagrange-kkt와 같은 방식으로 만듭니다. 제약을 등호로 정리한 식에 벌점 계수 $\beta\ge0$을 곱해서 목적함수에 더합니다.

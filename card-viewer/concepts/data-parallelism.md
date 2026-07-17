@@ -4,16 +4,44 @@ theme: MLOPS
 domainLabel: MLOps · 인프라
 subLabel: 분산학습
 title: 데이터 병렬: 같은 모델을 배치만 나눠 학습하기
-hook: 데이터 병렬은 모델 파라미터를 GPU마다 동일하게 복제해두고 미니배치를 GPU 수만큼 쪼개 각 GPU가 서로 다른 부분 배치로 순전파와 역전파를 독립적으로 수행합니다.
 related: 모델 병렬 · ZeRO
 ---
 
-## 기본설명
+## 도입
 데이터 병렬은 모델 파라미터를 GPU마다 동일하게 복제해두고 미니배치를 GPU 수만큼 쪼개 각 GPU가 서로 다른 부분 배치로 순전파와 역전파를 독립적으로 수행합니다. 이 시점까지는 GPU마다 서로 다른 그래디언트를 갖게 됩니다.
 
 다음 단계가 핵심입니다. 각 GPU가 계산한 그래디언트를 평균 내어 모든 GPU에 같은 값으로 맞춰주는 동기화 과정이 필요합니다. 이를 올리듀스(all-reduce)라 부르며 GPU를 고리 형태로 연결해 통신량을 줄이는 링 올리듀스가 널리 쓰입니다. 동기화가 끝나면 모든 GPU가 동일한 그래디언트로 옵티마이저를 갱신하므로 모델 복사본들은 계속 같은 값을 유지합니다.
 
 GPU가 $N$대이고 GPU 하나가 처리하는 배치 크기가 $b$라면 한 번의 스텝에서 실제로 소비되는 유효 배치 크기는 $Nb$가 됩니다. 배치가 커지면 한 스텝의 그래디언트 추정이 더 안정적이지만 학습률도 함께 조정해줘야 하는 경우가 많습니다. 데이터 병렬은 구현이 비교적 단순하고 GPU를 늘릴수록 처리량이 거의 선형으로 늘어난다는 장점이 있지만 모델과 옵티마이저 상태를 GPU마다 통째로 복제하기 때문에 메모리 사용은 전혀 줄지 않습니다. 모델이 GPU 메모리를 넘어서는 순간부터는 모델 병렬이나 ZeRO 같은 방법이 필요해집니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="110" y1="40" x2="530" y2="40" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="110" y1="40" x2="110" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="320" y1="40" x2="320" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="530" y1="40" x2="530" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="28" text-anchor="middle" font-size="12">그래디언트 동기화 (all-reduce)</text>
+<rect x="40" y="70" width="140" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="250" y="70" width="140" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="460" y="70" width="140" height="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="110" y="100" text-anchor="middle" font-size="13">GPU 1</text>
+<text x="110" y="122" text-anchor="middle" font-size="12" class="dg-dim">모델 복사본</text>
+<text x="320" y="100" text-anchor="middle" font-size="13">GPU 2</text>
+<text x="320" y="122" text-anchor="middle" font-size="12" class="dg-dim">모델 복사본</text>
+<text x="530" y="100" text-anchor="middle" font-size="13">GPU 3</text>
+<text x="530" y="122" text-anchor="middle" font-size="12" class="dg-dim">모델 복사본</text>
+<rect x="40" y="180" width="140" height="34" class="dg-accent"/>
+<rect x="250" y="180" width="140" height="34" class="dg-accent"/>
+<rect x="460" y="180" width="140" height="34" class="dg-accent"/>
+<text x="110" y="202" text-anchor="middle" font-size="12">배치 1/3</text>
+<text x="320" y="202" text-anchor="middle" font-size="12">배치 2/3</text>
+<text x="530" y="202" text-anchor="middle" font-size="12">배치 3/3</text>
+</svg>
+
+_각 GPU가 배치 일부만 학습하고 그래디언트를 동기화해 모델을 동일하게 유지합니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

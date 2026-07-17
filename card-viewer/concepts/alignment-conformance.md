@@ -4,16 +4,48 @@ theme: PM
 domainLabel: Process Mining
 subLabel: 검사 기법
 title: Alignment 기반 적합성: 로그와 모델의 최소편집거리
-hook: 정렬은 로그의 각 단계와 모델의 각 단계를 짝지은 이동의 나열입니다.
 related: Token Replay · Petri Net
 ---
 
-## 기본설명
+## 도입
 정렬은 로그의 각 단계와 모델의 각 단계를 짝지은 이동의 나열입니다. 로그 이벤트와 모델 트랜지션이 같은 활동으로 동시에 맞아떨어지면 동기이동이라 부르고 비용이 없습니다. 로그에는 있는데 그 시점 모델로는 설명할 수 없는 이벤트를 그대로 진행시키면 로그이동이고 비용이 붙습니다. 반대로 모델은 최종 상태에 도달하려면 어떤 트랜지션이 발화해야 하는데 로그에 대응하는 이벤트가 없으면 모델이동이고 역시 비용이 붙습니다.
 
 가능한 정렬은 무수히 많지만 비용의 합이 가장 작은 정렬 하나를 찾는 최적화 문제로 풉니다. 실제로는 로그와 모델을 곱한 탐색공간 위에서 최단경로를 찾는 방식으로 계산합니다. 동기이동 비용을 0으로 로그이동과 모델이동 비용을 1로 두는 것이 가장 흔한 설정입니다.
 
 이렇게 구한 최소비용을 정규화하면 적합도가 됩니다. 로그 전체를 건너뛰고 모델을 처음부터 새로 완주하는 최악의 정렬 비용을 기준으로 삼아 $\mathrm{fitness} = 1 - (\text{최소비용}/\text{최악비용})$로 계산하는 방식이 실무에서 흔히 쓰입니다. Token Replay와 다른 점은 이 값이 근사가 아니라 그 트레이스와 그 모델 사이에서 나올 수 있는 진짜 최선의 점수라는 데 있습니다. 대신 탐색 비용이 훨씬 크기 때문에 로그 전체를 매번 Alignment로 검사하기보다는 Token Replay로 먼저 걸러내고 의심스러운 트레이스만 Alignment로 깊게 들여다보는 방식이 흔히 쓰입니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 210" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="60" font-size="13" class="dg-dim">로그</text>
+<text x="10" y="140" font-size="13" class="dg-dim">모델</text>
+<rect x="100" y="40" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="61" font-size="13" text-anchor="middle">a</text>
+<rect x="100" y="120" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="141" font-size="13" text-anchor="middle">a</text>
+<line x1="130" y1="72" x2="130" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="130" y="180" font-size="11" text-anchor="middle" class="dg-dim">동기이동 · 비용 0</text>
+<rect x="220" y="40" width="60" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="250" y="61" font-size="13" text-anchor="middle">c</text>
+<rect x="220" y="120" width="60" height="32" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="250" y="141" font-size="13" text-anchor="middle" class="dg-dim">»</text>
+<text x="250" y="180" font-size="11" text-anchor="middle" class="dg-dim">로그이동 · 비용 1</text>
+<rect x="340" y="40" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="370" y="61" font-size="13" text-anchor="middle">b</text>
+<rect x="340" y="120" width="60" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="370" y="141" font-size="13" text-anchor="middle">b</text>
+<line x1="370" y1="72" x2="370" y2="120" class="dg-line" stroke-width="1.5"/>
+<text x="370" y="180" font-size="11" text-anchor="middle" class="dg-dim">동기이동 · 비용 0</text>
+<rect x="460" y="40" width="60" height="32" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="490" y="61" font-size="13" text-anchor="middle" class="dg-dim">»</text>
+<rect x="460" y="120" width="60" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="490" y="141" font-size="13" text-anchor="middle">c</text>
+<text x="490" y="180" font-size="11" text-anchor="middle" class="dg-dim">모델이동 · 비용 1</text>
+</svg>
+
+_로그 <a,c,b>를 모델 a→b→c에 맞추면 c가 로그이동, b 다음의 c가 모델이동으로 배정된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

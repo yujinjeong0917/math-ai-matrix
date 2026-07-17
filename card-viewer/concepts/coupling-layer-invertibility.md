@@ -4,12 +4,43 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 커플링 레이어: 절반만 변환해서 야코비안을 삼각행렬로 만드는 트릭
-hook: change-of-variables-flow에서 본 변수변환 공식을 실제로 쓰려면 매 층마다 야코비안 행렬식을 계산해야 합니다.
 related: 재매개변수화 트릭 · Diffusion 순방향 과정의 분산보존과 닫힌형 노이즈 주입
 ---
 
-## 기본설명
+## 도입
+change-of-variables-flow에서 본 변수변환 공식을 실제로 쓰려면 매 층마다 야코비안 행렬식을 계산해야 합니다. 일반적인 신경망 층에서 이 행렬식은 $n\times n$ 행렬의 행렬식이라 계산 비용이 매우 커집니다. 커플링 레이어는 입력의 절반은 그대로 두고 나머지 절반만 앞쪽 절반에 의존하는 함수로 변환합니다. 이 구조 하나만으로 역함수가 항상 존재하고 야코비안이 삼각행렬이 되어 행렬식이 대각성분의 곱으로 순식간에 계산됩니다.
+
+## 명제
 $x=(x_a,x_b)$를 분할하고 $y_a=x_a$, $y_b=x_b\odot\exp(s(x_a))+t(x_a)$ ($s,t$는 $x_a$만의 임의의 함수)라 하자. 이 변환은 항상 가역이며 야코비안 $dy/dx$는 블록삼각행렬이고 그 행렬식은 $\exp\left(\sum_i s_i(x_a)\right)$ 이다.
+
+## 그림
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="45" font-size="13">x_a</text>
+<line x1="45" y1="40" x2="150" y2="40" class="dg-line" stroke-width="2"/>
+<polygon points="150,40 140,35 140,45" class="dg-stroke-ink"/>
+<text x="160" y="45" font-size="13">y_a = x_a (그대로)</text>
+<text x="20" y="120" font-size="13">x_b</text>
+<rect x="45" y="100" width="150" height="34" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="52" y="122" font-size="11">⊙exp(s(x_a))+t(x_a)</text>
+<line x1="195" y1="117" x2="290" y2="117" class="dg-line" stroke-width="2"/>
+<polygon points="290,117 280,112 280,122" class="dg-stroke-ink"/>
+<text x="300" y="122" font-size="13">y_b</text>
+<line x1="65" y1="60" x2="100" y2="100" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="65" y="80" font-size="10" class="dg-dim">s,t는 x_a로 결정됨</text>
+<text x="420" y="30" font-size="12">야코비안 dy/dx (블록삼각)</text>
+<rect x="400" y="45" width="90" height="70" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="445" y1="45" x2="445" y2="115" class="dg-line" stroke-width="1.5"/>
+<line x1="400" y1="80" x2="490" y2="80" class="dg-line" stroke-width="1.5"/>
+<text x="415" y="68" font-size="13">I</text>
+<text x="460" y="68" font-size="13" class="dg-dim">0</text>
+<rect x="400" y="80" width="45" height="35" class="dg-accent"/>
+<text x="408" y="102" font-size="10">복잡, 0 아님</text>
+<rect x="445" y="80" width="45" height="35" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="450" y="102" font-size="9">diag(exp(s))</text>
+<text x="400" y="145" font-size="12" class="dg-dim">오른쪽 위가 항상 0 → det = 1 × det(diag(exp(s)))</text>
+</svg>
+
+_xa는 그대로, xb만 xa에 의존해 변환되어 야코비안이 블록삼각행렬이 된다._
 
 ## 문제
 역변환을 구하려면 출력 $y=(y_a,y_b)$만 가지고 입력 $x=(x_a,x_b)$를 되찾아야 한다. 첫 번째 절반은 변환에서 아무 것도 하지 않았으므로 정의를 그대로 뒤집으면 곧바로 답이 나온다. $x_a = $==빈칸== 이다.

@@ -4,16 +4,42 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: Diffusion 아키텍처
 title: U-Net: 노이즈를 예측하는 인코더-디코더
-hook: U-Net은 원래 의료영상을 픽셀 단위로 분할하기 위해 고안된 구조다.
 related: Latent Diffusion · 텍스트 조건화
 ---
 
-## 기본설명
+## 도입
 U-Net은 원래 의료영상을 픽셀 단위로 분할하기 위해 고안된 구조다. 입력을 여러 단계에 걸쳐 다운샘플링하면서 채널 수는 늘리고 공간 크기는 줄여 넓은 범위의 맥락정보를 압축해서 담는다. 이어서 같은 단계 수만큼 업샘플링하면서 원래의 공간 해상도를 되찾는다.
 
 다운샘플링 과정에서는 세밀한 위치 정보가 필연적으로 손실된다. U-Net은 이를 보완하기 위해 인코더의 각 단계 출력을 디코더의 대응하는 단계로 직접 이어붙이는 스킵연결을 둔다. 덕분에 디코더는 전체 맥락과 세부 위치 정보를 동시에 활용해서 출력을 만들 수 있다.
 
 디퓨전 모델에서 이 구조는 노이즈가 섞인 이미지 $x_t$와 현재 타임스텝 $t$를 입력으로 받아 그 안에 섞인 노이즈 $\epsilon_\theta(x_t,t)$를 예측하는 역할을 맡는다. 타임스텝 정보는 보통 사인 코사인로 만든 임베딩을 각 블록에 더해주는 방식으로 주입된다. 예측한 노이즈를 이용해 $x_t$에서 노이즈를 조금 덜어내면 $x_{t-1}$을 얻고 이 과정을 반복하면 순수한 노이즈가 점점 이미지로 바뀐다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="30" width="90" height="30" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="45" y="50" font-size="11">인코더1</text>
+      <rect x="140" y="75" width="80" height="28" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="150" y="94" font-size="11">인코더2</text>
+      <rect x="245" y="120" width="70" height="28" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="255" y="139" font-size="11">병목</text>
+      <rect x="360" y="75" width="80" height="28" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="368" y="94" font-size="11">디코더2</text>
+      <rect x="480" y="30" width="90" height="30" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="493" y="50" font-size="11">디코더1</text>
+      <line x1="75" y1="60" x2="150" y2="80" class="dg-line" stroke-width="1.5" />
+      <line x1="180" y1="103" x2="255" y2="122" class="dg-line" stroke-width="1.5" />
+      <line x1="315" y1="132" x2="380" y2="108" class="dg-line" stroke-width="1.5" />
+      <line x1="410" y1="80" x2="500" y2="55" class="dg-line" stroke-width="1.5" />
+      <line x1="120" y1="45" x2="480" y2="45" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5 4" />
+      <line x1="220" y1="89" x2="360" y2="89" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5 4" />
+      <text x="170" y="190" class="dg-dim" font-size="12">스킵연결이 인코더의 세부정보를 디코더로 직접 전달</text>
+      <text x="500" y="20" font-size="12">ε(x_t, t)</text>
+    </svg>
+
+_인코더에서 압축한 정보를 스킵연결로 디코더에 그대로 건네주는 구조입니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

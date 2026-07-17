@@ -4,12 +4,15 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: 언어모델을 정책으로: 토큰 생성의 연쇄법칙과 MDP
-hook: 언어모델은 다음 토큰의 확률 $p_\theta(y_t\mid y_1,\dots,y_{t-1})$을 내놓고, 전체 문장의 확률은 연쇄법칙으로 이 조건부확률들을 전부 곱한 것과 같아요.
 related: 
 ---
 
-## 기본설명
+## 도입
+언어모델은 다음 토큰의 확률 $p_\theta(y_t\mid y_1,\dots,y_{t-1})$을 내놓고, 전체 문장의 확률은 연쇄법칙으로 이 조건부확률들을 전부 곱한 것과 같아요. 그런데 강화학습에서 정책 $\pi_\theta(a_t\mid s_t)$도 상태가 주어졌을 때 행동을 고를 확률이에요. 상태를 지금까지 나온 토큰들의 문맥으로 정의하면, 이 둘은 이름만 다를 뿐 정확히 같은 대상이라는 걸 확인해봐요. RLHF에서 언어모델을 정책처럼 다루는 이유가 바로 여기서 나와요.
+
+## 명제
 $s_t:=(y_1,\dots,y_{t-1})$, $a_t:=y_t$, $\pi_\theta(a_t\mid s_t):=p_\theta(y_t\mid y_1,\dots,y_{t-1})$로 정의하면 $p_\theta(y_1,\dots,y_T)=\prod_{t=1}^T\pi_\theta(a_t\mid s_t)$이고, 상태전이는 $P(s_{t+1}\mid s_t,a_t,H)=P(s_{t+1}\mid s_t,a_t)$를 만족하는 마르코프 전이다.
+
 
 ## 문제
 이 표기를 그대로 정책의 언어로 바꿔 쓴다. 각 인수 $p_\theta(y_t\mid y_1,\dots,y_{t-1})$는 정의에 따라 $\pi_\theta(a_t\mid s_t)$와 정확히 같은 값이다.

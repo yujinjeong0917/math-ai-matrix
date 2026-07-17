@@ -4,12 +4,34 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: KL 신뢰영역의 2차 근사와 피셔정보 노름 제약
-hook: TRPO는 정책을 한 번에 너무 많이 바꾸지 않도록 매 업데이트마다 KL발산 제약을 겁니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+TRPO는 정책을 한 번에 너무 많이 바꾸지 않도록 매 업데이트마다 KL발산 제약을 겁니다. KL발산은 파라미터 변화량 $\delta$에 대한 단순한 이차식이 아니라서 이 제약이 정확히 어떤 모양의 영역을 만드는지 한눈에 보이지 않습니다. 파라미터가 아주 조금만 바뀐다고 가정하고 KL발산을 2차 테일러 근사로 펼쳐보면, 이 제약이 사실 피셔정보행렬을 계량으로 쓰는 타원형 노름 제약과 같다는 사실이 드러납니다. TRPO라는 이름의 신뢰영역이라는 말이 바로 여기서 나옵니다.
+
+## 명제
 $\delta$가 작을 때 $D_{KL}(\pi_\theta\|\pi_{\theta+\delta}) \approx \frac12\delta^TF(\theta)\delta$이며, 여기서 $F(\theta)$는 피셔정보행렬이다. 따라서 제약 $D_{KL}\le\epsilon$은 국소적으로 $\delta^TF(\theta)\delta\le2\epsilon$이라는 타원형 노름 제약과 같다.
+
+## 그림
+<svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="90" y1="140" x2="330" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="210" y1="30" x2="210" y2="230" class="dg-line" stroke-width="1"/>
+<circle cx="210" cy="140" r="65" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<ellipse cx="210" cy="140" rx="45" ry="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="255" y="45" font-size="11" class="dg-dim">유클리드 공 ‖δ‖≤√(2ε)</text>
+<text x="90" y="220" font-size="11">피셔 타원 δᵀFδ≤2ε</text>
+<line x1="210" y1="140" x2="240" y2="80" class="dg-line" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="240,80 228,84 234,93" class="dg-dim"/>
+<text x="245" y="75" font-size="12">g</text>
+<line x1="210" y1="140" x2="217" y2="80" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="217,80 209,88 219,90" class="dg-accent"/>
+<text x="222" y="65" font-size="12">F⁻¹g (자연그래디언트)</text>
+<text x="100" y="150" font-size="10" class="dg-dim">δ₁: 곡률 큼 → 좁게 허용</text>
+<text x="215" y="235" font-size="10" class="dg-dim">δ₂: 곡률 작음 → 넓게 허용</text>
+</svg>
+
+_KL 제약을 2차 근사하면 피셔정보행렬을 계량으로 쓰는 타원형 신뢰영역이 되고, 곡률이 큰 방향일수록 좁게, 작은 방향일수록 넓게 허용된다._
 
 ## 문제
 $D_{KL}(\pi_\theta\|\pi_{\theta+\delta})$를 $\delta=0$ 근처에서 테일러 전개한다. $\delta=0$일 때는 두 분포가 완전히 같으므로 $D_{KL}=0$이다. KL발산은 항상 0 이상이고 $\delta=0$에서 정확히 최솟값 0을 갖기 때문에, 그 지점에서 $\delta$에 대한 1차 미분항도 반드시 0이다. 그러니 테일러 전개는 2차항부터 시작한다. $D_{KL}(\pi_\theta\|\pi_{\theta+\delta}) \approx \frac12\delta^T$==빈칸==$\delta$ 이고, 여기서 빈칸은 $\delta=0$에서 계산한 KL발산의 헤시안(2차미분행렬)이다.

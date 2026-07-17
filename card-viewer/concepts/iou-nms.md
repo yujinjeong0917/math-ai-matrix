@@ -4,16 +4,31 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: IoU와 NMS: 박스 겹침과 중복 제거
-hook: IoU(Intersection over Union)는 두 박스 $A$, $B$에 대해 $\mathrm{IoU}(A,B) = \dfrac{|A \cap B|}{|A \cup B|}$로 정의된다.
 related: YOLOv1 · Focal Loss
 ---
 
-## 기본설명
+## 도입
 IoU(Intersection over Union)는 두 박스 $A$, $B$에 대해 $\mathrm{IoU}(A,B) = \dfrac{|A \cap B|}{|A \cup B|}$로 정의된다. 두 박스가 완전히 겹치면 1, 전혀 안 겹치면 0이다. 탐지 모델을 평가할 때는 예측 박스와 정답 박스의 IoU가 특정 임계값(흔히 0.5)을 넘으면 맞힌 것으로 친다. 학습 중 신뢰도 라벨을 만들 때도, 어떤 격자 칸이 어떤 물체를 책임질지 앵커를 배정할 때도 이 값이 기준이 된다.
 
 NMS(Non-Maximum Suppression)는 한 이미지 안에서 같은 물체에 대해 여러 개 나온 박스를 정리하는 후처리 알고리즘이다. 먼저 모든 예측 박스를 신뢰도 점수 순으로 정렬한다. 점수가 가장 높은 박스를 하나 뽑아 남기고, 이 박스와 IoU가 임계값(흔히 0.45에서 0.5)을 넘는 나머지 박스들은 같은 물체를 가리킨다고 보고 모두 지운다. 남은 박스들 중에서 다시 가장 높은 점수를 골라 같은 과정을 반복하고, 더 지울 박스가 없을 때까지 이어간다.
 
 탐지기가 IoU와 NMS 없이 신뢰도만으로 박스를 걸러내면 같은 물체 주변에 살짝 어긋난 박스 수십 개가 그대로 남는다. NMS는 겹침이라는 기하학적 단서를 이용해 이 중복을 정리하는 가장 단순하면서도 표준적인 방법이다. 최근에는 학습 가능한 방식으로 NMS 없이 겹치는 예측을 억제하는 시도(DETR류의 집합 예측 등)도 나오지만 YOLO 계열은 여전히 IoU 기반 NMS를 표준 후처리로 쓴다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="40" width="160" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="140" y="90" width="160" height="140" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="140" y="90" width="80" height="90" class="dg-accent"/>
+<text x="60" y="30" font-size="12">박스 A</text>
+<text x="240" y="245" font-size="12">박스 B</text>
+<text x="360" y="130" font-size="13">교집합(겹친 부분)</text>
+<text x="360" y="155" font-size="12" class="dg-dim">IoU = 교집합 넓이 ÷ 합집합 넓이</text>
+</svg>
+
+_교집합 넓이를 합집합 넓이로 나눈 값이 IoU다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

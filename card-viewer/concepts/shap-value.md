@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 게임이론 기반
 title: SHAP값: Shapley Value로 공정하게 기여도 나누기
-hook: 섀플리 값은 전체 특징 집합 $N$($|N|=n$)의 부분집합 $S$마다 정의되는 특성함수 $v(S)$에서 출발한다.
 related: DeepSHAP · 잠재변수 SHAP · LIME
 ---
 
-## 기본설명
+## 도입
 섀플리 값은 전체 특징 집합 $N$($|N|=n$)의 부분집합 $S$마다 정의되는 특성함수 $v(S)$에서 출발한다. $v(S)$는 특징 집합 $S$만 알고 있을 때 모델이 내놓는 예측값의 기댓값이다. 특징 $i$의 섀플리 값은 $\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(n-|S|-1)!}{n!} \big[v(S\cup\{i\}) - v(S)\big]$로 정의된다.
 
 이 식은 특징들이 임의의 순서로 하나씩 모델에 더해진다고 생각했을 때 특징 $i$가 합류하는 순간 예측값이 얼마나 뛰는지를 가능한 모든 순서에 대해 평균낸 값이다. 순서마다 이미 들어와 있는 특징 집합 $S$가 다르므로 한계기여도 $v(S\cup\{i\})-v(S)$도 매번 달라지고 그걸 조합론적으로 정확히 평균낸 것이 섀플리 값이다.
@@ -16,6 +15,28 @@ related: DeepSHAP · 잠재변수 SHAP · LIME
 왜 하필 이 가중치를 쓰는가는 섀플리가 증명한 공정성 조건들 때문이다. 기여가 없는 특징에는 0을 주고 똑같이 기여하는 두 특징에는 같은 값을 주고 전체 기여도의 합은 항상 실제 예측값과 기준값의 차이와 정확히 일치해야 한다는 조건들을 동시에 만족하는 배분 방식은 이 가중 평균이 유일하다. 그래서 $\sum_i \phi_i = f(x) - E[f(X)]$가 항상 성립한다.
 
 문제는 특징이 $n$개면 부분집합이 $2^n$개라 정확한 계산은 특징이 많아지면 순식간에 불가능해진다는 점이다. SHAP는 몬테카를로 샘플링으로 순서를 무작위로 뽑아 근사하거나 트리 모델이면 TreeSHAP처럼 트리 구조를 이용해 다항 시간에 정확히 계산하는 식으로 이 조합 폭발을 우회한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="610" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="50" y="160" width="70" height="30" class="dg-dim"/>
+<text x="85" y="150" font-size="12" text-anchor="middle">기준값</text>
+<text x="85" y="205" font-size="12" text-anchor="middle" class="dg-dim">0.30</text>
+<rect x="160" y="135" width="70" height="25" class="dg-accent"/>
+<text x="195" y="125" font-size="12" text-anchor="middle">+φ(소득)</text>
+<rect x="270" y="135" width="70" height="10" class="dg-dim"/>
+<text x="305" y="125" font-size="12" text-anchor="middle">φ(부채비율)</text>
+<rect x="380" y="118" width="70" height="27" class="dg-accent"/>
+<text x="415" y="108" font-size="12" text-anchor="middle">+φ(신용기간)</text>
+<rect x="490" y="118" width="70" height="72" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="525" y="108" font-size="13" text-anchor="middle">f(x)</text>
+<text x="525" y="205" font-size="12" text-anchor="middle">0.72</text>
+</svg>
+
+_기준값에서 시작해 특징별 섀플리 값을 더하고 빼면 최종 예측값에 도달한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,12 +4,53 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: n스텝 리턴: 1스텝 시간차와 몬테카를로 사이의 다이얼
-hook: markov-mdp 항목에서 본 벨만 기대방정식은 지금 당장의 보상 하나에 다음 상태의 가치추정치를 더해 갱신 목표로 삼습니다.
 related: 벨만 기대방정식의 1스텝 재귀 · 편향과 분산의 일반적 분해
 ---
 
-## 기본설명
+## 도입
+markov-mdp 항목에서 본 벨만 기대방정식은 지금 당장의 보상 하나에 다음 상태의 가치추정치를 더해 갱신 목표로 삼습니다. 이 방식은 가치함수 추정치 $V$가 아직 부정확할 때 그 부정확함을 그대로 물려받는다는 단점이 있습니다. 반대로 에피소드가 끝날 때까지 실제로 받은 보상만 모두 더하는 몬테카를로 방식은 $V$의 부정확함에서는 자유롭지만, 그만큼 우연히 나온 보상들의 흔들림을 고스란히 떠안습니다. n스텝 리턴은 이 두 극단 사이를 잇는 하나의 다이얼입니다.
+
+## 명제
 $G_t^{(n)} = r_t+\gamma r_{t+1}+\cdots+\gamma^{n-1}r_{t+n-1}+\gamma^nV(s_{t+n})$로 정의하면, $\pi$를 따르는 궤적에서 $E_\pi\!\left[G_t^{(n)}\,\middle|\,s_t=s\right] = V^\pi(s) + \gamma^n\,E_\pi\!\left[V(s_{t+n})-V^\pi(s_{t+n})\,\middle|\,s_t=s\right]$이다.
+
+## 그림
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<text x="55" y="20" font-size="12">1-step TD</text>
+<circle cx="110" cy="30" r="7" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="110" y1="37" x2="110" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="118" y="68" font-size="11">r_t</text>
+<rect x="102" y="90" width="16" height="16" class="dg-accent"/>
+<text x="55" y="130" font-size="11" class="dg-dim">V(s_t+1)로</text>
+<text x="55" y="145" font-size="11" class="dg-dim">부트스트랩</text>
+<text x="300" y="20" font-size="12">n-step 리턴</text>
+<circle cx="340" cy="30" r="7" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="340" y1="37" x2="340" y2="70" class="dg-line" stroke-width="1.5"/>
+<circle cx="340" cy="70" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="340" y1="76" x2="340" y2="110" class="dg-line" stroke-width="1.5"/>
+<circle cx="340" cy="110" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="340" y1="116" x2="340" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="348" y="55" font-size="11">r_t</text>
+<text x="348" y="95" font-size="11">r_t+1</text>
+<text x="348" y="135" font-size="11">⋮</text>
+<rect x="332" y="150" width="16" height="16" class="dg-accent"/>
+<text x="300" y="180" font-size="11" class="dg-dim">V(s_t+n)로 부트스트랩</text>
+<text x="545" y="20" font-size="12">몬테카를로</text>
+<circle cx="590" cy="30" r="7" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="590" y1="37" x2="590" y2="65" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="65" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="70" x2="590" y2="98" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="98" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="103" x2="590" y2="131" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="131" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="136" x2="590" y2="164" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="164" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="169" x2="590" y2="197" class="dg-line" stroke-width="1.5"/>
+<rect x="580" y="197" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="598" y="60" font-size="10">r</text>
+<text x="530" y="222" font-size="11" class="dg-dim">에피소드 종료, 부트스트랩 없음</text>
+</svg>
+
+_1-step은 즉시 부트스트랩, 몬테카를로는 끝까지 실제 보상만 사용, n-step은 그 사이의 다이얼이다._
 
 ## 문제
 지금 목표는 실제 보상 $n$개를 더한 부분합의 기댓값이 무엇과 같은지 구하는 것이다. markov-mdp 항목의 한 스텝 전개를 $n$번 반복하면, 참 가치함수 $V^\pi(s)$에서 $n$스텝 뒤 상태의 참 가치를 할인해서 뺀 나머지가 정확히 그 사이 $n$개의 실제 보상의 기댓값과 같다는 관계를 얻는다. 이는 $k=0$부터 $k=n-1$까지 순서대로 한 항씩 떼어내는 것을 $n$번 반복한 결과다.

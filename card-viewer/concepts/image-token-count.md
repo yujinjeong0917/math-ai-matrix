@@ -4,16 +4,34 @@ theme: LLM
 domainLabel: LLM/Agent
 subLabel: 이미지 토큰화
 title: 이미지 토큰 수: 해상도가 커질수록 컨텍스트를 많이 먹는다
-hook: 패치 토큰화에서 본 것처럼 토큰 수는 대략 $(H/p)\times(W/p)$입니다.
 related: 패치 토큰화 · 타일링
 ---
 
-## 기본설명
+## 도입
 패치 토큰화에서 본 것처럼 토큰 수는 대략 $(H/p)\times(W/p)$입니다. 가로세로를 각각 $k$배 키우면 토큰 수는 $k^2$배로 늘어납니다. 해상도는 가로세로 두 방향으로 함께 커지기 때문에 선형으로 보이는 해상도 증가가 실제로는 제곱으로 토큰 수를 늘리는 셈입니다.
 
 이렇게 늘어난 이미지 토큰은 단순히 자리만 차지하는 게 아닙니다. 셀프어텐션의 계산량은 시퀀스 길이의 제곱에 비례하므로 이미지 토큰이 늘면 이미지 토큰들 사이 그리고 이미지 토큰과 텍스트 토큰 사이의 어텐션 계산량도 함께 불어납니다. 결국 해상도를 올리는 선택은 이미지를 더 선명하게 보여주는 대신 컨텍스트 예산과 계산 비용을 함께 지불하는 거래입니다.
 
 그래서 실제 서비스에서는 이미지를 무한정 원래 해상도로 넣지 않습니다. 모델이 지원하는 최대 해상도로 리사이즈하거나 아주 큰 이미지는 타일링으로 다루는 절충을 택합니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+<text x="250" y="20" font-size="12" text-anchor="middle">해상도가 2배면 토큰 수는 4배</text>
+<line x1="60" y1="200" x2="460" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="140" y="160" width="70" height="40" class="dg-dim" stroke="none"/>
+<rect x="140" y="160" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="300" y="40" width="70" height="160" class="dg-accent" stroke="none"/>
+<rect x="300" y="40" width="70" height="160" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="175" y="216" font-size="11" text-anchor="middle">336×336</text>
+<text x="175" y="230" font-size="11" class="dg-dim" text-anchor="middle">576 토큰</text>
+<text x="335" y="216" font-size="11" text-anchor="middle">672×672</text>
+<text x="335" y="230" font-size="11" class="dg-dim" text-anchor="middle">2304 토큰</text>
+</svg>
+
+_해상도를 두 배로 올리면 면적이 네 배가 되어 패치 토큰 수도 네 배로 늘어난다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

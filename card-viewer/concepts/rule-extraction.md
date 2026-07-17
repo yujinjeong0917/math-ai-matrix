@@ -4,16 +4,32 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 규칙 · 트리 특화
 title: 규칙 추출: 블랙박스를 if-then 규칙으로 근사하기
-hook: 일반적인 절차는 이렇다.
 related: 트리 시각화 · 선형모델 계수
 ---
 
-## 기본설명
+## 도입
 일반적인 절차는 이렇다. 이미 학습된 블랙박스 모델 $f$에 다양한 입력을 넣어보고 그 예측 $f(x)$를 라벨로 삼아 새로운 데이터셋을 만든다. 이 데이터셋에 결정트리나 규칙 목록처럼 원래부터 해석하기 쉬운 모델을 학습시킨다. 이 대리모델은 실제 정답이 아니라 블랙박스의 예측을 흉내 내도록 학습된다는 점이 핵심이다.
 
 대리모델의 품질은 정확도가 아니라 충실도(fidelity)로 잰다. 홀드아웃 데이터에서 추출한 규칙의 예측이 원래 블랙박스의 예측과 얼마나 자주 일치하는지를 본다. 규칙 개수를 늘리거나 조건을 길게 하면 충실도는 올라가지만 그만큼 읽기 어려워지므로 충실도와 간결함 사이에서 항상 타협해야 한다.
 
 Anchors 방식의 국소 규칙 추출은 전역 대리모델을 따로 학습하지 않는다. 대신 관심 있는 예측 주변의 입력을 직접 교란해서 그 규칙의 조건을 만족하는 입력들에서 블랙박스의 예측이 실제로 거의 바뀌지 않는지를 통계적으로 검증한다. 이렇게 하면 이 조건이 성립하는 한 예측은 X일 확률이 최소 95퍼센트다처럼 개별 예측 단위의 확률적 보장을 얻는다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="220" x2="500" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="60" y2="30" class="dg-line" stroke-width="1.5"/>
+<path d="M70,60 C160,40 220,120 260,140 C320,170 380,120 480,200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="90" y="60" width="150" height="90" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="165" y="50" font-size="12" text-anchor="middle">규칙: x1≤a and x2≤b</text>
+<text x="380" y="45" font-size="12" text-anchor="middle" class="dg-dim">실제 결정경계(곡선)</text>
+<text x="60" y="240" font-size="12" text-anchor="middle">x1</text>
+<text x="35" y="35" font-size="12">x2</text>
+</svg>
+
+_곡선으로 된 실제 결정경계를 사람이 읽을 수 있는 사각형 규칙 하나로 근사한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

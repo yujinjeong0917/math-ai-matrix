@@ -4,12 +4,30 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 그래디언트 클리핑의 방향 보존과 스텝 크기 상한
-hook: 학습 도중 그래디언트의 노름이 어쩌다 아주 커지는 순간이 있습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+학습 도중 그래디언트의 노름이 어쩌다 아주 커지는 순간이 있습니다. RNN처럼 같은 가중치를 반복해서 곱하는 구조에서 특히 자주 일어납니다. 이럴 때 그래디언트를 그대로 쓰면 파라미터가 한 스텝에 너무 멀리 튀어버릴 수 있습니다. 그래디언트 클리핑은 이 문제를 아주 단순한 방법으로 해결합니다. 그래디언트의 방향은 그대로 두고 길이만 특정 상한 이하로 눌러줍니다.
+
+## 명제
 $\hat g = g$ ($\|g\|\le c$일 때) 또는 $\hat g=c\,g/\|g\|$ ($\|g\|>c$일 때)로 정의하면, $\hat g$는 항상 $g$와 같은 방향이고 $\|\hat g\|\le c$이며 스텝 크기 $\|\eta\hat g\|\le\eta c$이다.
+
+## 그림
+<svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="190" x2="230" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="20" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<circle cx="60" cy="190" r="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="112" y="230" font-size="11" class="dg-dim">‖·‖=c (클리핑 반지름)</text>
+<line x1="60" y1="190" x2="150" y2="70" class="dg-line" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="150,70 138,74 144,84" class="dg-dim"/>
+<text x="155" y="65" font-size="12">g (‖g‖=5)</text>
+<line x1="60" y1="190" x2="96" y2="142" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="96,142 86,148 92,156" class="dg-accent"/>
+<text x="20" y="130" font-size="12">ĝ = c·g/‖g‖ (‖ĝ‖=c)</text>
+</svg>
+
+_클리핑은 그래디언트의 방향은 그대로 두고 길이만 눌러 반지름 c인 원 경계 위로 가져온다._
 
 ## 문제
 $\hat g=c\,g/\|g\|$라는 식을 다시 보면 이것은 $g$에 어떤 스칼라를 곱한 것일 뿐이다. $\hat g = $==빈칸==$\cdot g$ 로 쓸 수 있다. 이 스칼라는 $c>0$이고 $\|g\|>0$이므로 항상 양수다.

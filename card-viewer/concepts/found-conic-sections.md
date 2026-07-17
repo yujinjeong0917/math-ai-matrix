@@ -4,14 +4,37 @@ theme: FOUND
 domainLabel: 예비수학
 subLabel: 예비수학 6순위 · 등고선과 제약조건의 그림
 title: 이차곡선(타원·포물선·쌍곡선)
-hook: 경사하강법으로 손실함수를 최소화할 때 흔히 보는 등고선 그림은 거의 항상 타원이에요.
 related: 라그랑주 승수법과 KKT 조건 · 경사하강법의 하강 보장 · 조건수와 선형시스템의 오차 민감도
 ---
 
-## 기본설명
+## 도입
 경사하강법으로 손실함수를 최소화할 때 흔히 보는 등고선 그림은 거의 항상 타원이에요. 그런데 이 타원·포물선·쌍곡선을 통틀어 부르는 '이차곡선'은 고교 교육과정에서 진로선택 과목인 '기하'에만 실려 있어서, 기하를 선택하지 않았다면 원과 이차함수 그래프(포물선의 특수한 경우) 정도만 보고 지나갔을 수 있어요.
 
 핵심은 이거예요. 함수 하나를 등고선으로 그린다는 건 $f(x,y)=c$를 만족하는 점들을 이어 곡선을 그린다는 뜻이고, $f$가 이차형식이면 그 등고선은 타원, 포물선, 쌍곡선 중 하나가 돼요. 손실함수를 파라미터 근처에서 이차식으로 근사하면(테일러 전개의 2차항) 등고선이 타원으로 나오는 이유가 바로 여기 있어요. 라그랑주 승수법에서 등장하는 제약조건 $g(x,y)=0$도 마찬가지로 이런 곡선의 모양을 하고 있어서, 최적화 문제를 눈으로 그려보려면 이 곡선들의 생김새를 알고 있어야 해요.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="200" cy="150" rx="45" ry="18" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="150" rx="75" ry="30" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="150" rx="105" ry="42" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="150" rx="135" ry="54" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<polyline points="330,70 90,115 300,140 130,160 250,168 170,172 203,151" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="203,151 213,146 210,157" class="dg-stroke-accent"/>
+<circle cx="330" cy="70" r="4" class="dg-accent"/>
+<circle cx="90" cy="115" r="4" class="dg-accent"/>
+<circle cx="300" cy="140" r="4" class="dg-accent"/>
+<circle cx="130" cy="160" r="4" class="dg-accent"/>
+<circle cx="250" cy="168" r="4" class="dg-accent"/>
+<circle cx="170" cy="172" r="4" class="dg-accent"/>
+<circle cx="200" cy="150" r="3" class="dg-dim"/>
+<text x="200" y="135" font-size="11" class="dg-dim" text-anchor="middle">최소점</text>
+<text x="335" y="60" font-size="12">경사하강 경로</text>
+</svg>
+
+_가늘고 긴 타원형 등고선에서는 경사하강법이 좁은 골짜기를 지그재그로 튕기며 내려간다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,12 +4,28 @@ theme: CALC2
 domainLabel: 미적분 심화
 subLabel: 볼록최적화 이론
 title: 볼록함수의 1차 조건: 접선과 전역최소
-hook: 함수 그래프 위에 접선을 하나 그어봅니다.
 related: 볼록함수와 옌센 부등식 · 강볼록성과 유일한 전역최소값의 존재 · KKT 필요조건의 유도
 ---
 
-## 기본설명
+## 도입
+함수 그래프 위에 접선을 하나 그어봅니다. 그 함수가 볼록하다면 이 접선은 늘 그래프 전체보다 아래에 머물러요. 신기하게도 이 성질은 볼록성 그 자체와 정확히 동치입니다. 그리고 이 동치 관계 속에 아주 실용적인 사실이 하나 숨어 있어요. 그래디언트가 0인 점이라면, 그곳이 어디든 상관없이 전역에서 가장 작은 값이 된다는 것입니다.
+
+## 명제
 미분가능한 함수 $f:\mathbb{R}^n\to\mathbb{R}$가 볼록일 필요충분조건은 임의의 $x,y\in\mathbb{R}^n$에 대해 $f(y)\ge f(x)+\nabla f(x)^T(y-x)$가 성립하는 것이다.
+
+## 그림
+<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+<path d="M60,180 Q250,20 440,180" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<line x1="60" y1="140" x2="300" y2="60" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="150" cy="97" r="4" class="dg-accent"/>
+<text x="150" y="115" font-size="11" text-anchor="middle">임의의 점 x</text>
+<text x="300" y="52" font-size="11" class="dg-dim">접선은 항상 그래프 아래</text>
+<line x1="100" y1="20" x2="400" y2="20" class="dg-stroke-accent" stroke-width="3" stroke-dasharray="6,3"/>
+<circle cx="250" cy="20" r="5" class="dg-accent"/>
+<text x="250" y="14" font-size="12" text-anchor="middle">∇f(x*)=0 → 수평접선 → 전역최소</text>
+</svg>
+
+_볼록함수의 접선은 항상 그래프 아래에 있으며, 그래디언트가 0인 점의 수평접선은 전역최소를 뜻한다._
 
 ## 문제
 먼저 (⟹) 방향을 본다. $f$가 볼록하다고 가정하고 방금 쓴 정의를 점 $x,y$와 $z_t=(1-t)x+ty$에 그대로 적용하면 $f(z_t)\le (1-t)f(x)+tf(y)$이다. 양변에서 $f(x)$를 빼고 $t\in(0,1]$로 나누면 $\dfrac{f(z_t)-f(x)}{t}\le f(y)-f(x)$를 얻는다. $t\to0^+$인 극한을 취하면 좌변은 방향미분의 정의에 의해 $\nabla f(x)^T(y-x)$로 수렴한다($f$가 미분가능하므로 방향미분이 그래디언트와 방향벡터의 내적과 정확히 일치한다). 따라서 $\nabla f(x)^T(y-x) \le $==빈칸== 이다.

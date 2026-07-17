@@ -4,14 +4,33 @@ theme: FOUND
 domainLabel: 예비수학
 subLabel: 예비수학 8순위 · 진로선택으로 밀려난 영역
 title: 여러 함수의 극한 (옛 미적분Ⅱ 영역)
-hook: 미적분Ⅱ는 2015 개정부터 진로선택 과목으로 분류돼서 이수 여부가 사람마다 크게 갈리고, 2028학년도 수능부터는 아예 출제 범위에서도 빠져요.
 related: 뉴턴법: 2차 테일러 근사의 꼭짓점 · 립시츠 연속성과 그래디언트의 상한
 ---
 
-## 기본설명
+## 도입
 미적분Ⅱ는 2015 개정부터 진로선택 과목으로 분류돼서 이수 여부가 사람마다 크게 갈리고, 2028학년도 수능부터는 아예 출제 범위에서도 빠져요. 그래서 $\frac{\sin x}{x}\to1$처럼 함수의 극한을 다루는 유명한 결과들이나 로피탈 정리 같은 테크닉을 한 번도 접하지 않았을 수 있어요.
 
 문제는 최적화 이론 상당수가 "이 근사가 성립한다"는 전제를 깔고 시작한다는 거예요. 어떤 함수를 다항식으로 근사하는 테일러 전개도 결국 극한의 언어로 정의된 것이라서, 극한 계산에 익숙하지 않으면 왜 그 근사가 성립하는지, 오차가 왜 그렇게 줄어드는지를 받아들이는 데 시간이 오래 걸려요. 극한 계산을 몇 번 직접 해보는 것만으로도 이 근사들이 마법이 아니라 정직한 계산 결과라는 감이 잡혀요.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="200" x2="470" y2="200" class="dg-line" stroke-width="1.3"/>
+<polygon points="470,200 459,195 459,205" class="dg-line"/>
+<line x1="250" y1="230" x2="250" y2="30" class="dg-line" stroke-width="1.3"/>
+<polygon points="250,30 245,42 255,42" class="dg-line"/>
+<line x1="40" y1="60" x2="460" y2="60" class="dg-line" stroke-width="1.3" stroke-dasharray="5,3"/>
+<text x="45" y="52" font-size="12" class="dg-dim">y=1</text>
+<path d="M60,180 C150,100 200,60 250,60 C300,60 350,100 440,180" fill="none" class="dg-stroke-accent" stroke-width="2.2"/>
+<circle cx="250" cy="60" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="250" y1="200" x2="250" y2="220" class="dg-line" stroke-width="1"/>
+<text x="255" y="222" font-size="12">x=0</text>
+<text x="330" y="95" font-size="12">y = sin x / x</text>
+</svg>
+
+_x=0에서는 정의되지 않지만(구멍점), 그 근방에서 함숫값은 1로 수렴한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

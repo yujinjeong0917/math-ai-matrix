@@ -4,16 +4,33 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 사기 탐지
 title: Precision-Recall 트레이드오프: 사기 탐지는 둘 다 잡을 수 없다
-hook: 정밀도(Precision)는 모델이 사기라고 예측한 거래 중 실제로 사기였던 비율이다.
 related: 결제 이상 패턴 탐지 · 결제 사기율
 ---
 
-## 기본설명
+## 도입
 정밀도(Precision)는 모델이 사기라고 예측한 거래 중 실제로 사기였던 비율이다. $\mathrm{Precision} = \dfrac{TP}{TP+FP}$. 재현율(Recall)은 실제 사기 거래 중 모델이 잡아낸 비율이다. $\mathrm{Recall} = \dfrac{TP}{TP+FN}$. 판정 기준을 낮춰서 더 많은 거래를 사기로 분류하면 놓치는 사기가 줄어 재현율은 오르지만 그만큼 정상 거래를 잘못 잡는 경우도 늘어 정밀도는 떨어진다. 기준을 높이면 정반대로 움직인다.
 
 이 관계가 단순한 튜닝 이슈가 아니라 근본적으로 피할 수 없는 이유는 두 가지다. 첫째는 클래스 불균형이다. 실제 사기 거래는 전체 거래의 0.1퍼센트에서 1퍼센트 남짓으로 극히 드물어서 아주 작은 정밀도 손실만으로도 절대적인 오탐 건수는 크게 늘어난다. 둘째는 비용 비대칭이다. 사기를 놓치는 false negative는 직접적인 금전 손실로 이어지고 정상 고객을 차단하는 false positive는 고객 이탈과 신뢰 훼손으로 이어지는데 두 비용의 크기가 서로 다르고 상황마다 바뀌기 때문에 어느 한쪽만 항상 옳은 기준이라는 게 존재하지 않는다.
 
 이런 이유로 사기 탐지 모델을 평가할 때는 정밀도나 재현율 하나만 보지 않고 임계값을 바꿔가며 둘의 관계 전체를 그린 PR 곡선을 본다. 사기처럼 양성 클래스가 극히 드문 문제에서는 ROC-AUC가 실제보다 낙관적으로 보이는 경향이 있어서 PR-AUC를 더 신뢰할 만한 평가 지표로 쓴다. 실무에서는 F1 스코어처럼 두 지표를 하나로 절충하거나 오탐과 미탐 각각의 실제 금전적 비용을 추정해서 그 비용의 합을 최소화하는 임계값을 고르는 방식으로 트레이드오프를 다룬다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="70" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="70" y1="220" x2="70" y2="40" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="295" y="248" font-size="12" text-anchor="middle">재현율 Recall</text>
+<text x="35" y="130" font-size="12" text-anchor="middle" transform="rotate(-90 35 130)">정밀도 Precision</text>
+<path d="M90,60 C220,65 320,120 460,190" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="150" cy="72" r="6" class="dg-accent"/>
+<circle cx="420" cy="175" r="6" class="dg-accent"/>
+<text x="150" y="55" font-size="11" text-anchor="middle">엄격한 기준</text>
+<text x="420" y="205" font-size="11" text-anchor="middle">느슨한 기준</text>
+</svg>
+
+_판정 기준을 느슨하게 할수록 재현율은 오르고 정밀도는 떨어진다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

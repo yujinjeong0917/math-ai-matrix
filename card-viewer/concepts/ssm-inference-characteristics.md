@@ -4,16 +4,44 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: State-Space 모델
 title: SSM의 추론 특성: KV 캐시 없는 상수 메모리
-hook: Transformer 기반 모델이 추론할 때는 지금까지 나온 모든 토큰의 키와 값 벡터를 KV 캐시라는 형태로 저장해두고 매 스텝 새 토큰의 질의를 이 캐시 전체와 비교한다.
 related: Mamba · S4
 ---
 
-## 기본설명
+## 도입
 Transformer 기반 모델이 추론할 때는 지금까지 나온 모든 토큰의 키와 값 벡터를 KV 캐시라는 형태로 저장해두고 매 스텝 새 토큰의 질의를 이 캐시 전체와 비교한다. 시퀀스 길이가 $n$이면 캐시에 저장해야 하는 양이 $n$에 비례해서 늘어나고 한 토큰을 생성하는 데 드는 연산량도 캐시 전체를 훑어야 하므로 $n$에 비례해서 늘어난다. 전체 시퀀스를 처리하는 데 드는 연산량을 합치면 $O(n^2)$이 된다.
 
 상태공간모델은 구조상 순환식 $h_t=\bar A h_{t-1}+\bar B x_t$로 상태를 갱신한다. 이 상태 벡터의 크기는 시퀀스 길이와 무관하게 미리 정해진 고정된 차원이다. 그래서 추론 중에 저장해야 하는 메모리는 시퀀스가 아무리 길어져도 상태 벡터 하나만큼으로 일정하고 한 스텝을 처리하는 연산량도 상수시간이다.
 
 다만 이 상수 메모리에는 대가가 있다. 상태 벡터의 크기가 고정되어 있다는 것은 과거 정보를 그 고정된 용량 안에 압축해서 담아야 한다는 뜻이다. Transformer는 필요하면 아주 오래된 토큰까지 정확히 다시 꺼내볼 수 있지만 상태공간모델은 압축 과정에서 세부 정보가 흐려질 수 있다. 그래서 정확한 장거리 참조가 중요한 과제에서는 Transformer가, 아주 긴 시퀀스를 빠르고 가볍게 처리해야 하는 상황에서는 상태공간모델 계열이 유리하다는 트레이드오프가 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="24" text-anchor="middle" font-size="13">Transformer KV 캐시</text>
+<line x1="50" y1="220" x2="270" y2="220" class="dg-line" stroke-width="1.5" />
+<line x1="50" y1="220" x2="50" y2="50" class="dg-line" stroke-width="1.5" />
+<rect x="70" y="205" width="30" height="15" class="dg-dim" />
+<rect x="140" y="160" width="30" height="60" class="dg-dim" />
+<rect x="210" y="60" width="30" height="160" class="dg-accent" />
+<text x="85" y="235" text-anchor="middle" font-size="12">n=1,000</text>
+<text x="155" y="235" text-anchor="middle" font-size="12">n=10,000</text>
+<text x="225" y="235" text-anchor="middle" font-size="12">n=100,000</text>
+<text x="18" y="45" font-size="12">메모리</text>
+<text x="470" y="24" text-anchor="middle" font-size="13">SSM 상태 크기</text>
+<line x1="370" y1="220" x2="590" y2="220" class="dg-line" stroke-width="1.5" />
+<line x1="370" y1="220" x2="370" y2="50" class="dg-line" stroke-width="1.5" />
+<line x1="390" y1="205" x2="570" y2="205" class="dg-stroke-accent" stroke-width="2" />
+<circle cx="390" cy="205" r="4" class="dg-accent" />
+<circle cx="480" cy="205" r="4" class="dg-accent" />
+<circle cx="570" cy="205" r="4" class="dg-accent" />
+<text x="390" y="235" text-anchor="middle" font-size="12">n=1,000</text>
+<text x="480" y="235" text-anchor="middle" font-size="12">n=10,000</text>
+<text x="570" y="235" text-anchor="middle" font-size="12">n=100,000</text>
+</svg>
+
+_시퀀스 길이가 늘어날수록 Transformer의 KV 캐시는 선형으로 커지지만 SSM의 상태 크기는 항상 일정합니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

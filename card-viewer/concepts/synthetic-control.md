@@ -4,11 +4,10 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 인과적 임팩트 측정
 title: Synthetic Control: 있을 수 없는 대조군을 가상으로 합성하기
-hook: 처치를 받은 단위를 1번이라 하고 처치를 받지 않은 $J$개의 후보 단위 즉 도너풀이 있다고 하자.
 related: Uplift Modeling · 샤플리 기반 어트리뷰션
 ---
 
-## 기본설명
+## 도입
 처치를 받은 단위를 1번이라 하고 처치를 받지 않은 $J$개의 후보 단위 즉 도너풀이 있다고 하자. 각 도너 $j$에 가중치 $w_j$를 부여해 처치 이전 기간의 실제 값과 가장 가깝게 재현하는 가중치 조합을 찾는다.
 $$\min_{w} \sum_{t \in \text{pre}} \Big(Y_{1t} - \sum_{j=2}^{J+1} w_j Y_{jt}\Big)^2 \quad \text{s.t. } w_j \ge 0,\ \sum_j w_j = 1$$
 가중치가 음수가 될 수 없고 합이 1이 되도록 제한하는 것이 일반 회귀와의 결정적인 차이다. 이 제약이 없으면 가중치가 실제 어떤 도너에서도 관측된 적 없는 극단적인 값으로 튈 수 있어서 결과로 나온 가상의 쌍둥이가 현실적으로 존재할 수 없는 조합이 되어버린다.
@@ -16,6 +15,23 @@ $$\min_{w} \sum_{t \in \text{pre}} \Big(Y_{1t} - \sum_{j=2}^{J+1} w_j Y_{jt}\Big
 이 방법이 필요한 이유는 눈대중으로 비교군 하나를 고르는 전통적인 방식의 약점 때문이다. 비교군을 하나만 고르면 그 선택이 자의적이고 그 비교군이 처치가 없었다면 실제 도시와 나란히 움직였을 것이라는 평행추세 가정을 검증할 방법이 마땅치 않다. Synthetic Control은 여러 후보를 데이터가 알아서 섞도록 맡기고 그 결과물의 적합도를 처치 이전 기간에서 수치와 그래프로 직접 확인할 수 있게 해준다는 점에서 이 약점을 정면으로 보완한다.
 
 처치 이후 효과는 매 시점마다 실제 값과 합성된 값의 차이 $\hat\tau_t = Y_{1t} - \sum_j w_j Y_{jt}$로 추정한다. 처치받은 단위가 보통 하나뿐이라 일반적인 표준오차 계산이 통하지 않으므로 유의성은 플라시보 검정으로 확인한다. 실제로는 처치받지 않은 도너풀의 다른 단위들을 하나씩 돌아가며 처치받은 것처럼 가정하고 같은 절차를 반복해서 우연히도 이만큼 큰 격차가 나올 수 있는지를 살펴본다. 진짜 처치받은 단위의 격차가 이 가짜 격차들보다 뚜렷하게 크다면 그 효과는 우연이 아니라는 근거가 된다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="220" x2="520" y2="220" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="300" y1="20" x2="300" y2="220" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="300" y="14" font-size="11" text-anchor="middle">변화 시점</text>
+<path d="M80,160 L150,150 L220,140 L300,130 L360,90 L420,60 L480,40" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M80,162 L150,152 L220,142 L300,132 L360,128 L420,124 L480,120" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="3,3"/>
+<text x="486" y="36" font-size="11" class="dg-accent">실제 A지역</text>
+<text x="486" y="116" font-size="11" class="dg-dim">합성 대조군</text>
+</svg>
+
+_가상의 합성 대조군은 변화 이전에는 실제 지표와 거의 겹치다가 이후 격차가 벌어진다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,11 +4,10 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: A/B 테스트
 title: Multi-armed Bandit: 실험하면서 동시에 수익을 챙기기
-hook: Multi-armed Bandit 문제의 목표는 리그렛을 최소화하는 것이다.
 related: 표본크기 산정 · 순차검정
 ---
 
-## 기본설명
+## 도입
 Multi-armed Bandit 문제의 목표는 리그렛을 최소화하는 것이다. 리그렛은 매 라운드마다 가장 좋은 팔을 선택했을 때 얻었을 보상과 실제 선택한 팔에서 얻은 보상의 차이를 누적한 값이다.
 $$R_T = \sum_{t=1}^{T} \left(\mu^{*} - \mu_{a_t}\right)$$
 A/B 테스트처럼 실험 기간 내내 절반씩 균등하게 배분하는 전략은 이 리그렛이 시간에 비례해서 계속 쌓이는 순수 탐색 전략이다. 밴딧 알고리즘은 좋은 팔이 드러날수록 그쪽 배분을 늘려서 리그렛이 시간에 비례하지 않고 훨씬 느리게 쌓이도록 만든다.
@@ -16,6 +15,27 @@ A/B 테스트처럼 실험 기간 내내 절반씩 균등하게 배분하는 전
 대표적인 알고리즘인 톰슨 샘플링은 베이지안 방식으로 각 팔의 전환율에 대한 사후분포를 유지한다. 클릭 여부처럼 이진 결과라면 사전분포로 $\mathrm{Beta}(\alpha_0,\beta_0)$을 두고 성공 $s$회 실패 $f$회를 관측하면 사후분포는 $\mathrm{Beta}(\alpha_0+s,\ \beta_0+f)$로 갱신된다. 매 라운드마다 각 팔의 사후분포에서 표본 하나씩을 뽑아 가장 큰 값을 낸 팔에 트래픽을 보낸다. 데이터가 적어 불확실성이 큰 팔은 사후분포가 넓게 퍼져 있어서 가끔 큰 표본값이 나와 자연스럽게 더 탐색되고 데이터가 쌓여 확신이 붙은 팔은 좁아진 사후분포 덕분에 꾸준히 선택된다.
 
 다만 밴딧은 트래픽 배분 자체가 관측 결과에 따라 계속 바뀌기 때문에 실험이 끝난 뒤 각 안의 정확한 효과 크기를 통계적으로 보고하기가 A/B 테스트보다 까다롭다. 정밀한 효과 추정치와 신뢰구간이 꼭 필요한 의사결정에는 여전히 고정 표본 A/B 테스트가 표준이고 밴딧은 그 자리를 대체한다기보다 실시간 최적화가 목적일 때 쓰는 별도의 도구에 가깝다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="100" y="140" width="60" height="60" class="dg-accent"/>
+<rect x="260" y="160" width="60" height="40" class="dg-dim"/>
+<rect x="420" y="180" width="60" height="20" class="dg-dim"/>
+<text x="130" y="130" font-size="12" text-anchor="middle">A 25%</text>
+<text x="290" y="150" font-size="12" text-anchor="middle">B 15%</text>
+<text x="450" y="170" font-size="12" text-anchor="middle">C 8%</text>
+<text x="20" y="175" font-size="12">추정전환율</text>
+<text x="20" y="238" font-size="12">트래픽배분</text>
+<rect x="60" y="225" width="308" height="14" class="dg-accent"/>
+<rect x="368" y="225" width="110" height="14" class="dg-dim"/>
+<rect x="478" y="225" width="22" height="14" class="dg-dim"/>
+</svg>
+
+_추정 전환율이 높은 팔일수록 더 많은 트래픽이 자동으로 배분된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,12 +4,29 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: ELBO: 로그가능도의 옌센 하한
-hook: 생성모델에서 데이터의 로그가능도 $\log p(x)$를 직접 계산하는 것은 잠재변수 $z$에 대한 적분이 껴 있어 대개 불가능합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+생성모델에서 데이터의 로그가능도 $\log p(x)$를 직접 계산하는 것은 잠재변수 $z$에 대한 적분이 껴 있어 대개 불가능합니다. 대신 계산 가능한 하한을 최적화하는 전략을 씁니다. 그 하한이 ELBO입니다. 이 하한이 왜 실제로 $\log p(x)$보다 작거나 같은지 오목함수에 대한 옌센 부등식으로 확인해 봅니다.
+
+## 명제
 임의의 분포 $q(z|x)$에 대해 $\log p(x) \ge E_q[\log p(x|z)] - D_{KL}(q(z|x)\|p(z))$.
+
+## 그림
+<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="60" x2="360" y2="60" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="50" font-size="13">log p(x)</text>
+<line x1="40" y1="130" x2="360" y2="130" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="60" y="150" font-size="12">ELBO = E_q[log p(x|z)] - D_KL(q‖p(z))</text>
+<line x1="380" y1="60" x2="380" y2="130" class="dg-line" stroke-width="1.5"/>
+<polygon points="380,60 375,72 385,72" class="dg-line"/>
+<polygon points="380,130 375,118 385,118" class="dg-line"/>
+<text x="30" y="100" font-size="12">= D_KL(q(z|x)‖p(z|x))</text>
+<text x="40" y="185" class="dg-dim" font-size="12">ELBO는 항상 로그가능도 아래: 간격이 근사분포 q와 실제 사후분포의 KL발산</text>
+</svg>
+
+_로그가능도와 그 아래 ELBO 하한 사이의 간격은 정확히 KL발산이다._
 
 ## 문제
 이 적분을 그대로 다루기는 어렵다. 임의로 고른 분포 $q(z|x)$를 분자와 분모에 동시에 곱해 넣어도 값은 바뀌지 않는다. $p(x) = \int q(z|x)\dfrac{p(x,z)}{q(z|x)}\,dz$ 이다. 이 적분은 $z\sim q(z|x)$일 때 $p(x,z)/q(z|x)$의 기댓값과 같은 모양이다. $p(x) = $==빈칸== 이다.

@@ -4,16 +4,36 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 다양성 지표
 title: Intra-List Diversity: 추천 목록 안이 얼마나 다채로운가
-hook: 가장 흔한 정의는 목록 안 아이템 쌍의 평균 비유사도다.
 related: 커버리지 · 세렌디피티
 ---
 
-## 기본설명
+## 도입
 가장 흔한 정의는 목록 안 아이템 쌍의 평균 비유사도다. 아이템 특징 벡터나 임베딩으로 코사인 유사도 $\mathrm{sim}(i,j)$를 구한 뒤 $1 - \mathrm{sim}(i,j)$를 비유사도로 쓰고 목록 크기 $n$에 대해 $\mathrm{ILD} = \dfrac{2}{n(n-1)}\sum_{i<j}\left(1-\mathrm{sim}(i,j)\right)$로 평균 낸다. 값이 클수록 목록 안 아이템들이 서로 이질적이라는 뜻이다.
 
 이 지표가 필요한 이유는 precision이나 CTR 같은 정확도 지표가 목록 내부의 중복을 전혀 벌점 처리하지 않기 때문이다. 협업 필터링 기반 랭킹은 사용자와 비슷한 취향을 가진 다른 사용자들이 좋아한 상품을 상위에 올리는데 이런 상품들은 서로 특징이 비슷한 경우가 많아서 정확도를 그대로 최적화하면 목록이 자연스럽게 필터버블처럼 좁아진다.
 
 다양성을 억지로 높이면 관련성이 떨어지는 아이템이 끼어들어 정확도가 낮아지는 트레이드오프가 있다. 그래서 실무에서는 상위 후보군을 뽑은 뒤 관련성과 다양성을 함께 고려해 순서를 다시 매기는 재랭킹 기법인 MMR(Maximal Marginal Relevance) 같은 방법으로 두 목표 사이의 절충점을 찾는다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="100" y1="160" x2="280" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="280" y1="50" x2="460" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="160" x2="460" y2="160" class="dg-line" stroke-width="1.5"/>
+<circle cx="100" cy="160" r="16" class="dg-accent"/>
+<circle cx="280" cy="50" r="16" class="dg-accent"/>
+<circle cx="460" cy="160" r="16" class="dg-accent"/>
+<text x="100" y="195" font-size="12" text-anchor="middle">아이템 1</text>
+<text x="280" y="35" font-size="12" text-anchor="middle">아이템 2</text>
+<text x="460" y="195" font-size="12" text-anchor="middle">아이템 3</text>
+<text x="175" y="98" font-size="12" class="dg-dim">비유사도 0.2</text>
+<text x="365" y="98" font-size="12" class="dg-dim">비유사도 0.5</text>
+<text x="280" y="182" font-size="12" class="dg-dim" text-anchor="middle">비유사도 0.7</text>
+</svg>
+
+_목록 안 모든 아이템 쌍의 비유사도를 평균 내면 리스트 전체의 다양성이 된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

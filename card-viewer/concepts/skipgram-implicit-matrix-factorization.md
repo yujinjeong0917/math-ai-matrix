@@ -4,12 +4,15 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: Skip-gram과 암묵적 PMI 행렬분해 (Levy & Goldberg)
-hook: word2vec의 Skip-gram with Negative Sampling(SGNS)은 신경망처럼 보이지만, 그 학습 목표를 수학적으로 뜯어보면 단어-문맥 쌍의
 related: 가중치 공유: 입력 임베딩과 출력 소프트맥스
 ---
 
-## 기본설명
+## 도입
+word2vec의 Skip-gram with Negative Sampling(SGNS)은 신경망처럼 보이지만, 그 학습 목표를 수학적으로 뜯어보면 단어-문맥 쌍의 점별상호정보(PMI) 행렬을 저랭크로 분해하는 것과 정확히 같은 일을 하고 있다는 것이 Levy & Goldberg(2014)의 발견이었어요.
+
+## 명제
 단어 $w$, 문맥 $c$에 대해 $\#(w,c)$를 말뭉치에서 $(w,c)$ 쌍이 등장한 횟수, $\#(w),\#(c)$를 각각의 전체 등장 횟수, $|D|$를 전체 (단어,문맥) 쌍의 개수라 하자. 음성표본 $k$개를 쓰는 SGNS의 목적함수를 각 $(w,c)$ 쌍에 대한 국소 목적함수로 분해했을 때, 이를 최대화하는 단어벡터·문맥벡터의 내적은 $v_w\cdot v_c = \mathrm{PMI}(w,c) - \log k$ 이다. 즉 SGNS가 학습하는 행렬 $M_{wc}:=v_w\cdot v_c$는 이동된(shifted) PMI 행렬 $\mathrm{PMI}(w,c)-\log k$의 저랭크 분해다.
+
 
 ## 문제
 $f$를 $x$에 대해 미분하면 ($\sigma'(x)=\sigma(x)\sigma(-x)$, $\frac{d}{dx}\log\sigma(x)=\sigma(-x)$, $\frac{d}{dx}\log\sigma(-x)=-\sigma(x)$ 를 이용) $f'(x) = \#(w,c)\,\sigma(-x) - k\cdot\#(w)\frac{\#(c)}{|D|}\,$==빈칸== 이다.

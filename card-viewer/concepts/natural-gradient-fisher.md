@@ -4,12 +4,38 @@ theme: NUMERIC
 domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 자연그래디언트와 피셔정보행렬: KL의 이차근사
-hook: 두 확률분포가 얼마나 다른지 재는 표준 척도는 KL발산입니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+두 확률분포가 얼마나 다른지 재는 표준 척도는 KL발산입니다. 파라미터를 $\theta$에서 $\theta+d\theta$로 아주 살짝 바꿨을 때 이 KL발산이 어떤 모양으로 커지는지 알면, 파라미터공간의 걸음과 분포공간의 실제 변화 사이의 관계를 정확히 잡을 수 있습니다. 그 답이 바로 피셔정보행렬입니다.
+
+## 명제
 $D_{KL}(p_\theta\|p_{\theta+d\theta})$를 $d\theta$에 대해 이차까지 테일러전개하면 $D_{KL}(p_\theta\|p_{\theta+d\theta}) \approx \frac12 d\theta^TF(\theta)d\theta$이다. 여기서 $F(\theta)=\mathbb{E}_{p_\theta}[\nabla_\theta\log p_\theta(x)\nabla_\theta\log p_\theta(x)^T]$는 피셔정보행렬이다.
+
+## 그림
+<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="40" x2="60" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="60" y1="40" x2="200" y2="40" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="60" y1="180" x2="200" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="200" y1="40" x2="200" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="60" y="30" font-size="10" class="dg-dim">파라미터공간 격자 (유클리드)</text>
+<circle cx="130" cy="110" r="3" class="dg-stroke-ink"/>
+<line x1="130" y1="110" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<text x="185" y="65" font-size="10" class="dg-dim">∇J(θ)</text>
+<text x="250" y="30" font-size="10" class="dg-dim">KL 계량으로 본 같은 격자</text>
+<ellipse cx="330" cy="110" rx="90" ry="35" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<ellipse cx="330" cy="110" rx="55" ry="21" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="330" cy="110" r="3" class="dg-accent"/>
+<line x1="330" y1="110" x2="368" y2="87" class="dg-line" stroke-width="1.5"/>
+<text x="372" y="83" font-size="10" class="dg-dim">∇J(θ)</text>
+<line x1="330" y1="110" x2="373" y2="130" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="373,130 361,127 366,138" class="dg-stroke-accent"/>
+<text x="378" y="145" font-size="10">F(θ)⁻¹∇J(θ)</text>
+<text x="60" y="205" font-size="11">자연그래디언트는 곡률(피셔정보)을 보정한 방향</text>
+</svg>
+
+_같은 유클리드 그래디언트도 KL 계량의 곡률에 맞춰 보정하면 자연그래디언트 방향이 된다._
 
 ## 문제
 $d\theta=0$이면 $p_{\theta+d\theta}=p_\theta$이므로 두 분포가 완전히 같다. 자기 자신과의 KL발산은 정의상 항상 0이다.

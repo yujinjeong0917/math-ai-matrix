@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 가설검정 이론
 title: 우도비검정과 Wilks 정리: $-2\log\Lambda \to \chi^2$
-hook: 복잡한 모형에서 두 모형(제약된 귀무모형 vs 전체모형)의 적합도를 비교할 표준화된 척도가 필요합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+복잡한 모형에서 두 모형(제약된 귀무모형 vs 전체모형)의 적합도를 비교할 표준화된 척도가 필요합니다. 우도비 $\Lambda=\dfrac{\sup_{\theta\in\Theta_0}L(\theta)}{\sup_{\theta\in\Theta}L(\theta)}$는 이를 위한 자연스러운 지표예요. $\Lambda$가 1에 가까우면 제약이 데이터와 잘 맞고, 작을수록 잘 안 맞는다는 뜻입니다. 그런데 "$\Lambda$가 얼마나 작아야 유의한가"를 판단하려면 $\Lambda$의 분포를 알아야 하죠. Wilks 정리는 귀무가설 하에서 $-2\log\Lambda$가 표본이 커지면 카이제곱분포로 수렴한다는, 놀랍도록 일반적인 결과를 줍니다.
+
+## 명제
 정칙조건을 만족하는 모수 $\theta\in\mathbb R$의 로그우도 $\ell_n(\theta)$와 MLE $\hat\theta_n$에 대해, 단순귀무가설 $H_0:\theta=\theta_0$ 하에서 $n\to\infty$일 때 $$-2\log\Lambda_n = 2\big[\ell_n(\hat\theta_n)-\ell_n(\theta_0)\big] \xrightarrow{d} \chi^2_1$$ 이다 (모수가 $p$차원이고 $r$개의 제약이 있는 일반적인 경우에는 자유도가 $r$인 카이제곱분포로 일반화된다).
+
 
 ## 문제
 $\ell_n(\theta_0)$을 $\hat\theta_n$ 주변에서 2차항까지 전개하면 $\ell_n(\theta_0)=\ell_n(\hat\theta_n)+\ell_n'(\hat\theta_n)(\theta_0-\hat\theta_n)+\frac12\ell_n''(\hat\theta_n)(\theta_0-\hat\theta_n)^2+o_p(1)$ 인데, $\hat\theta_n$이 MLE이므로 $\ell_n'(\hat\theta_n)=$==빈칸==이고 따라서 1차항이 통째로 사라진다.

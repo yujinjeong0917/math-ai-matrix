@@ -4,12 +4,33 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: 조기종료와 L2 정칙화의 동치성: 이차근사로 본 $T$와 $\lambda$의 대응
-hook: 경사하강법을 끝까지 수렴시키지 않고 적당한 시점 $T$에서 멈추는 조기종료(early stopping)는 실무에서 가장 흔한 정칙화 방법 중 하나입니다.
 related: 가중치 노이즈 주입=티호노프 정칙화 동치성
 ---
 
-## 기본설명
+## 도입
+경사하강법을 끝까지 수렴시키지 않고 적당한 시점 $T$에서 멈추는 조기종료(early stopping)는 실무에서 가장 흔한 정칙화 방법 중 하나입니다. 그런데 이것이 단지 "적당히 훈련을 줄인다"는 느낌적인 이야기가 아니라, 손실함수가 이차형식으로 근사되는 국소적인 범위 안에서는 조기종료 시점 $T$가 L2 정칙화 계수 $\lambda$와 정확한 대응 관계를 갖는다는 것을 증명할 수 있습니다.
+
+## 명제
 손실 $J(\theta)$가 최적점 $\theta^*$ 근방에서 $J(\theta)\approx J(\theta^*)+\frac12(\theta-\theta^*)^\top H(\theta-\theta^*)$ 로 이차근사되고($H=\nabla^2J(\theta^*)\succ0$), 학습률 $\epsilon$인 경사하강법을 $\theta^{(0)}=0$에서 시작한다고 하자. $H=Q\Lambda Q^\top$ 로 고유분해하면, $T$번 반복 후의 결과 $\theta^{(T)}$와 L2 정칙화계수 $\lambda$로 얻는 리지해 $\theta_{L2}=(H+\lambda I)^{-1}H\theta^*$ 는, 모든 고유값 $\lambda_i$에 대해 $\epsilon\lambda_i\ll1$ 인 영역에서 $$\lambda \approx \frac{1}{\epsilon T}$$ 로 두면 두 해가 각 고유방향에서 근사적으로 일치한다.
+
+## 그림
+<svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="300" cy="150" rx="150" ry="70" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+<ellipse cx="300" cy="150" rx="105" ry="49" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="300" cy="150" rx="60" ry="28" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="150" r="3" class="dg-accent"/>
+<text x="300" y="130" font-size="11" text-anchor="middle" class="dg-dim">θ*</text>
+<path d="M60,270 Q120,220 170,215 Q200,212 220,190" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<polygon points="220,190 208,192 213,180" class="dg-stroke-accent"/>
+<circle cx="60" cy="270" r="3" class="dg-dim"/>
+<text x="60" y="288" font-size="11" class="dg-dim">θ(0)=0</text>
+<circle cx="220" cy="190" r="6" class="dg-accent"/>
+<text x="150" y="255" font-size="12">θ^(T) 조기종료</text>
+<rect x="214" y="184" width="12" height="12" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="2,2"/>
+<text x="230" y="215" font-size="11" class="dg-dim">θ_L2 (릿지 해, 같은 지점)</text>
+</svg>
+
+_T번의 경사하강 경로가 멈춘 지점이 릿지회귀의 축소된 최적해와 등고선 위에서 일치한다._
 
 ## 문제
 $H=Q\Lambda Q^\top$ 로 고유분해하고 회전좌표 $\tilde\theta:=Q^\top\theta$, $\tilde\theta^*:=Q^\top\theta^*$ 를 도입하면 $(I-\epsilon H)^T=Q(I-\epsilon\Lambda)^TQ^\top$ 이므로 좌표별로 분리되어 $\tilde\theta_i^{(T)} = $==빈칸==$\tilde\theta_i^*$ 를 얻는다(각 고유방향이 서로 독립적으로 움직인다).

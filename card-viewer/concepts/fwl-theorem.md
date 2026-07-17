@@ -4,12 +4,15 @@ theme: CAUSAL
 domainLabel: 인과추론
 subLabel: 선형회귀와 편향제거
 title: 직교화(FWL 정리): 잔차끼리의 회귀
-hook: 처치효과를 추정할 때 흔히 다중회귀 $Y=X\beta+T\alpha+\varepsilon$ 를 돌려서 $T$의 계수 $\alpha$를 교란변수 $X$를 통제한 처치효과로 해석합니다.
 related: 평균처치효과(ATE) · 성향점수 · Double/Debiased ML
 ---
 
-## 기본설명
+## 도입
+처치효과를 추정할 때 흔히 다중회귀 $Y=X\beta+T\alpha+\varepsilon$ 를 돌려서 $T$의 계수 $\alpha$를 교란변수 $X$를 통제한 처치효과로 해석합니다. 그런데 이 계수는 실제로 어떻게 만들어지는 걸까요? 직관적으로는, $T$ 중에서 $X$로 이미 설명되는 부분(공통 변동)은 걷어내고 $Y$ 중에서도 $X$로 설명되는 부분은 걷어낸 뒤, 남은 '순수한' 변동끼리만 비교하면 될 것 같습니다. Frisch-Waugh-Lovell(FWL) 정리는 이 직관이 다중회귀의 계수와 정확히 같음을 보장합니다.
+
+## 명제
 $X\in\mathbb{R}^{n\times k}$(절편 포함, full column rank), $T\in\mathbb{R}^n$, $Y\in\mathbb{R}^n$ 이라 하자. $M_X:=I_n-X(X^TX)^{-1}X^T$ 를 $X$에 대한 잔차생성행렬이라 하고 $\tilde T:=M_XT,\ \tilde Y:=M_XY$ 라 하자. 다중회귀 $Y=X\beta+T\alpha+\varepsilon$의 최소제곱 추정량 $\hat\alpha$ 는, $\tilde T$에 대한 $\tilde Y$의 단순회귀계수 $(\tilde T^T\tilde T)^{-1}\tilde T^T\tilde Y$ 와 정확히 같다.
+
 
 ## 문제
 정규방정식은 $\begin{pmatrix}X^TX & X^TT\\ T^TX & T^TT\end{pmatrix}\begin{pmatrix}\beta\\ \alpha\end{pmatrix}=\begin{pmatrix}X^TY\\ T^TY\end{pmatrix}$ 로 쓸 수 있다. 첫 번째 블록 $X^TX\beta+X^TT\alpha=X^TY$ 을 $\beta$에 대해 풀면 $\beta = $==빈칸== 이다.

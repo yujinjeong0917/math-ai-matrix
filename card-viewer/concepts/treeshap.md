@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 규칙 · 트리 특화
 title: TreeSHAP: 트리 구조를 이용해 SHAP값을 빠르게 계산하기
-hook: 일반적인 모델에서 정확한 Shapley값을 구하려면 특징이 $M$개일 때 $2^M$에 가까운 부분집합 조합을 다 따져야 한다.
 related: Partition SHAP · Anchors
 ---
 
-## 기본설명
+## 도입
 일반적인 모델에서 정확한 Shapley값을 구하려면 특징이 $M$개일 때 $2^M$에 가까운 부분집합 조합을 다 따져야 한다.
 
 $\phi_i = \displaystyle\sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(|N|-|S|-1)!}{|N|!}\big[f(S \cup \{i\}) - f(S)\big]$
@@ -18,6 +17,35 @@ TreeSHAP은 트리의 각 리프에 대해 어떤 특징 부분집합이 그 리
 모든 모델에 다 쓸 수 있는 대신 표본을 뽑아 근사해야 하는 Kernel SHAP과 비교하면 이 차이가 뚜렷해진다. Kernel SHAP은 어떤 블랙박스 모델에도 적용할 수 있지만 근사값이라 표본 수가 적으면 오차가 크고 인스턴스마다 다시 계산하는 비용도 크다. TreeSHAP은 트리 기반 모델이라는 조건을 받아들이는 대신 근사가 아닌 정확한 값을 훨씬 짧은 시간에 계산해낸다.
 
 계산 방식에는 두 갈래가 있다. interventional TreeSHAP은 별도의 배경 데이터셋을 기준으로 특징을 실제로 다른 값으로 바꿔치기해서 원래 Shapley값의 정의에 더 가깝게 값을 구한다. tree path dependent TreeSHAP은 배경 데이터셋 없이 학습 데이터에서 각 분기를 따라간 샘플 비율로 값을 근사해 더 빠르지만 특징 간 상관관계가 결과에 섞여 들어갈 수 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="280" cy="30" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="34" font-size="11" text-anchor="middle">소득&lt;3000?</text>
+<line x1="265" y1="46" x2="160" y2="96" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="295" y1="46" x2="410" y2="96" class="dg-line" stroke-width="1.5"/>
+<text x="200" y="66" font-size="11">yes</text>
+<text x="370" y="66" font-size="11" class="dg-dim">no</text>
+<circle cx="150" cy="110" r="20" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="150" y="106" font-size="10" text-anchor="middle">신용점수</text>
+<text x="150" y="118" font-size="10" text-anchor="middle">&lt;600?</text>
+<rect x="380" y="92" width="80" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="420" y="114" font-size="11" text-anchor="middle">예측 0.20</text>
+<line x1="135" y1="126" x2="80" y2="176" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="165" y1="126" x2="220" y2="176" class="dg-line" stroke-width="1.5"/>
+<text x="90" y="152" font-size="11">yes</text>
+<text x="200" y="152" font-size="11" class="dg-dim">no</text>
+<rect x="45" y="178" width="80" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="85" y="200" font-size="11" text-anchor="middle">예측 0.85</text>
+<rect x="185" y="178" width="80" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="225" y="200" font-size="11" text-anchor="middle">예측 0.55</text>
+<text x="320" y="230" font-size="11" class="dg-dim">굵은 선: 샘플이 실제로 지나간 경로</text>
+</svg>
+
+_샘플이 실제로 지나간 트리 경로만 추적해 각 특징의 정확한 기여도를 다항시간에 계산한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

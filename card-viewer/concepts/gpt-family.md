@@ -4,16 +4,32 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: GPT 계열: 디코더 전용 자기회귀 언어모델
-hook: Transformer 원 논문은 인코더가 전체 입력을 양방향으로 보고 디코더가 그 결과를 참고해 출력을 순차 생성하는 인코더디코더 구조였다.
 related: Transformer(2017) · KV Cache · 스케일링 법칙
 ---
 
-## 기본설명
+## 도입
 Transformer 원 논문은 인코더가 전체 입력을 양방향으로 보고 디코더가 그 결과를 참고해 출력을 순차 생성하는 인코더디코더 구조였다. GPT 계열은 인코더를 버리고 디코더 스택만 남긴 디코더 전용 구조를 쓴다. 각 층의 셀프어텐션에 인과적 마스크(causal mask)를 씌워서 위치 $i$의 토큰이 자기 자신과 그 이전 위치 $1,\dots,i$만 들여다보고 이후 위치는 보지 못하게 막는다.
 
 학습 목표는 다음 토큰 예측이다. 토큰 시퀀스 $x_1,\dots,x_n$이 주어졌을 때 $\prod_{i=1}^n P(x_i \mid x_1,\dots,x_{i-1})$을 최대화하도록 학습한다. 정답 라벨을 따로 만들 필요 없이 텍스트 자체를 한 칸씩 밀어 라벨로 쓸 수 있어서(자기지도학습) 사람이 손으로 라벨링한 데이터 없이도 웹 규모 텍스트로 사전학습이 가능하다.
 
 GPT-1은 사전학습 뒤 과제별로 미세조정하는 방식이었고, GPT-2는 모델과 데이터를 키우면서 미세조정 없이도 프롬프트만으로 여러 과제를 어느 정도 풀 수 있음을 보였다. GPT-3는 이를 훨씬 큰 규모로 확장해 few-shot 프롬프팅만으로 다양한 과제에 대응하는 능력을 보였고, 이후 InstructGPT/ChatGPT 계열은 여기에 사람 피드백 기반 강화학습(RLHF)을 더해 지시를 따르는 대화형 모델로 다듬었다. 구조 자체는 디코더 전용 Transformer로 거의 그대로 유지되었고 성능 향상은 대부분 데이터와 파라미터 규모, 후처리 학습 방식에서 왔다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="30" width="200" height="200" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="60,30 60,230 260,230" class="dg-accent"/>
+<line x1="60" y1="30" x2="260" y2="230" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="60" y="22" font-size="12">키 위치 (이전 → 이후)</text>
+<text x="8" y="130" font-size="12">쿼리</text>
+<text x="8" y="145" font-size="12">위치</text>
+<text x="90" y="200" font-size="12">허용된 어텐션</text>
+<text x="170" y="60" font-size="12">마스킹됨</text>
+</svg>
+
+_각 토큰은 자기 이전 토큰까지만 참조할 수 있다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

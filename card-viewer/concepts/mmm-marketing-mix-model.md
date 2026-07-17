@@ -4,11 +4,10 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 마케팅 어트리뷰션
 title: MMM: 채널들이 서로 얽힌 효과까지 회귀로 풀어내기
-hook: 전형적인 MMM은 시점 $t$의 매출 $y_t$를 채널별 광고비의 변환값에 대한 선형모형으로 설명한다.
 related: 샤플리 기반 어트리뷰션 · 라스트클릭 어트리뷰션
 ---
 
-## 기본설명
+## 도입
 전형적인 MMM은 시점 $t$의 매출 $y_t$를 채널별 광고비의 변환값에 대한 선형모형으로 설명한다.
 $$y_t = \beta_0 + \sum_{c} \beta_c\, f_c(x_{c,t}) + \gamma\, z_t + \epsilon_t$$
 $x_{c,t}$는 채널 $c$의 시점 $t$ 광고비이고 $z_t$는 계절성 가격변동 경쟁사 활동 같은 통제변수다. 변환함수 $f_c$가 중요한 이유는 광고비를 그대로 넣으면 현실의 두 가지 효과를 놓치기 때문이다. 하나는 이월효과로 이번 주에 본 광고가 몇 주 뒤 구매에도 영향을 준다는 사실이고 흔히 다음과 같은 기하급수적 감쇠로 표현한다.
@@ -20,6 +19,26 @@ $$f(x_t) = x_t + \lambda\, f(x_{t-1}), \quad 0 \le \lambda < 1$$
 단순히 채널별 광고비와 매출의 상관관계만 보는 방식이나 사용자 단위 추적에 의존하는 다중접점 어트리뷰션이 놓치는 지점을 MMM이 메운다. 오프라인 채널을 포함해 전체 매체믹스를 한 번에 보고 개인 식별자 없이도 작동해서 브라우저의 쿠키 제한이나 모바일 광고 식별자 제한으로 사용자 단위 추적이 예전만큼 힘을 못 쓰는 환경에서도 흔들리지 않는다는 것도 장점이다. 다만 대가도 있다. 계수를 안정적으로 추정하려면 보통 2년 이상의 데이터가 필요하고 여러 채널이 같은 시기에 함께 집행되는 경우가 많아 다중공선성 때문에 개별 채널 계수가 불안정해지기 쉬워서 릿지 회귀나 베이지안 사전분포 같은 보정이 흔히 함께 쓰인다. 결과도 주 단위 집계 수준의 거친 추정치라 개인 단위 어트리뷰션만큼 세밀하지는 않다.
 
 그래서 실무에서는 두 방법을 함께 쓰는 경우가 많다. TV나 옥외광고처럼 추적이 안 되는 상단 채널의 전체 예산 배분은 MMM으로 정하고 디지털 채널 안에서의 세부 배분은 샤플리 같은 다중접점 모델로 보완해 하나의 통합된 측정 체계로 맞춘다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="150" width="30" height="50" class="dg-dim"/>
+<rect x="80" y="120" width="30" height="80" class="dg-dim"/>
+<rect x="120" y="170" width="30" height="30" class="dg-dim"/>
+<text x="95" y="216" font-size="11" text-anchor="middle">채널별 주간 광고비</text>
+<line x1="170" y1="150" x2="250" y2="150" class="dg-line" stroke-width="1.5"/>
+<rect x="250" y="100" width="140" height="100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="140" font-size="12" text-anchor="middle">회귀 모델</text>
+<text x="320" y="160" font-size="11" text-anchor="middle" class="dg-dim">이월효과+포화</text>
+<line x1="390" y1="150" x2="460" y2="150" class="dg-line" stroke-width="1.5"/>
+<path d="M460,190 L490,170 L520,140 L550,120 L580,100" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="520" y="216" font-size="11" text-anchor="middle">추정 매출 기여</text>
+</svg>
+
+_여러 채널의 광고비가 이월효과와 포화를 반영한 회귀식을 거쳐 매출 기여로 분해된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

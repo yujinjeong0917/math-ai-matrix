@@ -4,16 +4,37 @@ theme: MLOPS
 domainLabel: MLOps · 인프라
 subLabel: 자원 관리
 title: 멀티테넌시: 여러 팀이 클러스터를 나눠 쓸 때 자원을 격리하기
-hook: 격리는 몇 단계로 이루어집니다.
 related: 잡 스케줄링 · GPU 활용률 모니터링
 ---
 
-## 기본설명
+## 도입
 격리는 몇 단계로 이루어집니다. 물리 GPU 한 장을 통째로 한 작업에 배정하는 방식이 가장 단순하지만 작업이 GPU 성능을 다 못 쓰면 나머지가 낭비됩니다. 이를 보완하려고 GPU 하나를 여러 파티션으로 나눠 각 파티션을 독립된 GPU처럼 보이게 만드는 기능을 쓰거나 컨테이너 오케스트레이션 레벨에서 GPU 메모리와 연산 시간에 상한을 걸어 한 작업이 그 상한을 넘지 못하게 막습니다.
 
 격리가 없으면 한 팀의 실험이 GPU 메모리를 예상보다 많이 잡아먹는 순간 같은 물리 GPU를 공유하던 다른 팀 작업이 메모리 부족으로 그대로 죽습니다. 네트워크나 스토리지 대역폭도 마찬가지로 한 작업이 과도하게 쓰면 같은 노드의 다른 작업 처리 속도가 떨어집니다. 클러스터 단위로 자원을 미리 나눠주는 쿼터와 각 팀 작업이 그 쿼터를 넘지 못하게 강제하는 격리 장치가 함께 있어야 이런 간섭을 막을 수 있습니다.
 
 대개는 네임스페이스나 프로젝트 단위로 쿼터를 배정하고 스케줄러가 그 쿼터 안에서만 자원을 할당합니다. 우선순위가 높은 팀에게 더 많은 쿼터를 주고 낮은 우선순위 팀의 작업은 자원이 부족할 때 먼저 대기열에 머무르게 하는 정책은 잡 스케줄링과 맞물려 작동합니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="40" width="560" height="150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="30" font-size="12">GPU 클러스터</text>
+<line x1="230" y1="40" x2="230" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="420" y1="40" x2="420" y2="190" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="60" width="150" height="110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="135" y="80" text-anchor="middle" font-size="12">팀 A</text>
+<text x="135" y="98" text-anchor="middle" font-size="11" class="dg-dim">쿼터 40%</text>
+<rect x="250" y="60" width="150" height="110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="325" y="80" text-anchor="middle" font-size="12">팀 B</text>
+<text x="325" y="98" text-anchor="middle" font-size="11" class="dg-dim">쿼터 35%</text>
+<rect x="440" y="60" width="140" height="110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="510" y="80" text-anchor="middle" font-size="12">팀 C</text>
+<text x="510" y="98" text-anchor="middle" font-size="11" class="dg-dim">쿼터 25%</text>
+</svg>
+
+_쿼터로 나뉜 구역 안에서만 각 팀이 자원을 할당받습니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

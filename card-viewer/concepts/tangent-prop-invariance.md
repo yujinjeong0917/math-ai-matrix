@@ -4,12 +4,15 @@ theme: NUMERIC
 domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: Tangent Prop: 매니폴드 접선 방향의 불변성 정칙화
-hook: 이미지를 살짝 회전하거나 평행이동해도 "같은 숫자"라는 사실은 바뀌지 않아야 합니다.
 related: 풀링과 근사적 이동불변성
 ---
 
-## 기본설명
+## 도입
+이미지를 살짝 회전하거나 평행이동해도 "같은 숫자"라는 사실은 바뀌지 않아야 합니다. 이런 변환을 딥러닝 모델에 직접 가르치는 대신, 변환이 만드는 국소적인 방향(접선 벡터)으로 모델 출력이 얼마나 민감한지를 재서 그 민감도를 0에 가깝게 누르는 방법이 있습니다. 이것이 Tangent Prop입니다.
+
+## 명제
 $s(x,\alpha)$를 $s(x,0)=x$를 만족하는 매끄러운 변환족(회전, 평행이동 등)이라 하고 $\tau(x) = \left.\dfrac{\partial s}{\partial\alpha}(x,\alpha)\right|_{\alpha=0}$을 그 접선 벡터라 하자. 만약 미분가능한 함수 $f:\mathbb{R}^n\to\mathbb{R}$가 $\alpha=0$ 근방의 모든 $\alpha$에 대해 $f(s(x,\alpha))=f(x)$ (변환에 대해 완전히 불변)를 만족하면, 반드시 $\nabla f(x)^\top \tau(x) = 0$이 성립한다. 역으로 완전한 불변이 아니더라도 $(\nabla f(x)^\top\tau(x))^2$을 손실에 정칙화항으로 더해 훈련하면 $f(s(x,\alpha)) - f(x) = O(\alpha^2)$ 수준으로 1차 민감도를 억제할 수 있다.
+
 
 ## 문제
 $f$가 이 변환에 완전히 불변이라 하자: 모든 (충분히 작은) $\alpha$에 대해 $f(s(x,\alpha)) = f(x)$. $g(\alpha) := f(s(x,\alpha))$로 정의하면 $g(\alpha)$는 $\alpha$에 무관하게 항상 $f(x)$라는 상수값을 가지므로, 미분하면 $g'(\alpha) = $==빈칸== 이다 (모든 $\alpha$에서).

@@ -4,12 +4,15 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: MAP 추정과 MLE로의 환원
-hook: MLE는 데이터만 보고 파라미터를 추정합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+MLE는 데이터만 보고 파라미터를 추정합니다. 그런데 파라미터에 대해 미리 가진 믿음, 즉 사전분포가 있다면 이를 무시하는 게 아깝습니다. MAP 추정은 사전분포까지 반영해서 사후확률이 가장 큰 파라미터를 고릅니다. 사전분포가 아무 정보도 주지 않는 균등분포라면 MAP는 다시 MLE와 똑같아질까요.
+
+## 명제
 사후확률 $P(\theta|x)\propto P(x|\theta)P(\theta)$일 때 $\hat\theta_{MAP}=\arg\max_\theta[\log P(x|\theta)+\log P(\theta)]$이며, $P(\theta)$가 균등분포이면 $\hat\theta_{MAP}=\hat\theta_{MLE}$이다.
+
 
 ## 문제
 지금 목표는 사후확률이 가장 큰 파라미터를 고르는 MAP 추정의 목적함수를 베이즈 정리로부터 정확히 유도하는 것이다. 베이즈 정리에 따르면 $P(\theta|x) = \dfrac{P(x|\theta)P(\theta)}{P(x)}$이다. 분모 $P(x)$는 관측된 데이터로 이미 정해진 값이라 $\theta$가 무엇이든 바뀌지 않는 상수다.

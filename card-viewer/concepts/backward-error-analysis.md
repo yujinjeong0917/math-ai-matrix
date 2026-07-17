@@ -4,12 +4,15 @@ theme: NUM2
 domainLabel: 수치해석 심화
 subLabel: 안정성과 조건화
 title: 후방오차분석: 전방오차 ≤ 조건수 × 후방오차
-hook: 계산기가 내놓은 답이 '완전히 틀린' 것인지 아니면 '거의 맞는 입력에 대한 정확한 답'인지는 전혀 다른 이야기입니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+계산기가 내놓은 답이 '완전히 틀린' 것인지 아니면 '거의 맞는 입력에 대한 정확한 답'인지는 전혀 다른 이야기입니다. 후방오차분석(backward error analysis)은 후자의 관점을 취합니다: 계산된 결과 $\hat y$를 원래 문제 $f(x)$에 대한 근사가 아니라, 살짝 교란된 입력 $x+\Delta x$에 대한 정확한 답 $f(x+\Delta x)$로 재해석하는 것입니다. 이 관점이 강력한 이유는, 문제 자체가 입력의 교란에 얼마나 민감한지(조건수)를 알고 있다면 후방오차만으로 전방오차(우리가 실제로 궁금한, 계산된 답과 참값의 차이)를 통제할 수 있기 때문입니다.
+
+## 명제
 미분가능한 문제 $f$의 상대조건수를 $\kappa(x) = \lim_{\Delta x\to0}\sup \dfrac{\|f(x+\Delta x)-f(x)\|/\|f(x)\|}{\|\Delta x\|/\|x\|}$ 라 하자. 어떤 알고리즘이 계산한 $\hat y=\hat f(x)$가 후방안정(backward stable)이어서 $\hat y = f(x+\Delta x)$를 만족하는 $\Delta x$가 존재하고 $\|\Delta x\|/\|x\| \le \varepsilon_{\text{back}}$ ($\varepsilon_{\text{back}}$이 충분히 작다)이면, 상대 전방오차는 $\dfrac{\|\hat y - f(x)\|}{\|f(x)\|} \le \kappa(x)\,\varepsilon_{\text{back}} + O(\varepsilon_{\text{back}}^2)$ 를 만족한다.
+
 
 ## 문제
 $\hat y=f(x+\Delta x)$이므로 $f$가 $x$ 근방에서 매끄럽다면 1차 테일러 전개로 $f(x+\Delta x) - f(x) \approx $==빈칸== 이다.

@@ -4,12 +4,15 @@ theme: NUM2
 domainLabel: 수치해석 심화
 subLabel: 안정성과 조건화
 title: 가치반복의 수치적 안정성: 축약사상과 오차의 유계성
-hook: 가치반복은 완전연산에서라면 벨만연산자 $T$의 고정점으로 기하급수적으로 수렴합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+가치반복은 완전연산에서라면 벨만연산자 $T$의 고정점으로 기하급수적으로 수렴합니다. 그러나 실제 컴퓨터에서는 매 스텝의 계산이 반올림오차를 동반하므로, 진짜로 계산되는 것은 $\hat V_{k+1}=T(\hat V_k)$가 아니라 $\hat V_{k+1}=T(\hat V_k)+\varepsilon_k$ (매 스텝 작은 오차 $\varepsilon_k$가 섞인 값)입니다. 이 오차들이 스텝을 거듭할수록 계속 쌓여 발산해버리지는 않을지가 실용적으로 중요한 질문입니다. 답은 $T$가 축약사상(contraction, 상수 $\gamma<1$)이라는 바로 그 성질에 있습니다 — 축약성이 매 스텝의 오차를 일정 비율로 눌러 주기 때문에, 누적 오차는 발산하지 않고 유한한 상한 안에 머무릅니다.
+
+## 명제
 $T$가 $(\mathbb{R}^n,\|\cdot\|_\infty)$ 위에서 상수 $\gamma<1$인 축약사상이고 $V^*=T(V^*)$가 그 고정점이라 하자. 계산된 반복열이 $\hat V_{k+1}=T(\hat V_k)+\varepsilon_k$, $\|\varepsilon_k\|_\infty\le\varepsilon$ (모든 $k$)을 만족하면, 오차 $e_k:=\hat V_k-V^*$는 $\|e_k\|_\infty \le \gamma^k\|e_0\|_\infty + \dfrac{\varepsilon}{1-\gamma}$ 를 만족하며, 특히 $k\to\infty$에서도 $\varepsilon/(1-\gamma)$라는 유한한 값 안에 머무른다(발산하지 않는다).
+
 
 ## 문제
 $e_k:=\hat V_k-V^*$라 하자. $V^*=T(V^*)$이므로 $e_{k+1} = \hat V_{k+1}-V^* = T(\hat V_k)+\varepsilon_k - T(V^*) = \big[T(\hat V_k)-T(V^*)\big]+\varepsilon_k$ 이고, 삼각부등식과 축약성을 함께 쓰면 $\|e_{k+1}\|_\infty \le $==빈칸== 이다.

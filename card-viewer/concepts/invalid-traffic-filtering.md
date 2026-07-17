@@ -4,16 +4,31 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 트래픽 품질
 title: 스팸/봇 트래픽 필터링 지표: 가짜 트래픽이 얼마나 섞여 있는가
-hook: 업계에서는 무효 트래픽을 두 종류로 나눈다.
 related: 결제 사기율 · 결제 이상 패턴 탐지
 ---
 
-## 기본설명
+## 도입
 업계에서는 무효 트래픽을 두 종류로 나눈다. 알려진 봇 목록이나 데이터센터 IP처럼 규칙 기반으로 쉽게 걸러지는 일반 무효 트래픽(GIVT)과 사람처럼 행동을 위장해서 규칙만으로는 잡히지 않고 행동 패턴 분석이나 머신러닝이 필요한 정교한 무효 트래픽(SIVT)이다. Invalid Traffic Rate는 이 둘을 합쳐 필터링된 트래픽 수를 전체 트래픽 수로 나눈 값이다. $\mathrm{IVT\ Rate} = \dfrac{\text{filtered traffic}}{\text{total traffic}}$.
 
 이 지표가 중요한 이유는 광고주와 퍼블리셔 양쪽의 신뢰가 걸려 있기 때문이다. 광고주 입장에서는 실제로 도달한 잠재고객 규모를 부풀리지 않기 위해 필요하고 퍼블리셔나 플랫폼 입장에서는 광고 사기 의혹에서 스스로를 방어하기 위해 필요하다. 그래서 MRC(Media Rating Council) 같은 업계 기구의 공인을 받는 조건으로 무효 트래픽 측정 방법론을 요구하는 경우가 많다.
 
 필터링은 IP 평판 목록, User-Agent 패턴, 마우스 움직임이 없거나 클릭 간격이 비정상적으로 짧은 행동 시그널, 트래픽 유입 시간대와 지역의 이상 패턴을 종합해서 이뤄진다. 너무 공격적으로 필터링하면 VPN이나 프라이버시 도구를 쓰는 정상 사용자까지 걸러져서 실제 트래픽과 매출을 과소 집계하게 되므로 결제 사기율과 마찬가지로 과도한 차단이 정상 사용자에게 주는 피해와 균형을 맞춰야 한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<text x="280" y="30" font-size="13" text-anchor="middle">전체 트래픽 100,000</text>
+<rect x="40" y="60" width="480" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="40" y="60" width="41" height="50" class="dg-accent"/>
+<line x1="61" y1="60" x2="61" y2="40" class="dg-line" stroke-width="1"/>
+<text x="61" y="30" font-size="11" text-anchor="middle">무효 8.5%</text>
+<text x="290" y="90" font-size="12" text-anchor="middle">유효 트래픽 91.5%</text>
+<text x="61" y="130" font-size="10" class="dg-dim" text-anchor="middle">GIVT+SIVT</text>
+</svg>
+
+_전체 트래픽 중 GIVT와 SIVT로 걸러진 비율이 Invalid Traffic Rate다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

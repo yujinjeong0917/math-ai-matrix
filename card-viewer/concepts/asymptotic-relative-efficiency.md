@@ -4,16 +4,19 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 점근이론
 title: 점근적 상대효율(ARE): 표본평균과 표본중앙값 중 누가 더 효율적인가
-hook: 같은 모수를 추정하는 두 일치추정량이 있다면, 어느 쪽이 더 적은 표본으로 더 정밀한 추정을 하는지 비교하고 싶어집니다.
 related: 일치추정량 · 중심극한정리
 ---
 
-## 기본설명
+## 도입
 같은 모수를 추정하는 두 일치추정량이 있다면, 어느 쪽이 더 적은 표본으로 더 정밀한 추정을 하는지 비교하고 싶어집니다. 두 추정량 모두 점근적으로 정규분포를 따른다면 점근분산의 비율이 바로 그 답을 줍니다. 점근분산이 작은 쪽이 더 효율적인 추정량입니다.
 
 **명제(정의).** $\sqrt n(\hat\theta_1-\theta)\xrightarrow{d}N(0,\sigma_1^2)$이고 $\sqrt n(\hat\theta_2-\theta)\xrightarrow{d}N(0,\sigma_2^2)$이면, $\hat\theta_1$의 $\hat\theta_2$에 대한 점근적 상대효율은 $\mathrm{ARE}(\hat\theta_1,\hat\theta_2)=\sigma_2^2/\sigma_1^2$로 정의한다. $\mathrm{ARE}>1$이면 $\hat\theta_1$이 더 효율적이다.
 
 **명제(적용).** $X_1,\ldots,X_n\stackrel{iid}{\sim}N(\mu,\sigma^2)$일 때 표본평균 $\bar X_n$과 표본중앙값 $\tilde M_n$을 비교하면 $\mathrm{ARE}(\bar X_n,\tilde M_n)=\pi/2\approx1.5708$이다.
+
+## 명제
+
+
 
 ## 문제
 $X\sim N(\mu,\sigma^2)$의 밀도는 $f(x)=\dfrac{1}{\sigma\sqrt{2\pi}}\exp\!\left(-\dfrac{(x-\mu)^2}{2\sigma^2}\right)$이다. 정규분포는 대칭이므로 중앙값이 평균과 같아 $m=\mu$이고, 이 점에서 지수부가 $0$이 되어 $f(\mu)=$==빈칸== 이다.

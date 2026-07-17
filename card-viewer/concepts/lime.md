@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 국소 근사 기반
 title: LIME: 국소 선형 근사로 블랙박스 설명하기
-hook: 설명하고 싶은 입력 $x$ 주변에 교란된 샘플 $z'$들을 여러 개 만든다.
 related: 이미지 LIME · SHAP값 · 잠재공간 교란
 ---
 
-## 기본설명
+## 도입
 설명하고 싶은 입력 $x$ 주변에 교란된 샘플 $z'$들을 여러 개 만든다. 표 형태 데이터라면 특징값을 하나씩 껐다 켜거나 조금씩 바꾸는 식이다. 각 교란 샘플을 원래 모델 $f$에 통과시켜 예측값 $f(z)$를 얻고 원래 입력 $x$에 가까운 샘플일수록 더 큰 가중치 $\pi_x(z)$를 준다. 이 가중치 붙은 데이터로 해석 가능한 단순 모델 $g$(보통 선형회귀)를 학습시켜 $f$를 국소적으로 흉내 낸다. LIME은 이 국소 모델을 $\xi(x) = \arg\min_{g \in G}\ \mathcal{L}(f, g, \pi_x) + \Omega(g)$로 정의한다.
 
 손실 $\mathcal{L}(f,g,\pi_x) = \sum_{z,z'} \pi_x(z)\,(f(z) - g(z'))^2$는 단순모델 $g$가 원래 모델 $f$의 국소 예측을 얼마나 잘 재현하는지를 재고 $\pi_x$가 멀리 있는 교란 샘플의 영향을 줄인다. $\Omega(g)$는 $g$의 복잡도에 매기는 벌점으로 예를 들어 선형모델의 0이 아닌 계수 개수를 제한해서 설명을 사람이 읽을 수 있는 수준으로 억제한다.
@@ -16,6 +15,26 @@ related: 이미지 LIME · SHAP값 · 잠재공간 교란
 이렇게 학습된 $g$의 계수가 곧 설명이 된다. 계수가 크고 양수인 특징은 그 예측을 밀어올린 특징이고 음수인 특징은 끌어내린 특징이다. 핵심은 이 계수가 모델 $f$ 전체에 대해 성립하는 게 아니라 $x$ 근처에서만 성립한다는 점이다. 같은 모델이라도 다른 입력 근처에서는 완전히 다른 선형 근사와 다른 계수가 나올 수 있다.
 
 이 방식의 장점은 $f$가 어떤 구조든 상관없이 예측값만 뽑아낼 수 있으면 적용된다는 것이다. 트리든 신경망이든 앙상블이든 내부를 몰라도 된다. 대신 교란 샘플을 어떻게 만드는지와 근접도를 재는 커널을 어떻게 정하는지에 따라 설명이 꽤 달라질 수 있다는 약점도 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<path d="M40,220 Q200,40 560,180" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="120" r="7" class="dg-accent"/>
+<text x="300" y="100" font-size="12" text-anchor="middle">설명 대상 x</text>
+<circle cx="260" cy="140" r="4" class="dg-dim"/>
+<circle cx="330" cy="105" r="4" class="dg-dim"/>
+<circle cx="280" cy="100" r="4" class="dg-dim"/>
+<circle cx="320" cy="150" r="4" class="dg-dim"/>
+<circle cx="350" cy="130" r="4" class="dg-dim"/>
+<line x1="220" y1="170" x2="400" y2="80" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="420" y="70" font-size="12">국소 선형 근사 g</text>
+<text x="40" y="235" font-size="12" class="dg-dim">복잡한 결정경계 f</text>
+</svg>
+
+_x 주변에 뿌린 교란 샘플만으로 그 지점 근처에서 f를 흉내 내는 직선을 학습한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

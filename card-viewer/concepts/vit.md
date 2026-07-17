@@ -4,16 +4,42 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: ViT: 이미지를 패치 시퀀스로 보는 트랜스포머
-hook: 입력 이미지를 겹치지 않는 $P\times P$ 패치들로 나눈다(논문 기준 $P=16$).
 related: Transformer(2017) · GPT 계열
 ---
 
-## 기본설명
+## 도입
 입력 이미지를 겹치지 않는 $P\times P$ 패치들로 나눈다(논문 기준 $P=16$). 각 패치를 펼쳐서 벡터로 만든 뒤 선형변환 하나로 $D$차원 임베딩으로 사영한다. 여기에 분류 작업을 위한 학습 가능한 [CLS] 토큰을 맨 앞에 붙이고, 순서 정보가 없는 어텐션에 위치 정보를 주기 위해 위치임베딩을 더한다. 이렇게 만들어진 토큰 시퀀스를 표준 Transformer 인코더에 그대로 통과시키고, 마지막 층에서 [CLS] 토큰의 출력을 분류 헤드에 넣어 클래스를 예측한다.
 
 CNN은 합성곱 커널 자체가 이웃 픽셀만 보고 어디서나 같은 필터를 쓰는 지역성과 이동불변성이라는 가정을 구조에 내장하고 있다. ViT의 어텐션은 이런 가정이 전혀 없어서 모든 패치 쌍의 관계를 자유롭게 배울 수 있는 대신 그 지역성을 데이터에서 직접 학습해야 한다. 그래서 ImageNet 정도의 데이터로 처음부터 학습하면 같은 크기의 CNN보다 성능이 떨어지지만, JFT-300M처럼 훨씬 큰 데이터셋으로 사전학습한 뒤 옮기면 CNN을 능가한다는 것이 원 논문의 핵심 발견이다.
 
 결과적으로 ViT는 이미지 인식에서도 텍스트와 동일한 Transformer 인코더 아키텍처를 그대로 재사용할 수 있음을 보였고, 이후 이미지와 텍스트를 같은 방식으로 다루는 멀티모달 모델들의 토대가 되었다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="140" height="140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="65" y1="30" x2="65" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="100" y1="30" x2="100" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="135" y1="30" x2="135" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="30" y1="65" x2="170" y2="65" class="dg-line" stroke-width="1"/>
+<line x1="30" y1="100" x2="170" y2="100" class="dg-line" stroke-width="1"/>
+<line x1="30" y1="135" x2="170" y2="135" class="dg-line" stroke-width="1"/>
+<text x="30" y="22" font-size="12">이미지를 패치로 분할</text>
+<line x1="170" y1="100" x2="230" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="230" y="85" width="26" height="26" class="dg-accent"/>
+<text x="243" y="103" font-size="10" text-anchor="middle">CLS</text>
+<rect x="262" y="85" width="26" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="294" y="85" width="26" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="326" y="85" width="26" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="290" y="130" font-size="11">패치 토큰 시퀀스 + 위치임베딩</text>
+<line x1="360" y1="100" x2="410" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="410" y="60" width="120" height="80" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="470" y="105" font-size="12" text-anchor="middle">Transformer Encoder</text>
+</svg>
+
+_이미지를 패치로 잘라 CLS 토큰과 함께 시퀀스로 넣는다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

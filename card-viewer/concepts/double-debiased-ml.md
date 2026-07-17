@@ -4,12 +4,15 @@ theme: CAUSAL
 domainLabel: 인과추론
 subLabel: 이질적 효과와 개인화
 title: Double/Debiased Machine Learning: Neyman 직교성과 교차적합
-hook: FWL 정리는 선형모델에서 처치효과를 잔차끼리의 회귀로 뽑아낼 수 있음을 보여주었습니다.
 related: 직교화(FWL 정리) · 도구변수 · 이중강건추정
 ---
 
-## 기본설명
+## 도입
+FWL 정리는 선형모델에서 처치효과를 잔차끼리의 회귀로 뽑아낼 수 있음을 보여주었습니다. 그런데 교란변수 $X$와 $Y$, $T$의 관계가 비선형이라면, 강력한 머신러닝 모델로 $Y$와 $T$를 각각 $X$에 회귀해 잔차를 얻고 그 잔차끼리 회귀해서 처치효과를 뽑아내려는 것이 Double/Debiased ML(DML)입니다. 문제는 머신러닝 모델이 정규화와 편향을 갖고 있어 잔차 자체가 살짝 틀릴 수 있다는 것인데, DML이 쓰는 모멘트조건은 이런 1차 오차에 놀랍도록 둔감하도록(Neyman 직교) 설계되어 있습니다.
+
+## 명제
 부분선형모델 $Y=\theta T+g(X)+\varepsilon$, $E[\varepsilon\mid X,T]=0$, $T=m(X)+\nu$, $E[\nu\mid X]=0$ 을 생각하자. 뉘앙스모수 $\eta=(g,m)$에 대한 모멘트함수를 $\psi(W;\theta,\eta):=(Y-g(X)-\theta T)(T-m(X))$ 라 하면, 참값 $\theta_0,\eta_0=(g_0,m_0)$에서 이 모멘트는 Neyman 직교성을 만족한다: 임의의 방향 $\Delta\eta=(\Delta g,\Delta m)$에 대해 $\left.\dfrac{d}{dr}E[\psi(W;\theta_0,\eta_0+r\Delta\eta)]\right|_{r=0}=0$.
+
 
 ## 문제
 참 모수 $(\theta_0,\eta_0)$에서 잔차를 $\varepsilon:=Y-g_0(X)-\theta_0T$, $\nu:=T-m_0(X)$ 라 쓰면 $\psi(W;\theta_0,\eta_0)=\varepsilon\nu$ 이고, 가정 $E[\varepsilon\mid X,T]=0$에 의해 $E[\psi(W;\theta_0,\eta_0)]=E\big[E[\varepsilon\mid X,T]\,\nu\big] = $==빈칸== 이다.

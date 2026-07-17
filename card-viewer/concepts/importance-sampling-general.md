@@ -4,12 +4,17 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 중요도샘플링(Importance Sampling): 가중치 재정의와 자기정규화 추정량의 편향
-hook: 몬테카를로 적분은 $\mathbb{E}_p[f(X)]=\int f(x)p(x)\,dx$를 $p$에서 직접 뽑은 표본의 평균으로 근사합니다.
 related: 거부샘플링 · 입자필터(순차중요도샘플링) · 어닐드 중요도샘플링
 ---
 
-## 기본설명
+## 도입
+몬테카를로 적분은 $\mathbb{E}_p[f(X)]=\int f(x)p(x)\,dx$를 $p$에서 직접 뽑은 표본의 평균으로 근사합니다. 그런데 $p$에서 표본을 뽑기 어렵거나, $p(x)f(x)$가 큰 영역에서 $p$ 자체는 표본을 잘 안 주는 경우(희귀사건 추정 등)에는 이 방법이 비효율적입니다. 중요도샘플링은 뽑기 쉬운 제안분포 $q$에서 표본을 뽑고, 그 표본이 목표분포 아래서 얼마나 '중요한지'를 가중치로 보정합니다.
+
+실무에서는 $p$가 정규화상수를 모르는 채 $p(x)=\tilde p(x)/Z$ 형태로만 주어지는 경우가 흔합니다(예: 베이즈 사후분포). 이때는 가중치를 $\tilde w(x)=\tilde p(x)/q(x)$로 재정의하고, 가중치의 합으로 나누어 정규화하는 자기정규화(self-normalized) 추정량을 씁니다.
+
+## 명제
 $q(x)>0$인 곳 밖에서는 $p(x)f(x)=0$이라 하자(지지조건). $X_1,\dots,X_n\overset{iid}\sim q$이고 $w_i=p(X_i)/q(X_i)$라 하면 $\hat\mu_1=\frac1n\sum_i w_if(X_i)$는 $\mathbb E_p[f(X)]$의 불편추정량이다. 반면 $p$가 $\tilde p/Z$로만 알려져 $\tilde w_i=\tilde p(X_i)/q(X_i)$를 쓰는 자기정규화 추정량 $\hat\mu_2=\dfrac{\sum_i \tilde w_if(X_i)}{\sum_i \tilde w_i}$는 일치추정량(consistent)이지만 유한 표본에서는 일반적으로 $O(1/n)$ 크기의 편향을 갖는다.
+
 
 ## 문제
 가중치의 정의를 대입하면 $\int w(x)f(x)q(x)\,dx = \int \dfrac{p(x)}{q(x)}f(x)q(x)\,dx = $==빈칸== 이다.

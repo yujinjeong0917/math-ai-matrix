@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: 로지스틱회귀의 뉴턴법 = IRLS: 헤시안으로부터의 재정식화
-hook: 로지스틱회귀를 뉴턴법으로 학습한다고 하면 "2차 미분(헤시안)까지 쓰는 어려운 방법"처럼 들리지만, 사실은 매 스텝이 "가중치가 달린 최소제곱법(weighted least squares)"과 정확히 같아요.
 related: EM 알고리즘의 단조수렴성 · 헤시안과 2차 최적성 조건
 ---
 
-## 기본설명
+## 도입
+로지스틱회귀를 뉴턴법으로 학습한다고 하면 "2차 미분(헤시안)까지 쓰는 어려운 방법"처럼 들리지만, 사실은 매 스텝이 "가중치가 달린 최소제곱법(weighted least squares)"과 정확히 같아요. 이 재정식화를 반복재가중최소제곱(Iteratively Reweighted Least Squares, IRLS)이라 부릅니다.
+
+## 명제
 로지스틱회귀의 로그우도 $\ell(\beta)=\sum_i\big[y_i\log p_i+(1-y_i)\log(1-p_i)\big]$, $p_i=\sigma(x_i^T\beta)$ 에 대해 뉴턴법 갱신 $\beta^{(t+1)}=\beta^{(t)}-H^{-1}g$ 는 가중치행렬 $W=\mathrm{diag}(p_i(1-p_i))$와 작업반응변수(working response) $z=X\beta^{(t)}+W^{-1}(y-p)$ 를 쓰는 가중최소제곱해 $\beta^{(t+1)}=(X^TWX)^{-1}X^TWz$ 와 정확히 같다.
+
 
 ## 문제
 연쇄법칙으로 그래디언트를 계산하면 각 항 $y_i\log p_i+(1-y_i)\log(1-p_i)$을 $\beta$로 미분할 때 $p_i(1-p_i)$가 약분되어 그래디언트는 $\nabla\ell(\beta)=$==빈칸== 로 깔끔하게 정리된다.

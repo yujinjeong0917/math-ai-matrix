@@ -4,16 +4,30 @@ theme: MLOPS
 domainLabel: MLOps · 인프라
 subLabel: 모니터링
 title: 데이터 드리프트: 입력 분포가 학습 시점과 달라지는 것
-hook: 드리프트는 크게 두 종류로 나뉜다.
 related: 성능 저하 감지 · 데이터 리니지
 ---
 
-## 기본설명
+## 도입
 드리프트는 크게 두 종류로 나뉜다. 공변량 드리프트는 입력 피처의 분포 $P(X)$ 자체가 바뀌는 경우고 컨셉 드리프트는 입력과 정답 사이의 관계 $P(Y \mid X)$가 바뀌는 경우다. 전자는 입력 분포만 비교하면 잡을 수 있지만 후자는 정답 라벨이 뒤늦게 들어와야 확인할 수 있어 탐지가 더 어렵다.
 
 분포 차이를 숫자로 재는 대표적인 방법이 KL divergence다. 학습 시점 분포 $P$와 현재 분포 $Q$ 사이의 차이를 $D_{KL}(P \parallel Q) = \sum_x P(x) \log \dfrac{P(x)}{Q(x)}$로 정의한다. 다만 KL divergence는 비대칭이라 실무 모니터링에서는 population stability index PSI처럼 대칭적이고 해석하기 쉬운 지표를 더 자주 쓴다. 피처를 구간으로 나눈 뒤 각 구간의 비중 차이를 합산하는 방식으로 계산하며 관례적으로 PSI가 $0.1$ 미만이면 안정 $0.1$에서 $0.25$ 사이면 주의 $0.25$를 넘으면 유의미한 드리프트로 본다.
 
 KL divergence 자체는 확률분포를 비교하는 순수한 수학적 도구지만 데이터 드리프트 모니터링은 그 도구를 매일 매시간 자동으로 돌려서 경보를 울리는 운영 시스템으로 만든 것이라는 점이 다르다. 피처마다 이 값을 정기적으로 계산해 대시보드에 쌓아두고 임계값을 넘는 피처가 나오면 담당자에게 알린다. 드리프트가 감지됐다고 곧바로 모델을 다시 학습시키는 건 아니다. 실제 성능 지표가 같이 떨어지는지 확인한 뒤 재학습 여부를 판단하는 것이 일반적이다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="560" y2="180" class="dg-line" stroke-width="1.5"/>
+<path d="M60,180 C120,180 140,40 200,40 C260,40 280,180 340,180" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M180,180 C240,180 260,60 320,60 C380,60 400,180 460,180" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="150" y="30" font-size="12" text-anchor="middle">학습 시점 분포 P</text>
+<text x="390" y="50" font-size="12" text-anchor="middle" class="dg-accent">현재 분포 Q</text>
+<text x="300" y="205" font-size="12" class="dg-dim" text-anchor="middle">입력값</text>
+</svg>
+
+_서비스 입력 분포가 학습 시점 분포에서 점점 벗어난다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

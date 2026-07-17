@@ -4,12 +4,15 @@ theme: CAUSAL
 domainLabel: 인과추론
 subLabel: 실험 설계 확장
 title: 회귀불연속의 국소선형추정: 대역폭과 편향-분산 트레이드오프
-hook: 샤프 RDD는 임계점 좌우 극한의 차이 $\tau_{SRD}=\lim_{x\downarrow c}E[Y\mid X=x]-\lim_{x\uparrow c}E[Y\mid X=x]$ 로 식별된다는 것을 이미 알고 있습니다.
 related: 회귀불연속설계(RDD) · 이중차분법 · 이중강건추정
 ---
 
-## 기본설명
+## 도입
+샤프 RDD는 임계점 좌우 극한의 차이 $\tau_{SRD}=\lim_{x\downarrow c}E[Y\mid X=x]-\lim_{x\uparrow c}E[Y\mid X=x]$ 로 식별된다는 것을 이미 알고 있습니다. 문제는 이 극한을 유한한 데이터로 실제로 '어떻게' 추정하느냐입니다. 임계점 근방의 관측치만 골라 좌우 각각 직선을 적합하는 국소선형회귀(local linear regression)가 실무 표준인데, 이때 '근방'을 얼마나 넓게(대역폭 $h$) 잡을지가 추정의 품질을 좌우합니다 — 너무 좁히면 관측치가 적어 분산이 커지고, 너무 넓히면 임계점에서 멀리 떨어진, 곡률이 다른 구간까지 섞여 편향이 커집니다.
+
+## 명제
 $\mu(x):=E[Y\mid X=x]$가 $x=c$ 근방에서 두 번 연속미분가능하다고 하자. 대역폭 $h$의 국소선형회귀로 얻은 한쪽 극한 추정량의 (조건부) 편향과 분산이 $\mathrm{Bias}(h)\approx B\,\mu''(c)\,h^2$, $\mathrm{Var}(h)\approx \dfrac{V\sigma^2}{nh}$(단, $B,V$는 커널·설계에 의해 정해지는 상수, $\sigma^2$는 $X=c$ 근방 조건부분산, $n$은 표본크기)로 근사된다면, 평균제곱오차 $\mathrm{MSE}(h)=\mathrm{Bias}(h)^2+\mathrm{Var}(h)$를 최소화하는 대역폭은 $h^*\propto n^{-1/5}$ 이다.
+
 
 ## 문제
 가정에 따라 $\mathrm{MSE}(h) = \mathrm{Bias}(h)^2+\mathrm{Var}(h) = $==빈칸== 이다.

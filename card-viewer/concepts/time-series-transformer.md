@@ -4,16 +4,55 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 시계열
 title: 시계열 Transformer: 순서를 잃지 않는 어텐션
-hook: RNN 계열은 한 스텝씩 순서대로 처리하기 때문에 순서 정보가 계산 구조 자체에 들어있다.
 related: TCN · LSTM/GRU
 ---
 
-## 기본설명
+## 도입
 RNN 계열은 한 스텝씩 순서대로 처리하기 때문에 순서 정보가 계산 구조 자체에 들어있다. 반면 셀프어텐션은 시퀀스의 모든 시점 쌍 사이의 관련도를 병렬로 한 번에 계산하는 집합 연산에 가깝다. 그래서 입력에 위치정보를 별도로 더해주지 않으면 시점의 순서를 전혀 구분하지 못한다.
 
 시계열 Transformer는 사인 코사인 함수로 만든 고정 위치인코딩이나 학습되는 위치임베딩을 입력에 더해서 이 문제를 해결한다. 여기에 더해 요일이나 시간대처럼 주기적으로 반복되는 달력 정보를 별도의 임베딩으로 추가하는 경우도 많다. 이렇게 만든 입력을 셀프어텐션에 넣으면 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d_k})V$ 계산을 통해 과거의 모든 시점을 한 번에 참고하면서 예측에 중요한 시점에 더 큰 가중치를 준다.
 
 순수한 셀프어텐션은 시퀀스 길이 $n$에 대해 $O(n^2)$의 연산량과 메모리가 필요해서 아주 긴 시계열에는 그대로 쓰기 어렵다. Informer나 Autoformer 같은 후속 모델들은 어텐션 계산을 희소하게 줄이거나 시계열의 추세와 계절성을 먼저 분해한 뒤 어텐션을 적용하는 식으로 이 문제를 완화한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="25" font-size="12">표준 Transformer: 정수 위치 인덱스</text>
+<line x1="90" y1="45" x2="330" y2="45" class="dg-line" stroke-width="1.5"/>
+<line x1="90" y1="40" x2="90" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="40" x2="170" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="250" y1="40" x2="250" y2="50" class="dg-line" stroke-width="1.5"/>
+<line x1="330" y1="40" x2="330" y2="50" class="dg-line" stroke-width="1.5"/>
+<text x="86" y="63" font-size="12">0</text>
+<text x="166" y="63" font-size="12">1</text>
+<text x="246" y="63" font-size="12">2</text>
+<text x="322" y="63" font-size="12">3</text>
+<text x="20" y="95" font-size="12">시계열: 실제 타임스탬프 (불규칙 간격)</text>
+<line x1="90" y1="115" x2="330" y2="115" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="90" y1="110" x2="90" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="135" y1="110" x2="135" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="150" y1="110" x2="150" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<circle cx="150" cy="115" r="4" class="dg-accent"/>
+<line x1="240" y1="110" x2="240" y2="120" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="78" y="133" font-size="12">t=0</text>
+<text x="118" y="133" font-size="12">t=1.5</text>
+<text x="138" y="133" font-size="12">t=2.0</text>
+<text x="226" y="133" font-size="12">t=5.0</text>
+<line x1="90" y1="120" x2="90" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="135" y1="120" x2="135" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="120" x2="150" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="120" x2="240" y2="160" class="dg-line" stroke-width="1.5"/>
+<rect x="65" y="160" width="210" height="45" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="187" font-size="12">시간 인식 위치인코딩 PE(Δt)</text>
+<line x1="275" y1="182" x2="330" y2="182" class="dg-line" stroke-width="1.5"/>
+<rect x="330" y="160" width="150" height="45" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="352" y="187" font-size="12">셀프어텐션</text>
+<text x="65" y="225" font-size="12">예: t=2.0 지점은 직전 관측과 Δt=0.5 차이</text>
+</svg>
+
+_실제 시각 간격 Δt를 표준 정수 위치 대신 위치인코딩에 직접 반영해 셀프어텐션에 넣는 과정을 보여준다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

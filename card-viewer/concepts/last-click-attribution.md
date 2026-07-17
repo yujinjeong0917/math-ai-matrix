@@ -4,16 +4,38 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 마케팅 어트리뷰션
 title: 라스트클릭 어트리뷰션: 마지막 접점에 모든 공을 돌리기
-hook: 라스트클릭 어트리뷰션은 정해진 관측기간 안에서 전환 직전의 마지막 마케팅 접점 하나를 찾아 전환과 매출 전부를 그 채널에 귀속시키는 규칙이다.
 related: 샤플리 기반 어트리뷰션 · MMM
 ---
 
-## 기본설명
+## 도입
 라스트클릭 어트리뷰션은 정해진 관측기간 안에서 전환 직전의 마지막 마케팅 접점 하나를 찾아 전환과 매출 전부를 그 채널에 귀속시키는 규칙이다. 구현이 단순하고 결정론적이라는 장점 덕분에 오랫동안 업계 기본값으로 쓰였다.
 
 문제는 리타겟팅이나 브랜드검색광고처럼 구매를 이미 마음먹은 사람을 마지막에 붙잡는 성격의 채널이 과도하게 유리해진다는 점이다. 이런 채널은 실제로는 이미 다른 채널이 만들어놓은 구매 의도를 마무리 짓기만 했을 뿐인데 라스트클릭 기준으로는 마치 그 채널이 처음부터 끝까지 그 전환을 만들어낸 것처럼 보인다. 이 왜곡된 신호를 믿고 예산을 마지막 접점 채널에 계속 더 투입하면 정작 인지도를 만들어주던 초반 채널의 예산이 줄어들고 장기적으로는 퍼널 상단으로 들어오는 신규 트래픽 자체가 말라버릴 수 있다. 평가 지표가 실제 인과적 기여가 아니라 마지막 클릭이라는 상관관계 신호만 측정한 데서 생기는 왜곡이다.
 
 정반대로 첫 번째 접점에 모든 공을 돌리는 퍼스트클릭 어트리뷰션은 반대 방향으로 똑같은 실수를 한다. 두 방식 모두 실제 구매 여정에 여러 접점이 함께 기여한다는 사실을 무시하고 단 하나의 접점만 본다는 근본적인 한계를 공유한다. 이 한계를 넘으려면 여러 접점의 기여를 함께 나누는 다중접점 모델이 필요하고 그중 이론적으로 가장 공정한 방식이 샤플리 기반 어트리뷰션이다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="96" font-size="11" text-anchor="middle">인스타</text>
+<text x="80" y="111" font-size="11" text-anchor="middle">광고</text>
+<line x1="110" y1="100" x2="230" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="280" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="280" y="96" font-size="11" text-anchor="middle">검색</text>
+<text x="280" y="111" font-size="11" text-anchor="middle">광고</text>
+<line x1="310" y1="100" x2="430" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="480" cy="100" r="34" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="480" y="96" font-size="11" text-anchor="middle">이메일</text>
+<text x="480" y="111" font-size="11" text-anchor="middle">구매</text>
+<text x="80" y="155" font-size="12" text-anchor="middle">0%</text>
+<text x="280" y="155" font-size="12" text-anchor="middle">0%</text>
+<text x="480" y="155" font-size="13" text-anchor="middle" class="dg-accent">100%</text>
+</svg>
+
+_구매 직전 접점 하나가 전체 전환의 공을 모두 가져간다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

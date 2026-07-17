@@ -4,12 +4,15 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: VAE의 근사사후분포와 진짜 사후분포 사이의 간극
-hook: VAE는 관측 $x$ 뒤에 숨은 잠재변수 $z$를 상정해요.
 related: 
 ---
 
-## 기본설명
+## 도입
+VAE는 관측 $x$ 뒤에 숨은 잠재변수 $z$를 상정해요. 진짜 사후분포 $p(z\mid x)$를 알면 제일 좋겠지만 이건 대개 계산할 수 없어요. 그래서 계산 가능한 근사분포 $q(z\mid x)$를 따로 두고 이걸로 대신해요. 그런데 이 근사가 정확히 얼마나 근사인지, 즉 $\log p(x)$와 ELBO 사이의 간극이 정확히 무엇인지는 kl-divergence와 convex-jensen에서 다룬 도구로 정확히 계산할 수 있어요.
+
+## 명제
 임의의 분포 $q(z\mid x)$에 대해 $\log p(x) = \mathrm{ELBO}(q) + D_{KL}(q(z\mid x)\,\|\,p(z\mid x))$ 이다. 여기서 $\mathrm{ELBO}(q)=E_q[\log p(x,z)-\log q(z\mid x)]$이다.
+
 
 ## 문제
 이 연쇄법칙 양변에 로그를 씌우면 $\log p(x,z) = \log p(x) + \log p(z\mid x)$ 이다.

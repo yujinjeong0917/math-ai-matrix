@@ -4,12 +4,30 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 근사 · 적분
 title: 뉴턴법: 2차 테일러 근사의 꼭짓점
-hook: 뉴턴법은 경사하강법보다 훨씬 빨리 수렴할 때가 많습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+뉴턴법은 경사하강법보다 훨씬 빨리 수렴할 때가 많습니다. 그 비결은 1차 정보인 기울기만 보는 게 아니라 2차 정보인 곡률까지 함께 쓰는 데 있습니다. 뉴턴법의 갱신식이 어디서 나오는지 함수를 2차식으로 근사하는 테일러 전개에서 직접 유도해 봅니다.
+
+## 명제
 $f$가 두 번 미분 가능하고 $f''(x_n)\neq0$일 때 $f$를 $x_n$ 근처에서 2차 테일러 다항식으로 근사하고 그 근사식의 임계점을 구하면 $x_{n+1} = x_n - f'(x_n)/f''(x_n)$을 얻는다.
+
+## 그림
+<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="380" y2="190" class="dg-line" stroke-width="1.5"/>
+<path d="M50,80 Q150,40 200,90 Q260,150 350,60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M120,180 Q210,20 300,170" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<circle cx="150" cy="65" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="118" y="55" font-size="12">x_n</text>
+<circle cx="212" cy="42" r="4" class="dg-accent"/>
+<text x="200" y="30" font-size="12">x_{n+1} (근사식의 꼭짓점)</text>
+<line x1="150" y1="65" x2="150" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="212" y1="42" x2="212" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="40" y="210" class="dg-dim" font-size="12">실선: f(x), 점선(강조): x_n에서의 2차 테일러 근사</text>
+</svg>
+
+_x_n 근처의 2차 테일러 근사(포물선)의 꼭짓점이 다음 뉴턴 반복점 x_{n+1}이 된다._
 
 ## 문제
 뉴턴법의 아이디어는 원래 함수 $f$ 대신 이 2차 근사식을 최적화하는 것이다. 2차식은 정확히 하나의 임계점을 가지므로 그 지점을 다음 단계 $x_{n+1}$로 삼는다. 근사식을 $x$로 미분하면 상수항은 사라지고 $\dfrac{d}{dx}\left[f(x_n)+f'(x_n)(x-x_n)+\dfrac{f''(x_n)}{2}(x-x_n)^2\right] = f'(x_n) + $==빈칸== 이다.

@@ -4,16 +4,40 @@ theme: LLM
 domainLabel: LLM/Agent
 subLabel: 에이전트 설계 패턴
 title: Tree of Thoughts: 여러 추론 경로를 트리로 펼쳐보고 고르기
-hook: Tree of Thoughts는 문제 풀이 과정을 하나의 이어진 문장이 아니라 트리로 다룬다.
 related: Reflexion · Plan-and-Execute
 ---
 
-## 기본설명
+## 도입
 Tree of Thoughts는 문제 풀이 과정을 하나의 이어진 문장이 아니라 트리로 다룬다. 각 노드는 지금까지의 중간 추론 상태이고 한 노드에서 다음 단계로 넘어갈 때 모델이 여러 후보 다음 생각을 동시에 만들어낸다. 각 후보는 별도의 평가 단계에서 얼마나 가능성 있어 보이는지 점수를 받는다. 점수가 낮은 후보는 가지치기로 버려지고 남은 후보들만 다음 단계로 확장된다. 이 과정을 반복하며 너비 우선이나 깊이 우선 같은 탐색 전략으로 트리를 넓혀가다가 목표에 도달한 경로 중 가장 좋은 것을 최종 답으로 고른다.
 
 이 방식은 하나의 연쇄만 따라가는 사고 방식의 한계를 메운다. 한 줄로 이어지는 추론은 한 번 잘못된 단계를 밟으면 되돌릴 방법이 없다. 앞 단계가 이미 다음 프롬프트에 그대로 들어가 버렸기 때문이다. Tree of Thoughts는 여러 경로를 동시에 열어두고 각 경로를 평가한 뒤 버릴 것은 버리기 때문에 초반의 실수를 나중에 고칠 기회가 생긴다. 전통적인 탐색 알고리즘이 하던 일을 언어모델의 추론 과정에 그대로 옮겨온 셈이다.
 
 대가는 비용이다. 후보 수를 $b$개씩 매 단계 만들고 깊이 $d$까지 탐색하면 대략 $b^d$에 비례하는 만큼 모델 호출이 늘어난다. 그래서 실전에서는 후보 수와 탐색 깊이를 작게 제한하거나 평가 점수가 확실히 낮은 가지는 일찍 쳐내는 식으로 비용을 관리한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="300" y1="44" x2="170" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="44" x2="300" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="300" y1="44" x2="430" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="110" x2="230" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="300" y1="110" x2="370" y2="190" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="300" cy="30" r="16" class="dg-accent"/>
+<circle cx="170" cy="110" r="12" class="dg-dim"/>
+<circle cx="300" cy="110" r="12" class="dg-accent"/>
+<circle cx="430" cy="110" r="12" class="dg-dim"/>
+<circle cx="230" cy="190" r="10" class="dg-dim"/>
+<circle cx="370" cy="190" r="10" class="dg-accent"/>
+<text x="300" y="14" text-anchor="middle" font-size="12">시작</text>
+<text x="170" y="140" text-anchor="middle" font-size="12" class="dg-dim">가지치기</text>
+<text x="430" y="140" text-anchor="middle" font-size="12" class="dg-dim">가지치기</text>
+<text x="230" y="215" text-anchor="middle" font-size="12" class="dg-dim">가지치기</text>
+<text x="370" y="215" text-anchor="middle" font-size="12">최종 경로</text>
+</svg>
+
+_여러 후보 생각을 만들고 평가해 점수가 낮은 가지는 버리고 유망한 경로만 끝까지 확장한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

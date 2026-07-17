@@ -4,11 +4,10 @@ theme: FOUND
 domainLabel: 예비수학
 subLabel: 예비수학 4순위 · 회전·스케일링·사영
 title: 선형변환의 기하적 그림
-hook: 행렬 곱셈을 계산할 줄 아는 것과, 그 행렬이 공간을 어떻게 늘리고 돌리고 찌그러뜨리는지 눈으로 그려보는 건 전혀 다른 능력이에요.
 related: 대칭행렬의 직교대각화 (스펙트럴 정리) · PCA의 최적 방향 · 행렬 연산과 역행렬의 직관
 ---
 
-## 기본설명
+## 도입
 행렬 곱셈을 계산할 줄 아는 것과, 그 행렬이 공간을 어떻게 늘리고 돌리고 찌그러뜨리는지 눈으로 그려보는 건 전혀 다른 능력이에요. 계산은 기계적으로 따라할 수 있지만, 그림으로 보는 감각은 따로 훈련해야 붙어요.
 
 가장 쉬운 두 가지 변환부터 볼게요. 스케일링행렬은 각 축 방향으로 벡터를 늘리거나 줄이기만 해요. 회전행렬은 벡터의 길이는 그대로 두고 방향만 특정 각도로 돌려요. 신경망이 학습하는 임의의 행렬은 대체로 이 두 가지, 늘이기와 돌리기가 섞인 변환이에요.
@@ -16,6 +15,26 @@ related: 대칭행렬의 직교대각화 (스펙트럴 정리) · PCA의 최적 
 여기서 고유벡터(eigenvector)와 고유값(eigenvalue)이 나와요. 어떤 행렬이 공간을 아무리 복잡하게 늘리고 돌리고 찌그러뜨려도, 딱 그 방향만은 변환을 거쳐도 방향이 바뀌지 않고 길이만 고유값 배로 늘어나거나 줄어드는 특별한 방향들이 있어요. 그게 고유벡터고, 그 늘어나는 배율이 고유값이에요.
 
 이 그림을 먼저 눈에 익혀두면 PCA(데이터가 가장 많이 퍼진 방향을 고유벡터로 찾는 것)나 스펙트럴 정리(대칭행렬을 회전과 스케일링만으로 분해하는 것) 같은 증명이 수식이 아니라 그림으로 먼저 읽혀요.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<circle cx="200" cy="150" r="70" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<ellipse cx="200" cy="150" rx="110" ry="45" transform="rotate(-30 200 150)" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="200" y1="150" x2="260.6" y2="115" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="200" y1="150" x2="235" y2="210.6" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="200" y1="150" x2="295.3" y2="95" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="295.3,95 283,98 289,107" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="222.5" y2="189" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="222.5,189 212,184 210,194" class="dg-stroke-accent"/>
+<text x="65" y="28" font-size="12" class="dg-dim">단위원(변환 전)</text>
+<text x="300" y="72" font-size="12">v₁ (λ₁, 큰 고유값)</text>
+<text x="222" y="212" font-size="11" class="dg-dim">v₂ (λ₂, 작은 고유값)</text>
+</svg>
+
+_행렬 A는 단위원을 타원으로 보내며, 두 고유벡터 방향으로는 방향이 안 바뀌고 길이만 각각 λ₁, λ₂배로 늘어난다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

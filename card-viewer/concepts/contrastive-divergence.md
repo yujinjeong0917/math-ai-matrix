@@ -4,12 +4,17 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 대조발산(Contrastive Divergence): 에너지기반모델의 그래디언트를 짧은 MCMC로 근사하기
-hook: 에너지기반모델(EBM)은 $p_\theta(x)=\dfrac{e^{-E_\theta(x)}}{Z(\theta)}$로 확률을 정의합니다.
 related: 깁스샘플링(내부 MCMC 커널) · 메트로폴리스-헤이스팅스
 ---
 
-## 기본설명
+## 도입
+에너지기반모델(EBM)은 $p_\theta(x)=\dfrac{e^{-E_\theta(x)}}{Z(\theta)}$로 확률을 정의합니다. 문제는 $Z(\theta)=\int e^{-E_\theta(x)}\,dx$가 대개 계산 불가능해서, 로그우도를 최대화하는 그래디언트에 $Z(\theta)$의 그래디언트가 끼어들면 그 항이 모델 분포 $p_\theta$에 대한 기댓값(다루기 어려운 적분)이 되어버린다는 것입니다.
+
+대조발산(CD)은 이 다루기 어려운 모델 기댓값(음성위상, negative phase)을, 데이터 표본에서 출발해 몇 스텝(CD-$k$)만 MCMC를 굴려 얻은 표본으로 대체합니다. 체인이 정상분포까지 완전히 수렴하지 않으므로 이 근사는 편향을 갖지만, 실무에서는 $k$가 아주 작아도(심지어 $k=1$) 잘 작동하는 것으로 알려져 있습니다.
+
+## 명제
 로그우도의 그래디언트는 $\nabla_\theta\log p_\theta(x) = -\nabla_\theta E_\theta(x) + \mathbb E_{p_\theta}[\nabla_\theta E_\theta(x')]$로 양성위상(데이터에서 계산되는 $-\nabla_\theta E_\theta(x)$)과 음성위상(모델 기댓값 $\mathbb E_{p_\theta}[\nabla_\theta E_\theta(x')]$)의 합으로 쓰인다. CD-$k$는 음성위상을 데이터 $x$에서 시작해 $p_\theta$를 정상분포로 갖는 MCMC 커널을 $k$번 적용한 표본 $x^{(k)}$로 근사한 $\widehat{\nabla_\theta\log p_\theta(x)} = -\nabla_\theta E_\theta(x)+\nabla_\theta E_\theta(x^{(k)})$를 쓰는데, 이는 $k$가 유한한 한 일반적으로 참 그래디언트에 대한 편향추정량이다.
+
 
 ## 문제
 $\nabla_\theta\log Z(\theta) = \dfrac{1}{Z(\theta)}\nabla_\theta\displaystyle\int e^{-E_\theta(x')}\,dx' = \dfrac{1}{Z(\theta)}\int e^{-E_\theta(x')}\big(-\nabla_\theta E_\theta(x')\big)\,dx' = $==빈칸== 이다.

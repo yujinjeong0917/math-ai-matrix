@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: KL-제약 RL의 닫힌형 최적정책과 DPO의 보상 역산
-hook: RLHF는 보상모델 $r(x,y)$를 최대화하면서도 참조정책 $\pi_{ref}$에서 너무 멀어지지 않도록 KL발산으로 억제합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+RLHF는 보상모델 $r(x,y)$를 최대화하면서도 참조정책 $\pi_{ref}$에서 너무 멀어지지 않도록 KL발산으로 억제합니다. 이 문제를 PPO로 반복 최적화하는 대신, 최적정책의 모양 자체를 닫힌 형태로 정확히 써낼 수 있습니다. DPO의 핵심 통찰은 이 식을 거꾸로 뒤집는 것입니다. 최적정책만 알면 보상함수를 몰라도 그 값을 역으로 계산할 수 있습니다.
+
+## 명제
 $\max_\pi E_{y\sim\pi(\cdot|x)}[r(x,y)]-\beta D_{KL}(\pi(\cdot|x)\|\pi_{ref}(\cdot|x))$ 의 최적해는 $\pi^*(y|x)=\dfrac{1}{Z(x)}\pi_{ref}(y|x)\exp\left(\dfrac{r(x,y)}{\beta}\right)$ 이고, 이로부터 $r(x,y)=\beta\log\dfrac{\pi^*(y|x)}{\pi_{ref}(y|x)}+\beta\log Z(x)$ 를 얻는다.
+
 
 ## 문제
 제약 $\sum_y\pi(y|x)=1$을 벌점항으로 바꿔 목적함수에 더한다. $\mathcal L(\pi,\lambda) = \sum_y\pi(y|x)r(x,y) - \beta\sum_y\pi(y|x)\log\dfrac{\pi(y|x)}{\pi_{ref}(y|x)} + \lambda(1-$==빈칸==$)$ 이다.

@@ -4,12 +4,33 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 벡터 · 행렬 연산
 title: 선형회귀 정규방정식의 유도
-hook: 데이터에 가장 잘 맞는 직선 하나를 긋고 싶습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+데이터에 가장 잘 맞는 직선 하나를 긋고 싶습니다. 여러 특징이 있는 경우라면 초평면이 됩니다. 잘 맞는다는 말은 예측값과 실제값의 차이를 최대한 작게 만든다는 뜻입니다. 그 차이를 제곱해서 전부 더한 값을 최소로 만드는 계수를 한 번에 계산하는 공식이 정규방정식입니다. 별도의 반복 학습 없이도 답이 정확히 나온다는 점이 이 공식의 매력입니다.
+
+## 명제
 설계행렬 $X\in\mathbb{R}^{n\times d}$와 목표값 $y\in\mathbb{R}^n$에 대해 $J(\beta)=\|X\beta-y\|^2$를 최소화하는 $\beta$는 $\beta=(X^TX)^{-1}X^Ty$이다.
+
+## 그림
+<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="220" x2="330" y2="220" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="20" x2="40" y2="220" class="dg-line" stroke-width="1"/>
+<line x1="75" y1="184" x2="285" y2="36" class="dg-stroke-ink" stroke-width="2"/>
+<text x="290" y="32" font-size="12">Xβ (최적 직선)</text>
+<circle cx="110" cy="154" r="5" class="dg-accent"/>
+<circle cx="180" cy="121" r="5" class="dg-accent"/>
+<circle cx="250" cy="55" r="5" class="dg-accent"/>
+<line x1="110" y1="154" x2="110" y2="159.5" class="dg-line" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="180" y1="110" x2="180" y2="121" class="dg-line" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="250" y1="55" x2="250" y2="60.5" class="dg-line" stroke-width="2" stroke-dasharray="4,2"/>
+<text x="55" y="200" font-size="11" class="dg-dim">y</text>
+<text x="315" y="215" font-size="11" class="dg-dim">x</text>
+<text x="60" y="45" font-size="11" class="dg-dim">각 점에서 직선까지의 수직 잔차(y-Xβ)</text>
+</svg>
+
+_정규방정식이 찾는 직선은 각 데이터점의 수직 잔차 제곱합을 가장 작게 만드는 직선이다._
 
 ## 문제
 이 노름의 제곱을 그대로는 미분하기 어렵다. 미분하려면 내적으로 풀어써야 한다. 노름의 제곱은 자기 자신과의 내적과 같다는 성질을 쓰면 $J(\beta) = (X\beta-y)^T(X\beta-y)$ 이다. 이걸 전개하면 $J(\beta) = \beta^TX^TX\beta - 2y^TX\beta + $==빈칸== 이다.

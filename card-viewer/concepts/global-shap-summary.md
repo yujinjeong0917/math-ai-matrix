@@ -4,16 +4,35 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 전역 근사
 title: Global SHAP 요약: 로컬 기여도를 모아 전역 그림 만들기
-hook: $n$개의 샘플에 대해 계산한 특징 $j$의 SHAP값을 $\phi_j^{(i)}$라 하면 전역 중요도는 다음과 같이 정의한다.
 related: shap · Surrogate Model · 전역 설명
 ---
 
-## 기본설명
+## 도입
 $n$개의 샘플에 대해 계산한 특징 $j$의 SHAP값을 $\phi_j^{(i)}$라 하면 전역 중요도는 다음과 같이 정의한다.
 $$I_j = \frac{1}{n} \sum_{i=1}^{n} \left| \phi_j^{(i)} \right|$$
 이 값을 특징별로 나란히 정렬하면 흔히 보는 summary bar plot이 된다. 여기서 한 걸음 더 나아가 beeswarm plot은 각 점을 절댓값이 아니라 부호가 있는 원래 SHAP값으로 찍고 점의 색으로 그 샘플의 원래 특징값이 높았는지 낮았는지 표시한다. 그러면 특징이 중요하다는 사실뿐 아니라 그 특징값이 클 때 예측을 올리는지 내리는지 방향까지 한 그래프에서 읽을 수 있다. 순열 중요도 같은 다른 전역 기법은 보통 크기만 보여주고 방향은 알려주지 않는다.
 
 Surrogate model과는 전역 설명을 만드는 방향이 다르다. 전역 SHAP 요약은 이미 계산된 정확한 국소 기여도들을 아래에서부터 쌓아 올려 전역 그림을 만드는 상향식 방법이다. 반면 대리모델은 데이터셋 전체를 대상으로 완전히 별개의 단순한 모델을 처음부터 다시 학습하는 하향식 방법이다. 둘의 결과가 항상 같지는 않다. 대리모델이 특정 특징의 실제 비선형적 효과를 표현하지 못하면 그 특징의 대리모델 계수는 작게 나오는데도 SHAP 기반 전역 중요도는 크게 나올 수 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="24" font-size="12" class="dg-dim">개체 1</text>
+<rect x="90" y="14" width="70" height="14" class="dg-dim"/>
+<text x="20" y="54" font-size="12" class="dg-dim">개체 2</text>
+<rect x="90" y="44" width="30" height="14" class="dg-dim"/>
+<text x="20" y="84" font-size="12" class="dg-dim">개체 3</text>
+<rect x="90" y="74" width="50" height="14" class="dg-dim"/>
+<text x="90" y="105" font-size="11" class="dg-dim">특징 A의 |φ| (개체별)</text>
+<line x1="115" y1="115" x2="115" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="115" y="155" text-anchor="middle" font-size="12">절댓값 평균</text>
+<rect x="90" y="165" width="50" height="18" class="dg-accent"/>
+<text x="260" y="178" font-size="13">특징 A의 전역 중요도</text>
+</svg>
+
+_개체별 절댓값 기여도를 평균 내면 특징 하나의 전역 중요도가 된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

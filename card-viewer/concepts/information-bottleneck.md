@@ -4,12 +4,34 @@ theme: INFO
 domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: 정보병목의 라그랑지안과 압축-예측 트레이드오프
-hook: 정보병목 이론은 입력 $X$를 압축한 표현 $Z$가 목표 $Y$를 예측하는 데 필요한 정보만 남기도록 만들고 싶어합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+정보병목 이론은 입력 $X$를 압축한 표현 $Z$가 목표 $Y$를 예측하는 데 필요한 정보만 남기도록 만들고 싶어합니다. $I(X;Z)$는 작게, $I(Z;Y)$는 크게 만드는 두 힘의 경합을 라그랑지안 하나로 표현한 것이 정보병목의 목적함수입니다. lagrange-kkt와 beta-vae에서 쓴 것과 같은 방식으로 이 목적함수를 유도하고, 뒤에 나올 data-processing-inequality를 빌려와 왜 이 경합이 $Z$가 정말 관련 있는 정보만 남기도록 강제하는지 설명합니다.
+
+## 명제
 $Y-X-Z$ 마르코프 체인에서 정보병목 문제 "$I(X;Z)$ 최소화, $I(Z;Y)\ge I_0$ 제약"의 라그랑지안은 $\mathcal{L} = I(X;Z) - \beta I(Z;Y)$ (상수항 제외) 이며 $I(Z;Y)$는 $I(X;Y)$를 넘어설 수 없다.
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="90" cy="100" r="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="105" font-size="14" text-anchor="middle">X</text>
+<path d="M124,100 L230,100" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="230,100 218,94 218,106" class="dg-stroke-ink"/>
+<circle cx="280" cy="100" r="22" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="280" y="105" font-size="13" text-anchor="middle">Z</text>
+<text x="230" y="80" font-size="10" class="dg-dim">I(X;Z) 압축</text>
+<path d="M302,100 L410,100" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="410,100 398,94 398,106" class="dg-stroke-ink"/>
+<circle cx="460" cy="100" r="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="460" y="105" font-size="14" text-anchor="middle">Y</text>
+<text x="330" y="80" font-size="10" class="dg-dim">I(Z;Y) 예측</text>
+<text x="150" y="30" font-size="11" class="dg-dim">Z는 X보다 좁게 그려 압축을 표현</text>
+<text x="90" y="160" font-size="11">min I(X;Z) − β·I(Z;Y), 단 I(Z;Y) ≤ I(X;Y)</text>
+</svg>
+
+_Z는 X를 압축하면서도 Y 예측에 필요한 정보만 남기려 한다._
 
 ## 문제
 제약이 있는 문제이니 lagrange-kkt와 beta-vae에서 쓴 것과 같은 도구인 라그랑주 승수법을 씁니다. 제약을 등호로 정리한 식에 승수 $\beta\ge0$을 곱해서 목적함수에 더합니다.

@@ -4,16 +4,37 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 범위 구분
 title: 국소 설명: 이 예측 하나는 왜 이렇게 나왔는가
-hook: 국소 설명의 대표적인 형태는 개별 샘플 $x_0$에 대한 SHAP값 벡터, $x_0$ 주변에서 학습한 LIME의 국소 선형모델, 이미지 한 장에 대한 saliency map이다.
 related: 전역 설명 · Global SHAP 요약
 ---
 
-## 기본설명
+## 도입
 국소 설명의 대표적인 형태는 개별 샘플 $x_0$에 대한 SHAP값 벡터, $x_0$ 주변에서 학습한 LIME의 국소 선형모델, 이미지 한 장에 대한 saliency map이다. 공통점은 전부 $x_0$ 하나 혹은 그 근방을 기준으로 계산된다는 것이다. 다른 지점에서 다시 계산하면 값도 설명도 달라질 수 있다.
 
 이 국소성 때문에 신뢰성 문제가 따라온다. 아주 비슷한 두 입력을 넣었는데 국소 설명이 크게 다르게 나온다면 그 설명은 우연한 잡음을 반영하고 있을 가능성이 높다. 반대로 비슷한 입력에는 비슷한 설명이 나와야 국소 설명을 믿을 수 있다.
 
 국소 설명은 전역 설명과 대립하지 않는다. 오히려 많은 전역 설명 기법이 국소 설명을 원재료로 쓴다. 개별 샘플들의 SHAP값을 모아 평균 내면 전역 특징 중요도가 되고 여러 지점에서 만든 LIME 선형모델들의 계수 분포를 보면 그 특징이 전반적으로 어떤 방향으로 작용하는 경향이 있는지도 짐작할 수 있다. 국소 설명은 전역으로 가는 재료이자 그 자체로도 개별 사례에 대한 독립적인 답이다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="160" x2="480" y2="160" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="160" x2="40" y2="30" class="dg-line" stroke-width="1.5"/>
+<circle cx="90" cy="120" r="5" class="dg-dim"/>
+<circle cx="130" cy="100" r="5" class="dg-dim"/>
+<circle cx="170" cy="130" r="5" class="dg-dim"/>
+<circle cx="210" cy="90" r="5" class="dg-dim"/>
+<circle cx="330" cy="95" r="5" class="dg-dim"/>
+<circle cx="370" cy="60" r="5" class="dg-dim"/>
+<circle cx="410" cy="80" r="5" class="dg-dim"/>
+<circle cx="250" cy="110" r="9" class="dg-accent"/>
+<line x1="250" y1="110" x2="250" y2="45" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="250" y="35" text-anchor="middle" font-size="13">이 예측 하나</text>
+<text x="260" y="185" text-anchor="middle" font-size="12" class="dg-dim">주변 점들과 무관하게 이 개체만 설명</text>
+</svg>
+
+_주변 점들과 관계없이 강조된 이 예측 하나만 설명한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

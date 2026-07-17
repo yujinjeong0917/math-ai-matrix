@@ -4,12 +4,15 @@ theme: CAUSAL
 domainLabel: 인과추론
 subLabel: 식별과 추정
 title: 이중강건추정(Doubly Robust / AIPW)
-hook: 역확률가중(IPW)은 성향점수모형이 틀리면 무너지고, 회귀보정(outcome regression)은 결과모형이 틀리면 무너져요.
 related: 
 ---
 
-## 기본설명
+## 도입
+역확률가중(IPW)은 성향점수모형이 틀리면 무너지고, 회귀보정(outcome regression)은 결과모형이 틀리면 무너져요. 두 모형 다 정확히 맞히기는 현실에서 쉽지 않죠. 이중강건추정(AIPW)은 두 모형을 결합해서, 둘 중 하나만 맞아도 정답을 내는 추정량을 만듭니다. 마치 두 겹의 보험을 든 셈이에요.
+
+## 명제
 무교란성 $(Y_0,Y_1)\perp T\mid X$ 와 양성성 $0&lt;e(X)&lt;1$ 하에서, 증강역확률가중함수 $\varphi(W;e,\mu_0,\mu_1) := \mu_1(X)-\mu_0(X)+\dfrac{T(Y-\mu_1(X))}{e(X)}-\dfrac{(1-T)(Y-\mu_0(X))}{1-e(X)}$ 에 대해 $E[\varphi]=\mathrm{ATE}$ 가 성립하며, 이 등식은 (a) $e$가 참 성향점수이고 $\mu_0,\mu_1$은 임의(틀려도 됨)이거나, (b) $\mu_0,\mu_1$이 참 결과모형이고 $e$는 임의(단 $0&lt;e&lt;1$)인 두 경우 중 하나만 성립해도 유지된다 (이중강건성).
+
 
 ## 문제
 먼저 경우 (a): 성향점수는 참값 $e^*$를 쓰고 결과모형 $\tilde\mu_1$은 틀려도 된다고 하자. $T=1$일 때만 $Y=Y_1$이 관측되므로 $TY=TY_1$이고, 무교란성 $T\perp Y_1\mid X$에 의해 $E[T\mid X]=e^*(X)$와 $E[Y_1\mid X]=\mu_1^*(X)$가 서로 독립적으로 곱해진다. 이를 이용하면 $E\big[T(Y-\tilde\mu_1(X))\mid X\big] = E[TY_1\mid X]-\tilde\mu_1(X)E[T\mid X] = $==빈칸== 이다.

@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 대리모델 신뢰도
 title: 정책 대리설명 충실도: 결정트리가 정책을 얼마나 잘 흉내내는가
-hook: 정책 대리설명 충실도는 지도학습의 대리모델 충실도를 정책 문제에 그대로 옮긴 것이다.
 related: 대리모델 충실도 · 정책 설명 안정성 · 반사실 행동설명
 ---
 
-## 기본설명
+## 도입
 정책 대리설명 충실도는 지도학습의 대리모델 충실도를 정책 문제에 그대로 옮긴 것이다. 상태 집합 $S$에 대해 원래 정책 $\pi$가 고르는 행동과 결정트리 $\hat\pi$가 고르는 행동이 얼마나 일치하는지를 잰다.
 
 $$\text{Policy Agreement} = \frac{1}{|S|}\sum_{s \in S} \mathbf{1}[\pi(s) = \hat\pi(s)]$$
@@ -16,6 +15,24 @@ $$\text{Policy Agreement} = \frac{1}{|S|}\sum_{s \in S} \mathbf{1}[\pi(s) = \hat
 행동 일치도만으로는 부족할 때가 많다. 두 정책이 다른 행동을 골랐어도 그 결과로 얻는 누적 보상이 비슷하다면 실질적으로는 괜찮은 근사일 수 있다. 반대로 행동 일치도는 높은데 충돌 직전처럼 결정적인 소수 상태에서만 어긋난다면 그 어긋남이 훨씬 위험할 수 있다. 그래서 행동 단위 일치도와 별도로 결정트리 정책을 실제로 굴려봤을 때의 누적 보상을 원래 정책과 비교하는 방법도 함께 쓴다.
 
 트리 깊이는 해석가능성과 충실도 사이의 직접적인 트레이드오프다. 트리를 얕게 만들수록 사람이 규칙을 읽고 이해하기는 쉬워지지만 원래 신경망 정책의 복잡한 결정경계를 담아내지 못해 일치도가 떨어진다. 실무에서는 목표로 하는 최소 일치도를 먼저 정하고 그 조건을 만족하는 가장 얕은 트리를 찾는 식으로 두 요구를 절충한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" font-size="13" text-anchor="middle">신경망 정책</text>
+<path d="M40,190 C90,110 150,210 200,120 C215,90 230,60 260,30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="470" y="18" font-size="13" text-anchor="middle">결정트리 정책</text>
+<line x1="470" y1="30" x2="470" y2="230" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="340" y1="130" x2="470" y2="130" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="470" y1="90" x2="600" y2="90" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="440" y="150" width="40" height="40" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="460" y="145" font-size="12" text-anchor="middle">불일치</text>
+<text x="310" y="250" font-size="12" text-anchor="middle" class="dg-dim">직선 분할은 곡선 경계를 완전히 담아내지 못한다</text>
+</svg>
+
+_신경망 정책의 곡선 경계를 결정트리의 축 정렬 분할로 근사하면 일부 영역에서 어긋남이 생긴다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

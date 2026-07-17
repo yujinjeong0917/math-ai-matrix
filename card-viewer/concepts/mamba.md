@@ -4,16 +4,37 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: State-Space 모델
 title: Mamba: 선택적 상태공간모델
-hook: 기존의 선형 시불변 상태공간모델은 $h_t=\bar A h_{t-1}+\bar B x_t$, $y_t=Ch_t$처럼 상태전이행렬 $\bar A$와 입력행렬 $\bar B$가 시간에 따라 고정되어 있다.
 related: S4 · SSM 추론 특성
 ---
 
-## 기본설명
+## 도입
 기존의 선형 시불변 상태공간모델은 $h_t=\bar A h_{t-1}+\bar B x_t$, $y_t=Ch_t$처럼 상태전이행렬 $\bar A$와 입력행렬 $\bar B$가 시간에 따라 고정되어 있다. 이 고정성 덕분에 학습 시에는 전체 계산을 하나의 합성곱으로 바꿔서 병렬로 처리할 수 있지만 동시에 어떤 입력이 오든 정보를 담고 버리는 규칙이 항상 똑같다는 한계를 갖는다.
 
 Mamba는 이산화 스텝 $\Delta_t$와 입력행렬 $B_t$, 출력행렬 $C_t$를 고정된 파라미터가 아니라 현재 입력 $x_t$의 선형함수로 만든다. 그 결과 상태 갱신이 $h_t=\bar A_t h_{t-1}+\bar B_t x_t$처럼 매 스텝 입력에 따라 달라지는 선택적 상태공간모델이 된다. 의미상 중요한 단어가 들어오면 $\Delta_t$가 커지면서 그 정보가 상태에 강하게 반영되고 불필요한 단어가 들어오면 상태가 거의 갱신되지 않고 이전 값을 유지한다.
 
 문제는 이렇게 시간에 따라 파라미터가 바뀌면 더는 하나의 합성곱으로 병렬화할 수 없다는 점이다. Mamba는 이를 하드웨어를 고려한 병렬 스캔 알고리즘으로 해결해서 GPU에서도 여전히 효율적으로 학습한다. 추론할 때는 RNN처럼 상태 하나만 유지하며 한 스텝씩 계산하기 때문에 시퀀스 길이에 대해 선형적인 연산량과 일정한 메모리로 동작한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+      <text x="30" y="65">h(t-1)</text>
+      <line x1="80" y1="60" x2="130" y2="60" class="dg-line" stroke-width="1.5" />
+      <rect x="130" y="35" width="220" height="60" rx="8" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="150" y="58" font-size="12">선택적 SSM</text>
+      <text x="150" y="78" class="dg-dim" font-size="11">Δ(t), B(t), C(t) = f(x(t))</text>
+      <line x1="350" y1="60" x2="400" y2="60" class="dg-line" stroke-width="1.5" />
+      <text x="405" y="65">h(t)</text>
+      <line x1="240" y1="150" x2="240" y2="95" class="dg-line" stroke-width="1.5" />
+      <text x="210" y="168">x(t)</text>
+      <line x1="460" y1="60" x2="510" y2="60" class="dg-line" stroke-width="1.5" />
+      <circle cx="480" cy="60" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="471" y="65" font-size="11">C(t)</text>
+      <text x="520" y="65">y(t)</text>
+    </svg>
+
+_입력마다 Δ, B, C가 달라지는 선택적 상태 갱신을 보여줍니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

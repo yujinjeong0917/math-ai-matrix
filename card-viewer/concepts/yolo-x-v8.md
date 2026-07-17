@@ -4,16 +4,47 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: YOLOX/v8: 앵커프리와 디커플드 헤드
-hook: YOLOv3까지는 미리 정한 앵커박스와의 오프셋을 예측하는 앵커기반 방식이었다.
 related: YOLOv3 · IoU와 NMS · Focal Loss
 ---
 
-## 기본설명
+## 도입
 YOLOv3까지는 미리 정한 앵커박스와의 오프셋을 예측하는 앵커기반 방식이었다. YOLOX는 각 격자 위치를 물체 중심 후보로 직접 취급하고 그 위치에서 물체 경계까지의 네 방향 거리(좌, 상, 우, 하)를 바로 회귀한다. 앵커 하이퍼파라미터를 데이터셋마다 다시 클러스터링할 필요가 없어지고 앵커 개수만큼 늘어나던 예측 수도 줄어든다.
 
 헤드 구조도 갈라졌다. YOLOv3까지는 하나의 conv 브랜치가 박스 좌표, 신뢰도, 클래스 점수를 한꺼번에 뽑았다. 그런데 분류는 칸 안의 텍스처나 패턴에 민감하고 회귀는 경계의 정확한 위치에 민감해서 두 작업의 최적점이 서로 어긋난다. 디커플드 헤드는 같은 특징맵을 받은 뒤 분류용 conv 브랜치와 회귀용 conv 브랜치를 완전히 분리해서 각자 학습하게 한다. YOLOX는 여기에 SimOTA라는 동적 라벨 할당까지 더해 학습 중 각 물체에 어떤 위치들을 양성 샘플로 배정할지를 예측 품질에 따라 유동적으로 정한다.
 
 YOLOv8은 이 앵커프리와 디커플드 헤드 흐름을 이어받으면서 백본을 C2f 블록으로 교체하고 학습 전반의 증강과 손실 구성을 다듬었다. 버전마다 이름은 바뀌었지만 앵커 설계를 없애고 태스크별로 헤드를 분리한다는 두 방향은 YOLOX 이후 계속 유지되고 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<text x="140" y="20" font-size="13" text-anchor="middle">기존: 커플드 헤드</text>
+<rect x="60" y="36" width="160" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="59" font-size="12" text-anchor="middle">특징맵</text>
+<line x1="140" y1="72" x2="140" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="60" y="100" width="160" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="140" y="123" font-size="12" text-anchor="middle">conv (분류+회귀 동시)</text>
+<line x1="140" y1="136" x2="105" y2="168" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="136" x2="175" y2="168" class="dg-line" stroke-width="1.5"/>
+<text x="105" y="182" font-size="11" text-anchor="middle">클래스</text>
+<text x="175" y="182" font-size="11" text-anchor="middle">박스</text>
+<text x="460" y="20" font-size="13" text-anchor="middle">YOLOX/v8: 디커플드 헤드</text>
+<rect x="380" y="36" width="160" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="460" y="59" font-size="12" text-anchor="middle">특징맵</text>
+<line x1="415" y1="72" x2="415" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="505" y1="72" x2="505" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="100" width="70" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="415" y="123" font-size="11" text-anchor="middle">분류 branch</text>
+<rect x="470" y="100" width="70" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="505" y="123" font-size="11" text-anchor="middle">회귀 branch</text>
+<line x1="415" y1="136" x2="415" y2="168" class="dg-line" stroke-width="1.5"/>
+<line x1="505" y1="136" x2="505" y2="168" class="dg-line" stroke-width="1.5"/>
+<text x="415" y="182" font-size="11" text-anchor="middle">클래스</text>
+<text x="505" y="182" font-size="11" text-anchor="middle">박스</text>
+</svg>
+
+_분류와 회귀를 하나의 브랜치로 묶던 구조가 두 개로 분리되었다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

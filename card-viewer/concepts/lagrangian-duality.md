@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: 라그랑주 쌍대성과 약쌍대성 정리
-hook: 제약 있는 최적화 문제는 직접 풀기 어려울 때가 많습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+제약 있는 최적화 문제는 직접 풀기 어려울 때가 많습니다. 그런데 같은 문제를 라그랑주 승수 쪽에서 바라보면 다른 최적화 문제, 즉 쌍대문제가 하나 더 생깁니다. SVM은 원래 문제 대신 이 쌍대문제를 풀어서 답을 구합니다. 쌍대문제의 최적값이 원래 문제의 최적값을 절대 넘어서지 않는다는 사실이 약쌍대성입니다. 이 부등식이 왜 항상 성립하는지 짧게 확인해 봅니다.
+
+## 명제
 $p^*=\min_x f(x)\ \text{s.t.}\ g_i(x)\le0,\ h_j(x)=0$ 이고 $q(\lambda,\mu)=\inf_x\mathcal L(x,\lambda,\mu)$, $d^*=\sup_{\lambda\ge0,\mu}q(\lambda,\mu)$ 이면 $d^*\le p^*$ 이다.
+
 
 ## 문제
 임의의 실행가능한 점 $\bar x$를 하나 고정한다. 모든 $i$에 대해 $g_i(\bar x)\le0$이고 모든 $j$에 대해 $h_j(\bar x)=0$이다. 이 점에서 라그랑지안 값을 계산해 본다. 등호 제약항은 $h_j(\bar x)=0$이라 전부 사라진다. 남은 부등호 제약항은 $\lambda_i\ge0$이고 $g_i(\bar x)\le0$이니 곱한 값 $\lambda_ig_i(\bar x)$가 항상 0 이하다. 이런 항을 다 더한 것도 0 이하다. 그러면 $\mathcal L(\bar x,\lambda,\mu) = f(\bar x) + \sum_i\lambda_ig_i(\bar x) \le $==빈칸== 이다.

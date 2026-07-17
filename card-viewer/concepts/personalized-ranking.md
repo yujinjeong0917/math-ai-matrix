@@ -4,16 +4,47 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 추천 · 개인화
 title: 개인화 랭킹: 사용자마다 다른 순서로 보여주기
-hook: 실무 시스템은 보통 두 단계로 나뉜다.
 related: 밴딧 기반 추천 · CTR · CVR
 ---
 
-## 기본설명
+## 도입
 실무 시스템은 보통 두 단계로 나뉜다. 먼저 전체 아이템 중 후보를 수천 개 수준으로 좁히는 후보생성 단계를 거치고 그 위에서 더 정교한 랭킹 모델이 순서를 매긴다. 랭킹 단계의 스코어링 함수는 예측 클릭확률, 예측 구매확률, 마진, 다양성 패널티 등 여러 신호의 가중합이거나 이런 신호들을 입력으로 받는 학습된 랭킹 모델의 출력값이다.
 
 랭킹 모델은 개별 아이템 점수를 독립적으로 예측하는 방식(pointwise)도 있고 두 아이템의 순서를 직접 비교하도록 학습하는 방식(pairwise), 목록 전체의 순서를 한 번에 최적화하는 방식(listwise)도 있다. 목적함수를 클릭확률 하나로만 두면 자극적이거나 눈길만 끄는 항목이 과도하게 위로 올라올 위험이 있어 마진이나 장기 만족도 신호를 함께 섞는 경우가 많다.
 
 흔한 함정은 지나친 개인화로 사용자가 이미 좋아한다고 알려진 것만 반복 노출하는 필터버블이다. 다양성 패널티를 적당히 섞지 않으면 사용자의 취향 폭이 점점 좁아진 것처럼 보이는 왜곡이 생긴다. 신규 사용자는 행동 기록이 없어 개인화 신호 자체가 부족한 콜드스타트 문제도 있고 방금 일어난 행동이 실시간으로 반영되지 못하면 이미 구매한 상품을 계속 추천하는 뒤늦은 개인화가 나타난다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<text x="130" y="24" text-anchor="middle" font-size="13">일반 랭킹</text>
+<text x="470" y="24" text-anchor="middle" font-size="13">개인화 랭킹</text>
+<rect x="80" y="40" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="62" text-anchor="middle" font-size="12">A</text>
+<rect x="80" y="84" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="106" text-anchor="middle" font-size="12">B</text>
+<rect x="80" y="128" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="150" text-anchor="middle" font-size="12">C</text>
+<rect x="80" y="172" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="130" y="194" text-anchor="middle" font-size="12">D</text>
+<rect x="420" y="40" width="100" height="34" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="470" y="62" text-anchor="middle" font-size="12">D</text>
+<rect x="420" y="84" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="106" text-anchor="middle" font-size="12">A</text>
+<rect x="420" y="128" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="150" text-anchor="middle" font-size="12">C</text>
+<rect x="420" y="172" width="100" height="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="470" y="194" text-anchor="middle" font-size="12">B</text>
+<line x1="180" y1="57" x2="420" y2="101" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="101" x2="420" y2="189" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="145" x2="420" y2="145" class="dg-line" stroke-width="1.5"/>
+<line x1="180" y1="189" x2="420" y2="57" class="dg-stroke-accent" stroke-width="2"/>
+<text x="300" y="230" text-anchor="middle" font-size="12" class="dg-dim">이 사용자에게는 D가 가장 관련도 높아 맨 위로 올라온다</text>
+</svg>
+
+_같은 후보 4개라도 사용자 신호에 따라 노출 순서가 완전히 달라질 수 있다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

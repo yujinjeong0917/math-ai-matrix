@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 정책경사 정리(REINFORCE)의 유도
-hook: 강화학습에서는 정책 $\pi_\theta$를 따라 얻는 기대 리턴 $J(\theta)$를 최대화하고 싶습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+강화학습에서는 정책 $\pi_\theta$를 따라 얻는 기대 리턴 $J(\theta)$를 최대화하고 싶습니다. 그런데 $J(\theta)$는 환경과 정책이 뒤섞인 기댓값이라 닫힌 형태로 계산할 수 없습니다. 오직 정책을 실제로 실행해서 얻은 궤적으로만 값을 관찰할 수 있습니다. 그런데도 그래디언트 $\nabla_\theta J(\theta)$는 정확히 계산할 방법이 있습니다. 로그미분 트릭이라는 작은 대수적 아이디어 하나가 그 답을 열어줍니다.
+
+## 명제
 $J(\theta)=E_{\tau\sim\pi_\theta}[R(\tau)]$ 에 대해 $\nabla_\theta J(\theta) = E_{\tau\sim\pi_\theta}\left[\left(\sum_t\nabla_\theta\log\pi_\theta(a_t|s_t)\right)R(\tau)\right]$ 이다.
+
 
 ## 문제
 이를 위해 로그함수의 미분을 이용한다. 로그함수를 미분하면 $1/x$가 되고 여기에 연쇄법칙으로 안쪽 함수의 도함수를 곱한다는 사실을 쓰면 $\nabla_\theta\log\pi_\theta(\tau) = \dfrac{\nabla_\theta\pi_\theta(\tau)}{\pi_\theta(\tau)}$ 이다. 양변에 $\pi_\theta(\tau)$를 곱해 정리하면 $\nabla_\theta\pi_\theta(\tau) = $==빈칸== 이다.

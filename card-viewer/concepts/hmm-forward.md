@@ -4,12 +4,43 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 마르코프 · 확률과정
 title: 은닉마르코프모델 전방 알고리즘의 재귀식
-hook: HMM은 눈에 보이지 않는 상태 $s_t$가 순서대로 바뀌면서 매 시점 관측 $o_t$를 하나씩 내놓는다고 가정해요.
 related: 
 ---
 
-## 기본설명
+## 도입
+HMM은 눈에 보이지 않는 상태 $s_t$가 순서대로 바뀌면서 매 시점 관측 $o_t$를 하나씩 내놓는다고 가정해요. 문제는 지금까지의 관측 $o_1,\dots,o_t$만 보고 현재 숨은 상태가 무엇일지 확률을 계산하려면, 있을 수 있는 모든 상태 경로를 다 따져야 할 것처럼 보인다는 거예요. 경로 수는 시점이 늘어날수록 지수적으로 불어나요. 전방 알고리즘은 이 계산을 재귀식 하나로 압축해서 그 폭발을 막아요.
+
+## 명제
 $\alpha_t(j)=P(o_1,\dots,o_t,s_t=j)$로 정의하면 $\alpha_t(j) = \left[\sum_i\alpha_{t-1}(i)P(s_t=j\mid s_{t-1}=i)\right]P(o_t\mid s_t=j)$ 이다.
+
+## 그림
+<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+  <text x="120" y="25" font-size="12" class="dg-dim">시점 t-1</text>
+  <text x="320" y="25" font-size="12" class="dg-dim">시점 t</text>
+  <line x1="230" y1="40" x2="230" y2="250" class="dg-line" stroke-width="1" stroke-dasharray="2,4"/>
+  <circle cx="140" cy="70" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="140" cy="150" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="140" cy="230" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <text x="120" y="75" font-size="11">α(1)</text>
+  <text x="120" y="155" font-size="11">α(2)</text>
+  <text x="120" y="235" font-size="11">α(3)</text>
+  <circle cx="340" cy="150" r="20" class="dg-accent"/>
+  <circle cx="340" cy="70" r="16" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <circle cx="340" cy="230" r="16" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="328" y="155" font-size="12" font-weight="700">αₜ(j)</text>
+  <line x1="158" y1="70" x2="320" y2="145" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="320,145 306,140 310,152" class="dg-accent"/>
+  <line x1="158" y1="150" x2="320" y2="150" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="320,150 306,145 306,155" class="dg-accent"/>
+  <line x1="158" y1="230" x2="320" y2="155" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="320,155 306,158 310,146" class="dg-accent"/>
+  <text x="200" y="105" font-size="10">P(j|1)</text>
+  <text x="220" y="140" font-size="10">P(j|2)</text>
+  <text x="200" y="200" font-size="10">P(j|3)</text>
+  <text x="360" y="220" font-size="11" class="dg-dim">···이어지는 시점</text>
+</svg>
+
+_시점 t-1의 모든 상태(원)에서 화살표가 αₜ(j)(강조 원)로 모여 재귀적으로 합산되고, 나머지 상태(점선 원)는 같은 방식으로 병렬 계산된다._
 
 ## 문제
 지금 목표는 $t$ 시점의 전방변수 $\alpha_t(j)=P(o_1,\dots,o_t,s_t=j)$를 $t-1$ 시점의 $\alpha_{t-1}$들로 표현하는 재귀식을 얻는 것이다. 첫 걸음은 전확률법칙으로 $t-1$ 시점의 숨은 상태 $s_{t-1}$에 대해 나눠 더하는 것이다.

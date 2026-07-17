@@ -4,12 +4,38 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 베이즈 정리
-hook: 평소에 믿던 확률인 사전확률이 있어요.
 related: 
 ---
 
-## 기본설명
+## 도입
+평소에 믿던 확률인 사전확률이 있어요. 여기에 새로 관찰한 증거를 더하면 믿음은 어떻게 업데이트될까요. 베이즈 정리는 이 질문에 정확한 공식으로 답해요. 나이브베이즈 분류기부터 베이지안 딥러닝까지 확률적 추론이라는 이름이 붙은 거의 모든 방법의 뿌리가 여기에 있어요.
+
+## 명제
 사건 $A,B$($P(B)>0$)에 대해 $P(A|B) = \dfrac{P(B|A)P(A)}{P(B)}$.
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+  <line x1="55" y1="110" x2="210" y2="55" class="dg-stroke-ink" stroke-width="2"/>
+  <line x1="55" y1="110" x2="210" y2="175" class="dg-stroke-ink" stroke-width="2"/>
+  <line x1="220" y1="50" x2="400" y2="25" class="dg-stroke-accent" stroke-width="3"/>
+  <line x1="220" y1="50" x2="400" y2="80" class="dg-line" stroke-width="1.3" stroke-dasharray="5,4"/>
+  <line x1="220" y1="170" x2="400" y2="145" class="dg-stroke-accent" stroke-width="3"/>
+  <line x1="220" y1="170" x2="400" y2="200" class="dg-line" stroke-width="1.3" stroke-dasharray="5,4"/>
+  <circle cx="50" cy="110" r="4" class="dg-dim"/>
+  <text x="10" y="105" font-size="12">시작</text>
+  <text x="70" y="40" font-size="12">사전확률</text>
+  <text x="225" y="42" font-size="12">질병 A (0.01)</text>
+  <text x="225" y="195" font-size="12">건강 Aᶜ (0.99)</text>
+  <text x="280" y="8" font-size="12">우도</text>
+  <text x="405" y="20" font-size="12" font-weight="700">양성 B (0.9)</text>
+  <text x="405" y="98" font-size="11">음성 (0.1)</text>
+  <text x="405" y="140" font-size="12" font-weight="700">양성 B (0.05)</text>
+  <text x="405" y="218" font-size="11">음성 (0.95)</text>
+  <polygon points="400,25 388,20 388,30" class="dg-accent"/>
+  <polygon points="400,145 388,140 388,150" class="dg-accent"/>
+</svg>
+
+_사전확률 갈래(A/Aᶜ) 뒤에 우도 갈래(양성/음성)가 이어진다. 실선·굵은선(양성)과 점선(음성)으로 흑백에서도 경로가 구분된다._
 
 ## 문제
 두 식을 자세히 보면 공통점이 있습니다. 둘 다 $P(A\cap B)$를 담고 있습니다. 이것은 두 사건이 동시에 일어날 확률입니다. 이 공통항을 다리 삼아 두 식을 하나로 잇는 것이 다음 목표입니다. 그러려면 먼저 두 번째 식을 $P(A\cap B)$ 하나만 남도록 정리해야 합니다. $P(B|A)=\dfrac{P(A\cap B)}{P(A)}$ 의 양변에 $P(A)$를 곱하면 $P(A\cap B) = $==빈칸== 입니다.

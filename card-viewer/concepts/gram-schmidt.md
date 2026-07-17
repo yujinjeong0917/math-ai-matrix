@@ -4,12 +4,34 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: Gram-Schmidt 직교화의 귀납적 정당화
-hook: 선형독립인 벡터 여러 개가 있을 때 이들을 서로 수직인 벡터들로 바꾸는 절차가 Gram-Schmidt 직교화입니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+선형독립인 벡터 여러 개가 있을 때 이들을 서로 수직인 벡터들로 바꾸는 절차가 Gram-Schmidt 직교화입니다. 방법은 단순합니다. 새 벡터를 만들 때마다 이미 만든 벡터들 방향으로의 사영 성분을 전부 빼버립니다. 이렇게 빼고 남은 나머지, 즉 잔차가 정말로 이전 벡터들 전부와 수직이 된다는 사실을 직접 확인해 봅니다.
+
+## 명제
 $v_1=a_1$이고 $k\ge2$에 대해 $v_k=a_k-\sum_{j=1}^{k-1}\frac{a_k\cdot v_j}{v_j\cdot v_j}v_j$로 정의하면, $\{v_1,\dots,v_n\}$은 서로 직교한다.
+
+## 그림
+<svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="20" y1="190" x2="280" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="20" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="190" x2="195" y2="145" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="195,145 183,144 187,155" class="dg-accent"/>
+<text x="198" y="140" font-size="12">v₁ = a₁</text>
+<line x1="60" y1="190" x2="150" y2="100" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="150,100 145,112 158,110" class="dg-dim"/>
+<text x="128" y="88" font-size="12">a₂</text>
+<line x1="150" y1="100" x2="168" y2="154" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="159" y="145" width="8" height="8" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<line x1="168" y1="154" x2="150" y2="100" class="dg-stroke-accent" stroke-width="2.5" stroke-dasharray="7,3"/>
+<text x="178" y="130" font-size="11">v₂ = a₂ - proj_{v₁}(a₂)</text>
+<circle cx="168" cy="154" r="3" class="dg-dim"/>
+<text x="150" y="205" font-size="11" class="dg-dim">사영 성분(빼는 부분)은 v₁ 위에 놓인다</text>
+</svg>
+
+_a₂에서 v₁ 방향 사영 성분을 빼고 남은 v₂는 정확히 v₁과 수직이다._
 
 ## 문제
 이 합 안에는 $j=1,\dots,k-1$까지 여러 항이 있지만 정리할 방법이 있다. $v_1,\dots,v_{k-1}$이 이미 서로 직교한다는 가정을 쓴다. $j\neq i$인 항에서는 $v_j\cdot v_i=0$이므로 그 항 전체가 사라진다. 남는 것은 $j=i$인 항 하나뿐이고, 그 항에서는 분모와 분자에 똑같이 $v_i\cdot v_i$가 있어 약분된다. 그러니 합 전체는 ==빈칸== 하나로 정리된다.

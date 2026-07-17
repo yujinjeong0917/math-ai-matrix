@@ -4,16 +4,36 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 3D · 포인트클라우드
 title: 복셀 기반 3D CNN: 점군을 격자로 양자화
-hook: 점군을 규칙적인 3D 격자로 양자화하는 과정을 복셀화라 한다.
 related: PointNet · NeRF
 ---
 
-## 기본설명
+## 도입
 점군을 규칙적인 3D 격자로 양자화하는 과정을 복셀화라 한다. 공간을 $V \times V \times V$ 크기의 정육면체 칸들로 나누고, 각 칸 안에 점이 하나라도 있으면 그 칸을 점유(occupied)로 표시하거나 칸 안 점들의 통계(개수, 평균 특징 등)를 채워 넣는다. 이렇게 만든 3D 텐서에 표준 3D 합성곱을 그대로 적용할 수 있다. 커널이 가로세로에 더해 깊이 축으로도 슬라이딩하는 것 말고는 2D CNN과 원리가 같다.
 
 문제는 해상도다. 격자 한 변의 칸 수를 $V$로 두면 전체 칸 수는 $V^3$으로 늘어난다. 해상도를 2배로 올리면 메모리와 연산량은 8배로 뛴다. 게다가 실제 물체 표면은 3D 공간의 얇은 껍질에 불과해서 대부분의 복셀은 아무 점도 담지 않은 빈 칸이다. 조밀한 격자 전체에 컨볼루션을 돌리는 건 이 빈 칸들까지 전부 계산하는 셈이라 낭비가 크다.
 
 이 낭비를 줄이기 위해 이후 연구들은 점유된 복셀만 골라 계산하는 희소 컨볼루션(sparse convolution)이나, 옥트리처럼 표면 근처만 세밀하게 나누고 빈 공간은 성기게 남기는 적응적 자료구조를 도입했다. 그럼에도 복셀화는 3D 데이터를 CNN이라는 검증된 도구로 다룰 수 있게 해주는 가장 직접적인 다리이며, 자율주행 라이다 처리 파이프라인 등에서 여전히 널리 쓰인다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="30" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="140" y="30" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="80" width="50" height="50" class="dg-accent"/>
+<rect x="90" y="80" width="50" height="50" class="dg-accent"/>
+<rect x="140" y="80" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="40" y="130" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="130" width="50" height="50" class="dg-accent"/>
+<rect x="140" y="130" width="50" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="220" y="60" font-size="12">점유된 복셀 (표면 근처)</text>
+<text x="220" y="85" font-size="12" class="dg-dim">→ 3D 컨볼루션 적용</text>
+<text x="220" y="140" font-size="12">빈 복셀은 대부분 계산 낭비</text>
+</svg>
+
+_점을 담은 칸만 점유되고 나머지는 대부분 빈 칸으로 남는다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

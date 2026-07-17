@@ -4,12 +4,41 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 주성분분석(PCA)의 최적 방향
-hook: 데이터를 한 방향으로 압축해서 보고 싶습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+데이터를 한 방향으로 압축해서 보고 싶습니다. 그런데 정보를 가장 많이 남기는 방향은 어떻게 고를까요. PCA의 답은 단순해요. 데이터가 가장 넓게 퍼진 방향을 고르면 돼요. 분산이 가장 큰 방향을 고르는 거예요. 그리고 그 방향은 공분산행렬의 고유벡터 중 하나로 정확히 떨어집니다.
+
+## 명제
 중심화된 데이터 행렬 $X\in\mathbb{R}^{n\times d}$의 공분산행렬을 $\Sigma=\frac{1}{n}X^TX$ 라 하자. $\|w\|=1$인 $w$ 중 사영분산 $w^T\Sigma w$를 최대화하는 것은 $\Sigma$의 최대 고유값에 대응하는 고유벡터이다.
+
+## 그림
+<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="120" x2="370" y2="120" class="dg-line" stroke-width="1"/>
+<line x1="200" y1="15" x2="200" y2="225" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="120" rx="115" ry="42" transform="rotate(-38 200 120)" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="110" cy="185" r="4" class="dg-accent"/>
+<circle cx="140" cy="168" r="4" class="dg-accent"/>
+<circle cx="165" cy="150" r="4" class="dg-accent"/>
+<circle cx="185" cy="145" r="4" class="dg-accent"/>
+<circle cx="200" cy="122" r="4" class="dg-accent"/>
+<circle cx="215" cy="112" r="4" class="dg-accent"/>
+<circle cx="235" cy="100" r="4" class="dg-accent"/>
+<circle cx="255" cy="90" r="4" class="dg-accent"/>
+<circle cx="280" cy="75" r="4" class="dg-accent"/>
+<circle cx="295" cy="60" r="4" class="dg-accent"/>
+<circle cx="175" cy="110" r="4" class="dg-accent"/>
+<circle cx="225" cy="145" r="4" class="dg-accent"/>
+<line x1="115" y1="192" x2="288" y2="55" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="288,55 276,60 282,68" class="dg-accent"/>
+<line x1="168" y1="98" x2="232" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<text x="30" y="18" font-size="12" class="dg-dim">2D 데이터 산점도와 공분산 타원</text>
+<text x="215" y="45" font-size="12">최대분산 방향(고유값 4)</text>
+<text x="236" y="168" font-size="11" class="dg-dim">단축(고유값 2)</text>
+</svg>
+
+_공분산 타원의 장축은 데이터가 가장 넓게 퍼진 방향, 즉 최대 고유값에 대응하는 고유벡터와 일치한다._
 
 ## 문제
 지금 목표는 $w^T\Sigma w$를 최대화하는 것이다. 다만 아무 $w$나 되는 게 아니라 $\|w\|=1$이라는 제약을 지켜야 한다. 목적함수만 놓고 미분해서는 이 제약을 반영할 수 없다. 그래서 제약이 있는 최댓값 문제를 풀 때 쓰는 표준 도구인 라그랑주 승수법을 쓴다. 제약을 어기면 벌점을 주는 새 변수 $\lambda$를 도입해서 목적함수와 제약을 하나의 식으로 합친다. 이렇게 만든 식을 라그랑지안이라 부르고 $L(w,\lambda) = w^T\Sigma w - \lambda($==빈칸==$)$ 로 쓴다.

@@ -4,16 +4,50 @@ theme: RECSYS
 domainLabel: 추천시스템 · 랭킹
 subLabel: 오프라인 평가
 title: NDCG: 순위에 할인 가중치를 준 누적 이득
-hook: 순위 $i$에 있는 아이템의 관련도를 $rel_i$라 하면 상위 $K$개까지의 누적 이득은 $DCG@K = \sum_{i=1}^{K} \frac{rel_i}{\log_2(i+1)}$로 정의된다.
 related: MAP · Recall@K · A/B테스트 연계
 ---
 
-## 기본설명
+## 도입
 순위 $i$에 있는 아이템의 관련도를 $rel_i$라 하면 상위 $K$개까지의 누적 이득은 $DCG@K = \sum_{i=1}^{K} \frac{rel_i}{\log_2(i+1)}$로 정의된다. 분모의 $\log_2(i+1)$이 할인 항이다. 1위는 $\log_2 2 = 1$이라 할인이 없고 순위가 내려갈수록 분모가 커지며 같은 관련도라도 기여도가 줄어든다. 관련도가 세밀한 등급으로 나뉘는 서비스에서는 지수 형태인 $\frac{2^{rel_i}-1}{\log_2(i+1)}$을 쓰기도 하는데 고관련 아이템의 영향을 더 크게 벌리는 변형이다.
 
 DCG는 관련 아이템이 몇 개 존재하는지에 따라 값의 스케일이 달라져서 서로 다른 쿼리 사이의 점수를 그대로 비교할 수 없다. 그래서 같은 아이템 집합을 관련도 내림차순으로 재정렬했을 때 나오는 최댓값인 $IDCG@K$로 나눈다. $NDCG@K = \frac{DCG@K}{IDCG@K}$는 항상 0과 1 사이 값이 되고 쿼리마다 정답 개수가 달라도 서로 비교할 수 있다.
 
 MAP이나 Recall@K와 헷갈리기 쉬운데 셋은 서로 다른 것을 잰다. NDCG는 순위마다 로그로 할인된 가중치를 곱하고 등급이 있는 관련도까지 반영하는 연속적인 점수다. 반면 MAP은 관련 아이템을 맞다 틀리다 이진값으로만 보고 각 정답이 나온 지점의 정밀도를 평균한다. Recall@K는 순서를 아예 보지 않고 상위 K개 안에 정답이 몇 개나 들어왔는지 비율만 센다. 순위와 등급을 동시에 반영하고 싶을 때는 NDCG를 쓰고 정답을 놓치지 않았는지만 보고 싶을 때는 Recall을 쓴다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="20" font-size="13">실제 추천 순서</text>
+<rect x="20" y="30" width="70" height="50" class="dg-accent"/>
+<text x="55" y="60" text-anchor="middle" font-size="14">3</text>
+<rect x="100" y="30" width="70" height="50" class="dg-dim"/>
+<text x="135" y="60" text-anchor="middle" font-size="14">2</text>
+<rect x="180" y="30" width="70" height="50" class="dg-accent"/>
+<text x="215" y="60" text-anchor="middle" font-size="14">3</text>
+<rect x="260" y="30" width="70" height="50" class="dg-dim"/>
+<text x="295" y="60" text-anchor="middle" font-size="14">0</text>
+<text x="55" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(2)</text>
+<text x="135" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(3)</text>
+<text x="215" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(4)</text>
+<text x="295" y="96" text-anchor="middle" font-size="11" class="dg-dim">÷log2(5)</text>
+<text x="20" y="132" font-size="13">이상적 순서(정렬)</text>
+<rect x="20" y="142" width="70" height="50" class="dg-accent"/>
+<text x="55" y="172" text-anchor="middle" font-size="14">3</text>
+<rect x="100" y="142" width="70" height="50" class="dg-accent"/>
+<text x="135" y="172" text-anchor="middle" font-size="14">3</text>
+<rect x="180" y="142" width="70" height="50" class="dg-dim"/>
+<text x="215" y="172" text-anchor="middle" font-size="14">2</text>
+<rect x="260" y="142" width="70" height="50" class="dg-dim"/>
+<text x="295" y="172" text-anchor="middle" font-size="14">0</text>
+<text x="380" y="50" font-size="13">DCG ≈ 5.76</text>
+<text x="380" y="72" font-size="13" class="dg-dim">(실제 순서)</text>
+<text x="380" y="162" font-size="13">IDCG ≈ 5.89</text>
+<text x="380" y="184" font-size="13" class="dg-accent">NDCG ≈ 0.98</text>
+</svg>
+
+_실제 순위의 DCG를 이상적 순위의 DCG로 나누어 0에서 1 사이로 정규화한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

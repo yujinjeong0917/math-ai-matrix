@@ -4,12 +4,42 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: SVM 서포트 벡터 마진의 폭 2/‖w‖
-hook: SVM은 두 클래스를 가르는 초평면 $w^Tx+b=0$을 찾을 때 아무 초평면이나 고르지 않습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+SVM은 두 클래스를 가르는 초평면 $w^Tx+b=0$을 찾을 때 아무 초평면이나 고르지 않습니다. 가장 가까운 데이터까지의 거리, 즉 마진이 최대가 되는 초평면을 고릅니다. 정규화된 형태에서는 가장 가까운 양성 데이터와 음성 데이터가 각각 $w^Tx+b=1$과 $w^Tx+b=-1$이라는 두 평행한 지지 초평면 위에 놓이도록 스케일을 맞춥니다. 이 두 지지 초평면 사이의 수직거리가 정확히 $2/\|w\|$라는 것이 마진 최대화 문제 전체의 출발점입니다.
+
+## 명제
 두 지지 초평면 $w^Tx+b=1$과 $w^Tx+b=-1$ 사이의 수직거리는 $2/\|w\|$이다.
+
+## 그림
+<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="230" x2="420" y2="50" class="dg-stroke-ink" stroke-width="2.5"/>
+<line x1="73" y1="257" x2="433" y2="77" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="47" y1="203" x2="407" y2="23" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<circle cx="180" cy="240" r="7" class="dg-accent"/>
+<circle cx="260" cy="215" r="7" class="dg-accent"/>
+<circle cx="340" cy="175" r="7" class="dg-accent"/>
+<circle cx="253" cy="167" r="7" class="dg-accent"/>
+<circle cx="253" cy="167" r="12" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<rect x="134" y="134" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="214" y="84" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="304" y="54" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="220" y="106" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="227" cy="113" r="12" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="240" y1="140" x2="262" y2="185" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="262,185 250,178 256,192" class="dg-accent"/>
+<text x="266" y="182" font-size="12">w</text>
+<line x1="299" y1="77" x2="325" y2="131" class="dg-line" stroke-width="1.5"/>
+<polygon points="299,77 305,88 292,86" class="dg-dim"/>
+<polygon points="325,131 319,120 332,122" class="dg-dim"/>
+<text x="335" y="105" font-size="12">마진 = 2/‖w‖</text>
+<text x="330" y="95" font-size="11" class="dg-dim">wᵀx+b=+1</text>
+<text x="270" y="45" font-size="11" class="dg-dim">wᵀx+b=-1</text>
+</svg>
+
+_서포트 벡터(테두리로 표시)가 놓인 두 지지 초평면 사이의 수직거리가 마진이며, 그 폭은 정확히 2/‖w‖다._
 
 ## 문제
 이제 $t$의 값을 구하기 위해 $w^T(x_+-x_-)$를 두 가지 방법으로 계산해서 비교한다. 먼저 $x_+,x_-$가 각각 놓인 평면의 정의를 그대로 쓴다. $x_+$는 $w^Tx_++b=1$을 만족하고 $x_-$는 $w^Tx_-+b=-1$을 만족한다. 두 식을 빼면 $w^T(x_+-x_-) = (1-b)-(-1-b) = $==빈칸== 이다.

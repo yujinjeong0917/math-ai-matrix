@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 격차 진단
 title: 그룹별 성능 격차: 보호집단마다 예측이 다르게 나오는가
-hook: 가장 널리 쓰이는 지표는 disparate impact ratio다.
 related: Equalized Odds 점검 · 반사실 공정성 · SHAP 기반 편향 소스 추적
 ---
 
-## 기본설명
+## 도입
 가장 널리 쓰이는 지표는 disparate impact ratio다. 보호집단의 긍정 예측 비율을 비교집단의 긍정 예측 비율로 나눈다.
 $$\mathrm{DI} = \frac{P(\hat Y=1 \mid A=\text{보호집단})}{P(\hat Y=1 \mid A=\text{비교집단})}$$
 미국 고용평등위원회가 관행적으로 쓰는 4/5 규칙은 이 비율이 $0.8$ 아래로 떨어지면 차별적 영향이 있다고 잠정 판단한다. 정확한 법적 기준이라기보다 조사를 시작할지 말지 정하는 실무적 문턱값이다.
@@ -16,6 +15,24 @@ $$\mathrm{DI} = \frac{P(\hat Y=1 \mid A=\text{보호집단})}{P(\hat Y=1 \mid A=
 이 지표의 중요한 특징은 실제 정답 라벨 $Y$를 전혀 쓰지 않는다는 점이다. 오직 모델이 내놓은 예측 $\hat Y$의 분포만 본다. 그래서 계산은 쉽지만 해석은 조심해야 한다. 두 집단의 기저율 자체가 다르면 예측이 완벽하게 정확해도 DI가 1에서 멀어질 수 있다. DI가 낮다는 사실만으로 모델이 틀렸다고 단정할 수는 없고 왜 격차가 생기는지 살펴보는 출발점으로 써야 한다.
 
 disparate impact는 결과의 격차를 보는 지표이지 모델이 의도적으로 차별했는지를 보는 disparate treatment와는 다른 개념이다. 보호속성을 모델 입력에서 완전히 뺐어도 다른 특징이 보호속성과 강하게 상관되어 있으면 DI는 여전히 낮게 나올 수 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="200" x2="500" y2="200" class="dg-line" stroke-width="1.5"/>
+<rect x="120" y="80" width="70" height="120" class="dg-dim"/>
+<rect x="320" y="128" width="70" height="72" class="dg-accent"/>
+<text x="155" y="70" text-anchor="middle" font-size="13">60%</text>
+<text x="355" y="118" text-anchor="middle" font-size="13">36%</text>
+<text x="155" y="222" text-anchor="middle" font-size="12">집단 A</text>
+<text x="355" y="222" text-anchor="middle" font-size="12">집단 B (보호집단)</text>
+<text x="280" y="30" text-anchor="middle" font-size="13">대출 승인율 비교</text>
+<text x="280" y="50" text-anchor="middle" font-size="12" class="dg-dim">DI = 36/60 = 0.6, 기준 0.8 미달</text>
+</svg>
+
+_두 집단의 승인율을 그대로 나눈 값이 0.8 아래면 격차 조사를 시작한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 점근이론
 title: 델타법: 변환된 추정량의 점근분포
-hook: 추정량 $\hat\theta_n$의 점근분포를 알고 있다고 해서 $g(\hat\theta_n)$처럼 이를 변환한 값의 점근분포까지 저절로 알 수 있는 것은 아닙니다.
 related: 일치추정량 · 중심극한정리 · Slutsky 정리
 ---
 
-## 기본설명
+## 도입
+추정량 $\hat\theta_n$의 점근분포를 알고 있다고 해서 $g(\hat\theta_n)$처럼 이를 변환한 값의 점근분포까지 저절로 알 수 있는 것은 아닙니다. 그런데 $g$가 매끄러운 함수이기만 하면 국소적으로 직선(접선)에 가깝게 행동한다는 사실을 이용해, $\hat\theta_n$의 점근분산에 $g'(\theta)^2$만 곱해주면 $g(\hat\theta_n)$의 점근분산을 바로 구할 수 있습니다. 이것이 델타법입니다.
+
+## 명제
 $\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,\sigma^2)$이고 $g$가 $\theta$에서 미분가능하며 $g'(\theta)\ne0$이라 하자. 그러면 $\sqrt n\big(g(\hat\theta_n)-g(\theta)\big)\xrightarrow{d}N\!\left(0,\,g'(\theta)^2\sigma^2\right)$ 이다.
+
 
 ## 문제
 $g$가 $\theta$에서 미분가능하므로 $\hat\theta_n$이 $\theta$ 가까이에 있을 때 $g(\hat\theta_n)=g(\theta)+g'(\theta)(\hat\theta_n-\theta)+R_n$ 으로 쓸 수 있고, 여기서 나머지항 $R_n$은 $(\hat\theta_n-\theta)$보다 훨씬 빠르게 $0$에 가까워진다. 이 식을 $g(\hat\theta_n)-g(\theta)$에 대해 정리하면 $g(\hat\theta_n)-g(\theta)=$==빈칸== 이다.

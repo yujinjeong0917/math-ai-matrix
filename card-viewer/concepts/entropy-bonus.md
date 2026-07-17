@@ -4,12 +4,15 @@ theme: INFO
 domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: 엔트로피 보너스와 균등분포를 향한 KL 정규화
-hook: 강화학습에서 탐험을 유지하려고 목적함수에 엔트로피 보너스 $\alpha H(\pi)$를 더합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+강화학습에서 탐험을 유지하려고 목적함수에 엔트로피 보너스 $\alpha H(\pi)$를 더합니다. 이것은 겉보기엔 KL발산과 아무 상관 없어 보이지만, 사실은 정책 $\pi$를 균등분포라는 기준 정책 쪽으로 끌어당기는 KL 정규화와 상수 차이만 날 뿐 완전히 같은 일을 합니다. entropy-crossentropy와 kl-divergence에서 쓴 정의를 그대로 재사용해 이 등식을 유도합니다.
+
+## 명제
 $|A|$개의 행동에 대한 균등분포를 $u$라 하면 $\alpha H(\pi) = -\alpha D_{KL}(\pi\|u) + \alpha\log|A|$ 이다.
+
 
 ## 문제
 kl-divergence 항목에서 쓴 정의를 그대로 가져와 적용합니다. $D_{KL}(\pi\|u) = \sum_a\pi(a)\log\dfrac{\pi(a)}{u(a)}$ 이고 로그 나눗셈은 뺄셈으로 바뀝니다.

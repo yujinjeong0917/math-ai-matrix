@@ -4,16 +4,45 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: Diffusion 아키텍처
 title: 텍스트 조건화: 크로스어텐션으로 프롬프트 주입하기
-hook: 텍스트 조건화는 U-Net의 각 블록 사이에 크로스어텐션 층을 끼워 넣는 방식으로 구현된다.
 related: U-Net · 크로스모달 어텐션
 ---
 
-## 기본설명
+## 도입
 텍스트 조건화는 U-Net의 각 블록 사이에 크로스어텐션 층을 끼워 넣는 방식으로 구현된다. 이때 질의 $Q$는 현재 이미지 특징에서, 키 $K$와 값 $V$는 텍스트 인코더가 만든 단어별 임베딩 $\tau(y)$에서 만들어진다. 즉 $Q=W_Q\phi(z_t)$, $K=W_K\tau(y)$, $V=W_V\tau(y)$이고 어텐션은 $\mathrm{Attention}(Q,K,V)=\mathrm{softmax}(QK^T/\sqrt{d})V$로 계산된다.
 
 이 계산의 결과로 이미지 특징의 각 위치가 자신과 가장 관련 있는 단어들의 값 벡터를 가중합해서 가져온다. 그림 왼쪽 위 영역은 프롬프트 속 특정 물체를 가리키는 단어에, 배경에 해당하는 영역은 배경을 묘사하는 단어에 더 큰 가중치를 주는 식으로 자연스럽게 역할이 나뉜다.
 
 텍스트 인코더로는 CLIP의 텍스트 인코더나 T5 같은 대형 언어모델이 흔히 쓰인다. 크로스어텐션 층은 U-Net의 여러 해상도 단계에 반복해서 삽입되기 때문에 거친 구조부터 세밀한 디테일까지 여러 수준에서 텍스트 조건을 반영할 수 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="15" y="22" font-size="12">이미지 특징 (질의 Q)</text>
+<text x="410" y="22" font-size="12">텍스트 토큰 (키/값 K,V)</text>
+<circle cx="80" cy="80" r="12" class="dg-accent"/>
+<text x="45" y="85" font-size="12">Q1</text>
+<circle cx="80" cy="180" r="12" class="dg-accent"/>
+<text x="45" y="185" font-size="12">Q2</text>
+<circle cx="520" cy="50" r="12" class="dg-dim"/>
+<text x="540" y="55" font-size="12">K1,V1</text>
+<circle cx="520" cy="140" r="12" class="dg-dim"/>
+<text x="540" y="145" font-size="12">K2,V2</text>
+<circle cx="520" cy="230" r="12" class="dg-dim"/>
+<text x="540" y="235" font-size="12">K3,V3</text>
+<line x1="92" y1="80" x2="508" y2="50" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="92" y1="80" x2="508" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="92" y1="80" x2="508" y2="230" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="92" y1="180" x2="508" y2="50" class="dg-line" stroke-width="1"/>
+<line x1="92" y1="180" x2="508" y2="140" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="92" y1="180" x2="508" y2="230" class="dg-stroke-accent" stroke-width="2"/>
+<text x="290" y="60" font-size="12">0.40</text>
+<text x="290" y="115" font-size="12">0.20</text>
+<text x="290" y="160" font-size="12">0.40</text>
+</svg>
+
+_굵은 선일수록 크로스어텐션 가중치가 큰 연결이며 이미지 위치마다 주목하는 텍스트 토큰이 다릅니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

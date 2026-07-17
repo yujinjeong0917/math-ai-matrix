@@ -4,16 +4,40 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: CNN 백본 계보
 title: ResNet: 잔차연결로 깊이의 한계를 넘다
-hook: 일반적인 층은 입력 $x$를 받아 원하는 목표 함수 $H(x)$를 곧바로 근사하도록 학습된다.
 related: LeNet/AlexNet · EfficientNet
 ---
 
-## 기본설명
+## 도입
 일반적인 층은 입력 $x$를 받아 원하는 목표 함수 $H(x)$를 곧바로 근사하도록 학습된다. ResNet은 대신 층이 잔차 $F(x)=H(x)-x$만 학습하도록 설계하고 출력을 $y=F(x)+x$로 만든다. 이 덧셈 경로를 지름길연결이라 부른다.
 
 이 구조가 강력한 이유는 역전파 과정에서 드러난다. $y=F(x)+x$를 $x$로 미분하면 $\partial y/\partial x = \partial F/\partial x + 1$이 되는데 뒤의 $1$항 덕분에 $F$ 쪽 경로의 기울기가 아무리 작아지더라도 지름길을 타고 흐르는 기울기는 절대 사라지지 않는다. 그 결과 수십 층에서 수백 층까지 쌓아도 학습이 안정적으로 진행된다.
 
 극단적으로 어떤 층이 항등함수 $F(x)=0$을 배우는 것조차 일반 신경망에서는 여러 개의 비선형 층으로 정확히 흉내내기 어려운 목표지만 ResNet에서는 그냥 $F$의 가중치를 0에 가깝게만 두면 저절로 얻어진다. 이 덕분에 층을 늘리는 것이 최악의 경우에도 성능을 해치지 않는 안전한 선택이 되고 실제로는 더 깊은 표현력을 활용해 성능이 꾸준히 좋아진다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+      <text x="20" y="42">x</text>
+      <line x1="35" y1="37" x2="160" y2="37" class="dg-line" stroke-width="1.5" />
+      <line x1="35" y1="37" x2="35" y2="150" class="dg-line" stroke-width="1.5" />
+      <rect x="160" y="20" width="120" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="180" y="42" font-size="12">가중치층</text>
+      <line x1="280" y1="37" x2="360" y2="37" class="dg-line" stroke-width="1.5" />
+      <rect x="360" y="20" width="130" height="34" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="375" y="42" font-size="12">가중치층 F(x)</text>
+      <line x1="490" y1="37" x2="520" y2="37" class="dg-line" stroke-width="1.5" />
+      <line x1="520" y1="37" x2="520" y2="120" class="dg-line" stroke-width="1.5" />
+      <line x1="35" y1="150" x2="504" y2="150" class="dg-stroke-accent" stroke-width="2" />
+      <text x="150" y="170" class="dg-dim" font-size="12">지름길연결 (identity)</text>
+      <circle cx="520" cy="150" r="16" fill="none" class="dg-stroke-ink" stroke-width="2" />
+      <text x="513" y="155" font-size="14">+</text>
+      <line x1="520" y1="166" x2="520" y2="185" class="dg-line" stroke-width="1.5" />
+      <text x="470" y="198" font-size="12">y = F(x) + x</text>
+    </svg>
+
+_입력이 층을 건너뛰어 그대로 더해지는 지름길연결을 보여줍니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

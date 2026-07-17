@@ -4,14 +4,17 @@ theme: PM
 domainLabel: Process Mining
 subLabel: 대표 도구
 title: PM4Py: 파이썬으로 하는 프로세스 마이닝
-hook: PM4Py는 Fraunhofer FIT에서 처음 개발되었고 지금은 그 스핀오프인 Process Intelligence Solutions가 이어받아 관리하는 오픈소스 파이썬 라이브러리입니다.
 related: ProM · Celonis
 ---
 
-## 기본설명
+## 도입
 PM4Py는 Fraunhofer FIT에서 처음 개발되었고 지금은 그 스핀오프인 Process Intelligence Solutions가 이어받아 관리하는 오픈소스 파이썬 라이브러리입니다. 이벤트 로그를 읽어들이는 입출력 모듈, Alpha Algorithm이나 Heuristic Miner나 Inductive Miner 같은 발견 알고리즘, 토큰 리플레이와 정렬(alignment) 기반 적합성 검사, 페트리넷·BPMN·프로세스 트리 사이의 변환과 시각화까지 프로세스 마이닝 파이프라인의 표준 단계를 모듈 단위로 제공합니다.
 
 전형적인 사용 흐름은 xes나 csv 로그를 읽어들이는 함수로 불러와 케이스ID, 활동명, 타임스탬프 컬럼을 지정한 다음 발견 함수로 모델을 얻고 적합성 검사 함수로 로그와 모델의 차이를 계산하는 식입니다. 데이터프레임 기반 API를 제공해서 이미 파이썬 데이터 분석 생태계에 익숙한 사람이 배우기 쉽고 결과를 곧바로 다른 머신러닝 파이프라인의 입력으로 넘길 수 있다는 점이 강점입니다.
+
+## 명제
+
+
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

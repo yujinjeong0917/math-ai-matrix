@@ -4,12 +4,15 @@ theme: CAUSAL
 domainLabel: 인과추론
 subLabel: 이질적 효과와 개인화
 title: S-러너와 T-러너: 두 메타러너의 일치성과 취약점
-hook: CATE $\tau(x)=E[Y(1)-Y(0)\mid X=x]$를 실제로 추정하려면 회귀모델이 필요합니다.
 related: 이질적 처치효과(CATE) · X-러너 · Double/Debiased ML
 ---
 
-## 기본설명
+## 도입
+CATE $\tau(x)=E[Y(1)-Y(0)\mid X=x]$를 실제로 추정하려면 회귀모델이 필요합니다. 가장 단순한 두 방법은, 처치 여부 $T$를 그냥 입력변수 하나로 취급해 모델 하나만 학습하는 S-러너와, 처치군과 대조군에 대해 완전히 별도의 모델을 학습하는 T-러너입니다. 두 방법 모두 그럴듯해 보이지만 서로 다른 방식으로 실패할 수 있습니다.
+
+## 명제
 $\mu_t(x):=E[Y\mid X=x,T=t]$, $t\in\{0,1\}$ 라 하자. S-러너는 결합모델 $\hat\mu(x,t)$를 전체 표본으로 학습해 $\hat\tau_S(x):=\hat\mu(x,1)-\hat\mu(x,0)$로 추정하고, T-러너는 $\hat\mu_1$을 처치군 표본만으로, $\hat\mu_0$을 대조군 표본만으로 각각 학습해 $\hat\tau_T(x):=\hat\mu_1(x)-\hat\mu_0(x)$로 추정한다. 무교란성과 중첩조건 아래 $\hat\mu(x,t)\xrightarrow{p}\mu_t(x)$(S-러너) 및 각 $t$에서 $\hat\mu_t(x)\xrightarrow{p}\mu_t(x)$(T-러너)이면 $\hat\tau_S(x),\hat\tau_T(x)\xrightarrow{p}\tau(x)$ 로 둘 다 CATE의 일치추정량이다. 그러나 $\hat\mu_t(x)$가 국소 표본평균 형태의 추정량이면 $\mathrm{Var}(\hat\tau_T(x))=\mathrm{Var}(\hat\mu_1(x))+\mathrm{Var}(\hat\mu_0(x))$ 이므로, 처치군과 대조군의 국소 표본크기가 불균형하면 T-러너의 분산이 급격히 커진다.
+
 
 ## 문제
 S-러너는 $(X,T)$를 함께 입력으로 받는 하나의 회귀모델 $\hat\mu(x,t)$를 전체 표본으로 학습한다. 만약 $\hat\mu(x,t)\xrightarrow{p}E[Y\mid X=x,T=t]$로 수렴한다면, 무교란성에 의해 $E[Y\mid X=x,T=t]=E[Y(t)\mid X=x]=\mu_t(x)$이므로 $\hat\tau_S(x)=\hat\mu(x,1)-\hat\mu(x,0)\xrightarrow{p}$==빈칸== 이다.

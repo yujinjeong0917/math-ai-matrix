@@ -4,16 +4,38 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: YOLOv1: 그리드 기반 단일 CNN 객체탐지
-hook: 입력 이미지를 $S \times S$ 격자로 나눈다(논문 기준 $S=7$).
 related: YOLOv3 · IoU와 NMS · Focal Loss
 ---
 
-## 기본설명
+## 도입
 입력 이미지를 $S \times S$ 격자로 나눈다(논문 기준 $S=7$). 물체의 중심 좌표가 속한 칸이 그 물체를 책임진다. 각 칸은 $B$개의 바운딩박스 후보를 예측하는데 박스마다 중심 좌표 $(x,y)$, 크기 $(w,h)$, 신뢰도 점수를 출력한다. 신뢰도는 $\mathrm{Pr(Object)} \times \mathrm{IoU}(\mathrm{pred}, \mathrm{truth})$로 정의되어 칸에 물체가 있을 확률과 예측 박스가 실제와 얼마나 겹치는지를 함께 담는다. 여기에 칸마다 클래스 확률 분포 $C$개를 더해 전체 출력은 $S \times S \times (B \times 5 + C)$ 텐서 하나로 압축된다.
 
 이전 세대인 R-CNN 계열은 셀렉티브서치 같은 별도 알고리즘으로 후보 영역을 뽑고 그 각각을 CNN에 다시 통과시켰다. 후보가 수천 개면 CNN도 수천 번 돈다. YOLOv1은 후보 생성 단계를 아예 없애고 탐지를 하나의 회귀 문제로 재정의했다. 이미지 한 장에 CNN 한 번, 그게 전부다. 속도는 크게 얻었지만 한 칸이 박스를 최대 $B$개까지만 책임지기 때문에 한 칸 안에 여러 작은 물체가 몰려 있으면 놓치기 쉽다는 한계가 있었다.
 
 손실함수는 좌표 오차, 신뢰도 오차, 클래스 오차를 모두 제곱합 오차로 더하되 가중치를 다르게 준다. 물체가 있는 칸의 좌표 오차에는 $\lambda_{\mathrm{coord}}=5$로 가중치를 키우고 물체가 없는 칸의 신뢰도 오차에는 $\lambda_{\mathrm{noobj}}=0.5$로 낮춘다. 배경 칸이 압도적으로 많은 이미지에서 학습 신호가 배경 쪽으로만 쏠리는 걸 막기 위한 장치다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="20" width="220" height="220" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="95" y1="20" x2="95" y2="240" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="20" x2="150" y2="240" class="dg-line" stroke-width="1.5"/>
+<line x1="205" y1="20" x2="205" y2="240" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="75" x2="260" y2="75" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="130" x2="260" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="185" x2="260" y2="185" class="dg-line" stroke-width="1.5"/>
+<rect x="150" y="130" width="55" height="55" class="dg-accent"/>
+<rect x="128" y="108" width="98" height="92" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="40" y="14" font-size="12">입력 이미지를 S×S 격자로 분할</text>
+<text x="330" y="100" font-size="13">해당 칸의 출력</text>
+<text x="330" y="124" font-size="12" class="dg-dim">(x, y, w, h, 신뢰도) × B</text>
+<text x="330" y="146" font-size="12" class="dg-dim">+ 클래스 확률 C개</text>
+<text x="330" y="176" font-size="12">신뢰도 = Pr(Object)·IoU</text>
+</svg>
+
+_물체 중심이 속한 칸이 그 물체의 박스와 클래스를 예측한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

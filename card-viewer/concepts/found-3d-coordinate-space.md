@@ -4,16 +4,39 @@ theme: FOUND
 domainLabel: 예비수학
 subLabel: 예비수학 3순위 · 좌표공간·평면의 방정식
 title: 공간좌표계와 3차원 벡터·평면
-hook: 2차원 평면에 익숙하다가 3차원 공간으로 넘어가면 갑자기 확 어려워진 것처럼 느껴지지만, 사실 늘어난 건 축 하나($z$)뿐이에요.
 related: 기저가 주는 좌표 표현의 유일성 · Gram-Schmidt 직교화의 귀납적 정당화 · 벡터의 기하적 의미
 ---
 
-## 기본설명
+## 도입
 2차원 평면에 익숙하다가 3차원 공간으로 넘어가면 갑자기 확 어려워진 것처럼 느껴지지만, 사실 늘어난 건 축 하나($z$)뿐이에요. 2015 개정 '기하'는 공간벡터를 아예 뺐다가 2022 개정에서 복원했는데, 여전히 선택 과목이라 벡터와 같은 이유로 아예 배우지 않았을 수 있어요.
 
 2차원에서는 직선 하나를 $ax+by=c$로 표현했다면, 3차원에서는 평면 하나가 $ax+by+cz=d$로 표현돼요. 여기서 계수 $(a,b,c)$를 모아 만든 벡터 $n=(a,b,c)$는 그 평면에 수직으로 꽂힌 화살표인 법선벡터(normal vector)가 돼요. 법선벡터를 알면 평면이 어느 쪽을 향하고 있는지, 점 하나가 평면을 기준으로 어느 쪽에 있는지까지 바로 알 수 있어요.
 
 3차원에서 '벡터가 평면 위에 있다', '두 평면이 만난다' 같은 그림을 손으로 한 번이라도 그려본 사람은, 딥러닝에서 실제로 다루는 수백~수천 차원의 특징공간을 다룰 때도 똑같은 그림을 그대로 확장해서 쓸 수 있어요. 눈으로 볼 수는 없어도 '고차원에도 초평면(hyperplane)이 있고, 그 초평면에도 법선벡터가 있다'는 감각은 3차원에서 손으로 그려본 경험에서 나와요.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<line x1="120" y1="220" x2="365" y2="235" class="dg-line" stroke-width="1.3"/>
+<polygon points="365,235 352,231 353,240" class="dg-line"/>
+<text x="368" y="240" font-size="12">x</text>
+<line x1="120" y1="220" x2="35" y2="150" class="dg-line" stroke-width="1.3"/>
+<polygon points="35,150 46,153 42,161" class="dg-line"/>
+<text x="20" y="145" font-size="12">y</text>
+<line x1="120" y1="220" x2="120" y2="25" class="dg-line" stroke-width="1.3"/>
+<polygon points="120,25 115,37 125,37" class="dg-line"/>
+<text x="128" y="25" font-size="12">z</text>
+<polygon points="90,175 245,150 275,195 125,220" class="dg-dim"/>
+<polygon points="90,175 245,150 275,195 125,220" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="150" y="235" font-size="12" class="dg-dim">평면 ax+by+cz=d</text>
+<line x1="182" y1="185" x2="228" y2="95" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="228,95 216,100 222,109" class="dg-stroke-accent"/>
+<text x="232" y="90" font-size="12">법선벡터 n</text>
+</svg>
+
+_평면 ax+by+cz=d 위에 놓인 벡터들은 항상 법선벡터 n과 수직이다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

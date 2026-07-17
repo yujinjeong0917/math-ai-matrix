@@ -4,12 +4,32 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 노름 · 사영
 title: 최소제곱 사영으로 본 잠재공간 압축의 최적성
-hook: 인코더는 고차원 데이터 $x$를 저차원 잠재벡터로 압축합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+인코더는 고차원 데이터 $x$를 저차원 잠재벡터로 압축합니다. 이 압축이 정보를 최대한 적게 잃으려면 어떤 방식으로 눌러야 할까요. 부분공간 하나를 정해두고 그 위로 데이터를 사영하는 것이 바로 그 답입니다. 정확히는 직교사영이 그 부분공간 안에 있는 모든 점들 중에서 원래 데이터까지의 거리를 가장 짧게 만드는 유일한 선택입니다. 선형 오토인코더나 PCA 기반 압축이 사영이라는 연산을 쓰는 이유가 바로 여기에 있습니다.
+
+## 명제
 $Q$의 열이 부분공간 $U$의 정규직교기저($Q^TQ=I$)일 때, $x$에서 $U$까지의 거리를 최소화하는 점은 $\hat x=QQ^Tx$이고 잔차 $x-\hat x$는 $U$와 직교한다.
+
+## 그림
+<svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="170" x2="330" y2="170" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="330,170 318,165 318,175" class="dg-dim"/>
+<text x="335" y="174" font-size="12">U (부분공간, 기저 Q)</text>
+<line x1="30" y1="170" x2="250" y2="60" class="dg-line" stroke-width="2"/>
+<polygon points="250,60 238,66 244,75" class="dg-dim"/>
+<text x="256" y="55" font-size="12">x</text>
+<line x1="30" y1="170" x2="250" y2="170" class="dg-stroke-accent" stroke-width="2.5"/>
+<circle cx="250" cy="170" r="4" class="dg-accent"/>
+<text x="205" y="190" font-size="12">x̂ = QQᵀx</text>
+<line x1="250" y1="60" x2="250" y2="170" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<rect x="240" y="160" width="10" height="10" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<text x="255" y="115" font-size="11" class="dg-dim">잔차 x-x̂ ⊥ U</text>
+</svg>
+
+_x에서 부분공간 U로 내린 수선의 발이 최적 사영 x̂이고, 남은 잔차는 반드시 U와 직각을 이룬다._
 
 ## 문제
 거리 대신 그 제곱 $\|x-Qc\|^2$을 최소화하는 $c$를 찾는다. 제곱근보다 제곱이 미분하기 쉽고 최솟값의 위치는 똑같기 때문이다. 전개하면 $\|x-Qc\|^2 = x^Tx - 2c^TQ^Tx + c^TQ^TQc = x^Tx-2c^TQ^Tx+c^Tc$ 이다 ($Q^TQ=I$를 썼다). 이 식을 $c$로 미분해서 0으로 놓으면 $-2Q^Tx+2c = $==빈칸== 이다.

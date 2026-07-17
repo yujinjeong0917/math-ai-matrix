@@ -4,12 +4,32 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 기대제곱오차의 편향-분산 분해
-hook: 모델을 복잡하게 만들수록 학습 데이터는 더 잘 맞추지만 새로운 데이터에서는 오히려 성능이 나빠지는 경우가 많습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+모델을 복잡하게 만들수록 학습 데이터는 더 잘 맞추지만 새로운 데이터에서는 오히려 성능이 나빠지는 경우가 많습니다. 이 현상 뒤에는 기대제곱오차를 세 조각으로 쪼갤 수 있다는 사실이 숨어 있습니다. 모델이 원래 관계를 얼마나 잘못 짚는지를 나타내는 편향, 학습 데이터가 바뀔 때마다 모델이 얼마나 흔들리는지를 나타내는 분산, 그리고 데이터 자체에 원래 섞여 있어 어떤 모델로도 없앨 수 없는 잡음입니다.
+
+## 명제
 $y=f(x)+\varepsilon$ ($E[\varepsilon]=0$, $\mathrm{Var}(\varepsilon)=\sigma^2$)이고 $\hat f(x)$가 학습데이터 $D$에 의존하는 추정량일 때 $E_{D,\varepsilon}\left[(y-\hat f(x))^2\right] = \mathrm{Bias}(\hat f(x))^2 + \mathrm{Var}(\hat f(x)) + \sigma^2$이다.
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+  <line x1="60" y1="220" x2="500" y2="220" class="dg-line" stroke-width="1.4"/>
+  <line x1="60" y1="220" x2="60" y2="30" class="dg-line" stroke-width="1.4"/>
+  <text x="220" y="245" font-size="12" class="dg-dim">모델 복잡도 →</text>
+  <text x="10" y="30" font-size="11" class="dg-dim">오차</text>
+  <line x1="300" y1="220" x2="300" y2="40" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <text x="245" y="35" font-size="11" class="dg-dim">최적 복잡도</text>
+  <path d="M80,55 C220,68 320,140 480,205" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,4"/>
+  <path d="M80,205 C220,190 320,110 480,50" fill="none" class="dg-line" stroke-width="1.8" stroke-dasharray="2,4"/>
+  <path d="M80,55 C180,150 260,190 300,192 C340,190 420,150 480,60" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+  <text x="330" y="70" font-size="12" font-weight="700">총오차(실선·굵게)</text>
+  <text x="330" y="205" font-size="11">분산(파선)</text>
+  <text x="90" y="45" font-size="11">편향²(긴 파선)</text>
+</svg>
+
+_편향²(긴 파선)은 복잡도가 늘수록 줄고, 분산(파선)은 늘어난다. 둘을 더한 총오차(굵은 실선)는 U자형이며 최적점(점선)에서 최소가 된다._
 
 ## 문제
 지금 목표는 $y$를 $f(x)+\varepsilon$로 풀어써서 잡음 항을 나머지와 분리하는 것이다. $(y-\hat f)^2 = (f+\varepsilon-\hat f)^2 = (f-\hat f)^2+2\varepsilon(f-\hat f)+\varepsilon^2$으로 전개된다. $\varepsilon$은 학습 데이터 $D$와 무관하게 독립으로 생기는 잡음이고 평균이 0이므로, 교차항의 기댓값 $2E[\varepsilon]E[f-\hat f]$는 0이 되어 사라진다.

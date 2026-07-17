@@ -4,16 +4,42 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 시계열
 title: LSTM/GRU: 게이트로 장기의존성을 다루는 순환망
-hook: 기본 순환신경망은 은닉상태를 매 스텝 같은 가중치행렬로 반복해서 곱한다.
 related: TCN · 시계열 Transformer
 ---
 
-## 기본설명
+## 도입
 기본 순환신경망은 은닉상태를 매 스텝 같은 가중치행렬로 반복해서 곱한다. 이 반복곱셈이 스텝 수만큼 쌓이면 기울기가 지수적으로 작아지거나 커지는 기울기 소실 및 폭주 문제가 생긴다. 그래서 수십 스텝만 지나도 먼 과거의 정보가 학습에 거의 반영되지 못한다.
 
 LSTM은 은닉상태와 별도로 셀상태 $C_t$라는 통로를 하나 더 둔다. 이 통로는 곱셈이 아니라 덧셈으로 갱신되기 때문에 기울기가 스텝을 거슬러 올라가도 크게 줄어들지 않는다. 갱신식은 $C_t = f_t \odot C_{t-1} + i_t \odot \tilde C_t$이고 여기서 $f_t=\sigma(W_f[h_{t-1},x_t]+b_f)$는 과거를 얼마나 지울지 정하는 망각게이트, $i_t=\sigma(W_i[h_{t-1},x_t]+b_i)$는 새 정보를 얼마나 받아들일지 정하는 입력게이트, $\tilde C_t=\tanh(W_C[h_{t-1},x_t]+b_C)$는 새로 제안되는 후보값이다. 출력은 출력게이트 $o_t=\sigma(W_o[h_{t-1},x_t]+b_o)$를 거쳐 $h_t=o_t\odot\tanh(C_t)$로 만들어진다.
 
 GRU는 셀상태와 은닉상태를 하나로 합쳐 구조를 더 가볍게 만든 변형이다. 업데이트게이트 $z_t$와 리셋게이트 $r_t$만으로 $h_t=(1-z_t)\odot h_{t-1}+z_t\odot\tilde h_t$처럼 이전 상태와 새 후보 $\tilde h_t=\tanh(W[r_t\odot h_{t-1},x_t])$를 섞는다. 파라미터 수가 LSTM보다 적어 계산은 가볍지만 표현력은 대체로 비슷하다는 평가를 받는다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+      <line x1="60" y1="50" x2="580" y2="50" class="dg-stroke-accent" stroke-width="2.5" />
+      <text x="15" y="45">C(t-1)</text>
+      <text x="530" y="45">C(t)</text>
+      <circle cx="220" cy="50" r="15" fill="none" class="dg-stroke-ink" stroke-width="2" />
+      <text x="213" y="55" font-size="14">×</text>
+      <circle cx="400" cy="50" r="15" fill="none" class="dg-stroke-ink" stroke-width="2" />
+      <text x="393" y="55" font-size="14">+</text>
+      <line x1="220" y1="110" x2="220" y2="65" class="dg-line" stroke-width="1.5" />
+      <line x1="400" y1="110" x2="400" y2="65" class="dg-line" stroke-width="1.5" />
+      <rect x="150" y="110" width="340" height="55" rx="10" fill="none" class="dg-line" stroke-width="1.5" />
+      <text x="185" y="142" font-size="12">게이트: f(t) 망각 · i(t) 입력 · o(t) 출력</text>
+      <line x1="220" y1="200" x2="220" y2="165" class="dg-line" stroke-width="1.5" />
+      <line x1="400" y1="200" x2="400" y2="165" class="dg-line" stroke-width="1.5" />
+      <text x="170" y="215" class="dg-dim">입력 x(t), h(t-1)</text>
+      <line x1="580" y1="50" x2="580" y2="140" class="dg-line" stroke-width="1.5" />
+      <line x1="580" y1="140" x2="500" y2="140" class="dg-line" stroke-width="1.5" />
+      <rect x="500" y="120" width="90" height="40" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="518" y="145">h(t)</text>
+    </svg>
+
+_셀상태가 곱셈이 아닌 덧셈으로만 갱신되어 정보가 오래 남는 통로를 보여줍니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

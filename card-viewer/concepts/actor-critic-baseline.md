@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: Actor-Critic 베이스라인의 무편향성
-hook: 정책경사 REINFORCE 추정량은 그대로 쓰면 분산이 매우 큽니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+정책경사 REINFORCE 추정량은 그대로 쓰면 분산이 매우 큽니다. Actor-Critic은 가치함수를 베이스라인으로 빼서 분산을 줄이는데 그렇게 빼도 그래디언트의 기댓값 자체는 전혀 바뀌지 않습니다. 그 이유를 직접 확인해 봅니다.
+
+## 명제
 $a$에 의존하지 않는 임의의 베이스라인 $b(s)$에 대해 $E_{a\sim\pi_\theta}[\nabla_\theta\log\pi_\theta(a|s)\cdot b(s)]=0$이다. 따라서 $E[\nabla_\theta\log\pi_\theta(a|s)(Q(s,a)-b(s))] = E[\nabla_\theta\log\pi_\theta(a|s)Q(s,a)]$이다.
+
 
 ## 문제
 로그의 미분 공식 $\nabla_\theta\log\pi_\theta(a|s) = \dfrac{\nabla_\theta\pi_\theta(a|s)}{\pi_\theta(a|s)}$ 를 대입하면 앞의 $\pi_\theta(a|s)$와 분모가 약분된다. $\sum_a \pi_\theta(a|s)\cdot\dfrac{\nabla_\theta\pi_\theta(a|s)}{\pi_\theta(a|s)} = \sum_a $==빈칸== 이다.

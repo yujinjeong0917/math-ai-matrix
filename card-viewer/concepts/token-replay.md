@@ -4,11 +4,10 @@ theme: PM
 domainLabel: Process Mining
 subLabel: 검사 기법
 title: Token Replay: 로그를 모델 위에서 재생시켜 이탈 찾기
-hook: 재생 도중 네 가지를 셉니다.
 related: Alignment 기반 적합성 · Petri Net
 ---
 
-## 기본설명
+## 도입
 재생 도중 네 가지를 셉니다. 만들어진 토큰 수 $p$ 소비된 토큰 수 $c$ 트랜지션이 발화하고 싶은데 필요한 입력 플레이스가 비어 있어서 억지로 채워 넣은 토큰 수 $m$ 재생이 끝난 뒤에도 원래 있어야 할 종료 마킹이 아닌 자리에 남아 있는 토큰 수 $r$입니다. 이 네 숫자로 적합도를 계산합니다.
 
 $\mathrm{fitness} = \dfrac12\left(1 - \dfrac{m}{c}\right) + \dfrac12\left(1 - \dfrac{r}{p}\right)$
@@ -16,6 +15,37 @@ $\mathrm{fitness} = \dfrac12\left(1 - \dfrac{m}{c}\right) + \dfrac12\left(1 - \d
 앞항은 억지로 채워 넣은 토큰이 전체 소비량 대비 얼마나 되는지를 재고 뒷항은 다 쓰지 못하고 남은 토큰이 전체 생산량 대비 얼마나 되는지를 잽니다. $m=0$이고 $r=0$이면 fitness는 1이 되어 완벽하게 맞는 로그입니다.
 
 이 방법의 장점은 트레이스 하나를 처음부터 끝까지 한 번만 훑으면 되기 때문에 아주 빠르다는 점입니다. 반면 막히는 자리를 만나면 그 자리에서 최선의 설명을 찾는 게 아니라 일단 토큰부터 채워 넣고 넘어가는 탐욕적인 방식이라 병렬 구조가 많은 모델에서는 실제로는 더 그럴듯한 다른 경로가 있었는데도 놓칠 수 있습니다. 이 탐욕적 근사를 최적의 정답으로 바꾼 것이 다음에 나오는 Alignment 기반 적합성입니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="24" font-size="13" class="dg-dim">로그 &lt;a, c&gt; 재생 (b 생략)</text>
+<circle cx="50" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="84" width="50" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="115" y="105" font-size="13" text-anchor="middle">a</text>
+<line x1="64" y1="100" x2="90" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="100" x2="180" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="180" cy="100" r="14" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="180" cy="100" r="5" class="dg-accent"/>
+<text x="180" y="140" font-size="12" text-anchor="middle" class="dg-dim">남은 토큰 r=1</text>
+<line x1="194" y1="94" x2="230" y2="88" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="230" y="84" width="50" height="32" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="255" y="105" font-size="13" text-anchor="middle" class="dg-dim">b</text>
+<line x1="280" y1="88" x2="330" y2="94" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="330" cy="100" r="14" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="330" y="140" font-size="12" text-anchor="middle" class="dg-dim">강제 삽입 m=1</text>
+<line x1="344" y1="100" x2="380" y2="100" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="84" width="50" height="32" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="405" y="105" font-size="13" text-anchor="middle">c</text>
+<line x1="430" y1="100" x2="470" y2="100" class="dg-line" stroke-width="1.5"/>
+<circle cx="470" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="470" cy="100" r="5" class="dg-dim"/>
+<text x="470" y="140" font-size="12" text-anchor="middle" class="dg-dim">정상 종료 토큰</text>
+</svg>
+
+_b를 건너뛴 트레이스를 재생하면 p1에 토큰이 남고 p2에는 토큰을 억지로 채워 넣어야 한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,16 +4,30 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 가격 실험과 전환
 title: 프리미엄 전환율: 무료 사용자 중 몇 명이 결제로 넘어가는가
-hook: 정의는 단순하다. $\text{CVR}_{\text{free to paid}} = \dfrac{N_{\text{paid}}}{N_{\text{free}}}$.
 related: Gabor-Granger 방법 · A/B 가격 테스트의 함정
 ---
 
-## 기본설명
+## 도입
 정의는 단순하다. $\text{CVR}_{\text{free to paid}} = \dfrac{N_{\text{paid}}}{N_{\text{free}}}$. 여기서 분모를 어떻게 잡느냐가 실무에서 가장 중요한 함정이다. 누적 가입자 전체를 분모로 쓰면 오래전에 가입해 이미 이탈한 사용자까지 포함되어 전환율이 실제보다 낮게 보인다. 특정 기간의 활성 무료 사용자나 특정 코호트로 분모를 명확히 정의해야 서로 다른 시점의 숫자를 의미 있게 비교할 수 있다.
 
 이 지표를 올리는 레버는 크게 세 가지다. 무료 사용자 자체를 늘리는 방법은 퍼널 상단을 넓히지만 전환율 자체는 오히려 희석될 수 있다. 무료 기능의 한도를 조여 업그레이드 압박을 만드는 페이월 설계도 있다. 사용자가 제품 가치를 가장 크게 느끼는 순간, 흔히 아하 모먼트 직후에 전환 유도를 배치하는 방법도 있다.
 
 코호트 관점에서 보면 전환은 가입 즉시 한 번에 일어나기보다 시간이 지나며 누적된다. 그래서 단일 시점의 스냅샷 숫자보다 가입 후 30일, 90일 시점의 누적 전환곡선으로 보는 쪽이 더 정확한 진단을 준다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="40" width="360" height="50" class="dg-dim"/>
+<text x="240" y="70" font-size="13" text-anchor="middle">무료 사용자 10,000명</text>
+<polygon points="225,100 255,100 240,130" class="dg-dim"/>
+<rect x="150" y="140" width="180" height="50" class="dg-accent"/>
+<text x="240" y="170" font-size="13" text-anchor="middle">유료 전환 250명</text>
+<text x="240" y="215" font-size="12" text-anchor="middle">CVR = 250 / 10,000 = 2.5%</text>
+</svg>
+
+_무료 사용자 전체 중 유료로 넘어간 비율이 프리미엄 전환율이다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

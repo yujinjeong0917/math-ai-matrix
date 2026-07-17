@@ -4,12 +4,35 @@ theme: NUMERIC
 domainLabel: 수치해석 · 기하
 subLabel: 수치적 안정성
 title: 조건수와 선형시스템의 오차 민감도
-hook: 컴퓨터로 계산할 땐 아주 작은 반올림 오차가 늘 섞여요.
 related: 
 ---
 
-## 기본설명
+## 도입
+컴퓨터로 계산할 땐 아주 작은 반올림 오차가 늘 섞여요. 진짜 문제는 오차가 섞이는지 여부가 아니에요. 그 작은 오차가 계산 과정에서 얼마나 크게 부풀려지는지가 진짜 문제예요. 그 부풀림 정도를 미리 알려주는 지표가 조건수예요. 수치해석에서는 조건수가 큰 상태를 ill-conditioned라고 불러요. 이런 경우엔 선형회귀에서 $(X^TX)^{-1}$을 구하는 것처럼 이론적으로는 맞는 계산도 수치적으로 불안정해질 수 있어요.
+
+## 명제
 $Ax=b$에서 $b$에 오차 $\delta b$가 생기면 $\dfrac{\|\delta x\|}{\|x\|} \le \kappa(A)\dfrac{\|\delta b\|}{\|b\|}$, $\kappa(A)=\|A\|\|A^{-1}\|$.
+
+## 그림
+<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<text x="110" y="20" font-size="12" text-anchor="middle">단위원 (오차 δb)</text>
+<circle cx="110" cy="120" r="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="110" y1="120" x2="170" y2="120" class="dg-stroke-accent" stroke-width="2"/>
+<text x="175" y="115" font-size="10" class="dg-dim">σ₁=1</text>
+<line x1="110" y1="120" x2="110" y2="90" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<text x="115" y="85" font-size="10">σ₂=1</text>
+<line x1="200" y1="120" x2="260" y2="120" class="dg-line" stroke-width="1.5"/>
+<polygon points="260,120 248,114 248,126" class="dg-stroke-ink"/>
+<text x="205" y="105" font-size="11">A</text>
+<text x="380" y="20" font-size="12" text-anchor="middle">κ(A)=100배 증폭된 타원</text>
+<ellipse cx="380" cy="120" rx="60" ry="4" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="390" y="112" font-size="10" class="dg-dim">장축 60 (κ배 증폭)</text>
+<line x1="380" y1="120" x2="380" y2="116" class="dg-line" stroke-width="1.5" stroke-dasharray="2,2"/>
+<text x="330" y="150" font-size="10">단축 극도로 얇음 (σ₂=0.01)</text>
+<text x="60" y="200" font-size="11">‖δx‖/‖x‖ ≤ κ(A)·‖δb‖/‖b‖ = 100 × 상대오차</text>
+</svg>
+
+_단위원이 A를 거치며 극도로 납작한 타원이 되면 오차가 특이값 비율 κ(A)만큼 증폭된다._
 
 ## 문제
 둘 사이의 관계를 보려면 원래 식을 빼서 순수하게 오차끼리의 관계만 남기는 게 자연스러운 다음 수입니다. $A(x+\delta x)=b+\delta b$에서 원래 식 $Ax=b$를 빼면 $A\delta x=\delta b$가 남습니다. 여기서 양변에 $A^{-1}$을 곱하면 $\delta x = $==빈칸== 입니다.

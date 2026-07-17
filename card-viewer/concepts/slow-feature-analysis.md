@@ -4,12 +4,28 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: Slow Feature Analysis: 느림 목적함수의 일반화 고유값문제 환원
-hook: 센서로 들어오는 원시 신호는 빠르게 요동치지만, 그 신호가 나타내는 "의미"(예: 물체의 위치)는 보통 천천히 변합니다.
 related: 판별분석(LDA)
 ---
 
-## 기본설명
+## 도입
+센서로 들어오는 원시 신호는 빠르게 요동치지만, 그 신호가 나타내는 "의미"(예: 물체의 위치)는 보통 천천히 변합니다. Slow Feature Analysis(SFA)는 원시 신호로부터 가장 느리게 변하는 성분을 뽑아내는 방법입니다. 목적함수만 보면 새로워 보이지만, 이 문제도 결국 일반화 고유값문제로 환원됩니다.
+
+## 명제
 시계열 $x(t)\in\mathbb{R}^d$가 평균 0이라 하고 $C=\langle x(t)x(t)^T\rangle_t$, $\dot C=\langle \dot x(t)\dot x(t)^T\rangle_t$ (여기서 $\dot x(t)=x(t+1)-x(t)$)라 하자. 선형특징 $y(t)=w^Tx(t)$에 대해 단위분산 제약 $w^TCw=1$ 하에서 시간적 변화율의 분산 $\langle \dot y(t)^2\rangle_t=w^T\dot Cw$를 최소화하는 $w$는 일반화 고유값문제 $\dot Cw=\lambda Cw$의 최소 고유값에 대응하는 고유벡터이며, 서로 다른 고유값에 대응하는 고유벡터들은 $w_i^TCw_j=0$을 만족해 자동으로 비상관 제약도 충족한다.
+
+## 그림
+<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="55" x2="450" y2="55" class="dg-dim" stroke-width="1"/>
+<path d="M 30,55 Q 45,25 60,55 Q 75,85 90,55 Q 105,25 120,55 Q 135,85 150,55 Q 165,25 180,55 Q 195,85 210,55 Q 225,25 240,55 Q 255,85 270,55 Q 285,25 300,55 Q 315,85 330,55 Q 345,25 360,55 Q 375,85 390,55 Q 405,25 420,55 Q 435,85 450,55" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<text x="35" y="30" font-size="12">원신호 x(t): 빠르게 진동</text>
+<line x1="30" y1="150" x2="450" y2="150" class="dg-dim" stroke-width="1"/>
+<path d="M 30,150 Q 130,110 240,150 Q 350,190 450,150" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="35" y="180" font-size="12">추출된 특징 y(t): 천천히 변화</text>
+<line x1="240" y1="20" x2="240" y2="185" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="245" y="15" font-size="10" class="dg-dim">시간 t →</text>
+</svg>
+
+_빠르게 진동하는 원신호와 그로부터 추출된 천천히 변하는 특징을 같은 시간축 위에서 비교한다._
 
 ## 문제
 라그랑지안은 $L(w,\lambda)=w^T\dot Cw-\lambda(w^TCw-1)$이다. $w$에 대해 미분하여 0으로 놓으면 $2\dot Cw-2\lambda Cw=$==빈칸== 이다.

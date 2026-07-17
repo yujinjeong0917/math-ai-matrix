@@ -4,12 +4,15 @@ theme: NUM2
 domainLabel: 수치해석 심화
 subLabel: 직접법
 title: QR분해와 최소제곱: 정규방정식 없이 풀기
-hook: 관측이 많고 미지수가 적은 과결정계 $Ax=b$($A\in\mathbb{R}^{m\times n}$, $m>n$)는 보통 정확히 풀 수 없어서 잔차 $\|Ax-b\|$를 최소화하는 $x$를 찾습니다.
 related: 그람-슈미트 정규직교화
 ---
 
-## 기본설명
+## 도입
+관측이 많고 미지수가 적은 과결정계 $Ax=b$($A\in\mathbb{R}^{m\times n}$, $m>n$)는 보통 정확히 풀 수 없어서 잔차 $\|Ax-b\|$를 최소화하는 $x$를 찾습니다. 정규방정식 $A^TAx=A^Tb$를 직접 풀 수도 있지만 $A^TA$를 계산하면 조건수가 제곱이 되어 수치적으로 불안정해집니다. gram-schmidt로 $A$의 열을 정규직교화하면 이 문제를 더 안정적으로 풀 수 있습니다.
+
+## 명제
 열이 일차독립인 $A\in\mathbb{R}^{m\times n}$($m\ge n$)은 $A=QR$로 분해된다. 여기서 $Q\in\mathbb{R}^{m\times n}$은 정규직교열을 갖고 $R\in\mathbb{R}^{n\times n}$은 대각성분이 양수인 상삼각행렬이다. 이때 최소제곱해는 $Rx=Q^Tb$를 풀어 얻어진다.
+
 
 ## 문제
 $Q$의 열들이 span하는 공간과 수직인 방향들을 추가로 뽑아 $Q_\perp\in\mathbb{R}^{m\times(m-n)}$을 만들면 $\hat Q=[Q\ Q_\perp]\in\mathbb{R}^{m\times m}$은 정사각 직교행렬이다. 직교행렬을 곱해도 노름은 변하지 않으므로 임의의 벡터 $v$에 대해 $\|\hat Q^Tv\|=$==빈칸== 이다. 따라서 $\|Ax-b\|=\|\hat Q^T(Ax-b)\|$이다.

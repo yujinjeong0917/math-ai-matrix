@@ -4,12 +4,27 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: 라플라스 근사: 사후분포의 국소 가우시안화
-hook: 사후분포 $p(\theta\mid D)$의 정확한 형태를 구하려면 정규화 상수 $Z=\int p(D\mid\theta)p(\theta)\,d\theta$까지 계산해야 하는데, 이 적분이 닫힌 형태로 안 풀리는 경우가 대부분입니다.
 related: 베이지안 선형회귀 사후분포
 ---
 
-## 기본설명
+## 도입
+사후분포 $p(\theta\mid D)$의 정확한 형태를 구하려면 정규화 상수 $Z=\int p(D\mid\theta)p(\theta)\,d\theta$까지 계산해야 하는데, 이 적분이 닫힌 형태로 안 풀리는 경우가 대부분입니다. 그런데 사후분포가 하나의 뾰족한 봉우리(최빈값) 주변에 몰려 있다면, 그 봉우리 모양을 2차식으로 흉내 내는 것만으로도 꽤 좋은 근사를 얻을 수 있어요. 로그를 취한 곡선을 최빈값에서 2차 테일러 전개하면 정확히 가우시안의 지수부 모양이 나오기 때문입니다.
+
+## 명제
 $\pi(\theta)=p(D\mid\theta)p(\theta)$를 정규화 전 사후밀도라 하고, $\theta^*=\arg\max_\theta \pi(\theta)$가 정의역 내부의 정상점(임계점)이라 하자. $H=-\nabla^2\log\pi(\theta^*)$(로그밀도의 음의 헤시안, $\theta^*$가 최댓값이므로 양의정부호)라 하면, $\pi(\theta)\approx \pi(\theta^*)\exp\!\big(-\tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)\big)$이고 따라서 $p(\theta\mid D)\approx\mathcal N(\theta^*,\,H^{-1})$이며 정규화 상수는 $Z\approx \pi(\theta^*)(2\pi)^{d/2}|H|^{-1/2}$로 근사된다.
+
+## 그림
+<svg viewBox="0 0 440 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="35" y1="180" x2="420" y2="180" class="dg-line" stroke-width="1"/>
+<line x1="220" y1="180" x2="220" y2="40" class="dg-dim" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="226" y="196" font-size="11" class="dg-dim">θ*(최빈값)</text>
+<path d="M70,180 C120,60 180,40 220,40 C260,40 340,80 400,175" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M140,178 Q220,40 300,178" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="60" y="55" font-size="12">실제 사후분포(비대칭, 실선)</text>
+<text x="255" y="100" font-size="12" class="dg-dim">라플라스 근사(대칭 가우시안, 점선)</text>
+</svg>
+
+_뾰족한 실제 사후분포(실선)를 최빈값 $\theta^*$에서 2차 테일러 전개한 대칭 가우시안(점선)으로 근사한다. 꼬리의 비대칭은 근사에서 사라진다._
 
 ## 문제
 $\log\pi(\theta)$를 $\theta^*$ 주변에서 2차까지 테일러 전개하면 $\log\pi(\theta)\approx \log\pi(\theta^*) + \nabla\log\pi(\theta^*)^T(\theta-\theta^*) - \tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$인데, 정상점 조건에 의해 1차항은 $==빈칸==$이다.

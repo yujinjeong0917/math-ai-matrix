@@ -4,16 +4,57 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: CNN 백본 계보
 title: LeNet/AlexNet: 합성곱 신경망의 출발점
-hook: LeNet-5는 1998년 얀 르쿤이 우편번호 숫자 인식을 위해 설계한 구조다.
 related: ResNet · EfficientNet
 ---
 
-## 기본설명
+## 도입
 LeNet-5는 1998년 얀 르쿤이 우편번호 숫자 인식을 위해 설계한 구조다. 합성곱층과 풀링층을 번갈아 쌓고 마지막에 완전연결층을 붙이는 지금도 익숙한 골격을 처음 제시했다. 활성함수로는 시그모이드나 tanh를 썼고 층 수도 몇 개 되지 않는 작은 네트워크였다.
 
 AlexNet은 2012년 이미지넷 대회에서 기존의 손으로 설계한 특징 추출 방식을 큰 차이로 이기면서 딥러닝이 컴퓨터비전의 주류가 되는 계기를 만들었다. LeNet과 기본 골격은 비슷하지만 층을 훨씬 깊고 넓게 쌓았고 시그모이드 대신 학습이 훨씬 빠른 ReLU 활성함수를 썼다. 또 과적합을 막기 위해 드롭아웃을 도입했고 GPU 두 대를 병렬로 써서 그 정도 규모의 네트워크를 현실적인 시간 안에 학습시켰다.
 
 두 모델이 공통으로 보여준 교훈은 이미지를 다루는 데는 필터를 지역적으로 공유하는 구조가 유리하다는 것과 데이터와 연산량이 충분히 커지면 신경망이 사람이 손으로 설계한 특징보다 더 나은 특징을 스스로 찾아낸다는 것이다. 이 두 교훈이 이후 이어지는 모든 CNN 백본 설계의 출발점이 됐다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="20" font-size="13">LeNet-5 계층별 크기 변화</text>
+<rect x="10" y="80" width="60" height="100" class="dg-dim"/>
+<rect x="90" y="86" width="60" height="88" class="dg-dim"/>
+<rect x="170" y="100" width="60" height="60" class="dg-dim"/>
+<rect x="250" y="107" width="60" height="46" class="dg-dim"/>
+<rect x="330" y="115" width="60" height="30" class="dg-dim"/>
+<rect x="420" y="95" width="20" height="70" class="dg-dim"/>
+<rect x="500" y="105" width="20" height="50" class="dg-dim"/>
+<rect x="580" y="120" width="20" height="20" class="dg-accent"/>
+<line x1="70" y1="130" x2="90" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="150" y1="130" x2="170" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="230" y1="130" x2="250" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="310" y1="130" x2="330" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="390" y1="130" x2="420" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="440" y1="130" x2="500" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="520" y1="130" x2="580" y2="130" class="dg-line" stroke-width="1.5"/>
+<text x="40" y="45" font-size="12" text-anchor="middle">입력</text>
+<text x="120" y="45" font-size="12" text-anchor="middle">합성곱1</text>
+<text x="200" y="45" font-size="12" text-anchor="middle">풀링1</text>
+<text x="280" y="45" font-size="12" text-anchor="middle">합성곱2</text>
+<text x="360" y="45" font-size="12" text-anchor="middle">풀링2</text>
+<text x="430" y="45" font-size="12" text-anchor="middle">완전연결1</text>
+<text x="510" y="45" font-size="12" text-anchor="middle">완전연결2</text>
+<text x="590" y="45" font-size="12" text-anchor="middle">출력</text>
+<text x="40" y="205" font-size="12" text-anchor="middle">32x32x1</text>
+<text x="120" y="205" font-size="12" text-anchor="middle">28x28x6</text>
+<text x="200" y="205" font-size="12" text-anchor="middle">14x14x6</text>
+<text x="280" y="205" font-size="12" text-anchor="middle">10x10x16</text>
+<text x="360" y="205" font-size="12" text-anchor="middle">5x5x16</text>
+<text x="430" y="205" font-size="12" text-anchor="middle">400 to 120</text>
+<text x="510" y="205" font-size="12" text-anchor="middle">120 to 84</text>
+<text x="590" y="205" font-size="12" text-anchor="middle">84 to 10</text>
+<text x="10" y="230" font-size="12" class="dg-dim">out = floor((W-F+2P)/S) + 1</text>
+</svg>
+
+_합성곱과 풀링을 거칠 때마다 공간 크기가 줄고 마지막에는 완전연결층으로 이어집니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

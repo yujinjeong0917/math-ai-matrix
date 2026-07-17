@@ -4,12 +4,15 @@ theme: INFO
 domainLabel: 정보이론
 subLabel: 발산 · 상호정보
 title: VAE KL 정규화항의 닫힌 형태와 사후붕괴
-hook: VAE의 ELBO에는 $D_{KL}(q(z|x)\|p(z))$라는 정규화항이 들어갑니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+VAE의 ELBO에는 $D_{KL}(q(z|x)\|p(z))$라는 정규화항이 들어갑니다. $q,p$가 모두 가우시안이면 이 항은 적분 없이 깔끔한 닫힌 형태로 정확히 계산됩니다. 그 식을 직접 유도해보면, 이 정규화항이 $q(z|x)$를 사전분포 $p(z)$ 쪽으로 끌어당기는 힘이라는 것과, 그 끌림이 극단으로 가면 무슨 일이 벌어지는지가 수식으로 드러납니다.
+
+## 명제
 $q(z|x)=N(\mu,\sigma^2)$, $p(z)=N(0,1)$ (1차원)일 때 $D_{KL}(q\|p) = \dfrac12\left(\mu^2+\sigma^2-\log\sigma^2-1\right)$ 이다.
+
 
 ## 문제
 두 로그밀도를 각각 적어봅니다. $\log q(z) = -\frac12\log(2\pi\sigma^2) - \dfrac{(z-\mu)^2}{2\sigma^2}$ 이고 $\log p(z) = -\frac12\log(2\pi) - \dfrac{z^2}{2}$ 입니다. 두 식을 빼면 공통으로 들어있는 $-\frac12\log(2\pi)$가 상쇄됩니다.

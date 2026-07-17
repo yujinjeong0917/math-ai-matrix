@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 어텐션 · 그래디언트 기반
 title: Integrated Gradients(텍스트): 토큰 임베딩까지 경로적분 확장하기
-hook: 기준 임베딩 $x'$(흔히 [PAD] 토큰의 임베딩이나 영벡터를 쓴다)에서 실제 임베딩 $x$까지 직선 경로를 따라가며 각 지점의 그래디언트를 적분한다.
 related: Attention 설명의 한계 · LIME for Text
 ---
 
-## 기본설명
+## 도입
 기준 임베딩 $x'$(흔히 [PAD] 토큰의 임베딩이나 영벡터를 쓴다)에서 실제 임베딩 $x$까지 직선 경로를 따라가며 각 지점의 그래디언트를 적분한다.
 
 $IG_i(x) = (x_i - x_i') \displaystyle\int_{0}^{1} \frac{\partial f\big(x' + \alpha (x-x')\big)}{\partial x_i}\, d\alpha$
@@ -20,6 +19,38 @@ $IG_i(x) \approx (x_i - x_i') \cdot \dfrac{1}{m}\displaystyle\sum_{k=1}^{m} \fra
 단일 지점의 그래디언트를 쓰는 Saliency Map은 계산이 가볍지만 포화 구간에서 중요한 특징을 놓치는 문제가 있었다. Integrated Gradients는 경로 전체의 그래디언트를 누적하기 때문에 중간에 포화 구간을 지나더라도 그 앞뒤 구간에서 쌓인 신호가 반영된다. 또한 모든 특징의 기여도 합이 $f(x)-f(x')$와 정확히 같아지는 완전성(completeness) 공리를 만족하는데 단순 그래디언트나 일부 다른 방법들은 이 성질을 보장하지 못한다.
 
 텍스트에 적용할 때 특유의 문제도 있다. 임베딩은 벡터라서 차원별 기여도를 다시 단어 하나의 점수로 합치는 과정(합산이나 노름을 취하는 방식)이 필요하고 기준 임베딩을 무엇으로 잡느냐에 따라 결과가 꽤 달라진다. [PAD] 임베딩을 쓸지 영벡터를 쓸지에 따라 같은 문장도 다른 기여도가 나올 수 있다는 점은 이 방법의 실무적인 약점으로 꼽힌다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="140" x2="560" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="60" cy="140" r="6" class="dg-dim" stroke="none"/>
+<text x="60" y="118" font-size="12" text-anchor="middle">x'(기준)</text>
+<text x="60" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0</text>
+<circle cx="185" cy="140" r="4" class="dg-dim" stroke="none"/>
+<text x="185" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0.25</text>
+<circle cx="310" cy="140" r="4" class="dg-dim" stroke="none"/>
+<text x="310" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0.5</text>
+<circle cx="435" cy="140" r="4" class="dg-dim" stroke="none"/>
+<text x="435" y="164" font-size="11" text-anchor="middle" class="dg-dim">α=0.75</text>
+<circle cx="560" cy="140" r="6" class="dg-accent" stroke="none"/>
+<text x="560" y="118" font-size="12" text-anchor="middle">x(실제)</text>
+<text x="560" y="164" font-size="11" text-anchor="middle">α=1</text>
+<rect x="179" y="114" width="12" height="16" class="dg-dim"/>
+<rect x="304" y="106" width="12" height="24" class="dg-dim"/>
+<rect x="429" y="98" width="12" height="32" class="dg-dim"/>
+<rect x="554" y="90" width="12" height="40" class="dg-accent"/>
+<text x="185" y="99" font-size="10" text-anchor="middle">0.10</text>
+<text x="310" y="91" font-size="10" text-anchor="middle">0.15</text>
+<text x="435" y="83" font-size="10" text-anchor="middle">0.20</text>
+<text x="560" y="75" font-size="10" text-anchor="middle">0.25</text>
+<rect x="140" y="180" width="360" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="320" y="200" font-size="12" text-anchor="middle">각 지점의 그래디언트를 적분해 토큰 기여도로 합산</text>
+</svg>
+
+_기준 임베딩부터 실제 임베딩까지 경로를 따라가며 그래디언트를 적분해 토큰 기여도를 계산한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

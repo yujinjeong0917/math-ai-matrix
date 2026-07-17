@@ -4,16 +4,32 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 마케팅 어트리뷰션
 title: 샤플리 기반 어트리뷰션: 채널마다 진짜 기여만큼 나눠 갖기
-hook: 채널 전체 집합을 $N$이라 하고 부분집합 $S \subseteq N$에 대해 그 채널 조합에만 노출됐을 때의 전환 성과를 $v(S)$라 정의한다.
 related: 라스트클릭 어트리뷰션 · MMM
 ---
 
-## 기본설명
+## 도입
 채널 전체 집합을 $N$이라 하고 부분집합 $S \subseteq N$에 대해 그 채널 조합에만 노출됐을 때의 전환 성과를 $v(S)$라 정의한다. 채널 $i$의 샤플리 값은 다음과 같다.
 $$\phi_i = \sum_{S \subseteq N \setminus \{i\}} \frac{|S|!\,(|N|-|S|-1)!}{|N|!}\Big[v(S\cup\{i\}) - v(S)\Big]$$
 이 식은 채널 $i$가 여러 채널이 순서대로 추가되는 모든 경우의 수에서 만들어내는 한계기여도 $v(S\cup\{i\}) - v(S)$를 그 순서가 나타날 확률로 가중평균한 값이다. 샤플리 값은 전체 전환 성과가 채널별 몫의 합과 정확히 일치하고 동일하게 기여하는 채널은 동일한 몫을 받으며 아무 기여도 없는 채널은 정확히 0을 받는다는 공정성 조건을 모두 만족하는 유일한 배분 방식이라는 게 증명돼 있다. 시간대별 가중치나 위치 기반 규칙처럼 임의로 정한 어트리뷰션 방식은 이런 공정성을 동시에 보장하지 못한다.
 
 실무에서 걸리는 문제는 계산량이다. 채널이 $|N|$개면 부분집합이 $2^{|N|}$개가 되어 채널 수가 15개나 20개를 넘어가면 정확한 계산이 사실상 불가능해진다. 그래서 실제로는 핵심 채널 몇 개로 범위를 좁히거나 순서 조합을 몬테카를로로 샘플링해서 근사하는 방식을 쓴다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="220" cy="130" r="100" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="340" cy="130" r="100" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="150" y="80" font-size="12">검색</text>
+<text x="410" y="80" font-size="12">소셜</text>
+<text x="280" y="130" font-size="12" text-anchor="middle">함께 노출</text>
+<text x="130" y="230" font-size="11" class="dg-dim">v(검색)=40</text>
+<text x="430" y="230" font-size="11" class="dg-dim">v(소셜)=20</text>
+<text x="280" y="20" font-size="12" text-anchor="middle">v(검색,소셜)=70</text>
+</svg>
+
+_두 채널이 함께 만든 전환을 등장 순서별 한계기여도 평균으로 공정하게 나눈다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,16 +4,41 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 고객 등급화
 title: RFM 분석: 최근성, 빈도, 금액으로 고객 등급 매기기
-hook: 계산 방식은 단순하다.
 related: 행동 기반 세그멘테이션 · 코호트 삼각형
 ---
 
-## 기본설명
+## 도입
 계산 방식은 단순하다. 전체 고객을 R, F, M 각 기준으로 정렬한 뒤 다섯 구간으로 나누고 각 구간에 1점부터 5점까지 부여한다. 세 점수를 나란히 붙여 하나의 코드로 표현하면 그 자체가 고객 등급이 된다. 고객 수가 적어 다섯 구간으로 나누기 어려울 때는 정렬 대신 미리 정한 절대 기준값으로 점수를 매기기도 한다. $R, F, M \in \{1,2,3,4,5\}$ 범위 안에서 조합이 정해지므로 최대 125개의 세그먼트가 나올 수 있지만 실무에서는 보통 5에서 10개 등급으로 묶어서 쓴다.
 
 정교한 클러스터링 모델이 얼마든지 있는데도 RFM이 지금도 널리 쓰이는 이유는 단순함 자체가 강점이기 때문이다. 계산이 가볍고 결과를 숫자 세 개로 설명할 수 있어 마케팅팀이 별도 분석 없이 바로 실행에 옮길 수 있다. 반면 행동 기반 세그멘테이션처럼 사용 패턴을 통째로 학습하는 방식은 정확도는 높지만 왜 그 세그먼트로 묶였는지 설명하기 어렵고 재계산 비용도 크다.
 
 다만 RFM은 세 축이 서로 독립이라고 가정하고 점수를 매기기 때문에 한계가 있다. 오랜만에 한 번 크게 결제한 고객처럼 최근성과 금액이 반대로 움직이는 고객을 제대로 구분하지 못한다. 이런 고객의 진짜 행동 동기를 파악하려면 행동 기반 세그멘테이션처럼 더 세밀한 축을 봐야 한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="20" font-size="12">한 고객의 RFM 점수 프로파일</text>
+<line x1="130" y1="35" x2="130" y2="165" class="dg-line" stroke-width="1.5"/>
+<line x1="130" y1="165" x2="410" y2="165" class="dg-line" stroke-width="1.5"/>
+<text x="10" y="55" font-size="12">R 최근성</text>
+<rect x="132" y="42" width="280" height="22" class="dg-accent"/>
+<text x="418" y="58" font-size="12">5/5</text>
+<text x="10" y="100" font-size="12">F 빈도</text>
+<rect x="132" y="87" width="168" height="22" class="dg-dim"/>
+<text x="306" y="103" font-size="12">3/5</text>
+<text x="10" y="145" font-size="12">M 금액</text>
+<rect x="132" y="132" width="224" height="22" class="dg-dim"/>
+<text x="362" y="148" font-size="12">4/5</text>
+<text x="132" y="180" font-size="11" class="dg-dim">1</text>
+<text x="188" y="180" font-size="11" class="dg-dim">2</text>
+<text x="244" y="180" font-size="11" class="dg-dim">3</text>
+<text x="300" y="180" font-size="11" class="dg-dim">4</text>
+<text x="356" y="180" font-size="11" class="dg-dim">5</text>
+</svg>
+
+_고객 한 명의 R, F, M 세 점수를 나란히 놓으면 등급이 한눈에 드러난다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

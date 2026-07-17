@@ -4,16 +4,38 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 3D · 포인트클라우드
 title: PointNet: 순서 없는 점군을 다루는 대칭함수
-hook: 점군은 $n$개의 점 $\{p_1,\dots,p_n\}$의 집합이고 원칙적으로 순서가 없는 자료구조다.
 related: 복셀 기반 3D CNN · NeRF
 ---
 
-## 기본설명
+## 도입
 점군은 $n$개의 점 $\{p_1,\dots,p_n\}$의 집합이고 원칙적으로 순서가 없는 자료구조다. 어떤 함수 $f$가 점군을 처리해서 하나의 벡터를 내놓는다고 할 때, 입력 순서를 어떻게 뒤섞어도 $f$의 출력이 그대로 유지되어야 한다는 성질을 순열불변성이라 한다. PointNet은 이 성질을 만족하는 함수를 $f(\{p_1,\dots,p_n\}) \approx \gamma\left(\max_{i=1,\dots,n} h(p_i)\right)$ 형태로 구성한다. $h$는 점 하나하나에 독립적으로 적용되는 공유 MLP이고 $\max$는 각 채널별로 모든 점에 걸쳐 최댓값을 취하는 대칭함수, $\gamma$는 그 뒤에 이어지는 또 다른 MLP다. 점마다 같은 $h$를 적용하고(파라미터 공유) 그 결과를 대칭함수로 모으기 때문에 점 순서가 어떻게 바뀌어도 같은 값이 나온다.
 
 $h$가 각 점을 고차원 특징으로 변환하고 나면 max pooling이 채널마다 가장 강하게 반응한 점 하나씩을 골라 전역특징 벡터로 요약한다. 이 벡터 하나가 점군 전체를 대표하는 표현이 되어 분류 헤드로 넘어간다. 점별 분할(세그멘테이션)을 하려면 이 전역특징을 각 점의 지역특징과 다시 이어붙여서 점마다 예측을 내놓는다.
 
 여기에 더해 PointNet은 점군이 회전하거나 이동해도 같은 결과를 내도록 돕는 T-Net이라는 작은 서브네트워크를 둔다. 입력 점군과 중간 특징에 각각 학습된 아핀변환 행렬을 곱해서 정렬을 맞추는 역할이다. CNN이 격자 구조의 지역성과 이동불변성을 전제로 설계된 것과 달리 PointNet은 점군이라는 비정형 자료구조에 맞춰 순열불변성을 구조적으로 보장하는 방식을 택했고, 이후 3D 점군을 다루는 딥러닝 모델들의 기본 틀이 되었다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="40" r="4" class="dg-accent"/>
+<circle cx="60" cy="90" r="4" class="dg-accent"/>
+<circle cx="35" cy="140" r="4" class="dg-accent"/>
+<circle cx="80" cy="60" r="4" class="dg-accent"/>
+<circle cx="70" cy="130" r="4" class="dg-accent"/>
+<text x="15" y="20" font-size="12">순서 없는 점들</text>
+<line x1="90" y1="90" x2="150" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="150" y="60" width="110" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="205" y="95" font-size="12" text-anchor="middle">공유 MLP h(p)</text>
+<line x1="260" y1="90" x2="320" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="320" y="60" width="90" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="365" y="95" font-size="12" text-anchor="middle">max pool</text>
+<line x1="410" y1="90" x2="470" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="480" y="95" font-size="12">전역특징</text>
+</svg>
+
+_점마다 같은 MLP를 적용한 뒤 최댓값으로 모으면 순서에 무관한 표현이 된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

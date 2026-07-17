@@ -4,16 +4,36 @@ theme: LLM
 domainLabel: LLM/Agent
 subLabel: 파라미터효율 튜닝(PEFT)
 title: QLoRA: 4비트로 양자화한 모델 위에 LoRA 얹기
-hook: QLoRA는 기본 모델의 가중치를 NF4(4비트 NormalFloat)라는 자료형으로 양자화해 저장한다.
 related: LoRA · GPTQ/AWQ · Adapter
 ---
 
-## 기본설명
+## 도입
 QLoRA는 기본 모델의 가중치를 NF4(4비트 NormalFloat)라는 자료형으로 양자화해 저장한다. 사전학습된 가중치는 대체로 정규분포를 따른다는 사실을 이용해 값이 몰리는 구간에 더 많은 표현 구간을 배분한 4비트 자료형으로 기존 INT4보다 오차를 줄인다. 순전파와 역전파 때는 이 4비트 가중치를 필요한 순간에만 bf16으로 복원해 계산하고 그래디언트는 원본 가중치가 아니라 그 위에 얹은 LoRA 어댑터로만 흘려보낸다.
 
 여기에 이중 양자화(double quantization)를 더해 양자화 과정에서 생기는 스케일 상수 자체도 다시 양자화해서 저장 공간을 한 번 더 줄인다. 또한 시퀀스 길이가 갑자기 길어져 메모리 사용량이 순간적으로 치솟는 경우를 대비해 옵티마이저 상태를 CPU와 GPU 사이에 페이지 단위로 옮겨두는 페이지드 옵티마이저를 함께 쓴다. 이 덕분에 순간적인 메모리 스파이크로 학습이 중단되는 문제를 피할 수 있다.
 
 결과적으로 QLoRA는 LoRA가 줄이지 못했던 기본 모델의 메모리 점유를 4비트 압축으로 추가로 줄이면서도 성능 저하는 거의 없다는 점을 보였다. 700억 개 파라미터급 모델도 단일 GPU 한 장에서 파인튜닝할 수 있게 된 것이 QLoRA가 실제로 가져온 변화다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="35" font-size="13">LoRA</text>
+<rect x="100" y="15" width="260" height="44" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="230" y="42" text-anchor="middle" font-size="12">기본 모델 fp16/bf16 그대로 상주</text>
+<rect x="380" y="15" width="140" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="450" y="42" text-anchor="middle" font-size="12">LoRA 어댑터</text>
+
+<text x="20" y="145" font-size="13">QLoRA</text>
+<rect x="100" y="120" width="150" height="44" class="dg-dim" stroke="none"/>
+<text x="175" y="147" text-anchor="middle" font-size="12">기본 모델 4bit NF4</text>
+<rect x="270" y="120" width="140" height="44" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="340" y="147" text-anchor="middle" font-size="12">LoRA 어댑터 bf16</text>
+<text x="440" y="147" font-size="12" class="dg-dim">메모리 점유 대폭 감소</text>
+</svg>
+
+_QLoRA는 기본 모델을 4비트로 압축해 상주시키고 학습 가능한 LoRA 어댑터만 bf16으로 둔다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

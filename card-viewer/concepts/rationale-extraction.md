@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 반사실 · 생성 기반
 title: Rationale Extraction: 예측을 정당화하는 최소 문장 찾기
-hook: 일반적인 구현은 선택기(selector)와 예측기(predictor) 두 부분을 함께 학습한다.
 related: 반사실 텍스트 생성 · Attention 설명의 한계
 ---
 
-## 기본설명
+## 도입
 일반적인 구현은 선택기(selector)와 예측기(predictor) 두 부분을 함께 학습한다. 선택기는 문장에서 어떤 토큰을 남길지 나타내는 이진마스크 $z \in \{0,1\}^T$를 만들고 예측기는 마스크로 걸러진 토큰 $z \odot x$만 보고 원래와 같은 라벨을 맞혀야 한다. 마스크는 이산값이라 그대로는 미분할 수 없어서 강화학습이나 Gumbel-softmax 같은 연속 완화 기법으로 학습을 흘려보낸다.
 
 $\min_{\theta} \; \mathbb{E}\big[\mathcal{L}(y, \mathrm{pred}(z \odot x))\big] + \lambda_1 \|z\|_1 + \lambda_2 \sum_t |z_t - z_{t-1}|$
@@ -16,6 +15,10 @@ $\min_{\theta} \; \mathbb{E}\big[\mathcal{L}(y, \mathrm{pred}(z \odot x))\big] +
 손실은 세 가지를 동시에 추구한다. 예측기가 rationale만 보고도 정답을 맞히는 것, rationale이 너무 길어지지 않도록 하는 희소성 항, 그리고 토큰이 띄엄띄엄 흩어지지 않고 이어진 구간으로 뽑히도록 하는 연속성 항이다. 마지막 항이 있어야 "각본이", "산만해서"처럼 문맥 없이 튀는 단어 조합이 아니라 사람이 읽을 수 있는 하나의 구절이 뽑힌다.
 
 이 방법이 채우는 빈틈은 두 가지다. LIME이나 어텐션, 그래디언트 기반 방법은 중요도 점수를 주지만 그 점수가 높은 부분만 모델에 다시 넣었을 때 실제로 같은 예측이 나오는지는 보장하지 않는다. rationale extraction은 애초에 예측기가 rationale만 보고 학습되기 때문에 이 충분조건이 훈련 목표 안에 이미 들어가 있다. 사후에 근거를 추측하는 다른 방법들과 달리 rationale은 모델이 실제로 사용한 정보 그 자체이므로 원리적으로 더 충실한 설명이 된다.
+
+## 명제
+
+
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

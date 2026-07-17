@@ -4,12 +4,38 @@ theme: LINALG
 domainLabel: 선형대수
 subLabel: 고유값 · 분해
 title: 벨만 최적 연산자의 축소사상과 Q-테이블 수렴
-hook: 강화학습에서 각 상태와 행동의 짝마다 값을 하나씩 저장한 표가 Q-테이블입니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+강화학습에서 각 상태와 행동의 짝마다 값을 하나씩 저장한 표가 Q-테이블입니다. 크기는 상태 수 곱하기 행동 수인 $|S|\times|A|$입니다. 가치반복이나 Q-러닝은 이 표 전체에 벨만 최적 연산자를 반복해서 적용하며 값을 갱신합니다. 임의의 표에서 시작해서 이 갱신을 계속 반복하면 정말 정답인 표로 수렴할까요. 그 답은 이 연산자가 축소사상이라는 사실에서 나옵니다. 두 표 사이의 거리가 매번 최소한 $\gamma$배로 줄어든다는 뜻입니다.
+
+## 명제
 벨만 최적 연산자 $(TQ)(s,a)=R(s,a)+\gamma\sum_{s'}P(s'|s,a)\max_{a'}Q(s',a')$는 $\|TQ_1-TQ_2\|_\infty \le \gamma\|Q_1-Q_2\|_\infty$를 만족하는 축소사상이다.
+
+## 그림
+<svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="20" x2="40" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="190" x2="440" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="450" y="194" font-size="11" class="dg-dim">Q*(고정점)</text>
+<text x="10" y="18" font-size="11" class="dg-dim">‖Qₖ-Q*‖</text>
+<path d="M70,30 L160,94 L250,132 L340,155 L430,169" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="70" cy="30" r="5" class="dg-accent"/>
+<circle cx="160" cy="94" r="5" class="dg-accent"/>
+<circle cx="250" cy="132" r="5" class="dg-accent"/>
+<circle cx="340" cy="155" r="5" class="dg-accent"/>
+<circle cx="430" cy="169" r="5" class="dg-accent"/>
+<text x="70" y="205" font-size="11" text-anchor="middle">Q₀</text>
+<text x="160" y="205" font-size="11" text-anchor="middle">TQ₀</text>
+<text x="250" y="205" font-size="11" text-anchor="middle">T²Q₀</text>
+<text x="340" y="205" font-size="11" text-anchor="middle">T³Q₀</text>
+<text x="430" y="205" font-size="11" text-anchor="middle">T⁴Q₀</text>
+<text x="115" y="55" font-size="11" class="dg-dim">≤γ배</text>
+<text x="205" y="105" font-size="11" class="dg-dim">≤γ배</text>
+<text x="295" y="135" font-size="11" class="dg-dim">≤γ배</text>
+</svg>
+
+_벨만 최적 연산자를 반복 적용할 때마다 임의의 Q-테이블과 고정점 Q* 사이의 거리는 매번 γ배 이하로 줄어 결국 Q*로 수렴한다._
 
 ## 문제
 두 표에 각각 $T$를 적용한 뒤 그 차이를 계산해본다. $(TQ_1)(s,a)-(TQ_2)(s,a)$를 정의대로 풀어쓰면 두 식에 똑같이 들어있는 보상항 $R(s,a)$는 빼는 과정에서 서로 상쇄되어 사라진다. 남는 것은 max항의 차이뿐이다. $(TQ_1)(s,a)-(TQ_2)(s,a) = \gamma\sum_{s'}P(s'|s,a)($==빈칸==$)$ 이다.

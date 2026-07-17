@@ -4,14 +4,34 @@ theme: PM
 domainLabel: Process Mining
 subLabel: 동시성 · 검증
 title: XOR 분기: 여러 흐름 중 딱 하나만 선택되기
-hook: 페트리넷에서 XOR 분기는 보통 자리 하나에 트랜지션 여러 개가 매달린 구조로 표현됩니다.
 related: AND-split/AND-join · 데드락 · 라이브락 검증
 ---
 
-## 기본설명
+## 도입
 페트리넷에서 XOR 분기는 보통 자리 하나에 트랜지션 여러 개가 매달린 구조로 표현됩니다. 자리 $p$에서 나가는 트랜지션이 $t_1, \dots, t_k$로 여러 개일 때 $p$에 토큰이 하나 들어오면 그중 하나만 그 토큰을 소비해 발화할 수 있고 나머지는 발화할 기회를 잃습니다. 같은 토큰을 두고 여러 트랜지션이 경쟁하는 이 관계를 페트리넷 이론에서는 충돌(conflict)이라 부르며 AND-split이 만드는 병행(concurrency) 관계와 정확히 대비됩니다. 어떤 분기가 선택될지는 모델 자체가 아니라 데이터 조건이나 외부 이벤트가 결정하며 페트리넷은 그 선택이 배타적으로 일어난다는 구조만 표현합니다.
 
 BPMN에서는 이 구조를 배타적 게이트웨이(exclusive gateway)라 부릅니다. 이벤트 로그에서 XOR 구조를 확인하려면 두 활동이 같은 트레이스 안에서 절대 함께 나타나지 않아야 합니다. 일반배송과 당일배송이 한 케이스 안에 동시에 등장하는 일이 없다면 이는 두 활동이 서로 배타적 선택 관계라는 뜻이고 Inductive Miner 같은 발견 알고리즘은 이런 배타적 로그 분할을 재귀적으로 찾아 XOR 게이트웨이로 모델링합니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="110" r="16" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="220" y="50" width="70" height="32" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<rect x="220" y="140" width="70" height="32" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="400" cy="66" r="14" class="dg-accent"/>
+<circle cx="400" cy="156" r="14" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<line x1="76" y1="104" x2="220" y2="66" class="dg-line" stroke-width="1.5"/>
+<line x1="76" y1="118" x2="220" y2="156" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="290" y1="66" x2="386" y2="66" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="290" y1="156" x2="386" y2="156" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="255" y="42" text-anchor="middle" font-size="12">일반배송 선택</text>
+<text x="255" y="188" text-anchor="middle" font-size="12" class="dg-dim">당일배송(미실행)</text>
+<text x="60" y="140" text-anchor="middle" font-size="12">결제 완료</text>
+</svg>
+
+_같은 갈림길에서 한 케이스는 오직 한 갈래만 실제로 실행된다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

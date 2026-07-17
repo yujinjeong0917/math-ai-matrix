@@ -4,14 +4,17 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: SGD의 확률적 수렴 조건: Robbins-Monro 조건
-hook: 확률적 경사하강법(SGD)은 매 스텝마다 잡음 섞인 그래디언트를 쓰기 때문에, 학습률을 어떻게 줄여나가느냐가 수렴 여부를 결정해요.
 related: 경사하강법의 O(1/k) 수렴률
 ---
 
-## 기본설명
+## 도입
 확률적 경사하강법(SGD)은 매 스텝마다 잡음 섞인 그래디언트를 쓰기 때문에, 학습률을 어떻게 줄여나가느냐가 수렴 여부를 결정해요. 학습률을 너무 천천히 줄이면 잡음이 절대 가라앉지 않고, 너무 빨리 줄이면 최적점까지 도달하기도 전에 스텝이 멈춰버려요. 이 두 위험을 정확히 갈라주는 조건이 Robbins-Monro(1951) 조건입니다.
 
 **명제(논증).** $x_{t+1}=x_t-\eta_t g_t$ 에서 $g_t$가 $\mathbb{E}[g_t\mid x_t]=\nabla f(x_t)$(불편추정)이고 $\mathbb{E}\|g_t-\nabla f(x_t)\|^2\le\sigma^2$(유계분산)를 만족하며 $f$가 $L$-매끄럽다고 하자. 이때 SGD가 $\nabla f(x_t)\to0$ 로 (기댓값 의미에서) 수렴하려면 학습률이 $$\sum_{t=1}^\infty \eta_t=\infty,\qquad \sum_{t=1}^\infty \eta_t^2<\infty$$ 를 만족해야 한다(Robbins-Monro 조건).
+
+## 명제
+
+
 
 ## 문제
 $L$-매끄러움에서 나오는 하강 보조정리를 $y=x_{t+1}$에 적용하고 $x_t$가 주어졌을 때의 조건부기댓값을 취하면(불편성 때문에 1차항은 $-\eta_t\|\nabla f(x_t)\|^2$로 정리되고, $\mathbb{E}\|g_t\|^2=\|\nabla f(x_t)\|^2+\mathbb{E}\|\xi_t\|^2$를 쓰면) $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\|\nabla f(x_t)\|^2+\frac{L\eta_t^2}{2}\Big($$==빈칸==$$\Big)$$ 를 얻는다.

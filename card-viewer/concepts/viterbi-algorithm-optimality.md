@@ -4,12 +4,47 @@ theme: DISC
 domainLabel: 이산수학 · 그래프
 subLabel: 알고리즘 기초
 title: 비터비 알고리즘의 최적성: max-곱 동적계획법이 정확한 이유
-hook: 은닉마르코프모형(HMM)에서 가장 그럴듯한 은닉상태열을 찾으려면, 원칙적으로는 가능한 모든 상태열 $K^T$개를 다 확인해야 할 것 같습니다.
 related: 마르코프랜덤필드 인수분해
 ---
 
-## 기본설명
+## 도입
+은닉마르코프모형(HMM)에서 가장 그럴듯한 은닉상태열을 찾으려면, 원칙적으로는 가능한 모든 상태열 $K^T$개를 다 확인해야 할 것 같습니다. 비터비 알고리즘은 이걸 $O(TK^2)$ 시간으로 끝내는데, 그냥 빠른 휴리스틱이 아니라 정확히 같은 답(최적해)을 준다는 것이 핵심입니다. 그 비밀은 HMM의 결합확률이 사슬 형태로 인수분해된다는 데 있고, 이 구조 덕분에 '부분 최적해들을 이어붙이면 전체 최적해가 된다'는 최적부분구조가 성립합니다.
+
+## 명제
 HMM에서 상태열 $z_{1:T}\in\{1,\ldots,K\}^T$, 관측열 $x_{1:T}$의 결합분포가 $p(z_{1:T},x_{1:T})=\pi_{z_1}p(x_1\mid z_1)\prod_{t=2}^T a_{z_{t-1}z_t}\,p(x_t\mid z_t)$로 주어질 때, $\delta_t(k)=\max_{z_{1:t-1}}p(z_{1:t-1},z_t{=}k,x_{1:t})$로 정의된 값들이 재귀식 $\delta_t(k)=p(x_t\mid z_t{=}k)\max_i\big[a_{ik}\delta_{t-1}(i)\big]$을 만족하며, 이 재귀를 $t=T$까지 풀어 $\max_k\delta_T(k)$를 구하고 역추적하면 정확히 $\arg\max_{z_{1:T}}p(z_{1:T}\mid x_{1:T})$가 얻어진다(근사가 아니라 엄밀한 최적해).
+
+## 그림
+<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="100" y1="60" x2="280" y2="60" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="100" y1="60" x2="280" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="100" y1="160" x2="280" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="100" y1="160" x2="280" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="280" y1="60" x2="380" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="280" y1="60" x2="380" y2="160" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="280" y1="160" x2="380" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="280" y1="160" x2="380" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="100" cy="60" r="15" class="dg-accent" />
+<circle cx="100" cy="160" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="280" cy="60" r="15" class="dg-accent" />
+<circle cx="280" cy="160" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="380" cy="60" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="380" cy="160" r="15" class="dg-accent" />
+<text x="100" y="65" font-size="11" text-anchor="middle">1</text>
+<text x="100" y="165" font-size="11" text-anchor="middle">2</text>
+<text x="280" y="65" font-size="11" text-anchor="middle">1</text>
+<text x="280" y="165" font-size="11" text-anchor="middle">2</text>
+<text x="380" y="65" font-size="11" text-anchor="middle">1</text>
+<text x="380" y="165" font-size="11" text-anchor="middle">2</text>
+<text x="100" y="30" font-size="11" text-anchor="middle">t=1</text>
+<text x="280" y="30" font-size="11" text-anchor="middle">t=2</text>
+<text x="380" y="30" font-size="11" text-anchor="middle">t=3</text>
+<text x="60" y="60" font-size="10" text-anchor="end">δ₁(1)=0.54</text>
+<text x="60" y="160" font-size="10" text-anchor="end" class="dg-dim">δ₁(2)=0.08</text>
+<text x="285" y="195" font-size="10">δ₂(1)=0.3402</text>
+<text x="380" y="195" font-size="10">δ₃(2)=0.081648</text>
+</svg>
+
+_굵은 경로 (1,1,2)가 δ 재귀를 통해 얻은 최적 은닉상태열이다._
 
 ## 문제
 $\delta_t(k)=\max_{z_{1:t-1}}p(z_{1:t-1},z_t{=}k,x_{1:t})$로 정의한다. $t=1$일 때는 $z_{1:0}$이 공집합이므로 $\delta_1(k)=$==빈칸== 이다.

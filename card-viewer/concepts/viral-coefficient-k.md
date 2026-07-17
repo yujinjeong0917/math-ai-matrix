@@ -4,16 +4,39 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 바이럴 측정
 title: 바이럴 계수 K: 루프 안에서 확산력을 재는 숫자
-hook: 이 사이트의 마케팅 지표 공식 그룹에서는 K-factor를 $K = i \times c$로 정의한다.
 related: 그로스 루프 · 바이럴 사이클 타임
 ---
 
-## 기본설명
+## 도입
 이 사이트의 마케팅 지표 공식 그룹에서는 K-factor를 $K = i \times c$로 정의한다. $i$는 사용자 한 명이 평균적으로 보내는 초대 수, $c$는 초대 하나가 실제 가입으로 이어지는 전환율이다. 여기서 다루는 바이럴 계수는 같은 정의를 그로스 루프라는 더 넓은 틀 안에 놓고 다시 보는 것이다. K는 그로스 루프에서 다룬 순증가율 $k$가 초대라는 구체적인 행동으로 나타난 값이라고 볼 수 있다.
 
 K 하나만으로는 성장 속도를 판단할 수 없다는 점이 중요한 함정이다. K가 1.5인 루프라도 한 바퀴 도는 데 6개월이 걸린다면 매일 도는 K 1.1짜리 루프보다 체감 성장이 훨씬 느릴 수 있다. 일정 기간의 누적 배율은 $K^{t/T}$ 형태를 따르기 때문에 K가 커도 사이클 타임 T가 길면 지수 자체가 작아져 전체 값은 오히려 작을 수 있다. 그래서 바이럴 계수는 반드시 사이클 타임과 함께 봐야 완전한 그림이 된다.
 
 측정할 때도 주의할 점이 있다. 초대 수와 전환율을 전체 사용자 평균으로 뭉뚱그리면 소수의 파워 초대자가 평균을 왜곡할 수 있다. 초대 후 가입까지 걸리는 시간이 코호트마다 다르면 아직 전환 기회가 남아있는 최근 발송분까지 분모에 포함시켜 K를 실제보다 낮게 추정하기 쉽다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="240" cy="30" r="14" class="dg-accent"/>
+<text x="240" y="34" font-size="11" text-anchor="middle">1명</text>
+<line x1="240" y1="44" x2="140" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="44" x2="240" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="44" x2="340" y2="100" class="dg-line" stroke-width="1.5"/>
+<text x="300" y="70" font-size="12">평균 K명 초대</text>
+<circle cx="140" cy="112" r="12" class="dg-dim"/>
+<circle cx="240" cy="112" r="12" class="dg-dim"/>
+<circle cx="340" cy="112" r="12" class="dg-dim"/>
+<text x="240" y="140" font-size="12" text-anchor="middle">1세대: K명</text>
+<line x1="240" y1="124" x2="190" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="240" y1="124" x2="290" y2="180" class="dg-line" stroke-width="1.5"/>
+<circle cx="190" cy="192" r="10" class="dg-dim"/>
+<circle cx="290" cy="192" r="10" class="dg-dim"/>
+<text x="240" y="220" font-size="12" text-anchor="middle">2세대: 약 K² 명</text>
+</svg>
+
+_한 명이 평균 K명을 데려오면 세대를 거듭할수록 사용자 수는 K의 거듭제곱으로 불어난다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

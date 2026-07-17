@@ -4,12 +4,34 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 함수의 성질
 title: 볼록함수와 옌센 부등식
-hook: 그래프가 아래로 오목하지 않고 위로 볼록한 함수를 볼록함수라고 부릅니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+그래프가 아래로 오목하지 않고 위로 볼록한 함수를 볼록함수라고 부릅니다. 볼록함수의 정의는 원래 두 점 사이의 관계로 주어집니다. 이걸 점 두 개가 아니라 확률변수 전체로 확장한 것이 옌센 부등식입니다. ELBO를 유도할 때도 KL발산이 항상 0 이상임을 보일 때도 계속 등장합니다. 생성모델 이론 곳곳에 숨어 있는 주역입니다.
+
+## 명제
 $f$가 볼록함수이면 임의의 확률변수 $X$에 대해 $f(E[X])\le E[f(X)]$.
+
+## 그림
+<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="195" x2="380" y2="195" class="dg-line" stroke-width="1.5"/>
+<line x1="30" y1="195" x2="30" y2="20" class="dg-line" stroke-width="1.5"/>
+<path d="M60,60 Q200,190 340,80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="100" cy="98" r="4" class="dg-accent"/>
+<circle cx="300" cy="103" r="4" class="dg-accent"/>
+<line x1="100" y1="98" x2="300" y2="103" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<line x1="200" y1="130" x2="200" y2="100" class="dg-line" stroke-width="1.5" stroke-dasharray="2,3"/>
+<circle cx="200" cy="130" r="3" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="200" cy="100" r="3" class="dg-accent"/>
+<text x="95" y="88" font-size="12">x</text>
+<text x="295" y="93" font-size="12">y</text>
+<text x="205" y="95" font-size="12">E[f(X)] (현 위)</text>
+<text x="205" y="150" font-size="12">f(E[X])</text>
+<text x="45" y="210" class="dg-dim" font-size="12">현이 항상 곡선 위쪽: f(E[X]) ≤ E[f(X)]</text>
+</svg>
+
+_볼록함수 그래프 위 두 점을 잇는 현은 항상 그래프보다 위쪽에 있다._
 
 ## 문제
 이 정의는 딱 두 점에 대한 것이라 아직 확률변수 전체를 다루기엔 부족합니다. 그래서 두 점을 여러 점 $x_1,\dots,x_n$과 가중치 $p_i\ge0,\sum_ip_i=1$로 확장합니다. 두 점 사이의 볼록성 부등식을 점을 하나씩 늘려가며 반복 적용하면 여러 점의 가중평균에 대해서도 같은 모양의 부등식이 성립한다는 걸 보일 수 있습니다. $f\left(\sum_i p_ix_i\right) \le \sum_i$==빈칸== 입니다.

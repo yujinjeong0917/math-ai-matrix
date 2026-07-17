@@ -4,16 +4,40 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 멀티모달 아키텍처
 title: VLM 이미지 토큰화: 픽셀을 언어모델의 입력으로
-hook: 이미지 토큰화의 첫 단계는 대개 사전학습된 비전 인코더다.
 related: CLIP · 크로스모달 어텐션
 ---
 
-## 기본설명
+## 도입
 이미지 토큰화의 첫 단계는 대개 사전학습된 비전 인코더다. ViT 계열 인코더는 이미지를 14×14나 16×16 크기의 겹치지 않는 패치로 나눈 뒤 각 패치를 선형변환해서 패치임베딩으로 만들고 셀프어텐션을 거쳐 각 패치 위치의 특징벡터를 얻는다. CLIP의 이미지 인코더가 이 역할로 자주 재사용된다.
 
 비전 인코더가 만든 패치별 특징벡터는 차원이나 개수가 언어모델의 토큰 임베딩과 다른 경우가 많다. 그래서 그 사이에 프로젝션층이라는 변환 모듈을 하나 더 둔다. 간단하게는 MLP 하나로 차원만 맞추기도 하고 Q포머나 리샘플러처럼 학습 가능한 소수의 질의 벡터로 패치 특징을 요약해서 언어모델에 넣을 토큰 개수 자체를 줄이는 방식도 널리 쓰인다.
 
 이렇게 만들어진 이미지 토큰들은 텍스트 토큰 임베딩과 같은 차원을 갖게 되어 문장 속 단어 토큰들과 나란히 이어 붙여진다. 언어모델은 이 둘을 구분하지 않고 하나의 시퀀스로 취급해서 셀프어텐션을 적용하기 때문에 이미지 속 내용과 텍스트 속 내용을 같은 방식으로 서로 참고하며 답을 생성할 수 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="90" height="90" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <line x1="20" y1="50" x2="110" y2="50" class="dg-line" stroke-width="1" />
+      <line x1="20" y1="80" x2="110" y2="80" class="dg-line" stroke-width="1" />
+      <line x1="50" y1="20" x2="50" y2="110" class="dg-line" stroke-width="1" />
+      <line x1="80" y1="20" x2="80" y2="110" class="dg-line" stroke-width="1" />
+      <text x="15" y="128" font-size="11">이미지 패치</text>
+      <line x1="110" y1="65" x2="170" y2="65" class="dg-line" stroke-width="1.5" />
+      <rect x="170" y="45" width="100" height="40" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="178" y="70" font-size="11">패치 임베딩</text>
+      <line x1="270" y1="65" x2="330" y2="65" class="dg-line" stroke-width="1.5" />
+      <rect x="330" y="45" width="90" height="40" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2" />
+      <text x="340" y="70" font-size="11">프로젝션</text>
+      <line x1="420" y1="65" x2="470" y2="65" class="dg-line" stroke-width="1.5" />
+      <line x1="470" y1="65" x2="470" y2="150" class="dg-line" stroke-width="1.5" />
+      <rect x="20" y="150" width="560" height="40" rx="8" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+      <text x="35" y="175" font-size="11">이미지 토큰 · · · 텍스트 토큰 시퀀스 → 언어모델</text>
+    </svg>
+
+_이미지 패치가 임베딩과 프로젝션을 거쳐 텍스트 토큰과 나란히 언어모델에 들어가는 흐름입니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

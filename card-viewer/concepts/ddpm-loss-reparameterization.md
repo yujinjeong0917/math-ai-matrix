@@ -4,12 +4,15 @@ theme: INFO
 domainLabel: 정보이론
 subLabel: 엔트로피 · 손실
 title: 디퓨전 손실의 재정식화: ELBO가 왜 결국 노이즈 예측 MSE로 단순화되는가
-hook: elbo-derivation에서 확인한 하한은 디퓨전 모델에서 $T$개의 KL항으로 더 잘게 쪼개집니다.
 related: ELBO: 로그가능도의 옌센 하한 · 확산모델 정방향과정의 닫힌형 주변분포
 ---
 
-## 기본설명
+## 도입
+elbo-derivation에서 확인한 하한은 디퓨전 모델에서 $T$개의 KL항으로 더 잘게 쪼개집니다. 그 중 각 스텝의 항은 실제 역방향분포 $q(x_{t-1}|x_t,x_0)$와 학습되는 모델 $p_\theta(x_{t-1}|x_t)$ 사이의 KL발산입니다. 두 분포 모두 가우시안이고 분산은 스케줄로 미리 고정해두는 설계를 쓰므로 평균만 다릅니다. 이 KL항이 diffusion-forward-process에서 본 재매개변수화 $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$를 거치면 결국 잡음 하나를 얼마나 잘 맞히는지를 재는 평균제곱오차로 완전히 단순화된다는 것을 확인해봅니다.
+
+## 명제
 $q(x_{t-1}|x_t,x_0)=N(\mu_{\tilde t},\sigma_t^2I)$이고 $p_\theta(x_{t-1}|x_t)=N(\mu_\theta,\sigma_t^2I)$이며 두 평균이 $\mu_{\tilde t}=\frac{1}{\sqrt{\alpha_t}}\left(x_t-\frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\epsilon\right)$, $\mu_\theta=\frac{1}{\sqrt{\alpha_t}}\left(x_t-\frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\epsilon_\theta(x_t,t)\right)$ 형태로 매개변수화되면 $D_{KL}(q\|p_\theta) = \dfrac{\beta_t^2}{2\sigma_t^2\alpha_t(1-\bar\alpha_t)}\left\|\epsilon-\epsilon_\theta(x_t,t)\right\|^2$ 이다.
+
 
 ## 문제
 분산이 같은 두 다변량 가우시안의 KL발산은 일반적으로 $\frac12\left[\mathrm{tr}(\Sigma_2^{-1}\Sigma_1)-d+(\mu_2-\mu_1)^T\Sigma_2^{-1}(\mu_2-\mu_1)+\ln\frac{\det\Sigma_2}{\det\Sigma_1}\right]$로 쓰인다. $\Sigma_1=\Sigma_2=\sigma_t^2I$를 대입하면 $\mathrm{tr}(\Sigma_2^{-1}\Sigma_1)=\mathrm{tr}(I)=d$가 되어 바로 뒤의 $-d$와 상쇄되고 $\ln(\det\Sigma_2/\det\Sigma_1)=\ln1=0$이 되어 로그항도 사라진다. 남는 항은 $\dfrac12(\mu_\theta-\mu_{\tilde t})^T(\sigma_t^2I)^{-1}(\mu_\theta-\mu_{\tilde t})$뿐이고 이는 $D_{KL}(q\|p_\theta) = $==빈칸== 로 정리된다.

@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 추정이론
 title: 크라메르-라오 하한: 불편추정량 분산의 이론적 하한
-hook: 불편추정량을 아무리 잘 설계해도 분산을 무한정 줄일 수는 없습니다.
 related: 불편추정량 · MLE의 점근적 정규성
 ---
 
-## 기본설명
+## 도입
+불편추정량을 아무리 잘 설계해도 분산을 무한정 줄일 수는 없습니다. 데이터가 담고 있는 정보량 자체가 분산이 줄어들 수 있는 한계를 결정하기 때문입니다. 크라메르-라오 부등식은 이 한계를 피셔정보량으로 정확하게 못박아 줍니다. 이 하한을 알면 어떤 불편추정량이 더 이상 개선될 여지가 없는 "최적" 추정량인지도 판정할 수 있습니다.
+
+## 명제
 $X\sim f(x;\theta)$이고 $T(X)$가 $\theta$의 불편추정량, 즉 $E_\theta[T(X)]=\theta$이며 정칙조건이 성립한다고 하자. $I(\theta)=E_\theta\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right]$을 피셔정보량이라 하면 $\mathrm{Var}_\theta(T(X))\ge\dfrac{1}{I(\theta)}$ 가 성립한다.
+
 
 ## 문제
 불편성 항등식 $E_\theta[T(X)]=\int T(x)f(x;\theta)\,dx=\theta$의 양변을 $\theta$로 미분하면, 좌변은 $\int T(x)\frac{\partial f}{\partial\theta}(x;\theta)\,dx=\int T(x)f(x;\theta)s(x;\theta)\,dx=E_\theta[T(X)s(X;\theta)]$가 되고 우변은 $1$이 된다. 즉 $E_\theta[T(X)s(X;\theta)]=$==빈칸== 이다.

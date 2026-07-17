@@ -4,16 +4,40 @@ theme: MLOPS
 domainLabel: MLOps · 인프라
 subLabel: 모델 서빙
 title: 배치추론: 지연시간보다 처리량이 우선일 때
-hook: GPU는 한 번의 연산에 데이터를 하나만 실어 보내는 것보다 여러 개를 한 번에 실어 보낼 때 훨씬 효율적으로 동작합니다.
 related: 온라인서빙 · 오토스케일링
 ---
 
-## 기본설명
+## 도입
 GPU는 한 번의 연산에 데이터를 하나만 실어 보내는 것보다 여러 개를 한 번에 실어 보낼 때 훨씬 효율적으로 동작합니다. 행렬 곱셈 하나를 실행하는 데 드는 오버헤드는 배치 크기와 무관하게 어느 정도 고정되어 있는데 배치가 클수록 이 오버헤드가 더 많은 데이터에 나눠 분산되기 때문입니다. 그래서 배치추론은 가능한 한 큰 배치를 모아 GPU 연산 하나에 최대한 많은 입력을 실어 보내는 방향으로 설계됩니다.
 
 실행 방식도 다릅니다. 배치추론은 대개 정해진 시각에 실행되는 배치 작업으로 돌아갑니다. 하루치 로그나 전체 사용자 목록처럼 이미 확정된 입력 집합을 한 번에 읽어 처리하고 결과를 데이터베이스나 캐시에 저장해두면 실제 서비스는 그 저장된 결과를 조회만 하면 됩니다. 계산과 서빙이 시간상으로 분리되어 있는 셈입니다.
 
 배치추론의 한계는 결과가 즉시 반영되지 않는다는 점입니다. 사용자의 행동이 방금 바뀌었어도 다음 배치가 돌 때까지는 예전 결과가 그대로 노출됩니다. 실시간성이 중요한 요청은 온라인서빙으로 처리하고 대량이지만 즉시성이 필요 없는 계산은 배치추론으로 나눠 처리하는 것이 일반적인 조합입니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="62" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="94" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="126" y="70" width="26" height="26" class="dg-dim"/>
+<rect x="158" y="70" width="26" height="26" class="dg-dim"/>
+<text x="107" y="55" text-anchor="middle" font-size="12">쌓인 요청들</text>
+<line x1="195" y1="83" x2="250" y2="83" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="250,83 238,77 238,89" class="dg-accent"/>
+<rect x="260" y="55" width="130" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="325" y="90" text-anchor="middle" font-size="13">큰 배치 하나</text>
+<line x1="390" y1="83" x2="445" y2="83" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="445,83 433,77 433,89" class="dg-accent"/>
+<rect x="455" y="55" width="80" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="495" y="90" text-anchor="middle" font-size="13">GPU 1회</text>
+<line x1="535" y1="83" x2="580" y2="83" class="dg-line" stroke-width="1.5"/>
+<text x="600" y="88" text-anchor="middle" font-size="12">저장</text>
+</svg>
+
+_요청을 모아 큰 배치로 만든 뒤 한 번의 연산으로 처리하고 결과를 저장해둡니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

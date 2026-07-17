@@ -4,16 +4,32 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 객체탐지
 title: Focal Loss: 클래스 불균형 완화
-hook: 표준 이진 크로스엔트로피는 $\mathrm{CE}(p_t) = -\log(p_t)$로 정의된다.
 related: YOLOv1 · IoU와 NMS
 ---
 
-## 기본설명
+## 도입
 표준 이진 크로스엔트로피는 $\mathrm{CE}(p_t) = -\log(p_t)$로 정의된다. 여기서 $p_t$는 정답 클래스에 대한 모델의 예측 확률이다(정답이 양성이면 $p_t=p$, 음성이면 $p_t=1-p$). 이미 확신을 갖고 맞히는 쉬운 샘플도 $p_t$가 1보다 조금 작기만 하면 여전히 0이 아닌 손실을 남긴다. 이런 샘플이 수만 개 쌓이면 소수의 어려운 샘플이 주는 신호를 압도해버린다.
 
 Focal Loss는 여기에 조절 계수 $(1-p_t)^\gamma$를 곱한다. $\mathrm{FL}(p_t) = -\alpha_t(1-p_t)^\gamma \log(p_t)$이다. $p_t$가 1에 가까운 쉬운 샘플은 $(1-p_t)^\gamma$가 0에 가까워지면서 손실이 크게 줄어들고, $p_t$가 작은 어려운 샘플은 이 계수가 1에 가까워서 손실이 거의 그대로 남는다. $\gamma$는 이 감쇠의 세기를 정하는 하이퍼파라미터로 논문에서는 $\gamma=2$를 표준으로 쓴다. $\alpha_t$는 양성과 음성 클래스 사이의 비율을 별도로 보정하는 가중치다.
 
 이 손실은 RetinaNet 논문에서 제안되었는데, 그 이전까지 단일 단계 탐지기(YOLO, SSD류)가 2단계 탐지기(Faster R-CNN류)보다 정확도가 낮았던 핵심 원인으로 극단적인 전경 배경 불균형을 지목했다. 2단계 탐지기는 첫 단계에서 후보 영역을 미리 걸러내 배경 후보 수를 줄이지만, 단일 단계 탐지기는 이미지 전체 위치를 한 번에 훑기 때문에 배경 위치가 압도적으로 많다. Focal Loss는 후보를 미리 거르는 대신 손실함수 자체가 쉬운 배경의 기여도를 낮추게 만들어서 이 격차를 줄였다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="20" x2="40" y2="200" class="dg-line" stroke-width="1.5"/>
+<line x1="40" y1="200" x2="300" y2="200" class="dg-line" stroke-width="1.5"/>
+<path d="M66,46.3 L118,119.7 L170,153.8 L222,176.2 L274,193" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M66,75.7 L118,160.7 L170,188.5 L222,197.9 L274,200" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="8" y="30" font-size="11">손실</text>
+<text x="255" y="216" font-size="11">p_t → 1</text>
+<text x="215" y="60" font-size="12">표준 CE</text>
+<text x="180" y="192" font-size="12">focal loss</text>
+</svg>
+
+_예측 확률이 높을수록 focal loss는 표준 교차엔트로피보다 훨씬 빠르게 줄어든다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

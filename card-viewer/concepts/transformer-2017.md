@@ -4,16 +4,40 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: Transformer 계열
 title: Transformer(2017): Attention Is All You Need
-hook: 핵심 연산은 셀프어텐션이다.
 related: ViT · GPT 계열 · KV Cache
 ---
 
-## 기본설명
+## 도입
 핵심 연산은 셀프어텐션이다. 입력 시퀀스의 각 토큰 임베딩을 세 개의 벡터, 쿼리 $Q$, 키 $K$, 값 $V$로 선형변환한 뒤 $\mathrm{Attention}(Q,K,V) = \mathrm{softmax}\left(\dfrac{QK^T}{\sqrt{d_k}}\right)V$를 계산한다. $QK^T$는 모든 토큰 쌍의 유사도를 한 번에 담은 행렬이고, 소프트맥스로 정규화한 뒤 $V$에 곱하면 각 토큰이 다른 토큰들의 값을 유사도만큼 가중평균해서 가져온 결과가 된다. $\sqrt{d_k}$로 나누는 건 내적 값이 차원이 커질수록 커져서 소프트맥스가 한쪽으로 쏠리는 걸 막기 위한 스케일 보정이다.
 
 이 어텐션을 한 번만 쓰지 않고 서로 다른 선형변환을 가진 여러 헤드로 병렬 계산한 뒤 이어붙이는 것이 멀티헤드 어텐션이다. 헤드마다 서로 다른 관점의 관계(문법적 관계, 의미적 관계 등)를 따로 포착할 여지를 준다. 여기에 위치별로 독립 적용되는 2층 완전연결 네트워크인 position-wise FFN이 각 토큰 표현을 한 번 더 변환한다. 인코더와 디코더 모두 이 두 서브레이어(어텐션, FFN)를 residual connection과 레이어정규화로 감싸 여러 층 쌓은 구조다.
 
 순환이 없다는 것은 각 토큰이 계산되는 순서에 아무 정보가 없다는 뜻이기도 하다. 그래서 위치 정보를 따로 주입해야 하는데, Transformer는 학습 파라미터 없이 사인 코사인 함수로 만든 위치인코딩을 토큰 임베딩에 더해서 이를 해결한다. 디코더는 여기에 더해 미래 토큰을 못 보게 막는 마스킹된 어텐션과 인코더 출력을 들여다보는 인코더디코더 어텐션을 추가로 갖는다. 순서대로 처리해야 했던 RNN과 달리 모든 토큰의 어텐션을 행렬곱 한 번으로 동시에 계산할 수 있어 GPU 병렬화가 훨씬 잘 되고, 이것이 이후 대규모 언어모델 확장의 토대가 되었다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="70" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="43" font-size="13" text-anchor="middle">Q</text>
+<rect x="20" y="80" width="70" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="103" font-size="13" text-anchor="middle">K</text>
+<rect x="20" y="140" width="70" height="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="163" font-size="13" text-anchor="middle">V</text>
+<line x1="90" y1="38" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<line x1="90" y1="98" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<rect x="180" y="52" width="120" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="240" y="75" font-size="12" text-anchor="middle">softmax(QKᵀ/√d)</text>
+<line x1="90" y1="158" x2="380" y2="90" class="dg-line" stroke-width="1.5"/>
+<rect x="380" y="52" width="70" height="36" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="415" y="75" font-size="12" text-anchor="middle">× V</text>
+<line x1="300" y1="70" x2="380" y2="70" class="dg-line" stroke-width="1.5"/>
+<line x1="450" y1="70" x2="510" y2="70" class="dg-line" stroke-width="1.5"/>
+<text x="530" y="75" font-size="12">출력</text>
+</svg>
+
+_쿼리와 키의 유사도로 값을 가중평균하는 것이 셀프어텐션의 전부다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 추정이론
 title: MLE의 점근적 정규성: 표본이 커지면 정규분포로 수렴한다
-hook: 최대우도추정량은 표본이 유한할 때는 정확한 분포를 알기 어려운 경우가 많습니다.
 related: 최대우도추정(MLE) · 크라메르-라오 하한
 ---
 
-## 기본설명
+## 도입
+최대우도추정량은 표본이 유한할 때는 정확한 분포를 알기 어려운 경우가 많습니다. 그런데 표본크기가 충분히 커지면 놀라운 일이 벌어집니다. MLE는 참값 주위로 정규분포 모양을 그리며 흩어지고, 그 흩어짐의 정도(분산)는 피셔정보량의 역수로 정확히 결정됩니다. 이 사실 덕분에 대표본에서는 MLE의 신뢰구간과 검정을 정규분포 근사로 손쉽게 구성할 수 있습니다.
+
+## 명제
 $X_1,\ldots,X_n$이 밀도(또는 확률질량) $f(x;\theta)$에서 독립적으로 뽑힌 표본이고 $\theta_0$가 참값이라 하자. 적절한 정칙조건(미분과 적분의 순서 교환 가능, 피셔정보량 $I(\theta)=E\!\left[\left(\frac{\partial}{\partial\theta}\log f(X;\theta)\right)^2\right]$이 존재하고 양수) 아래에서 MLE $\hat\theta_n$은 $\sqrt n(\hat\theta_n-\theta_0)\xrightarrow{d} N\!\left(0,\,I(\theta_0)^{-1}\right)$ 를 만족한다.
+
 
 ## 문제
 점수함수는 평균이 0이라는 중요한 성질을 가진다. 밀도의 적분이 항상 $1$이라는 사실 $\int f(x;\theta)\,dx=1$의 양변을 $\theta$로 미분하면 $\int\frac{\partial f}{\partial\theta}(x;\theta)\,dx=0$을 얻고, $\frac{\partial f}{\partial\theta}=f\cdot s$이므로 이는 $\int s(x;\theta)f(x;\theta)\,dx=E_\theta[s(X;\theta)]$와 같다. 따라서 $E_{\theta_0}[s(X;\theta_0)]=$==빈칸== 이다.

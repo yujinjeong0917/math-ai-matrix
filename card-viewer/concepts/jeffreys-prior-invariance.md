@@ -4,12 +4,15 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 확률의 기초
 title: Jeffreys 사전분포의 재매개변수화 불변성
-hook: "무정보 사전분포"를 정하려 할 때 흔히 균등분포를 떠올리지만, 문제가 있습니다.
 related: 켤레사전분포 3종
 ---
 
-## 기본설명
+## 도입
+"무정보 사전분포"를 정하려 할 때 흔히 균등분포를 떠올리지만, 문제가 있습니다. 파라미터를 $\theta$로 쓰든 $\phi=h(\theta)$로 바꿔 쓰든 물리적으로는 같은 문제인데, $\theta$에서 균등한 분포가 $\phi$에서는 전혀 균등하지 않게 됩니다. Jeffreys는 피셔정보의 제곱근에 비례하는 사전분포를 쓰면 이 문제가 사라진다는 것을 보였어요 — 어떤 매개변수로 표현하든 "같은" 사전분포가 나옵니다.
+
+## 명제
 모수 $\theta$에 대한 피셔정보를 $I(\theta)=E\big[(\partial_\theta\log f(X;\theta))^2\big]$라 하고 Jeffreys 사전분포를 $\pi(\theta)\propto\sqrt{I(\theta)}$로 정의하자. $\phi=h(\theta)$가 매끄러운 전단사 재매개변수화이면, $\theta$의 Jeffreys 사전분포를 변수변환 공식으로 $\phi$-스케일로 옮긴 것과 $\phi$의 모델로부터 직접 계산한 Jeffreys 사전분포 $\sqrt{I(\phi)}$가 정확히 같다.
+
 
 ## 문제
 둘째 방식은 $\phi$를 모수로 둔 모델 $f(x;\theta(\phi))$로부터 피셔정보를 직접 계산하는 것이다. 점수함수의 연쇄법칙 $\partial_\phi\log f(x;\theta(\phi))=\partial_\theta\log f(x;\theta)\cdot\dfrac{d\theta}{d\phi}$를 제곱해 기댓값을 취하면 $I(\phi)=E[(\partial_\phi\log f)^2]=\Big(\dfrac{d\theta}{d\phi}\Big)^2E[(\partial_\theta\log f)^2]=$ $==빈칸==$이다.

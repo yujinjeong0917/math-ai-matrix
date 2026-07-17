@@ -4,12 +4,15 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: GMM의 M-step: 파라미터 갱신식 유도
-hook: gmm-em에서 책임값 $\gamma_{ji}$를 베이즈 정리로 유도했다.
 related: GMM의 E-step: 책임값의 유도 · k-평균은 왜 GMM의 특수한 경우인가
 ---
 
-## 기본설명
+## 도입
+gmm-em에서 책임값 $\gamma_{ji}$를 베이즈 정리로 유도했다. E-step은 현재 파라미터를 고정한 채 이 책임값을 계산하는 단계였다. 이제 반대로 책임값을 고정해두고 로그가능도를 최대화하는 파라미터 $\mu_i,\Sigma_i,\alpha_i$를 구하는 M-step을 유도한다. 세 파라미터의 갱신식이 모두 책임값으로 가중한 평균이라는 하나의 공통된 패턴을 따른다는 사실이 드러난다.
+
+## 명제
 책임값 $\gamma_{ji}$가 고정되어 있을 때 로그가능도 $LL(D)=\sum_j\ln\left(\sum_i\alpha_i\mathcal N(x_j\mid\mu_i,\Sigma_i)\right)$를 $\mu_i,\Sigma_i,\alpha_i$(단 $\sum_i\alpha_i=1$)에 대해 최대화하면 $\mu_i=\dfrac{\sum_j\gamma_{ji}x_j}{\sum_j\gamma_{ji}}$, $\Sigma_i=\dfrac{\sum_j\gamma_{ji}(x_j-\mu_i)(x_j-\mu_i)^T}{\sum_j\gamma_{ji}}$, $\alpha_i=\dfrac1m\sum_j\gamma_{ji}$를 얻는다.
+
 
 ## 문제
 먼저 $\mu_i$에 대한 최적조건을 구한다. 로그가능도 안에는 $\ln(\sum_i\cdots)$처럼 합의 로그가 들어 있어서 연쇄법칙을 적용하면 미분 결과에 자연스럽게 책임값이 계수로 등장한다. 표준적인 다변량 가우시안 로그밀도의 미분 공식 $\partial\ln\mathcal N(x\mid\mu_i,\Sigma_i)/\partial\mu_i=\Sigma_i^{-1}(x-\mu_i)$를 그대로 쓰면 $LL(D)$를 $\mu_i$로 미분한 결과는 $\partial LL(D)/\partial\mu_i=\sum_j\gamma_{ji}\Sigma_i^{-1}(x_j-\mu_i)$이다. 이를 0으로 놓고 양변에 왼쪽에서 가역행렬 $\Sigma_i$를 곱해 $\Sigma_i^{-1}$을 지우면 $\sum_j\gamma_{ji}(x_j-\mu_i) = $==빈칸== 이다.

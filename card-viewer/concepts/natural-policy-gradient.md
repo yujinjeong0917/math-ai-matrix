@@ -4,12 +4,15 @@ theme: NUMERIC
 domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 자연정책경사: 신뢰영역 아래에서의 라그랑주 방향
-hook: 정책을 개선할 때 그냥 그래디언트 $\nabla J(\theta)$ 방향으로 움직이면, natural-gradient-fisher 항목에서 본 것처럼 파라미터공간의 작은 걸음이 분포공간에서는 방향에 따라 다르게 부풀려질 수 있습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+정책을 개선할 때 그냥 그래디언트 $\nabla J(\theta)$ 방향으로 움직이면, natural-gradient-fisher 항목에서 본 것처럼 파라미터공간의 작은 걸음이 분포공간에서는 방향에 따라 다르게 부풀려질 수 있습니다. 분포공간에서의 걸음 크기를 일정하게 제한한 채 $J$를 가장 빠르게 키우는 방향을 lagrange-kkt와 같은 방식으로 직접 구해봅니다.
+
+## 명제
 $\max_{d\theta} \nabla J(\theta)^Td\theta\ \text{s.t.}\ \frac12d\theta^TF(\theta)d\theta\le\epsilon$ 의 최적해 방향은 $d\theta^* \propto F(\theta)^{-1}\nabla J(\theta)$이다.
+
 
 ## 문제
 이건 lagrange-kkt 항목에서 다룬 것과 똑같은 형태의 제약 최적화다. 라그랑주 승수 $\lambda\ge0$을 도입해서 제약을 등호로 정리한 식에 곱해 목적함수에 더한다.

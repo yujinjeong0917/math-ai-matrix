@@ -4,12 +4,40 @@ theme: DISC
 domainLabel: 이산수학 · 그래프
 subLabel: 트리 · 앙상블 구조
 title: 빔서치의 부분 최적성과 그 한계
-hook: 오토리그레시브 생성 모델은 한 번에 한 토큰씩 시퀀스를 만든다.
 related: 
 ---
 
-## 기본설명
+## 도입
+오토리그레시브 생성 모델은 한 번에 한 토큰씩 시퀀스를 만든다. 매 순간 확률이 가장 높은 토큰 하나만 고르는 방법이 그리디 디코딩이다. 빔서치는 이걸 확장해서 상위 $k$개의 후보를 동시에 들고 간다. 폭이 넓을수록 항상 더 좋은 시퀀스를 찾을 것 같지만, 실제로 그 보장이 어디까지 성립하고 어디서 깨지는지를 정직하게 확인해본다.
+
+## 명제
 폭 $k$($k\ge1$)인 빔서치에서 $k=1$은 그리디 디코딩과 정확히 같다. 그리고 첫 번째 확장을 마친 직후, 빔서치가 유지하는 후보 중 가장 점수가 높은 것은 그리디가 같은 지점까지 도달한 점수보다 낮을 수 없다. 다만 이 보장은 이후 단계로 갈수록 가지치기의 비가역성 때문에 깨질 수 있다.
+
+## 그림
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="60" y="16" font-size="12" class="dg-dim">빔서치 (k=2)</text>
+<circle cx="60" cy="110" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<line x1="72" y1="103" x2="200" y2="50" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="72" y1="117" x2="200" y2="170" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="215" cy="50" r="12" class="dg-accent" />
+<circle cx="215" cy="170" r="12" class="dg-accent" />
+<text x="245" y="45" font-size="11">"나는" −0.5</text>
+<text x="245" y="175" font-size="11">"저는" −0.9</text>
+<line x1="227" y1="44" x2="380" y2="20" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="227" y1="56" x2="380" y2="80" class="dg-line" stroke-width="1" stroke-dasharray="4,3" />
+<line x1="227" y1="164" x2="380" y2="140" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="227" y1="176" x2="380" y2="200" class="dg-line" stroke-width="1" stroke-dasharray="4,3" />
+<circle cx="395" cy="20" r="10" class="dg-accent" />
+<circle cx="395" cy="80" r="8" fill="none" class="dg-dim" stroke-width="1.2" stroke-dasharray="2,2" />
+<circle cx="395" cy="140" r="10" class="dg-accent" />
+<circle cx="395" cy="200" r="8" fill="none" class="dg-dim" stroke-width="1.2" stroke-dasharray="2,2" />
+<text x="410" y="24" font-size="11">"나는 밥" −0.9 (유지)</text>
+<text x="410" y="84" font-size="11" class="dg-dim">"나는 잠" −1.7 (가지치기)</text>
+<text x="410" y="144" font-size="11">"저는 학교" −1.0 (유지)</text>
+<text x="410" y="204" font-size="11" class="dg-dim">"저는 책" −2.9 (가지치기)</text>
+</svg>
+
+_실선 굵은 가지는 빔에 남는 상위 k=2 후보, 점선은 가지치기된 후보(점수 표시)._
 
 ## 문제
 먼저 $k=1$인 경우를 본다. 매 스텝마다 점수가 가장 높은 후보를 딱 하나만 남기고 나머지는 전부 버린다는 것은, 매 스텝 최고 점수 토큰 하나만 골라 이어붙이는 절차와 다르지 않다.

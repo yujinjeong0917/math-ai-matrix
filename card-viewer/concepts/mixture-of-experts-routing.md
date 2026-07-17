@@ -4,12 +4,41 @@ theme: DISC
 domainLabel: 이산수학 · 그래프
 subLabel: 트리 · 앙상블 구조
 title: Mixture of Experts: 토큰마다 다른 전문가를 고르는 라우팅의 구조
-hook: 모델 하나에 전문가라 부르는 여러 개의 작은 서브네트워크를 두고 입력마다 그중 일부만 골라서 쓰는 구조를 mixture of experts라 부릅니다.
 related: 모든 구성원을 평가하는 밀집 앙상블과의 대조 · 연산 효율을 위해 일부만 계산에 참여시키는 다른 예
 ---
 
-## 기본설명
+## 도입
+모델 하나에 전문가라 부르는 여러 개의 작은 서브네트워크를 두고 입력마다 그중 일부만 골라서 쓰는 구조를 mixture of experts라 부릅니다. 라우터라 부르는 작은 게이팅 네트워크가 입력을 보고 각 전문가에 점수를 매기고 그중 점수가 높은 몇 개만 실제로 계산에 참여시킵니다. 배깅이나 그래디언트부스팅처럼 구성원 전부를 항상 평가하는 밀집 앙상블과 달리 이 방식은 평가하는 전문가 수를 고정해두고 전체 전문가 수만 늘릴 수 있습니다. 그 결과 모델이 담을 수 있는 지식의 총량과 실제로 한 번의 순전파에 드는 연산량이 서로 분리됩니다.
+
+## 명제
 전문가가 $E$개, 전문가 하나를 평가하는 비용이 $c$, 선택하는 전문가 수가 고정된 $k$일 때, 밀집 앙상블의 연산량은 $C_{dense}(E)=Ec$로 $E$에 정비례해서 늘어나지만 top-k 라우팅을 쓰는 MoE의 연산량은 $C_{moe}(E)\approx kc$로 $E$가 커져도 사실상 상수로 남는다.
+
+## 그림
+<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="90" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="50" y="114" font-size="11" text-anchor="middle">입력 x</text>
+<line x1="80" y1="110" x2="150" y2="110" class="dg-line" stroke-width="1.5" />
+<rect x="150" y="90" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="185" y="114" font-size="11" text-anchor="middle">라우터</text>
+<line x1="220" y1="100" x2="300" y2="30" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="220" y1="105" x2="300" y2="80" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="220" y1="115" x2="300" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="220" y1="120" x2="300" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<rect x="300" y="12" width="80" height="36" class="dg-accent" />
+<text x="340" y="34" font-size="11" text-anchor="middle">전문가1 g=0.73</text>
+<rect x="300" y="62" width="80" height="36" class="dg-accent" />
+<text x="340" y="84" font-size="11" text-anchor="middle">전문가2 g=0.27</text>
+<rect x="300" y="122" width="80" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<text x="340" y="144" font-size="11" text-anchor="middle" class="dg-dim">전문가3 (미활성)</text>
+<rect x="300" y="172" width="80" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<text x="340" y="194" font-size="11" text-anchor="middle" class="dg-dim">전문가4 (미활성)</text>
+<line x1="380" y1="30" x2="430" y2="60" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="380" y1="80" x2="430" y2="60" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="440" cy="60" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="440" y="90" font-size="11" text-anchor="middle">y</text>
+</svg>
+
+_E=4개 중 top-k=2(굵은 실선)만 활성화, 나머지(점선)는 이번 입력에서 계산되지 않는다._
 
 ## 문제
 먼저 전문가 하나를 평가하는 데 드는 연산량을 $c$라 하고 전문가 하나가 담고 있는 파라미터 수를 $p$라 하자. 전문가가 $E$개 있다면 모델 전체가 담는 파라미터 수, 즉 모델의 표현 용량은 각 전문가의 파라미터를 모두 합친 것이다. $P(E) = $==빈칸==이다.

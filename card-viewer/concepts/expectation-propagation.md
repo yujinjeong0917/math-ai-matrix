@@ -4,14 +4,31 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 분포 · 추정
 title: 기댓값전파(Expectation Propagation)와 모멘트매칭 갱신
-hook: 변분추론은 근사분포 $q$를 실제 사후분포 $p$에 최대한 가깝게 맞추되 $D_{KL}(q\|p)$(역방향 KL)를 최소화합니다.
 related: 평균장 변분추론(CAVI) · 지수족의 로그분배함수와 충분통계량의 평균
 ---
 
-## 기본설명
+## 도입
+변분추론은 근사분포 $q$를 실제 사후분포 $p$에 최대한 가깝게 맞추되 $D_{KL}(q\|p)$(역방향 KL)를 최소화합니다. 이 KL은 $q$가 0인 곳에서 $p$도 0에 가깝게 조여서(zero-forcing) $q$가 $p$의 한 봉우리에 몰리는 경향을 만듭니다. 기댓값전파(EP)는 반대 방향의 KL, 즉 $D_{KL}(p\|q)$(순방향 KL)를 각 인자 단위로 최소화합니다. 이 순방향 KL은 $p$가 0이 아닌 곳에서는 $q$도 반드시 0이 아니어야 하므로(zero-avoiding) $q$가 $p$의 모든 봉우리를 감싸안는 경향을 만듭니다.
+
+## 명제
 $q_\eta(x)=h(x)\exp(\eta^TT(x)-A(\eta))$ 가 지수족이고 $\hat p(x)$가 근사하려는 목표분포(EP의 한 단계에서는 인자 하나를 새 근사로 바꾼 tilted분포)라 하자. 그러면
 $$\eta^* = \arg\min_\eta D_{KL}(\hat p\,\|\,q_\eta) \iff E_{q_{\eta^*}}[T(x)] = E_{\hat p}[T(x)]$$
 즉 순방향 KL을 지수족 안에서 최소화하는 것은 정확히 충분통계량의 기댓값(모멘트)을 $\hat p$와 일치시키는 모멘트매칭과 같다.
+
+## 그림
+<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="350" y1="20" x2="350" y2="220" class="dg-dim" stroke-width="1" stroke-dasharray="3,2"/>
+<path d="M20,195 Q90,60 160,150 Q230,60 300,195" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M180,195 Q230,90 280,195" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="3,3"/>
+<text x="160" y="30" font-size="12" text-anchor="middle">역방향 KL: 한 봉우리만 감싸는 근사</text>
+<text x="160" y="215" font-size="11" text-anchor="middle" class="dg-dim">(mode-seeking, 점선이 오른쪽 봉우리에만 몰림)</text>
+<path d="M370,195 Q440,60 510,150 Q580,60 650,195" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M380,195 Q510,70 640,195" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="8,3"/>
+<text x="510" y="30" font-size="12" text-anchor="middle">순방향 KL(EP): 모든 봉우리를 감싸는 근사</text>
+<text x="510" y="215" font-size="11" text-anchor="middle" class="dg-dim">(mode-covering, 점선이 두 봉우리를 모두 포함)</text>
+</svg>
+
+_같은 다봉분포(실선)를 놓고, 역방향 KL은 한 봉우리에만 몰리는 좁은 근사(왼쪽 점선)를, 순방향 KL(EP의 모멘트매칭)은 모든 봉우리를 넓게 감싸는 근사(오른쪽 점선)를 만든다._
 
 ## 문제
 KL의 정의 $D_{KL}(\hat p\|q_\eta)=E_{\hat p}[\log\hat p(x)]-E_{\hat p}[\log q_\eta(x)]$ 에서 지수족의 로그밀도 $\log q_\eta(x)=\log h(x)+\eta^TT(x)-A(\eta)$ 를 대입한다. $\eta$와 무관한 항 $E_{\hat p}[\log\hat p(x)]-E_{\hat p}[\log h(x)]$ 는 상수로 묶어둔다.

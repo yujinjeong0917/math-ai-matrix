@@ -4,12 +4,30 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 제약 최적화
 title: Wasserstein 거리의 쌍대형과 1-립시츠 제약
-hook: GAN의 원래 목적함수는 두 분포가 전혀 겹치지 않을 때 그래디언트가 거의 사라지는 문제가 있습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+GAN의 원래 목적함수는 두 분포가 전혀 겹치지 않을 때 그래디언트가 거의 사라지는 문제가 있습니다. WGAN은 대신 두 분포 사이의 Wasserstein 거리를 최소화합니다. 그런데 Wasserstein 거리는 정의 자체가 가능한 모든 결합분포를 뒤져야 하는 계산 불가능한 하한입니다. 대신 이 거리를 1-립시츠 함수 하나로 재는 쌍대형이 있습니다. 그 쌍대형이 어디서 나오는지, 왜 하필 1-립시츠라는 제약이 붙는지 확인해 봅니다.
+
+## 명제
 $f$가 1-립시츠이면 임의의 결합분포 $\gamma\in\Pi(p,q)$에 대해 $E_p[f]-E_q[f] \le W(p,q)$ 이다. ($W(p,q)=\inf_{\gamma\in\Pi(p,q)}E_{(x,y)\sim\gamma}[\|x-y\|]$)
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="520" y2="180" class="dg-line" stroke-width="1.5"/>
+<text x="500" y="200" font-size="12">x</text>
+<line x1="120" y1="180" x2="120" y2="60" class="dg-stroke-ink" stroke-width="3"/>
+<text x="90" y="50" font-size="12">p (x=0)</text>
+<line x1="400" y1="180" x2="400" y2="60" class="dg-stroke-ink" stroke-width="3" stroke-dasharray="6,3"/>
+<text x="365" y="50" font-size="12">q (x=d)</text>
+<path d="M130,120 Q260,70 390,120" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="390,120 378,113 380,124" class="dg-stroke-accent"/>
+<text x="215" y="80" font-size="12">확률질량 이동</text>
+<text x="150" y="200" class="dg-dim" font-size="12">W(p,q) = 옮겨야 할 거리: 두 분포가 겹치지 않아도 유의미한 거리</text>
+</svg>
+
+_한 분포에서 다른 분포로 확률질량을 옮기는 이동으로 겹치지 않는 분포 사이에도 의미 있는 거리를 정의한다._
 
 ## 문제
 지금 목표는 $E_p[f]-E_q[f]$를 결합분포 $\gamma$ 하나의 언어로 다시 쓰는 것이다. $\Pi(p,q)$에 속하는 임의의 결합분포 $\gamma$를 하나 고정한다. $\gamma$의 정의상 $x$만 따로 봤을 때의 분포는 $p$이고 $y$만 따로 봤을 때의 분포는 $q$다. 그러니 $x$만의 함수인 $f(x)$의 기댓값은 $p$ 아래에서 구하든 $\gamma$ 아래에서 구하든 같은 값이 나온다. $y$ 쪽도 마찬가지다. $E_{x\sim p}[f(x)] - E_{y\sim q}[f(y)] = E_{(x,y)\sim\gamma}[$==빈칸==$]$ 이다.

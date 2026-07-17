@@ -4,12 +4,68 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 표집 · 불확실성
 title: 교차검증(k-fold)의 분산 감소
-hook: 홀드아웃 검증은 데이터를 딱 한 번만 나눠서 검증합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+홀드아웃 검증은 데이터를 딱 한 번만 나눠서 검증합니다. 그런데 어느 부분이 검증셋으로 뽑히느냐에 따라 추정한 성능이 운 좋게 좋거나 운 나쁘게 나쁠 수 있습니다. k-fold 교차검증은 데이터를 $k$개 조각으로 나눠 돌아가며 $k$번 검증한 뒤 평균을 냅니다. 이렇게 얻은 평균 추정치는 한 번짜리 홀드아웃보다 정말로 더 안정적일까요.
+
+## 명제
 각 폴드의 오차 추정치 $L_1,\dots,L_k$가 평균 $\mu$, 분산 $\sigma^2$, 서로 간 상관계수 $\rho$를 가질 때 $k$-fold 평균 $\bar L=\frac1k\sum_iL_i$의 분산은 $\mathrm{Var}(\bar L)=\rho\sigma^2+\frac{1-\rho}{k}\sigma^2$이며 이는 단일 홀드아웃의 분산 $\sigma^2$보다 항상 작거나 같다.
+
+## 그림
+<svg viewBox="0 0 520 250" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="16" font-size="12" class="dg-dim">라운드</text>
+  <text x="130" y="16" font-size="11">폴드1</text>
+  <text x="190" y="16" font-size="11">폴드2</text>
+  <text x="250" y="16" font-size="11">폴드3</text>
+  <text x="310" y="16" font-size="11">폴드4</text>
+  <text x="370" y="16" font-size="11">폴드5</text>
+  <g>
+    <text x="10" y="45" font-size="11">1</text>
+    <rect x="120" y="26" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="180" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="89" font-size="11">2</text>
+    <rect x="120" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="70" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="240" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="133" font-size="11">3</text>
+    <rect x="120" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="114" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="300" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="177" font-size="11">4</text>
+    <rect x="120" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="158" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="360" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="221" font-size="11">5</text>
+    <rect x="120" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="202" width="55" height="26" class="dg-accent" stroke="none"/>
+  </g>
+  <text x="430" y="45" font-size="10" class="dg-dim">검증</text>
+  <text x="430" y="52" font-size="10" class="dg-dim">(채움)</text>
+</svg>
+
+_5-fold 교차검증에서 매 라운드 정확히 한 조각(채운 칸)만 검증용으로 바뀌며 대각선을 따라 회전한다. 나머지는 점선 테두리의 학습 조각이다._
 
 ## 문제
 지금 목표는 $\bar L$의 분산을 실제로 계산하는 것이다. 여러 확률변수를 더한 합의 분산을 구하려면 각 변수 자신의 분산뿐 아니라 서로 다른 변수끼리의 공분산까지 전부 더해야 한다는 분산의 일반 공식을 쓴다. $\mathrm{Cov}(L_i,L_j)=\rho\sigma^2$ ($i\neq j$)이고 $\mathrm{Var}(L_i)=\sigma^2$이다.

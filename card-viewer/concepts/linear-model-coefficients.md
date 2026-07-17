@@ -4,16 +4,38 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 그래디언트 기반
 title: 선형모델 계수: 가장 오래된 설명가능성
-hook: 선형회귀는 $\hat y = w_0 + \sum_i w_i x_i$ 형태로 예측한다.
 related: Saliency Map · 규칙 추출
 ---
 
-## 기본설명
+## 도입
 선형회귀는 $\hat y = w_0 + \sum_i w_i x_i$ 형태로 예측한다. 분류에 쓰이는 로지스틱 회귀는 여기에 시그모이드를 씌워 $\hat p = \sigma(w_0 + \sum_i w_i x_i)$로 확률을 낸다. 이 경우 계수 $w_i$를 지수함수에 넣은 $e^{w_i}$가 그 입력이 한 단위 늘어날 때 오즈가 몇 배로 바뀌는지를 뜻하는 오즈비가 된다.
 
 계수 크기를 곧바로 중요도로 읽으려면 조건이 하나 붙는다. 입력값들의 단위와 스케일이 다르면 계수도 그 단위를 따라가기 때문에 절대적인 크기를 서로 비교할 수 없다. 소득을 원 단위로 넣은 계수와 나이를 년 단위로 넣은 계수는 숫자만으로 비교가 안 된다. 이 문제를 피하려면 입력을 평균 0 표준편차 1로 표준화한 뒤 계수를 비교해야 한다.
 
 입력들 사이에 상관관계가 강하면 또 다른 문제가 생긴다. 두 입력이 거의 같은 정보를 담고 있으면 모델은 중요도를 임의로 나눠 갖거나 부호를 뒤집기도 한다. 정규화(L1, L2)를 걸면 계수 크기가 더 줄어들기 때문에 정규화를 쓴 모델의 계수는 그 자체로 중요도라기보다 정규화 강도까지 함께 반영된 값으로 읽어야 한다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="160" y1="30" x2="160" y2="210" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="160" y="50" width="220" height="22" class="dg-accent"/>
+<rect x="160" y="92" width="41" height="22" class="dg-dim"/>
+<rect x="110" y="134" width="50" height="22" class="dg-dim"/>
+<rect x="160" y="176" width="100" height="22" class="dg-dim"/>
+<text x="30" y="65" font-size="13">특징 A</text>
+<text x="30" y="107" font-size="13">특징 B</text>
+<text x="30" y="149" font-size="13">특징 C</text>
+<text x="30" y="191" font-size="13">특징 D</text>
+<text x="390" y="65" font-size="12" class="dg-dim">w = 0.80</text>
+<text x="211" y="107" font-size="12" class="dg-dim">w = 0.15</text>
+<text x="60" y="149" font-size="12" class="dg-dim">w = -0.20</text>
+<text x="270" y="191" font-size="12" class="dg-dim">w = 0.35</text>
+<text x="160" y="225" font-size="12" text-anchor="middle">계수 0</text>
+</svg>
+
+_계수가 클수록 그 특징이 예측을 크게 밀어올리거나 끌어내린다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

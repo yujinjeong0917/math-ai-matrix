@@ -4,12 +4,38 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 스코어 함수와 정규화 상수 무관성
-hook: 확률밀도의 로그를 입력으로 미분한 $\nabla_x\log p(x)$를 스코어 함수라 부릅니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+확률밀도의 로그를 입력으로 미분한 $\nabla_x\log p(x)$를 스코어 함수라 부릅니다. 확산모델이나 에너지 기반 모델은 바로 이 스코어를 신경망으로 근사하도록 학습됩니다. 그런데 확률밀도 $p(x)$를 정확히 알려면 보통 계산하기 아주 어려운 정규화 상수까지 필요합니다. 스코어 함수는 이 정규화 상수를 아예 몰라도 계산할 수 있습니다. 왜 그런지 직접 확인해 봅니다.
+
+## 명제
 $p(x)=\tilde p(x)/Z$ ($Z=\int\tilde p(x')dx'$, $x$와 무관한 상수)이면 $\nabla_x\log p(x) = \nabla_x\log\tilde p(x)$ 이다.
+
+## 그림
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="200" cy="150" rx="150" ry="100" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="200" cy="150" rx="100" ry="65" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<ellipse cx="200" cy="150" rx="50" ry="32" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="200" cy="150" r="3" class="dg-accent"/>
+<line x1="70" y1="70" x2="120" y2="105" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="120,105 108,102 113,113" class="dg-stroke-accent"/>
+<line x1="330" y1="70" x2="278" y2="105" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="278,105 288,100 285,111" class="dg-stroke-accent"/>
+<line x1="330" y1="230" x2="278" y2="195" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="278,195 288,198 285,187" class="dg-stroke-accent"/>
+<line x1="70" y1="230" x2="120" y2="195" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="120,195 108,197 112,187" class="dg-stroke-accent"/>
+<line x1="200" y1="30" x2="200" y2="75" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="200,75 195,64 205,64" class="dg-stroke-accent"/>
+<line x1="200" y1="270" x2="200" y2="225" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="200,225 195,236 205,236" class="dg-stroke-accent"/>
+<text x="205" y="145" font-size="11">밀도 최고점</text>
+<text x="25" y="280" class="dg-dim" font-size="12">화살표: ∇log p(x), 정규화 상수와 무관하게 밀도가 높은 중심을 향함</text>
+</svg>
+
+_데이터 분포 위 여러 점에서 ∇log p(x)는 밀도가 높은 쪽을 가리키는 벡터장을 이룬다._
 
 ## 문제
 먼저 $\log p(x)$를 두 조각으로 쪼개는 것이 다음 목표다. 로그는 나눗셈을 뺄셈으로 바꾸는 성질이 있다. 이 성질을 그대로 적용하면 $\log p(x) = \log\dfrac{\tilde p(x)}{Z} = $==빈칸== 이다.

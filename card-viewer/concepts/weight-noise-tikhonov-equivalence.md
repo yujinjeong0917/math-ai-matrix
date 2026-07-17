@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 가중치 노이즈 주입과 정칙화의 동치성: 테일러 전개로 본 그래디언트 벌점
-hook: 학습 중에 가중치에 작은 잡음을 섞어 넣으면 모델이 더 안정적으로 일반화된다는 것은 실무에서 잘 알려진 현상입니다.
 related: L1 정칙화의 연화임계값 유도
 ---
 
-## 기본설명
+## 도입
+학습 중에 가중치에 작은 잡음을 섞어 넣으면 모델이 더 안정적으로 일반화된다는 것은 실무에서 잘 알려진 현상입니다. 그런데 이 잡음 주입을 "기대손실"의 관점에서 테일러 전개해보면, 그 효과가 우연이 아니라 출력의 가중치에 대한 그래디언트 크기에 비례하는 명시적인 정칙화항으로 나타난다는 것을 정확히 증명할 수 있습니다. 즉 잡음 주입 학습은 그래디언트가 큰(민감한) 방향의 해를 피하도록 만드는 매끄러운 정칙화 기법입니다.
+
+## 명제
 모델 출력을 $\hat y_w(x)$, 제곱오차손실을 $(\hat y_w(x)-y)^2$ 라 하자. 학습 시 가중치에 잡음 $\tilde w=w+\varepsilon$, $\varepsilon\sim\mathcal N(0,\eta I)$ 를 주입한 기대손실을 1차 테일러 전개하면 $$\mathbb E_\varepsilon\big[(\hat y_{w+\varepsilon}(x)-y)^2\big] \approx (\hat y_w(x)-y)^2 + \eta\,\big\|\nabla_w \hat y_w(x)\big\|^2$$ 이다. 즉 데이터 전체에 대한 기대값을 취하면 원래의 손실에 그래디언트 제곱노름에 비례하는 정칙화항 $\eta\,\mathbb E_{x,y}[\|\nabla_w\hat y_w(x)\|^2]$ 이 더해진 것과 같다.
+
 
 ## 문제
 $\varepsilon$이 작다고 가정하고 $\hat y_{w+\varepsilon}(x)$를 $w$ 주변에서 1차까지 테일러 전개한다: $$\hat y_{w+\varepsilon}(x) \approx \hat y_w(x) + \varepsilon^\top g,\qquad g:=\nabla_w\hat y_w(x)$$ 이제 이를 손실식에 대입하면 $(\hat y_{w+\varepsilon}(x)-y)^2 \approx (\hat y_w(x)-y+\varepsilon^\top g)^2$ 이고, 이를 전개하면 ==빈칸== 가 된다.

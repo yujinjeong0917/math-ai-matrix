@@ -4,12 +4,30 @@ theme: NUMERIC
 domainLabel: 수치해석 · 기하
 subLabel: 기하 · 측도
 title: 차원의 저주: 국소적 방법의 표본 요구량과 거리 집중
-hook: KNN 같은 국소적(비모수) 방법은 "가까운 이웃들은 비슷하다"는 가정에 의존합니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+KNN 같은 국소적(비모수) 방법은 "가까운 이웃들은 비슷하다"는 가정에 의존합니다. 그런데 차원이 높아지면 두 가지 문제가 동시에 생겨요. 첫째, 데이터가 채우고 있는 공간의 부피가 차원에 따라 기하급수적으로 커지기 때문에, 같은 밀도로 국소 이웃을 채우려면 표본 수가 차원에 지수적으로 늘어나야 합니다. 둘째, 좌표가 많아질수록 임의의 점들 사이 거리들이 서로 비슷해지는 "거리 집중" 현상이 일어나서, 가장 가까운 이웃과 가장 먼 이웃의 거리 비율이 1에 가까워집니다. 두 현상 모두 고차원에서 "가까움"이라는 개념 자체를 무의미하게 만듭니다.
+
+## 명제
 (a) 단위 초입방체 $[0,1]^d$ 위에 데이터가 퍼져 있을 때, 중심을 공유하는 한 변 길이 $e$인 초입방체가 차지하는 부피 비율은 $e^d$이다. 고정된 부피 비율 $p\in(0,1)$을 담으려면 변 길이 $e_d(p)=p^{1/d}\to 1$ ($d\to\infty$)이 되어 "국소" 이웃이 사실상 전체 범위를 덮어야 한다. 동등하게, 국소 스케일 $r<1$을 고정하면 이웃이 담는 데이터 비율은 $p=r^d\to0$이 지수적으로 감소하므로, 이웃 안에 평균 $k$개의 점을 유지하려면 전체 표본 수 $N=k\,r^{-d}$가 차원에 지수적으로 증가해야 한다. (b) $X_1,\dots,X_d$가 서로 독립이고 $E[X_i^2]=\nu<\infty,\ \mathrm{Var}(X_i^2)=\sigma^2<\infty$인 확률변수라 하고 $D_d=\sum_{i=1}^d X_i^2$(원점으로부터 제곱거리)라 하자. 그러면 임의의 $\epsilon>0$에 대해 $D_d/(d\nu)\to 1$ (확률수렴)이다. 따라서 고정된 $n$개의 점에 대해 $\max_k D_d^{(k)} / \min_k D_d^{(k)} \to 1$ (확률수렴)이 되어, 가장 가깝고 가장 먼 이웃의 거리가 구별 불가능해진다.
+
+## 그림
+<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="115" y="20" font-size="12" text-anchor="middle">d=2: 부피 10%를 담는 정사각형 (e≈0.32)</text>
+<rect x="45" y="35" width="140" height="140" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="80" width="50" height="50" class="dg-accent"/>
+<text x="60" y="200" font-size="10" class="dg-dim">국소 이웃이 실제로 작다</text>
+<line x1="230" y1="10" x2="230" y2="210" class="dg-line" stroke-width="1"/>
+<text x="460" y="20" font-size="12" text-anchor="middle">d=100: 같은 10%를 담으려면 e≈0.977</text>
+<rect x="290" y="35" width="340" height="140" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="295" y="40" width="330" height="130" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="330" y="110" font-size="11" class="dg-dim">"국소" 영역이 거의 전체를 덮음</text>
+<text x="290" y="200" font-size="11">d↑ ⇒ 최근접/최원점 거리비 → 1 (거리 집중)</text>
+</svg>
+
+_차원이 커질수록 같은 부피 비율을 담는 국소 영역이 전체 공간을 거의 다 덮어 "가까움"이 무의미해진다._
 
 ## 문제
 이 초입방체가 전체 부피의 $p$만큼을 담기를 원한다고 하자: $e_d(p)^d = p$. 양변에 $1/d$ 제곱을 취하면 $e_d(p) = $==빈칸== 이다.

@@ -69,52 +69,51 @@
     background: var(--card-bg); color: var(--card-ink); overflow: hidden;
     transform: scale(0.5); transform-origin: top left;
   }
-  /* ===== 헤더 — 고정(측정값 그대로) ===== */
-  .brand { position: absolute; top: 20pt; left: 28pt; right: 28pt; font-size: 11pt; color: var(--card-dim); letter-spacing: 0.04em; }
-  .divider { position: absolute; left: 28pt; right: 28pt; height: 1pt; background: var(--card-border); }
-  .theme-tag {
-    position: absolute; left: 36pt; top: 76pt; height: 16pt; padding: 0 10pt;
-    background: var(--card-black); color: #fff; font-size: 9.5pt; font-weight: 700;
-    display: flex; align-items: center; letter-spacing: 0.06em; border-radius: 2pt;
+  /* =========================================================
+     레이아웃 v2 — "종이 위의 Apple": 박스 대신 여백과 타이포로 위계를 만든다.
+     칩·필박스·구분선 대신 전체를 하나의 읽는 흐름으로 잇고, 도메인 악센트
+     색 하나만 절제해서 쓴다. 헤더 자리는 유지하되 시각언어는 새로 짰다.
+     ========================================================= */
+  .card { padding: 32pt 34pt; display: flex; flex-direction: column; }
+  .eyebrow-row {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 9pt; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent, #8a8a8a);
+    margin: 0 0 6pt; display: flex; justify-content: space-between; gap: 8pt;
   }
-  .concept-title { position: absolute; left: 132pt; top: 78pt; right: 28pt; font-size: 15pt; font-weight: 800; }
-  .hook { position: absolute; left: 38pt; top: 152pt; right: 38pt; font-size: 10.5pt; color: var(--card-dim); }
-  .cat-row { position: absolute; left: 38pt; top: 184pt; right: 38pt; text-align: center; }
-  .cat-row .category { font-size: 10pt; color: var(--card-dim); display: block; margin-bottom: 4pt; }
-  .cat-row .subconcept { font-size: 14pt; font-weight: 800; }
-  .back .concept-title-row { position: absolute; left: 38pt; right: 38pt; top: 100pt; display: flex; justify-content: space-between; align-items: baseline; }
-  .back .concept-title-row .concept-title-inline { font-size: 15pt; font-weight: 800; }
-  .back .concept-title-row .cat-inline { text-align: right; font-size: 10pt; color: var(--card-dim); }
+  .card-title { font-size: 21pt; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 14pt; }
+  .back .card-title { font-size: 15pt; margin-bottom: 16pt; }
 
-  /* ===== 콘텐츠 영역 — 헤더 아래는 내용 길이에 맞춰 유연하게 ===== */
-  .content-zone {
-    position: absolute; left: 38pt; right: 38pt; display: flex; flex-direction: column; gap: 14pt;
-    overflow: hidden;
+  .lede { font-size: 11.5pt; line-height: 1.78; color: #4a4a4a; margin: 0 0 16pt; }
+
+  .prop {
+    border-left: 2.5pt solid var(--accent, #8a8a8a); padding: 2pt 0 2pt 14pt;
+    font-size: 11pt; line-height: 1.6; color: var(--card-ink); margin: 0 0 16pt;
   }
-  .front .content-zone { top: 210pt; bottom: 44pt; }
-  .back .content-zone { top: 138pt; bottom: 34pt; }
-  .box-fill {
-    background: var(--card-fill); border-radius: 8pt;
-    padding: 14pt 18pt; font-size: 11pt; line-height: 1.6; flex: 0 0 auto; overflow: visible;
+
+  .diagram-wrap { margin: 0 0 16pt; text-align: center; }
+  .diagram-wrap svg { max-width: 100%; max-height: 108pt; }
+  .diagram-cap { font-size: 8.5pt; color: #9a9a9a; font-style: italic; margin: 5pt 0 0; }
+
+  .section-label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 8.5pt; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent, #8a8a8a); margin: 0 0 6pt;
   }
-  .box-outline {
-    border: 1pt solid var(--card-border); border-radius: 8pt;
-    padding: 14pt 18pt; font-size: 11pt; line-height: 1.68; flex: 0 0 auto; overflow: visible; min-height: 60pt;
-  }
-  .box-label { font-size: 9.5pt; color: var(--card-dim); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 7pt; }
-  .footer-note {
-    position: absolute; left: 38pt; right: 38pt; font-size: 9pt; color: var(--card-dim);
-  }
-  .front .footer-note { bottom: 18pt; text-align: right; }
-  .back .footer-note { bottom: 12pt; }
-  .related-chips { display: flex; flex-wrap: wrap; gap: 5pt; }
-  .related-chip {
-    background: var(--card-fill); border-radius: 999pt; padding: 3pt 10pt; font-size: 8.5pt; color: var(--card-ink);
-  }
-  .back .concept-title-row .cat-inline strong { display: block; font-size: 13pt; color: var(--card-ink); font-weight: 800; }
-  .blank { border-bottom: 1.5pt dashed var(--card-ink); padding: 0 3pt; }
-  .box-fill p, .box-outline p { margin: 0 0 8pt; }
-  .box-fill p:last-child, .box-outline p:last-child { margin-bottom: 0; }
+  .rule { border: none; border-top: 0.75pt solid #e2e0e0; margin: 4pt 0 16pt; }
+
+  .prose { font-size: 11.3pt; line-height: 1.72; color: var(--card-ink); margin: 0 0 4pt; }
+  .prose p { margin: 0 0 9pt; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  .spacer { flex: 1 1 auto; }
+
+  .footer-note { font-size: 9pt; color: #9a9a9a; margin-top: 14pt; }
+  .front .footer-note { text-align: right; }
+
+  .related-line { font-size: 9.5pt; color: #6a6a6a; margin-top: 14pt; }
+  .related-line strong { color: var(--card-ink); font-weight: 700; }
+  .related-line a, .related-line .r-item { color: var(--accent, #6a6a6a); }
+
+  .blank { border-bottom: 1.5pt solid var(--accent, #8a8a8a); padding: 0 4pt; }
 
   .card-pair-label { font-size: 12px; color: var(--app-dim); text-align: center; }
 
@@ -216,58 +215,71 @@
 
   function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-  function headerHtml(m, category, isBack) {
-    if (isBack) {
-      return '<p class="brand">수학 × AI 매트릭스</p>' +
-        '<div class="divider" style="top:62pt;"></div>' +
-        '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
-        '<div class="concept-title-row">' +
-          '<span class="concept-title-inline">' + esc(m.title || "") + '</span>' +
-          '<span class="cat-inline">' + esc(category) + '<strong>' + esc(m.title || "") + '</strong></span>' +
-        '</div>' +
-        '<div class="divider" style="top:126pt;"></div>';
-    }
-    return '<p class="brand">수학 × AI 매트릭스</p>' +
-      '<div class="divider" style="top:62pt;"></div>' +
-      '<div class="theme-tag">' + esc(m.theme || "") + '</div>' +
-      '<p class="concept-title">' + esc(m.title || "") + '</p>' +
-      '<div class="divider" style="top:144pt;"></div>' +
-      '<p class="hook">' + esc(m.hook || "") + '</p>' +
-      '<div class="divider" style="top:176pt;"></div>' +
-      '<div class="cat-row"><span class="category">' + esc(category) + '</span><span class="subconcept">' + esc(m.title || "") + '</span></div>';
+  var DOMAIN_ACCENT = {
+    linalg: "#33569e", calc: "#b85c26", prob: "#1c7f68", info: "#7d3d92",
+    disc: "#93701f", numeric: "#a13b52", stat: "#3d5a80", causal: "#2f7d6b",
+    disc2: "#5f7a3d", num2: "#2d7d8a", linalg2: "#4a3d8a", calc2: "#8a6a1f",
+    info2: "#8a2f5a", xai: "#6a3f8f", llm: "#2f6a5a", product: "#a1327d",
+    mlops: "#2f5a7d", recsys: "#7d3f2f", arch: "#6a5a1f", pm: "#7d2f5a",
+    found: "#2f7a4a", axis: "#2f6a7a"
+  };
+
+  function eyebrowHtml(m, category) {
+    return '<div class="eyebrow-row"><span>' + esc(category) + '</span><span>' + esc(m.theme || "") + '</span></div>';
   }
 
-  function relatedChipsHtml(related) {
+  function relatedLineHtml(related) {
     if (!related) return "";
     var items = related.split("·").map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4);
     if (!items.length) return "";
-    return '<div class="related-chips">' + items.map(function (t) {
-      return '<span class="related-chip">' + esc(t) + '</span>';
-    }).join("") + '</div>';
+    return '<p class="related-line"><strong>더 보면 좋은 개념 · </strong>' +
+      items.map(function (t) { return '<span class="r-item">' + esc(t) + '</span>'; }).join(' · ') + '</p>';
+  }
+
+  function diagramHtml(s) {
+    var raw = s["그림"];
+    if (!raw) return "";
+    var svgEnd = raw.lastIndexOf("</svg>");
+    if (svgEnd === -1) return "";
+    var svg = raw.slice(0, svgEnd + 6);
+    var rest = raw.slice(svgEnd + 6).trim();
+    var capMatch = rest.match(/_(.+)_/);
+    var caption = capMatch ? capMatch[1] : "";
+    return '<div class="diagram-wrap">' + svg + (caption ? '<p class="diagram-cap">' + esc(caption) + '</p>' : '') + '</div>';
   }
 
   function render(raw) {
     var parsed = parseMd(raw);
     var m = parsed.meta, s = parsed.sections;
     var category = (m.domainLabel || "") + (m.subLabel ? " · " + m.subLabel : "");
+    var accent = DOMAIN_ACCENT[(m.theme || "").toLowerCase()] || "#8a8a8a";
+    var relatedHtml = relatedLineHtml(m.related);
+
+    document.getElementById("cardFront").style.setProperty("--accent", accent);
+    document.getElementById("cardBack").style.setProperty("--accent", accent);
 
     document.getElementById("cardFront").innerHTML =
-      headerHtml(m, category, false) +
-      '<div class="content-zone">' +
-        '<div class="box-fill"><p class="box-label">기본 설명</p>' + mdToHtml(s["기본설명"]) + '</div>' +
-        '<div class="box-outline"><p class="box-label">문제</p>' + mdToHtml(s["문제"]) + '</div>' +
-      '</div>' +
+      eyebrowHtml(m, category) +
+      '<p class="card-title">' + esc(m.title || "") + '</p>' +
+      '<div class="lede">' + mdToHtml(s["도입"]) + '</div>' +
+      '<div class="prop">' + mdToHtml(s["명제"]) + '</div>' +
+      diagramHtml(s) +
+      '<hr class="rule">' +
+      '<p class="section-label">직접 풀어보기</p>' +
+      '<div class="prose" id="frontQuestion">' + mdToHtml(s["문제"]) + '</div>' +
+      '<div class="spacer"></div>' +
       '<p class="footer-note">정답은 뒷면에 →</p>';
 
-    var relatedHtml = relatedChipsHtml(m.related);
-
     document.getElementById("cardBack").innerHTML =
-      headerHtml(m, category, true) +
-      '<div class="content-zone" id="backZone">' +
-        '<div class="box-fill"><p class="box-label">해설</p>' + mdToHtml(s["해설"]) + '</div>' +
-        '<div class="box-outline" id="backExample"><p class="box-label">예시</p>' + mdToHtml(s["예시"]) + '</div>' +
-      '</div>' +
-      (relatedHtml ? '<div class="footer-note">' + relatedHtml + '</div>' : '');
+      eyebrowHtml(m, category) +
+      '<p class="card-title">' + esc(m.title || "") + '</p>' +
+      '<p class="section-label">왜 그런가</p>' +
+      '<div class="prose" id="backCommentary">' + mdToHtml(s["해설"]) + '</div>' +
+      '<hr class="rule">' +
+      '<p class="section-label">숫자로 보면</p>' +
+      '<div class="prose" id="backExample">' + mdToHtml(s["예시"]) + '</div>' +
+      '<div class="spacer"></div>' +
+      relatedHtml;
 
     document.getElementById("card2Wrap").style.display = "none";
 
@@ -278,25 +290,26 @@
       });
     }
 
-    // 렌더 후 실제 높이를 재서, 뒷면 콘텐츠가 카드 하나에 안 들어가면
-    // "예시" 전체를 카드 2 앞면으로 옮기고 뒷면엔 짧은 안내만 남긴다.
+    // 뒷면 전체 내용이 카드 한 장에 안 들어가면 "숫자로 보면"(예시)을
+    // 카드 2 앞면으로 옮기고, 뒷면엔 이어진다는 안내만 남긴다.
     requestAnimationFrame(function () {
-      var zone = document.getElementById("backZone");
-      if (zone.scrollHeight > zone.clientHeight + 2) {
+      var back = document.getElementById("cardBack");
+      if (back.scrollHeight > back.clientHeight + 2) {
         var exampleHtml = mdToHtml(s["예시"]);
-        document.getElementById("backExample").innerHTML =
-          '<p class="box-label">예시</p><p>내용이 길어 카드 2 앞면에 이어집니다 →</p>';
+        document.getElementById("backExample").innerHTML = '<p>내용이 길어 카드 2 앞면에 이어집니다 →</p>';
+
+        document.getElementById("card2Front").style.setProperty("--accent", accent);
+        document.getElementById("card2Back").style.setProperty("--accent", accent);
 
         document.getElementById("card2Front").innerHTML =
-          headerHtml(m, category, false).replace('<p class="hook">' + esc(m.hook || "") + '</p>', '<p class="hook">숫자로 먼저 보기 (이어서)</p>') +
-          '<div class="content-zone">' +
-            '<div class="box-outline" style="flex:1 1 auto;"><p class="box-label">예시 (이어서)</p>' + exampleHtml + '</div>' +
-          '</div>';
+          eyebrowHtml(m, category) +
+          '<p class="card-title">' + esc(m.title || "") + '</p>' +
+          '<p class="section-label">숫자로 보면 (이어서)</p>' +
+          '<div class="prose">' + exampleHtml + '</div>';
         document.getElementById("card2Back").innerHTML =
-          headerHtml(m, category, true) +
-          '<div class="content-zone">' +
-            (relatedHtml ? '<div class="box-fill"><p class="box-label">관련 개념</p>' + relatedHtml + '</div>' : '<div class="box-fill"><p class="box-label">메모</p><p>&nbsp;</p></div>') +
-          '</div>';
+          eyebrowHtml(m, category) +
+          '<p class="card-title">' + esc(m.title || "") + '</p>' +
+          (relatedHtml || '<p class="section-label">메모</p>');
         document.getElementById("card2Wrap").style.display = "block";
 
         if (window.renderMathInElement) {
@@ -354,11 +367,103 @@
     });
   });
 
-  // 초기 예시 로드
-  fetch("./concepts/pca.md").then(function (r) { return r.text(); }).then(function (text) {
-    sourceEl.value = text;
-    render(text);
-  }).catch(function () {});
+  // ===== 배치 인쇄 모드: ?slugs=a,b,c 로 여러 개념을 한 번에 인쇄 대기열로 =====
+  function makePageA6(cls) {
+    var page = document.createElement("div");
+    page.className = "page-a6";
+    var card = document.createElement("div");
+    card.className = "card " + cls;
+    page.appendChild(card);
+    return { page: page, card: card };
+  }
+
+  function fillFront(card, m, s, accent, category) {
+    card.style.setProperty("--accent", accent);
+    card.innerHTML =
+      eyebrowHtml(m, category) +
+      '<p class="card-title">' + esc(m.title || "") + '</p>' +
+      '<div class="lede">' + mdToHtml(s["도입"]) + '</div>' +
+      '<div class="prop">' + mdToHtml(s["명제"]) + '</div>' +
+      diagramHtml(s) +
+      '<hr class="rule">' +
+      '<p class="section-label">직접 풀어보기</p>' +
+      '<div class="prose">' + mdToHtml(s["문제"]) + '</div>' +
+      '<div class="spacer"></div>' +
+      '<p class="footer-note">정답은 뒷면에 →</p>';
+  }
+
+  function fillBack(card, m, s, accent, category, relatedHtml) {
+    card.style.setProperty("--accent", accent);
+    card.innerHTML =
+      eyebrowHtml(m, category) +
+      '<p class="card-title">' + esc(m.title || "") + '</p>' +
+      '<p class="section-label">왜 그런가</p>' +
+      '<div class="prose">' + mdToHtml(s["해설"]) + '</div>' +
+      '<hr class="rule">' +
+      '<p class="section-label">숫자로 보면</p>' +
+      '<div class="prose exBox">' + mdToHtml(s["예시"]) + '</div>' +
+      '<div class="spacer"></div>' +
+      relatedHtml;
+  }
+
+  async function renderBatch(slugs) {
+    document.querySelector(".editor-panel").style.display = "none";
+    var panel = document.getElementById("previewPanel");
+    panel.innerHTML = "";
+    for (var i = 0; i < slugs.length; i++) {
+      var slug = slugs[i].trim();
+      if (!slug) continue;
+      var text;
+      try { text = await fetch("./concepts/" + slug + ".md").then(function (r) { return r.text(); }); }
+      catch (e) { continue; }
+      var parsed = parseMd(text);
+      var m = parsed.meta, s = parsed.sections;
+      var category = (m.domainLabel || "") + (m.subLabel ? " · " + m.subLabel : "");
+      var accent = DOMAIN_ACCENT[(m.theme || "").toLowerCase()] || "#8a8a8a";
+      var relatedHtml = relatedLineHtml(m.related);
+
+      var label = document.createElement("p");
+      label.className = "card-pair-label";
+      label.textContent = (i + 1) + ". " + m.title;
+      panel.appendChild(label);
+
+      var f = makePageA6("front"); fillFront(f.card, m, s, accent, category); panel.appendChild(f.page);
+      var b = makePageA6("back"); fillBack(b.card, m, s, accent, category, relatedHtml); panel.appendChild(b.page);
+
+      if (window.renderMathInElement) {
+        window.renderMathInElement(f.page, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false });
+        window.renderMathInElement(b.page, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false });
+      }
+      await new Promise(function (r) { requestAnimationFrame(r); });
+      if (b.card.scrollHeight > b.card.clientHeight + 2) {
+        var exampleHtml = mdToHtml(s["예시"]);
+        b.card.querySelector(".exBox").innerHTML = '<p>내용이 길어 다음 카드에 이어집니다 →</p>';
+        var f2 = makePageA6("front");
+        f2.card.style.setProperty("--accent", accent);
+        f2.card.innerHTML = eyebrowHtml(m, category) + '<p class="card-title">' + esc(m.title || "") + '</p>' +
+          '<p class="section-label">숫자로 보면 (이어서)</p><div class="prose">' + exampleHtml + '</div>';
+        var b2 = makePageA6("back");
+        b2.card.style.setProperty("--accent", accent);
+        b2.card.innerHTML = eyebrowHtml(m, category) + '<p class="card-title">' + esc(m.title || "") + '</p>' + (relatedHtml || '<p class="section-label">메모</p>');
+        panel.appendChild(f2.page); panel.appendChild(b2.page);
+        if (window.renderMathInElement) {
+          window.renderMathInElement(f2.page, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false });
+          window.renderMathInElement(b2.page, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }], throwOnError: false });
+        }
+      }
+    }
+  }
+
+  var urlSlugs = new URLSearchParams(location.search).get("slugs");
+  if (urlSlugs) {
+    renderBatch(urlSlugs.split(","));
+  } else {
+    // 초기 예시 로드 (단일 편집 모드)
+    fetch("./concepts/pca.md").then(function (r) { return r.text(); }).then(function (text) {
+      sourceEl.value = text;
+      render(text);
+    }).catch(function () {});
+  }
 </script>
 </body>
 </html>

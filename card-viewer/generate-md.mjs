@@ -30,16 +30,19 @@ function stripHtml(s) {
     .trim();
 }
 
-function firstSentence(s) {
-  const clean = stripHtml(s).replace(/\*\*/g, "");
-  const m = clean.match(/^(.{10,140}?[.?!])(\s|$)/);
-  return (m ? m[1] : clean.slice(0, 90)).trim();
-}
-
-function proposition(explanation) {
-  const idx = explanation.indexOf("명제.</strong>");
-  if (idx === -1) return stripHtml(explanation);
-  return stripHtml(explanation.slice(idx + "명제.</strong>".length)).trim();
+// 도입부(왜 궁금한가)와 명제(형식적 진술)를 분리한다.
+// 웹 원본의 친절한 도입부를 카드에서도 그대로 살리기 위함 — 이전 버전은
+// "명제." 이후만 남기고 도입부를 통째로 버려서 카드가 공식으로 바로
+// 시작하는 문제가 있었다(pub-admin 평가에서 지적됨).
+function splitExplanation(explanation) {
+  const marker = "명제.</strong>";
+  const idx = explanation.indexOf(marker);
+  if (idx === -1) {
+    return { lede: stripHtml(explanation), proposition: "" };
+  }
+  const lede = stripHtml(explanation.slice(0, idx).replace(/<br><br>\s*<strong>\s*$/, "")).trim();
+  const proposition = stripHtml(explanation.slice(idx + marker.length)).trim();
+  return { lede, proposition };
 }
 
 function firstBlankSection(concept) {
@@ -60,14 +63,15 @@ function firstBlankSection(concept) {
 function toSlugMd(slug, concept) {
   const theme = concept.domain.toUpperCase();
   const domainLabel = DOMAIN_LABEL[concept.domain] || concept.domain;
-  const hook = firstSentence(concept.explanation);
-  const basic = proposition(concept.explanation);
+  const { lede, proposition } = splitExplanation(concept.explanation);
   const bq = firstBlankSection(concept);
   const question = bq ? bq.text : "(이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)";
   const answer = bq ? `정답: $${bq.answer}$` : "";
   const commentary = bq ? bq.why : (concept.intuition ? stripHtml(concept.intuition) : "");
   const example = stripHtml(concept.example || "");
   const related = (concept.related || []).slice(0, 4).map(function (r) { return r.label; }).join(" · ");
+  const diagram = concept.diagram ? concept.diagram.trim() : "";
+  const diagramCaption = concept.diagramCaption ? stripHtml(concept.diagramCaption) : "";
 
   return `---
 slug: ${slug}
@@ -75,12 +79,15 @@ theme: ${theme}
 domainLabel: ${domainLabel}
 subLabel: ${concept.subLabel || ""}
 title: ${concept.title}
-hook: ${hook}
 related: ${related}
 ---
 
-## 기본설명
-${basic}
+## 도입
+${lede}
+
+## 명제
+${proposition}
+${diagram ? "\n## 그림\n" + diagram + (diagramCaption ? "\n\n_" + diagramCaption + "_" : "") : ""}
 
 ## 문제
 ${question}

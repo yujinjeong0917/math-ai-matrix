@@ -4,16 +4,35 @@ theme: LLM
 domainLabel: LLM/Agent
 subLabel: 프롬프트 캐싱
 title: 캐시 TTL: 캐시도 유효기간이 있다
-hook: TTL은 캐시 항목이 마지막으로 쓰인 시점부터 다음 요청이 오기까지 허용되는 최대 대기 시간이다.
 related: 캐싱 비용 구조 · 캐시 히트율 · 프리픽스 캐싱
 ---
 
-## 기본설명
+## 도입
 TTL은 캐시 항목이 마지막으로 쓰인 시점부터 다음 요청이 오기까지 허용되는 최대 대기 시간이다. 제공업체마다 다르지만 보통 5분에서 1시간 사이로 설정된다. TTL 안에 같은 프리픽스로 다시 요청이 오면 캐시가 갱신되며 유효기간이 다시 연장되고 TTL을 넘기면 캐시가 만료되어 그 프리픽스는 캐시 미스로 처리되고 처음부터 다시 계산해 새로 캐시에 쓴다.
 
 TTL이 필요한 이유는 캐시가 차지하는 메모리가 유한한 자원이기 때문이다. 모든 요청의 프리픽스를 영구히 캐시에 남겨두면 실제로는 다시 쓰이지 않는 캐시가 계속 쌓여 메모리를 낭비하고 결국 활발히 재사용되는 캐시를 위한 공간까지 밀어낼 수 있다. TTL은 일정 시간 이상 재사용되지 않는 캐시를 자동으로 회수해 이런 낭비를 막는 장치다.
 
 실무에서는 TTL을 고려해 호출 간격을 설계하는 것이 중요하다. 같은 시스템 프롬프트를 쓰는 요청이라도 TTL보다 뜸하게 들어오면 매번 캐시가 만료된 뒤 다시 계산되어 캐시 쓰기 단가만 반복해서 물게 되고 캐시 히트로 인한 절감 효과를 전혀 못 본다. 반대로 TTL 안에 충분히 자주 요청이 들어오는 트래픽 패턴이라면 캐시가 계속 살아있는 상태로 유지되어 캐시 히트 단가의 이득을 안정적으로 누릴 수 있다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg">
+<line x1="20" y1="140" x2="600" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="60" cy="140" r="5" class="dg-accent" stroke="none"/>
+<text x="60" y="165" text-anchor="middle" font-size="11">요청1(쓰기)</text>
+<rect x="60" y="100" width="160" height="20" class="dg-dim" stroke="none"/>
+<text x="140" y="95" text-anchor="middle" font-size="11" class="dg-dim">TTL 유효 구간</text>
+<circle cx="180" cy="140" r="5" class="dg-accent" stroke="none"/>
+<text x="180" y="165" text-anchor="middle" font-size="11">요청2(히트)</text>
+<rect x="180" y="100" width="160" height="20" class="dg-dim" stroke="none"/>
+<text x="260" y="95" text-anchor="middle" font-size="11" class="dg-dim">TTL 연장</text>
+<circle cx="500" cy="140" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="500" y="165" text-anchor="middle" font-size="11">요청3(TTL 만료 후, 미스)</text>
+</svg>
+
+_TTL 안에 다시 요청이 오면 캐시가 히트되며 연장되고 TTL을 넘기면 만료되어 다시 계산한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

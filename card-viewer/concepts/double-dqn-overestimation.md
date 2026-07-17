@@ -4,12 +4,41 @@ theme: PROB
 domainLabel: 확률 · 통계
 subLabel: 통계적 추론
 title: Double DQN: 최댓값 연산이 만드는 과대추정 편향을 두 네트워크로 분리해 없애기
-hook: 표준 Q-러닝의 목표값은 $r+\gamma\max_{a'}Q(s',a')$입니다.
 related: 기대제곱오차의 편향-분산 분해 · 볼록함수와 옌센 부등식 · 벨만 최적 연산자의 축소사상과 Q-테이블 수렴
 ---
 
-## 기본설명
+## 도입
+표준 Q-러닝의 목표값은 $r+\gamma\max_{a'}Q(s',a')$입니다. 이때 $Q$는 함수근사나 유한한 표본으로부터 학습된 잡음 섞인 추정치입니다. 참값이 아니라 잡음이 낀 추정치들 사이에서 최댓값을 고르면, 우연히 잡음이 위로 튄 행동이 최댓값으로 뽑히기 쉽습니다. 그 결과 이 최댓값은 참값들의 최댓값보다 평균적으로 더 크게 나옵니다. 이 편향이 학습 내내 누적되면 Q값 전체가 실제보다 부풀어 오릅니다. Double DQN은 행동을 고르는 역할과 그 행동의 값을 매기는 역할을 서로 다른 두 추정치로 나눠서 이 편향을 없앱니다.
+
+## 명제
 유한한 행동집합의 각 행동 $a$에 대해 $X_a$가 참값 $Q^*(a)$의 편향 없는 추정량, 즉 $\mathbb{E}[X_a]=Q^*(a)$라 하자. 그러면 $\mathbb{E}[\max_aX_a]\ge\max_aQ^*(a)$이다. 반면 선택과 평가를 서로 독립인 두 추정량으로 분리하면 이 기댓값은 $\max_aQ^*(a)$를 넘지 않는다.
+
+## 그림
+<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="210" x2="500" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="120" x2="500" y2="120" class="dg-stroke-ink" stroke-width="2"/>
+<text x="360" y="115" font-size="12">참값의 최댓값 max Q*(a) = 0</text>
+<line x1="60" y1="108" x2="500" y2="108" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="360" y="101" font-size="12">추정치 최댓값의 기댓값 ≈ 0.5 (과대추정)</text>
+<text x="110" y="230" font-size="12">a1</text>
+<line x1="110" y1="100" x2="110" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="110" cy="100" r="4" class="dg-dim"/>
+<circle cx="110" cy="140" r="4" class="dg-dim"/>
+<line x1="90" y1="120" x2="130" y2="120" class="dg-stroke-ink" stroke-width="2"/>
+<text x="245" y="230" font-size="12">a2</text>
+<line x1="250" y1="100" x2="250" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="250" cy="100" r="4" class="dg-dim"/>
+<circle cx="250" cy="140" r="4" class="dg-dim"/>
+<line x1="230" y1="120" x2="270" y2="120" class="dg-stroke-ink" stroke-width="2"/>
+<text x="380" y="230" font-size="12">a3</text>
+<circle cx="390" cy="200" r="4" class="dg-dim"/>
+<line x1="370" y1="200" x2="410" y2="200" class="dg-stroke-ink" stroke-width="2"/>
+<text x="410" y="205" font-size="11" class="dg-dim">Q*(a3) = -5, 잡음 없음</text>
+<text x="60" y="14" font-size="12">잡음 섞인 추정치의 최댓값이 참값의 최댓값보다 위로 치우침</text>
+</svg>
+
+_행동 선택과 가치 평가를 같은 추정치로 하면 잡음의 최댓값이 참값의 최댓값 위로 편향된다._
 
 ## 문제
 참값 기준으로 최댓값을 주는 행동을 $a^*$라 하자. 즉 $Q^*(a^*)=\max_aQ^*(a)$이다. 잡음이 어떻게 나오든 상관없이, 특정 실현값 하나하나에서 $X_{a^*}$는 전체 최댓값 $\max_{a'}X_{a'}$을 절대 넘을 수 없다. 이 부등식은 잡음의 모든 실현값에서 항상 성립하므로 양변에 기댓값을 씌워도 부등호 방향이 그대로 유지된다. $\mathbb{E}[X_{a^*}] \le $==빈칸== 입니다.

@@ -4,16 +4,47 @@ theme: LLM
 domainLabel: LLM/Agent
 subLabel: 증강 · 재순위화
 title: Reranking: 검색결과를 한 번 더 정밀하게 정렬하기
-hook: 1차 검색에 쓰는 임베딩 모델은 흔히 bi-encoder 구조입니다.
 related: 하이브리드 검색 · RAG-Fusion
 ---
 
-## 기본설명
+## 도입
 1차 검색에 쓰는 임베딩 모델은 흔히 bi-encoder 구조입니다. 질문과 문서를 각각 독립적으로 벡터로 인코딩한 뒤 $\mathrm{sim}(q,d) = \cos(E(q), E(d))$처럼 두 벡터의 코사인 유사도로 관련성을 잽니다. 이 구조는 문서 벡터를 미리 계산해 인덱스에 저장해둘 수 있어 매우 빠르지만 질문과 문서를 따로 인코딩하기 때문에 둘 사이의 세밀한 상호작용은 반영하지 못합니다.
 
 Reranker는 보통 cross-encoder 구조를 씁니다. 질문과 문서를 하나의 입력으로 이어붙여 $s(q,d) = f_\theta(q,d)$처럼 함께 모델에 넣고 관련성 점수를 직접 출력합니다. 질문과 문서의 각 단어가 서로 어텐션을 주고받을 수 있어 훨씬 정밀하지만 후보마다 모델을 새로 돌려야 하므로 계산 비용이 커서 전체 문서에 적용하기는 어렵습니다.
 
 그래서 실무에서는 두 방식을 단계적으로 결합합니다. bi-encoder나 BM25로 먼저 넓게 후보를 추린 뒤 그중 상위 수십에서 수백 개만 cross-encoder로 재정렬합니다. 이렇게 하면 전체 문서에 대해서는 빠른 1차 검색의 속도를 유지하면서 최종적으로 사용자에게 노출되는 소수의 결과에 대해서는 정밀한 모델의 정확도를 얻을 수 있습니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="10" y="90" width="80" height="40" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="50" y="114" font-size="12" text-anchor="middle">질문</text>
+<line x1="90" y1="110" x2="140" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="140,110 130,105 130,115" class="dg-dim"/>
+<text x="140" y="30" font-size="11" class="dg-dim">1단계: 임베딩 검색(빠름)</text>
+<rect x="140" y="50" width="60" height="120" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="70" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="95" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="120" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="170" cy="145" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="170" y="190" font-size="10" text-anchor="middle" class="dg-dim">후보 수백개</text>
+<line x1="200" y1="110" x2="260" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="260,110 250,105 250,115" class="dg-dim"/>
+<text x="260" y="30" font-size="11" class="dg-accent">2단계: Reranker(정밀)</text>
+<rect x="260" y="70" width="120" height="80" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="320" y="108" font-size="11" text-anchor="middle" class="dg-accent">질문+문서</text>
+<text x="320" y="122" font-size="11" text-anchor="middle" class="dg-accent">정밀 채점</text>
+<line x1="380" y1="110" x2="440" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="440,110 430,105 430,115" class="dg-accent"/>
+<rect x="440" y="80" width="80" height="30" rx="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="480" y="100" font-size="11" text-anchor="middle">상위1</text>
+<rect x="440" y="120" width="80" height="30" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="480" y="140" font-size="11" text-anchor="middle">상위2</text>
+</svg>
+
+_빠른 1차 검색으로 후보를 넓게 추리고 정밀한 reranker로 소수만 다시 정렬합니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

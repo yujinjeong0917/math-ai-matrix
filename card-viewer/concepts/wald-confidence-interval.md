@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 신뢰구간 · 순차분석
 title: Wald 신뢰구간: MLE의 점근정규성에서 유도되는 커버리지
-hook: 점추정값 하나만으로는 불확실성을 표현할 수 없습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+점추정값 하나만으로는 불확실성을 표현할 수 없습니다. MLE가 점근적으로 정규분포를 따른다는 사실을 이용하면, "이 구간 안에 참값이 있을 확률이 대략 $1-\alpha$"라고 말할 수 있는 구간을 아주 자연스럽게 만들 수 있어요. 이것이 Wald 신뢰구간입니다. 핵심은 MLE의 표준화된 편차가 표준정규분포로 수렴한다는 사실 하나뿐입니다.
+
+## 명제
 정칙조건 하에서 MLE $\hat\theta_n$은 $\sqrt n(\hat\theta_n-\theta)\xrightarrow{d}N(0,1/I_1(\theta))$를 만족한다 ($I_1$: 관측값 1개당 피셔정보). 추정된 표준오차를 $\widehat{SE}=1/\sqrt{nI_1(\hat\theta_n)}$로 두고 $$CI_n=\big[\hat\theta_n-z_{\alpha/2}\widehat{SE},\ \hat\theta_n+z_{\alpha/2}\widehat{SE}\big]$$ 라 하면, 커버리지 확률 $P_\theta(\theta\in CI_n)$은 $n\to\infty$일 때 $1-\alpha$로 수렴한다.
+
 
 ## 문제
 $\widehat{SE}=1/\sqrt{nI_1(\hat\theta_n)}$의 정의를 그대로 대입하면 $W_n=\dfrac{\hat\theta_n-\theta}{\widehat{SE}}=\sqrt n(\hat\theta_n-\theta)\cdot$==빈칸==로 다시 쓸 수 있다.

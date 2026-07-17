@@ -4,12 +4,15 @@ theme: CAUSAL
 domainLabel: 인과추론
 subLabel: 잠재결과 프레임워크
 title: SUTVA 가정: 안정적 단위처치값과 간섭 편향
-hook: 잠재결과 $Y_i(1),Y_i(0)$을 정의할 때 우리는 암묵적으로 "개체 $i$의 결과는 개체 $i$ 자신의 처치에만 의존한다"고 가정한다.
 related: 
 ---
 
-## 기본설명
+## 도입
+잠재결과 $Y_i(1),Y_i(0)$을 정의할 때 우리는 암묵적으로 "개체 $i$의 결과는 개체 $i$ 자신의 처치에만 의존한다"고 가정한다. 하지만 백신처럼 이웃에게 파급되는(spillover) 처치라면 이 가정이 깨진다 — 내가 백신을 맞으면 나와 접촉하는 이웃의 감염 위험도 낮아지기 때문이다. SUTVA(Stable Unit Treatment Value Assumption)는 이런 상황을 배제하는 두 조건을 명시한다.
+
+## 명제
 SUTVA는 (i) 간섭없음(no interference): 전체 처치벡터 $\mathbf T=(T_1,\dots,T_n)$에 대해 $Y_i(\mathbf T)=Y_i(T_i)$, (ii) 처치의 단일버전(no hidden variation of treatments)으로 구성된다. 조건 (i)이 위반되어 개체 $i$의 잠재결과가 이웃의 처치에도 의존한다면, 단순 평균차 추정량은 일반적으로 '직접효과(direct effect)'의 불편추정량이 아니라 직접효과와 파급효과(spillover effect)가 뒤섞인 편향된 양을 추정한다.
+
 
 ## 문제
 SUTVA의 첫째 조건인 '간섭없음'은, 전체 처치벡터를 $\mathbf T=(T_1,\dots,T_n)$라 할 때 개체 $i$의 잠재결과가 $\mathbf T$ 전체가 아니라 자기 자신의 처치에만 의존한다는 것, 즉 $Y_i(\mathbf T) = $==빈칸== 라는 조건이다.

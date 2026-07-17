@@ -4,12 +4,32 @@ theme: LINALG2
 domainLabel: 선형대수 심화
 subLabel: 랜덤행렬 · 저랭크
 title: 에카르트-영(Eckart–Young) 정리: 프로베니우스 노름 최적 저랭크 근사
-hook: 추천시스템이나 모델압축에서는 큰 행렬 $A$를 랭크가 훨씬 작은 행렬로 대체하고 싶을 때가 많아요.
 related: 
 ---
 
-## 기본설명
+## 도입
+추천시스템이나 모델압축에서는 큰 행렬 $A$를 랭크가 훨씬 작은 행렬로 대체하고 싶을 때가 많아요. 그런데 "가장 닮은" 저랭크 행렬을 어떻게 골라야 원본 정보를 최대한 남길 수 있을까요. 놀랍게도 정답은 이미 알고 있는 도구인 특이값분해(SVD) 안에 그대로 들어 있습니다. 특이값이 작은 성분들을 잘라내기만 하면 그게 바로 최적의 답이에요.
+
+## 명제
 $A\in\mathbb{R}^{m\times n}$의 특이값분해를 $A=\sum_{i=1}^r \sigma_i u_iv_i^T$ ($\sigma_1\ge\cdots\ge\sigma_r>0$, $r=\mathrm{rank}(A)$, $\{u_i\},\{v_i\}$는 각각 정규직교) 라 하자. $k<r$에 대해 절단된 SVD $A_k:=\sum_{i=1}^k\sigma_iu_iv_i^T$ 를 정의하면, $\mathrm{rank}(B)\le k$인 모든 행렬 $B$ 중 $A_k$가 프로베니우스 노름 $\|A-B\|_F$를 최소화하며, 그 최솟값은 $\|A-A_k\|_F=\sqrt{\sum_{i=k+1}^r\sigma_i^2}$ 이다.
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="180" x2="300" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="50" y1="180" x2="50" y2="30" class="dg-line" stroke-width="1.5"/>
+<rect x="70" y="50" width="30" height="130" class="dg-accent"/>
+<rect x="115" y="90" width="30" height="90" class="dg-accent"/>
+<rect x="160" y="120" width="30" height="60" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="205" y="150" width="30" height="30" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<line x1="150" y1="35" x2="150" y2="185" class="dg-stroke-ink" stroke-width="2"/>
+<text x="95" y="30" font-size="11" text-anchor="middle">σ1..σk 유지</text>
+<text x="215" y="30" font-size="10" class="dg-dim" text-anchor="middle">이후 절단(점선)</text>
+<text x="370" y="60" font-size="13">‖A-B‖_F² ≥ ‖A-A_k‖_F² = Σ_{i&gt;k} σ_i²</text>
+<text x="370" y="90" font-size="11" class="dg-dim">랭크 ≤ k인 임의의 B보다</text>
+<text x="370" y="110" font-size="11" class="dg-dim">절단된 SVD A_k가 항상 더 가깝다</text>
+</svg>
+
+_특이값 막대에서 상위 k개만 남기고 절단하면 프로베니우스 노름 관점에서 최적의 저랭크 근사가 된다._
 
 ## 문제
 $A-A_k=\sum_{i=k+1}^r\sigma_iu_iv_i^T$이다. 서로 다른 $i\neq j$에 대해 $\langle u_iv_i^T,\,u_jv_j^T\rangle_F=\mathrm{tr}(v_iu_i^Tu_jv_j^T)=(u_i^Tu_j)(v_i^Tv_j)=0$ 이므로(정규직교성), 이 랭크-$1$ 조각들은 프로베니우스 내적 기준으로 서로 수직이다. 따라서 프로베니우스 노름의 제곱은 각 조각의 노름 제곱을 그냥 더한 것과 같아 $\|A-A_k\|_F^2 = $==빈칸== 이다.

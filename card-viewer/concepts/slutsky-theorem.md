@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 점근이론
 title: Slutsky 정리: 분포수렴과 확률수렴을 결합하는 규칙
-hook: 점근이론에서는 한쪽 항은 정규분포 등으로 분포수렴하고 다른 쪽 항은 상수로 확률수렴하는 상황이 자주 나옵니다.
 related: 델타법 · 중심극한정리
 ---
 
-## 기본설명
+## 도입
+점근이론에서는 한쪽 항은 정규분포 등으로 분포수렴하고 다른 쪽 항은 상수로 확률수렴하는 상황이 자주 나옵니다. 예컨대 $\sqrt n(\bar X_n-\mu)/\sigma$는 정규분포로 수렴하지만 실제로는 모르는 $\sigma$ 대신 표본으로 추정한 $S_n$을 씁니다. 이때 두 극한을 마음대로 결합해도 되는지가 문제인데, Slutsky 정리가 이를 정당화해줍니다.
+
+## 명제
 $X_n\xrightarrow{d}X$이고 $Y_n\xrightarrow{p}c$ (상수)이면 다음이 성립한다: (a) $X_n+Y_n\xrightarrow{d}X+c$, (b) $X_nY_n\xrightarrow{d}cX$, (c) $c\ne0$이면 $X_n/Y_n\xrightarrow{d}X/c$.
+
 
 ## 문제
 임의의 $\varepsilon>0$을 고정하자. 만약 $|Y_n-c|<\varepsilon$이면서 $X_n+Y_n\le x$라면 $X_n\le x-Y_n<x-c+\varepsilon$이 성립하므로, 사건 $\{X_n+Y_n\le x\}$는 $\{X_n\le x-c+\varepsilon\}$이거나 $\{|Y_n-c|\ge\varepsilon\}$인 경우에 포함된다. 따라서 확률의 부분가법성에 의해 $P(X_n+Y_n\le x)\le$==빈칸== 이다.

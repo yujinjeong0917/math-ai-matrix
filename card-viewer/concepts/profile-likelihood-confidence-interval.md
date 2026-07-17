@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 신뢰구간 · 순차분석
 title: 프로파일우도 신뢰구간: 우도비의 반전
-hook: 여러 모수 중 하나($\psi$)에만 관심이 있고 나머지($\lambda$, 성가신모수)는 관심 밖일 때가 많습니다.
 related: 
 ---
 
-## 기본설명
+## 도입
+여러 모수 중 하나($\psi$)에만 관심이 있고 나머지($\lambda$, 성가신모수)는 관심 밖일 때가 많습니다. $\lambda$를 어떻게든 "치워버리고" $\psi$만의 우도함수를 만들 수 있다면, 스칼라 모수 문제처럼 우도비검정을 반전(inversion)해서 신뢰구간을 만들 수 있어요. 프로파일우도는 각 $\psi$값에 대해 $\lambda$를 최적화해서 치워버린 함수입니다. 놀라운 점은, $\lambda$가 몇 차원이든 상관없이 관심모수 $\psi$가 1차원이면 반전된 신뢰구간의 점근적 신뢰수준이 여전히 정확히 맞아떨어진다는 것입니다.
+
+## 명제
 $\theta=(\psi,\lambda)$, 프로파일 로그우도 $\ell_p(\psi)=\sup_\lambda\ell(\psi,\lambda)=\ell(\psi,\hat\lambda_\psi)$, 전역 MLE를 $(\hat\psi,\hat\lambda)$라 하자. 정칙조건 하에서 $H_0:\psi=\psi_0$ (단 $\lambda$는 자유) 하에서 $n\to\infty$일 때 $$-2\big[\ell_p(\psi_0)-\ell_p(\hat\psi)\big]\xrightarrow{d}\chi^2_1$$ 이 성립하며 (성가신모수의 차원과 무관하게 자유도는 관심모수의 차원인 1), 따라서 $$CI=\{\psi:-2[\ell_p(\psi)-\ell_p(\hat\psi)]\le\chi^2_{1,1-\alpha}\}$$ 는 근사 신뢰수준 $1-\alpha$의 신뢰구간이다.
+
 
 ## 문제
 먼저 $\hat\lambda_\psi$의 정의부터 확인하자: 각 $\psi$에서 $\hat\lambda_\psi$는 $\lambda$에 대한 1차 조건 $\ell_\lambda(\psi,\hat\lambda_\psi)=0$을 만족하도록 정의된다. 연쇄법칙으로 $\ell_p'(\psi)=\ell_\psi(\psi,\hat\lambda_\psi)+\ell_\lambda(\psi,\hat\lambda_\psi)\cdot\dfrac{d\hat\lambda_\psi}{d\psi}$ 인데, 둘째 항의 계수는 $\hat\lambda_\psi$의 정의에 의해 $\ell_\lambda(\psi,\hat\lambda_\psi) = $==빈칸==이므로 둘째 항 전체가 사라지고 $\ell_p'(\psi)=\ell_\psi(\psi,\hat\lambda_\psi)$만 남는다 (포락선정리, envelope theorem).

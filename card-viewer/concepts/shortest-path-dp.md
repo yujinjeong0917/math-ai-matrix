@@ -4,12 +4,38 @@ theme: DISC
 domainLabel: 이산수학 · 그래프
 subLabel: 알고리즘 기초
 title: 최단경로의 최적 부분구조와 벨만 방정식
-hook: 강화학습의 가치반복과 그래프에서 최단경로를 구하는 동적계획법은 사실 같은 아이디어에서 나왔어요.
 related: 
 ---
 
-## 기본설명
+## 도입
+강화학습의 가치반복과 그래프에서 최단경로를 구하는 동적계획법은 사실 같은 아이디어에서 나왔어요. 그 아이디어를 최적 부분구조라고 불러요. 전체 최적해의 일부분도 그 자체로 최적이어야 한다는 통찰이에요. 최단경로 버전으로 이 통찰을 직접 확인해 봅니다.
+
+## 명제
 노드 $s$에서 $v$까지의 최단거리 $d(v)$는 $v$의 모든 인접 노드 $u$에 대해 $d(v)=\min_u(d(u)+w(u,v))$ 를 만족한다.
+
+## 그림
+<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="110" x2="240" y2="50" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="240" y1="50" x2="240" y2="170" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="240" y1="170" x2="420" y2="110" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="60" y1="110" x2="240" y2="170" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3" />
+<line x1="240" y1="50" x2="420" y2="110" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3" />
+<circle cx="60" cy="110" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="240" cy="50" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="240" cy="170" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="420" cy="110" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="55" y="115" font-size="12">S</text>
+<text x="235" y="55" font-size="12">B</text>
+<text x="235" y="175" font-size="12">A</text>
+<text x="415" y="115" font-size="12">C</text>
+<text x="130" y="72" font-size="11">2</text>
+<text x="248" y="113" font-size="11">1</text>
+<text x="320" y="132" font-size="11">5</text>
+<text x="130" y="150" font-size="11" class="dg-dim">4</text>
+<text x="320" y="72" font-size="11" class="dg-dim">8</text>
+</svg>
+
+_굵은 실선 S→B→A→C가 최단경로(총 8), 점선은 더 긴 대안 간선._
 
 ## 문제
 방금 확인한 사실을 기호로 정리합니다. $s$에서 $u$까지의 최단거리는 정의상 $d(u)$입니다. $P'$가 바로 그 최단경로이므로 $P'$의 길이도 $d(u)$와 같아야 합니다. 즉 $\mathrm{length}(P') = $==빈칸== 입니다.

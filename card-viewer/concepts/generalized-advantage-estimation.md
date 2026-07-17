@@ -4,12 +4,15 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: GAE: n스텝 어드밴티지들을 지수가중으로 섞어 편향과 분산을 조절하기
-hook: actor-critic-baseline에서 본 것처럼 정책경사에는 베이스라인을 뺀 어드밴티지가 곱해집니다.
 related: Actor-Critic 베이스라인의 무편향성 · 정책경사 정리(REINFORCE)의 유도 · 기대제곱오차의 편향-분산 분해
 ---
 
-## 기본설명
+## 도입
+actor-critic-baseline에서 본 것처럼 정책경사에는 베이스라인을 뺀 어드밴티지가 곱해집니다. 이 어드밴티지를 추정하는 방법은 하나가 아닙니다. 1스텝 시간차 오차 $\delta_t=r_t+\gamma V(s_{t+1})-V(s_t)$는 분산이 작지만 $V$가 정확하지 않으면 편향이 생깁니다. 반대로 에피소드가 끝날 때까지의 모든 보상을 다 더한 몬테카를로 어드밴티지는 부트스트래핑을 전혀 쓰지 않아 편향은 없지만 분산이 매우 큽니다. GAE는 이 둘 사이를 매끄럽게 오가는 하나의 공식을 만듭니다.
+
+## 명제
 $n$스텝 어드밴티지를 $A^{(n)}_t=\sum_{l=0}^{n-1}\gamma^lr_{t+l}+\gamma^nV(s_{t+n})-V(s_t)$라 하고, $\delta_t=r_t+\gamma V(s_{t+1})-V(s_t)$라 하자. GAE를 $A^{\text{GAE}}_t=(1-\lambda)\sum_{n=1}^\infty\lambda^{n-1}A^{(n)}_t$로 정의하면 $A^{\text{GAE}}_t=\sum_{l=0}^\infty(\gamma\lambda)^l\delta_{t+l}$이다.
+
 
 ## 문제
 섞기 전에 먼저 $A^{(n)}_t$ 자체를 시간차 오차들의 합으로 다시 쓸 수 있는지 본다. $\sum_{l=0}^{n-1}\gamma^l\delta_{t+l}$을 $\delta_{t+l}=r_{t+l}+\gamma V(s_{t+l+1})-V(s_{t+l})$로 풀어 보상항과 가치항을 따로 모으면, 가치항들은 $l=1,\dots,n-1$ 구간에서 $\gamma^{l+1}V(s_{t+l+1})$과 $-\gamma^lV(s_{t+l})$이 인덱스를 하나씩 맞바꿔 서로 상쇄되고 양 끝만 남는다. 남는 것은 시작의 $-V(s_t)$와 끝의 $\gamma^nV(s_{t+n})$뿐이다. $\sum_{l=0}^{n-1}\gamma^l\delta_{t+l} = \sum_{l=0}^{n-1}\gamma^lr_{t+l} - V(s_t) + $==빈칸== 입니다.

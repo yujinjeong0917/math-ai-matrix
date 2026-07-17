@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 추정이론
 title: 가우스-마르코프 정리: 선형·불편 추정량 중 OLS가 최소분산(BLUE)이다
-hook: 선형회귀에서 계수를 추정하는 방법은 최소제곱법 말고도 무수히 많습니다.
 related: 불편추정량 · 크라메르-라오 하한
 ---
 
-## 기본설명
+## 도입
+선형회귀에서 계수를 추정하는 방법은 최소제곱법 말고도 무수히 많습니다. 예를 들어 관측치 하나만 쓰거나, 이상한 가중치를 준 조합을 쓰거나, 그 밖의 어떤 선형결합을 쓰더라도 편향이 없기만 하면 됩니다. 가우스-마르코프 정리는 오차의 평균이 0이고 분산이 모두 같으며 서로 상관이 없다는 아주 온건한 가정만으로, 이런 모든 선형·불편 추정량 중에서 최소제곱추정량(OLS)이 분산이 가장 작다는 것을 보장합니다. 정규분포 가정조차 필요 없습니다. 그래서 OLS를 최량선형불편추정량(BLUE, Best Linear Unbiased Estimator)이라 부릅니다.
+
+## 명제
 선형모형 $Y=X\beta+\varepsilon$에서 $X\in\mathbb{R}^{n\times p}$가 완전열계수이고 $E[\varepsilon]=0$, $\mathrm{Cov}(\varepsilon)=\sigma^2I_n$이라 하자. $\delta=CY$ 형태의 모든 선형추정량 중 $\beta$의 불편추정량인 것들(즉 모든 $\beta$에 대해 $E[\delta]=\beta$인 것들)을 생각하자. OLS 추정량 $\hat\beta=(X^\top X)^{-1}X^\top Y$는 이 클래스 안에서 최소분산을 가진다. 즉 임의의 다른 선형불편추정량 $\delta$에 대해 $\mathrm{Cov}(\delta)-\mathrm{Cov}(\hat\beta)$는 양의 준정부호(positive semi-definite)다.
+
 
 ## 문제
 $\delta$가 불편추정량이 되려면 모든 $\beta$에 대해 $E[\delta]=E[CY]=CX\beta=\beta$여야 하므로 $CX=I_p$가 필요하다. $C=(X^\top X)^{-1}X^\top+D$를 대입하면 $CX=(X^\top X)^{-1}X^\top X+DX=I_p+DX$이므로, $CX=I_p$라는 조건은 $DX=$==빈칸== 를 뜻한다.

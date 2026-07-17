@@ -4,12 +4,15 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 추정이론
 title: James-Stein 추정량: 3차원 이상에서 표본평균의 허용불가능성
-hook: $p$개의 서로 다른 정규분포 평균을 동시에 추정하는 상황을 생각해봅니다.
 related: 불편추정량 · 편향-분산 트레이드오프
 ---
 
-## 기본설명
+## 도입
+$p$개의 서로 다른 정규분포 평균을 동시에 추정하는 상황을 생각해봅니다. 각 평균을 따로따로, 즉 각자의 표본평균으로 추정하는 것이 가장 자연스러워 보입니다. 실제로 이 추정량(항등추정량)은 각 성분마다 최선입니다. 그런데 James와 Stein은 1961년, $p\ge3$일 때는 전체 벡터를 원점 쪽으로 살짝 수축시키는 추정량이 전체 제곱오차 기준으로 항등추정량보다 모든 참값에서 더 낮은 위험을 가진다는 것을 보였습니다. 이는 '각 성분별로 최선인 추정량들을 모아도 전체적으로는 최선이 아닐 수 있다'는, 통계학에서 스타인의 역설이라 불리는 놀라운 사실입니다.
+
+## 명제
 $X\sim N(\theta,I_p)$를 관측했고 제곱오차손실 $L(\theta,\delta)=\|\delta-\theta\|^2$ 아래 $\theta$를 추정한다고 하자. 항등추정량 $\delta_0(X)=X$의 위험은 모든 $\theta$에서 $R(\theta,\delta_0)=p$이다. $p\ge3$일 때 James-Stein 추정량 $\delta_{JS}(X)=\left(1-\dfrac{p-2}{\|X\|^2}\right)X$의 위험은 $R(\theta,\delta_{JS})=p-(p-2)^2E\!\left[\dfrac{1}{\|X\|^2}\right]$이며, 이는 모든 $\theta$에서 $R(\theta,\delta_0)=p$보다 엄격히 작다. 즉 $\delta_0=X$는 허용가능하지 않다(inadmissible).
+
 
 ## 문제
 지금 목표는 상수 $c$를 가진 수축추정량 $\delta_c(X)=\left(1-\dfrac{c}{\|X\|^2}\right)X$의 위험을 $c$의 함수로 구하고, 이를 최소화하는 $c$를 찾는 것이다. $\delta_c(X)-\theta = (X-\theta)-\dfrac{c}{\|X\|^2}X$이므로 위험을 전개하면 $R(\theta,\delta_c)=E\|X-\theta\|^2-2cE\!\left[\dfrac{(X-\theta)^\top X}{\|X\|^2}\right]+c^2E\!\left[\dfrac1{\|X\|^2}\right]$이다. 각 성분이 분산 $1$인 독립 정규변수이므로 첫째 항은 $E\|X-\theta\|^2=$==빈칸== 이다.

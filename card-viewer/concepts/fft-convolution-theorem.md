@@ -4,12 +4,15 @@ theme: NUM2
 domainLabel: 수치해석 심화
 subLabel: 고속변환 · 합성곱
 title: 합성곱 정리와 FFT 기반 고속 합성곱
-hook: 두 수열을 합성곱하려면 정의상 각 출력마다 모든 항을 곱해 더해야 해서 $O(n^2)$ 시간이 걸립니다.
 related: 확률변수 합의 콘볼루션 정리
 ---
 
-## 기본설명
+## 도입
+두 수열을 합성곱하려면 정의상 각 출력마다 모든 항을 곱해 더해야 해서 $O(n^2)$ 시간이 걸립니다. 그런데 신호를 주파수 영역으로 옮기면 합성곱이 원소별 곱셈이 되고, 이 변환을 고속 푸리에 변환(FFT)으로 $O(n\log n)$에 해낼 수 있다면 전체 합성곱도 $O(n\log n)$에 끝낼 수 있습니다.
+
+## 명제
 길이 $n$인 두 수열 $a,b$에 대해 이산푸리에변환(DFT) $\hat a_m=\sum_{k=0}^{n-1}a_k\,\omega^{km}$, $\omega=e^{-2\pi i/n}$을 정의하고, 순환합성곱을 $(a\star b)_k=\sum_{j=0}^{n-1}a_jb_{(k-j)\bmod n}$로 정의하자. 그러면 $$\widehat{(a\star b)}_m=\hat a_m\,\hat b_m$$ (원소별 곱)이 성립하며, 이를 이용해 길이 $n$ 합성곱을 $O(n\log n)$ 시간에 계산할 수 있다.
+
 
 ## 문제
 정의를 그대로 대입하면 $$\widehat{(a\star b)}_m=\sum_{k=0}^{n-1}(a\star b)_k\,\omega^{km}=\sum_{k=0}^{n-1}\sum_{j=0}^{n-1}a_j\,b_{(k-j)\bmod n}\,\omega^{km}$$ 이다. 이제 안쪽 합의 인덱스를 $j$ 대신 $l=(k-j)\bmod n$으로 바꾸면(각 $j$에 대해 $k$가 $0,\dots,n-1$을 다 훑으므로 $l$도 $0,\dots,n-1$을 다 훑는다) $k\equiv j+l \pmod n$이고, $\omega^n=1$이므로 $\omega^{km}= $==빈칸== 이다.

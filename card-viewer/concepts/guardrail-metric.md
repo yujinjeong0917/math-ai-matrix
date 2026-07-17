@@ -4,16 +4,33 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 북극성지표 · OMTM
 title: 가드레일 지표: 북극성지표를 해치면서 이기지 않도록 막기
-hook: 가드레일은 크게 두 층위로 나뉜다.
 related: North Star Metric · SRM
 ---
 
-## 기본설명
+## 도입
 가드레일은 크게 두 층위로 나뉜다. 회사 전체 어떤 실험에도 공통으로 붙는 조직 차원의 가드레일과 지금 테스트 중인 기능에 특화된 지역 가드레일이다. 예를 들어 결제 플로우를 바꾸는 실험이라면 응답속도나 크래시율 같은 조직 공통 가드레일에 더해 장바구니 이탈률 같은 그 실험에 특화된 가드레일을 추가로 감시한다.
 
 가드레일을 여러 개 동시에 감시할 때는 다중비교 문제를 신경 써야 한다. 지표 하나를 유의수준 5%로 검정하면 위양성 확률이 5%지만 서로 독립인 지표 $m$개를 동시에 각각 5%로 검정하면 그중 하나라도 우연히 위양성이 뜰 확률은 $1-(1-0.05)^m$으로 훨씬 커진다. 이를 억제하는 가장 간단한 방법이 본페로니 보정으로 각 지표의 검정 기준을 $\alpha/m$으로 낮춰서 전체 오탐 확률을 원하는 수준으로 되돌린다.
 
 가드레일이 위반됐다고 해서 그 기능이 무조건 나쁘다는 뜻은 아니다. 위반은 정확히는 출시 전에 반드시 들여다보고 그 트레이드오프를 의식적으로 받아들일지 결정해야 한다는 신호다. 때로는 리더십이 작은 가드레일 손실을 감수하고서라도 더 큰 North Star Metric 개선을 택하는 경우도 있지만 그 결정이 아무도 모르게 우연히 일어나는 일은 없어야 한다는 게 가드레일의 핵심 역할이다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="60" y1="200" x2="520" y2="200" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M80,170 L160,150 L240,120 L320,95 L400,75 L480,55" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="480" y="45" font-size="11" class="dg-dim">NSM 상승</text>
+<line x1="60" y1="140" x2="520" y2="140" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4"/>
+<text x="480" y="132" font-size="11" class="dg-dim">가드레일 임계선</text>
+<path d="M80,170 L160,168 L240,165 L320,162 L400,150 L480,120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="480" cy="120" r="5" class="dg-accent" stroke="none"/>
+<text x="440" y="108" font-size="11">가드레일 위반</text>
+</svg>
+
+_North Star Metric은 오르고 있지만 가드레일 지표가 임계선을 넘어서면 그 실험은 멈춰야 한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

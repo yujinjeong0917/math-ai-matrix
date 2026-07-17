@@ -4,16 +4,33 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 지표 트리
 title: 지표 트리 검증: 인풋을 움직이면 정말 노스스타도 움직이는가
-hook: 인풋 지표 트리에서 이미 다뤘듯이 산식으로 정확히 분해된 인풋은 수학적으로 항상 참이라 그 구조 자체는 흔들리지 않는다.
 related: 인풋 지표 트리 · ICE 스코어
 ---
 
-## 기본설명
+## 도입
 인풋 지표 트리에서 이미 다뤘듯이 산식으로 정확히 분해된 인풋은 수학적으로 항상 참이라 그 구조 자체는 흔들리지 않는다. 하지만 산식 기반 트리에서도 한 인풋을 개선하는 조치가 다른 인풋을 반대 방향으로 움직이는 상쇄 효과가 있을 수 있다. 전환율을 올리려고 넣은 팝업이 방문자의 재방문 의욕을 꺾어 방문자수 인풋을 갉아먹는 경우가 그렇다.
 
 더 취약한 쪽은 상관 기반 인풋이다. 이 상관관계는 처음부터 인과관계가 아니라 특정 시기의 사용자층이나 계절적 요인 같은 제3의 변수가 두 지표를 동시에 움직였던 우연이었을 수 있다. 서비스가 성장하고 사용자 구성이 바뀌거나 알고리즘과 UI가 바뀌면 과거에 관찰된 상관관계가 더 이상 성립하지 않게 되는데 트리는 이런 변화를 스스로 알려주지 않는다.
 
 검증은 세 가지 방법을 함께 쓴다. 인풋과 노스스타 사이의 상관을 주기적으로 다시 계산해서 강도가 약해지고 있는지 추적하는 방법, 인풋만 의도적으로 조작하는 A/B 테스트를 돌려 상관이 아니라 실제 인과관계인지 확인하는 방법, 그리고 인풋 지표가 목표치만큼 올랐는데도 노스스타가 반응하지 않으면 그 인풋을 트리에서 빼고 재설계하는 방법이다. 인풋 지표가 팀의 목표(KPI)로 굳어지는 순간 그 지표를 직접 게이밍하려는 유인이 생겨 인풋과 아웃풋의 관계 자체가 왜곡될 수 있다는 점도 검증 주기를 짧게 가져가야 하는 이유 중 하나다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="220" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="55" font-size="12" text-anchor="middle">인풋 지표</text>
+<text x="140" y="75" font-size="12" class="dg-dim" text-anchor="middle">스크롤 깊이 40% → 60%</text>
+<rect x="310" y="110" width="220" height="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="420" y="135" font-size="12" text-anchor="middle">노스스타 지표</text>
+<text x="420" y="155" font-size="12" class="dg-dim" text-anchor="middle">리텐션 22% → 21.5%</text>
+<line x1="250" y1="75" x2="315" y2="130" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="280" y="95" font-size="20" class="dg-accent" text-anchor="middle">×</text>
+<text x="280" y="20" font-size="12" class="dg-dim" text-anchor="middle">예상했던 연결이 확인되지 않음</text>
+</svg>
+
+_인풋 지표가 올라도 노스스타 지표가 반응하지 않으면 그 연결은 재검증 대상이다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

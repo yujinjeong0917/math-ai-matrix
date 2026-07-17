@@ -4,12 +4,39 @@ theme: DISC
 domainLabel: 이산수학 · 그래프
 subLabel: 그래프 · 탐색
 title: DBSCAN 클러스터의 연결성과 최대성 증명
-hook: 계층적 군집화와 스펙트럴 군집화는 모두 군집의 개수를 미리 정하거나 거리 기준을 계속 조정해야 했다.
 related: 계층적 군집화 · 그래프 스펙트럼
 ---
 
-## 기본설명
+## 도입
+계층적 군집화와 스펙트럴 군집화는 모두 군집의 개수를 미리 정하거나 거리 기준을 계속 조정해야 했다. DBSCAN은 밀도가 높은 영역을 자동으로 찾아내는 또 다른 접근이다. 그런데 핵심객체 하나에서 출발해서 그로부터 밀도로 도달 가능한 점들을 전부 모으기만 하면 정말로 하나의 완결된 군집이 되는지는 따로 확인해야 한다. 그 확인이 바로 이 증명의 목표다.
+
+## 명제
 핵심객체 $x$가 주어졌을 때 $x$로부터 밀도로 도달 가능한 점 전체의 집합을 $X$라 하면, $X$는 연결성(임의의 두 원소가 밀도로 연결됨)과 최대성(어떤 점도 $X$ 바깥에 있으면서 동시에 $X$ 안의 점으로부터 밀도로 도달 가능할 수 없음)을 모두 만족하며 이는 $X$가 DBSCAN 군집의 정의를 만족한다는 뜻이다.
+
+## 그림
+<svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="190" r="42" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="88" cy="190" r="42" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="60" cy="162" r="42" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="60" y1="190" x2="88" y2="190" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="88" y1="190" x2="116" y2="190" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="60" y1="190" x2="60" y2="162" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="60" cy="190" r="6" class="dg-accent" />
+<circle cx="88" cy="190" r="6" class="dg-accent" />
+<circle cx="60" cy="162" r="6" class="dg-accent" />
+<circle cx="116" cy="190" r="6" fill="none" class="dg-stroke-ink" stroke-width="2" />
+<circle cx="200" cy="50" r="4" class="dg-dim" />
+<circle cx="200" cy="22" r="4" class="dg-dim" />
+<text x="60" y="204" font-size="10" text-anchor="middle">p₁</text>
+<text x="88" y="204" font-size="10" text-anchor="middle">p₂</text>
+<text x="46" y="158" font-size="10" text-anchor="middle">p₃</text>
+<text x="116" y="204" font-size="10" text-anchor="middle">p_b</text>
+<text x="210" y="52" font-size="10" class="dg-dim">p₄</text>
+<text x="210" y="24" font-size="10" class="dg-dim">p₅</text>
+<text x="150" y="130" font-size="11">핵심(●,점선=ε-이웃) · 경계(○) · 잡음(옅은 점)</text>
+</svg>
+
+_p₁→p₂→p_b 사슬로 밀도 도달, X={p₁,p₂,p₃,p_b}. p₄,p₅는 잡음으로 남는다._
 
 ## 문제
 DBSCAN의 정의부터 다시 정리한다. $\epsilon$-이웃은 $N_\epsilon(x)=\{x_i\in D\mid dist(x_i,x)\le\epsilon\}$이다. 핵심객체는 이 이웃 안에 충분히 많은 점을 가진 점이다. 최소 이웃 개수를 나타내는 기준값을 $MinPts$라 하면 핵심객체의 조건은 $|N_\epsilon(x)| \ge $==빈칸== 이다.

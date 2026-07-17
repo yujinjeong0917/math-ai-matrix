@@ -4,14 +4,17 @@ theme: STAT
 domainLabel: 추론통계
 subLabel: 점근이론
 title: 일치추정량: 표본이 커지면 확률적으로 참값에 다가간다
-hook: 불편성은 표본 하나하나에 대한 평균적 정확성을 이야기하지만, 표본크기를 늘렸을 때 추정값이 실제로 참값에 가까워지는지는 별개의 문제입니다.
 related: 중심극한정리 · 델타법
 ---
 
-## 기본설명
+## 도입
 불편성은 표본 하나하나에 대한 평균적 정확성을 이야기하지만, 표본크기를 늘렸을 때 추정값이 실제로 참값에 가까워지는지는 별개의 문제입니다. 이를 보장하는 성질이 일치성입니다. 표본이 커질수록 추정값이 참값에서 벗어날 확률이 0으로 사라진다는 뜻입니다.
 
 **명제(정의).** 추정량열 $\hat\theta_n$이 $\theta$에 대해 일치추정량이라는 것은, 임의의 $\varepsilon>0$에 대해 $\lim_{n\to\infty}P(|\hat\theta_n-\theta|\ge\varepsilon)=0$ 이라는 뜻이며 이를 $\hat\theta_n\xrightarrow{p}\theta$로 표기한다. $X_1,\ldots,X_n$이 평균 $\mu$, 분산 $\sigma^2<\infty$인 분포에서 독립적으로 뽑힌 표본이면 표본평균 $\bar X_n$은 $\mu$의 일치추정량이다.
+
+## 명제
+
+
 
 ## 문제
 이전 항목에서 확인했듯 $E[\bar X_n]=\mu$이고 독립성에 의해 $\mathrm{Var}(\bar X_n)=\mathrm{Var}\!\left(\frac{1}{n}\sum_{i=1}^n X_i\right)=\frac{1}{n^2}\sum_{i=1}^n\mathrm{Var}(X_i)=\frac{1}{n^2}\cdot n\sigma^2=$==빈칸== 이다.

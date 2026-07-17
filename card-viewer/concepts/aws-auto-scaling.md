@@ -4,16 +4,23 @@ theme: MLOPS
 domainLabel: MLOps · 인프라
 subLabel: 컴퓨트
 title: Auto Scaling: 트래픽에 맞춰 인스턴스를 늘리고 줄이기
-hook: Auto Scaling은 Auto Scaling Group(ASG)이라는 단위로 인스턴스 묶음을 관리합니다.
 related: EC2 · ELB · CloudWatch
 ---
 
-## 기본설명
+## 도입
 Auto Scaling은 Auto Scaling Group(ASG)이라는 단위로 인스턴스 묶음을 관리합니다. ASG에는 최소, 원하는, 최대 인스턴스 수가 정해져 있고 실제 인스턴스 수는 항상 그 범위 안에서 움직입니다. 인스턴스 하나가 죽으면 ASG가 자동으로 새 인스턴스를 띄워 원하는 수를 맞춥니다.
 
 정책 방식은 여러 가지지만 ML 서빙에서 가장 흔한 것은 목표 추적(target tracking)입니다. CPU 사용률 같은 지표 하나에 목표값을 정해두면 나머지는 자동으로 계산됩니다. 목표 사용률이 $T$이고 현재 사용률이 $C$이며 현재 인스턴스 수가 $N$이면 필요한 인스턴스 수는 대략 이렇게 추정됩니다.$$N' \approx N \cdot \frac{C}{T}$$사용률이 목표보다 높으면 인스턴스를 늘리고 낮으면 줄이는 방향으로 서서히 조정됩니다.
 
 새 인스턴스는 뜨자마자 바로 트래픽을 받지 못합니다. 모델을 메모리에 올리고 초기화하는 예열(warm-up) 시간이 필요하기 때문입니다. 스케일 아웃은 빠르게 스케일 인은 느리게 하는 비대칭 설정도 흔합니다. 트래픽이 실제로 줄었는지 확실해질 때까지 서버를 성급히 줄이지 않기 위해서입니다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg"><line x1="40" y1="210" x2="600" y2="210" class="dg-line" stroke-width="1.5"/><path d="M70,190 Q200,60 320,60 Q440,60 570,190" class="dg-stroke-accent" fill="none" stroke-width="2"/><text x="320" y="45" text-anchor="middle" font-size="12">요청량</text><rect x="100" y="170" width="40" height="40" class="dg-dim" stroke="none"/><rect x="100" y="170" width="40" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="120" y="228" text-anchor="middle" font-size="12">2대</text><rect x="300" y="110" width="40" height="100" class="dg-dim" stroke="none"/><rect x="300" y="110" width="40" height="100" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="320" y="228" text-anchor="middle" font-size="12">4대</text><rect x="500" y="170" width="40" height="40" class="dg-dim" stroke="none"/><rect x="500" y="170" width="40" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/><text x="520" y="228" text-anchor="middle" font-size="12">2대</text><text x="210" y="135" text-anchor="middle" font-size="12">스케일 아웃</text><text x="420" y="135" text-anchor="middle" font-size="12">스케일 인</text></svg>
+
+_요청량이 늘면 인스턴스를 먼저 빠르게 늘리고 줄어들 때는 천천히 줄입니다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

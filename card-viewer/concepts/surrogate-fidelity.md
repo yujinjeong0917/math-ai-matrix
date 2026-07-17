@@ -4,11 +4,10 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 대리모델 신뢰도
 title: 대리모델 충실도: 설명이 원래 모델과 정말 일치하는가
-hook: 가장 단순한 형태는 예측 일치율이다.
 related: 설명 근사오차 · 정책 대리설명 충실도
 ---
 
-## 기본설명
+## 도입
 가장 단순한 형태는 예측 일치율이다.
 
 $$\text{Fidelity} = \frac{1}{n}\sum_{i=1}^n \mathbf{1}[f(x_i) = g(x_i)]$$
@@ -18,6 +17,31 @@ $$\text{Fidelity} = \frac{1}{n}\sum_{i=1}^n \mathbf{1}[f(x_i) = g(x_i)]$$
 전역 충실도와 국소 충실도는 구분해야 한다. 전역 충실도는 데이터 전체에서 두 모델이 얼마나 일치하는지를 재고 국소 충실도는 설명하려는 입력 주변의 좁은 영역에서만 일치도를 잰다. LIME처럼 애초에 국소 설명을 목표로 설계된 기법은 전역 충실도가 낮아도 문제가 아니다. 전역에서 원래 모델을 통째로 흉내낼 생각이 없기 때문이다. 반대로 국소 충실도가 낮다면 그 설명은 존재 목적을 달성하지 못한 것이라 훨씬 심각한 문제다.
 
 충실도가 낮아지는 이유는 대개 둘 중 하나다. 대리모델의 표현력 부족으로 결정경계가 복잡하게 휘어 있는 영역을 직선으로 근사하면 애초에 잘 맞을 수가 없다. 아니면 국소 영역을 너무 넓게 잡아 커널 폭이 너무 커서 먼 점들까지 적합에 끌어들이는 경우다. 충실도를 측정하지 않고 대리모델의 계수만 보고 설명을 신뢰하는 것은 근거 없는 확신에 가깝다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" font-size="13" text-anchor="middle">원래 모델(복잡한 경계)</text>
+<path d="M40,190 C90,110 150,210 200,120 C215,90 230,60 260,30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="70" cy="150" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="120" cy="160" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="160" cy="140" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="190" cy="100" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="230" cy="70" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="470" y="18" font-size="13" text-anchor="middle">대리모델(직선 근사)</text>
+<line x1="360" y1="190" x2="580" y2="60" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="390" cy="150" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="440" cy="160" r="6" class="dg-accent"/>
+<circle cx="480" cy="140" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="510" cy="100" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<circle cx="550" cy="70" r="6" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="440" y="185" font-size="12" text-anchor="middle">불일치</text>
+<text x="310" y="250" font-size="12" text-anchor="middle" class="dg-dim">5개 중 4개 일치 → Fidelity 약 0.8</text>
+</svg>
+
+_같은 다섯 점을 놓고 원래 모델의 곡선 경계와 대리모델의 직선 근사가 어디서 갈리는지 비교한다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

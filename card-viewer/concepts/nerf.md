@@ -4,11 +4,10 @@ theme: ARCH
 domainLabel: 모델 아키텍처 심화
 subLabel: 3D · 포인트클라우드
 title: NeRF: 장면을 신경망 하나로 표현하기
-hook: NeRF는 위치 $(x,y,z)$와 시선 방향 $(\theta,\phi)$를 입력받아 색상 $c=(r,g,b)$와 부피밀도 $\sigma$를 출력하는 작은 MLP $F_\Theta: (x,d) \to (c,\sigma)$로 장면을 표현한다.
 related: PointNet · 복셀 기반 3D CNN
 ---
 
-## 기본설명
+## 도입
 NeRF는 위치 $(x,y,z)$와 시선 방향 $(\theta,\phi)$를 입력받아 색상 $c=(r,g,b)$와 부피밀도 $\sigma$를 출력하는 작은 MLP $F_\Theta: (x,d) \to (c,\sigma)$로 장면을 표현한다. 밀도 $\sigma$는 시선 방향과 무관하게 그 점에 물질이 있을 정도만 나타내고, 색상은 방향에 따라 달라질 수 있게 해서 반사나 광택 같은 시점 의존적 효과까지 담아낸다.
 
 새로운 시점의 이미지를 만들려면 그 카메라의 각 픽셀에서 광선 $r(t) = o + td$를 쏘고, 광선을 따라 여러 지점을 샘플링해 $F_\Theta$에 통과시킨 뒤 볼륨렌더링 적분으로 픽셀 색을 합성한다.
@@ -17,6 +16,29 @@ $$T(t) = \exp\left(-\int_{t_n}^{t}\sigma(r(s))\,ds\right)$$
 $T(t)$는 광선이 $t_n$부터 $t$까지 오는 동안 아무것도 만나지 않고 투과할 확률이다. 실제 계산에서는 이 적분을 이산 샘플들에 대한 합 $\hat C(r) = \sum_i T_i(1-\exp(-\sigma_i\delta_i))c_i$로 근사한다. $\delta_i$는 인접 샘플 사이 거리, $T_i = \exp(-\sum_{j<i}\sigma_j\delta_j)$다.
 
 학습은 실제 촬영된 사진들의 픽셀 색과 이렇게 렌더링한 색의 차이를 손실로 삼아 MLP 가중치를 역전파로 최적화하는 것뿐이다. 명시적인 3D 형상을 따로 만들지 않고 사진들과 카메라 위치 정보만으로 장면을 재구성한다는 점이 이전의 메시나 포인트클라우드 기반 3D 재구성과 가장 다른 지점이다. 다만 장면 하나마다 새로 학습해야 하고 광선마다 수백 번씩 MLP를 호출해야 해서 원래 방식은 렌더링이 느렸고, 이후 연구들은 격자 기반 특징이나 해시 인코딩(Instant-NGP)으로 이 속도를 크게 끌어올렸다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="40" cy="110" r="6" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="10" y="90" font-size="11">카메라</text>
+<line x1="46" y1="110" x2="300" y2="110" class="dg-line" stroke-width="1.5"/>
+<circle cx="120" cy="110" r="4" class="dg-accent"/>
+<circle cx="170" cy="110" r="4" class="dg-accent"/>
+<circle cx="220" cy="110" r="4" class="dg-accent"/>
+<circle cx="270" cy="110" r="4" class="dg-accent"/>
+<text x="140" y="90" font-size="11">샘플 점들</text>
+<line x1="300" y1="110" x2="350" y2="110" class="dg-line" stroke-width="1.5"/>
+<rect x="350" y="80" width="80" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="390" y="115" font-size="12" text-anchor="middle">MLP</text>
+<line x1="430" y1="110" x2="480" y2="110" class="dg-line" stroke-width="1.5"/>
+<text x="484" y="95" font-size="11">색 c, 밀도 σ</text>
+<text x="470" y="130" font-size="11">→ 픽셀 색 합성</text>
+</svg>
+
+_카메라 광선을 따라 샘플링한 점들을 신경망에 넣고 색을 쌓아 픽셀 값을 만든다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

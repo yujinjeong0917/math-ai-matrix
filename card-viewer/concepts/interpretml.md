@@ -4,16 +4,19 @@ theme: XAI
 domainLabel: XAI · 해석가능성
 subLabel: 범용 설명 라이브러리
 title: InterpretML: 글래스박스와 블랙박스 설명을 함께
-hook: 핵심 모델은 Explainable Boosting Machine(EBM)이다.
 related: shap · Alibi Explain · Surrogate Model
 ---
 
-## 기본설명
+## 도입
 핵심 모델은 Explainable Boosting Machine(EBM)이다. 일반화가법모델(GAM)에 그래디언트 부스팅을 적용한 형태로 각 특징의 효과를 독립적인 함수로 학습하고 필요하면 특징 쌍 사이의 상호작용 항도 추가로 학습한다. 예측은 이 함수들의 합이므로 각 특징이 예측에 정확히 얼마나 기여했는지 근사 없이 바로 읽어낼 수 있다. 그래디언트 부스팅 트리 앙상블과 비슷한 수준의 정확도를 내면서도 사후 근사 설명이 아니라 모델 구조 자체가 설명이 되는 셈이다.
 
 sklearn과 비슷한 방식으로 ExplainableBoostingClassifier나 Regressor를 fit으로 학습시킨 뒤 explain_global 메서드로 전체 특징별 효과 곡선을, explain_local 메서드로 개별 예측의 기여도를 뽑을 수 있다. 이 결과는 인터랙티브 대시보드로 바로 시각화된다.
 
 블랙박스 모델을 위해서는 SHAP, LIME, Morris 민감도 분석, 부분의존도 플롯 같은 기존 기법들을 동일한 인터페이스로 감싸서 제공한다. 모델 종류나 설명 기법을 바꿔도 호출하는 코드 형태는 거의 그대로 유지된다.
+
+## 명제
+
+
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)

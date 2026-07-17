@@ -4,12 +4,30 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 미분 · 그래디언트
 title: 디노이징 오토인코더와 스코어 함수: 노이즈가 가르쳐주는 것
-hook: 데이터에 일부러 노이즈를 섞은 다음, 그 오염된 관측만 보고 원래 데이터를 복원하도록 신경망을 학습시키면 무슨 일이 벌어질까요.
 related: 스코어매칭(Hyvärinen)
 ---
 
-## 기본설명
+## 도입
+데이터에 일부러 노이즈를 섞은 다음, 그 오염된 관측만 보고 원래 데이터를 복원하도록 신경망을 학습시키면 무슨 일이 벌어질까요. 놀랍게도 이 단순한 복원 과제를 제곱오차로 학습한 최적해는 원래 분포가 어느 방향으로 얼마나 빠르게 변하는지, 즉 로그밀도의 그래디언트(스코어)를 그대로 계산해내고 있습니다.
+
+## 명제
 데이터 $x\sim p(x)$에 등방 가우시안 노이즈 $\varepsilon\sim\mathcal N(0,\sigma^2I)$를 더한 오염관측을 $\tilde x=x+\varepsilon$이라 하고, 이때 $\tilde x$의 주변밀도를 $p_\sigma(\tilde x)=\int p(x)\mathcal N(\tilde x;x,\sigma^2I)\,dx$라 하자. 제곱오차 $L(g)=\mathbb E_{x,\varepsilon}\big[\|g(\tilde x)-x\|^2\big]$를 최소화하는 복원함수 $g^*$는 $$g^*(\tilde x)-\tilde x=\sigma^2\nabla_{\tilde x}\log p_\sigma(\tilde x)$$ 를 만족한다.
+
+## 그림
+<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+<path d="M40,150 C150,80 350,200 460,100" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<text x="60" y="65" font-size="12">데이터 매니폴드</text>
+<circle cx="200" cy="115" r="4" class="dg-accent"/>
+<circle cx="250" cy="55" r="4" class="dg-dim"/>
+<line x1="250" y1="55" x2="200" y2="115" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<path d="M250,55 L212,102" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="212,102 218,90 226,98" class="dg-stroke-accent"/>
+<text x="260" y="48" font-size="12">노이즈 낀 관측 x̃</text>
+<text x="150" y="140" font-size="11" class="dg-dim">복원값 g*(x̃) ≈ 매니폴드 위 점</text>
+<text x="270" y="90" font-size="11">스코어 방향 ∇log p_σ</text>
+</svg>
+
+_디노이징 오토인코더의 복원 방향은 오염분포의 스코어 방향과 정확히 같다._
 
 ## 문제
 $\tilde x$를 고정하고 조건부 기댓값으로 손실을 분해하면 $\mathbb E_{x|\tilde x}\big[\|g(\tilde x)-x\|^2\big]=\|g(\tilde x)-\mathbb E[x|\tilde x]\|^2+\mathrm{Var}(x|\tilde x)$ 로 쓸 수 있다. 우변의 둘째 항은 $g$와 무관하므로, 각 $\tilde x$에서 손실을 최소화하는 최적해는 $g^*(\tilde x) = $==빈칸== 이다.

@@ -4,12 +4,32 @@ theme: CALC
 domainLabel: 미적분 · 최적화
 subLabel: 경사기반 옵티마이저
 title: 모멘텀: 그래디언트의 지수이동평균이 왜 진동을 줄이는가
-hook: 경사하강법은 매 스텝의 그래디언트만 보고 그 자리에서 바로 방향을 정해요.
 related: 경사하강법의 하강 보장 · Adam 모멘트 추정의 편향 보정 · 그래디언트 소실·폭발
 ---
 
-## 기본설명
+## 도입
+경사하강법은 매 스텝의 그래디언트만 보고 그 자리에서 바로 방향을 정해요. 그런데 손실함수의 표면이 한쪽으로는 완만하고 다른 쪽으로는 가파른 좁고 긴 골짜기 모양이면, 그래디언트는 매 스텝 가파른 방향으로 이리저리 튀면서 정작 완만한 방향으로는 거의 나아가지 못해요. 모멘텀은 과거 그래디언트를 지수이동평균 형태로 누적한 속도 $v_t$를 대신 사용해서 이 문제를 풀어요. 속도를 누적하면 신호가 일관된 방향은 점점 힘을 받고 신호가 요동치는 방향은 서로 상쇄되죠. 이 상쇄와 누적이 정확히 어떤 비율로 일어나는지 확인해 봅니다.
+
+## 명제
 $v_0=0$에서 시작하는 속도 $v_t=\beta v_{t-1}+g_t$ ($0<\beta<1$, $\theta_t=\theta_{t-1}-\eta v_t$)에 대해, 그래디언트가 매 스텝 같은 부호로 $g_t=g$로 일정하면 $v_t\to g/(1-\beta)$로 커지고, 그래디언트가 매 스텝 부호를 바꿔 $g_t=g(-1)^{t+1}$이면 $|v_t|\to g/(1+\beta)$로 억제된다.
+
+## 그림
+<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="350" cy="130" rx="320" ry="60" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="350" cy="130" rx="240" ry="42" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<ellipse cx="350" cy="130" rx="160" ry="26" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="350" cy="130" rx="80" ry="12" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<circle cx="350" cy="130" r="3" class="dg-accent"/>
+<path d="M60,60 L110,190 L160,75 L210,175 L260,95 L300,150 L330,120 L350,130" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="350,130 337,124 337,136" class="dg-stroke-accent"/>
+<text x="55" y="45" font-size="12">SGD (지그재그)</text>
+<path d="M60,80 Q200,110 300,122 T350,130" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<polygon points="350,130 336,126 338,137" class="dg-stroke-ink"/>
+<text x="55" y="225" font-size="12">모멘텀 (매끄러운 경로)</text>
+<text x="45" y="250" class="dg-dim" font-size="12">좁고 긴 골짜기: SGD는 가파른 축에서 진동, 모멘텀은 완만한 축으로 가속</text>
+</svg>
+
+_좁고 긴 골짜기 등고선에서 SGD의 지그재그 경로와 모멘텀의 매끄러운 경로를 비교한다._
 
 ## 문제
 재귀식 $v_t=\beta v_{t-1}+g_t$를 $v_0=0$부터 한 스텝씩 풀어헤쳐 본다. $v_1=g_1$이고 $v_2=\beta g_1+g_2$이고 $v_3=\beta^2g_1+\beta g_2+g_3$이다. 옛 그래디언트일수록 $\beta$의 지수가 하나씩 늘어나는 패턴이 보인다. 이 패턴을 일반화하면 $v_t = $==빈칸== 이다.

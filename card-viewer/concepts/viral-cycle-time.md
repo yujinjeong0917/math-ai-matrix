@@ -4,14 +4,35 @@ theme: PRODUCT
 domainLabel: 서비스 · 프로덕트 분석
 subLabel: 바이럴 측정
 title: 바이럴 사이클 타임: 초대한 사람이 활성 사용자가 되기까지 걸리는 시간
-hook: 측정 구간은 보통 셋으로 나눌 수 있다.
 related: 바이럴 계수 K · 사이클 타임
 ---
 
-## 기본설명
+## 도입
 측정 구간은 보통 셋으로 나눌 수 있다. 초대 발송부터 피초대자의 가입까지, 가입부터 실제 활성화까지, 그리고 활성화된 사용자가 다시 초대를 보낼 수 있는 상태가 되기까지다. 이 구간들을 합친 총 시간이 바이럴 사이클 타임이다. 어느 구간이 병목인지 파악하는 일이 실무에서 중요하다. 발송에서 가입까지가 길면 초대 링크 노출 방식이나 알림 타이밍 문제일 가능성이 크고 가입에서 활성화까지가 길면 온보딩 과정 자체가 무겁다는 신호다.
 
 같은 K를 가진 두 서비스라도 사이클 타임이 다르면 그로스 루프 항목에서 다룬 $N(t) = N_0 \times K^{t/T}$ 관계에 따라 일정 기간 뒤 누적 사용자 수가 크게 벌어진다. 그래서 K를 올리는 데만 집중하기보다 초대 직후 바로 앱을 열게 만드는 딥링크, 가입 절차를 최소화하는 소셜 로그인, 첫 사용에서 바로 가치를 보여주는 온보딩처럼 사이클 타임 자체를 줄이는 개선이 K를 조금 올리는 개선보다 더 큰 성장 효과를 내는 경우가 흔하다.
+
+## 명제
+
+
+## 그림
+<svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="90" x2="480" y2="90" class="dg-line" stroke-width="1.5"/>
+<circle cx="60" cy="90" r="6" class="dg-dim"/>
+<circle cx="220" cy="90" r="6" class="dg-accent"/>
+<circle cx="480" cy="90" r="6" class="dg-accent"/>
+<text x="60" y="115" font-size="12" text-anchor="middle">초대 발송</text>
+<text x="220" y="115" font-size="12" text-anchor="middle">가입</text>
+<text x="480" y="115" font-size="12" text-anchor="middle">활성화 (재초대 가능)</text>
+<text x="140" y="75" font-size="12" text-anchor="middle">2일</text>
+<text x="350" y="75" font-size="12" text-anchor="middle">5일</text>
+<line x1="60" y1="140" x2="480" y2="140" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="60" y1="135" x2="60" y2="145" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="480" y1="135" x2="480" y2="145" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="270" y="163" font-size="13" text-anchor="middle">바이럴 사이클 타임 T = 7일</text>
+</svg>
+
+_초대 발송부터 재초대가 가능한 활성 사용자가 되기까지의 시간을 모두 더한 값이다._
 
 ## 문제
 (이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)
