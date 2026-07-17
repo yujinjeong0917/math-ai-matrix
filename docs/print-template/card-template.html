@@ -32,21 +32,35 @@
   body { margin: 0; background: #444; font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif; }
 
   /* 인쇄 시 화면 배율에 영향받지 않도록 pt 고정 단위만 사용 — 반응형 단위(%, vw, vh) 금지 */
+  /* 실제 인쇄 크기는 A6(105×148mm) — front.jpg/back.jpg 목업이 2x로 뽑혀 있어
+     594×840px(=A4 치수)로 측정됐다. 그래서 측정값(pt) 그대로 쓴 .card를
+     디자인 좌표계로 유지하고, A6 실물 페이지 안에 0.5배로 축소해 앉힌다.
+     비율은 완전히 그대로 유지된다(A6은 A4의 정확히 1/2 선형 축소). */
+  .page-a6 {
+    width: 105mm;
+    height: 148mm;
+    margin: 10mm auto;
+    overflow: hidden;
+    position: relative;
+    background: var(--card-bg);
+    box-shadow: 0 2pt 12pt rgba(0,0,0,0.25);
+  }
   .card {
     position: relative;
     width: 595pt;
     height: 842pt;
-    margin: 24pt auto;
     background: var(--card-bg);
     color: var(--card-ink);
     overflow: hidden;
-    box-shadow: 0 2pt 12pt rgba(0,0,0,0.25);
+    transform: scale(0.5);
+    transform-origin: top left;
   }
   @media print {
     body { background: none; }
-    .card { margin: 0; box-shadow: none; page-break-after: always; }
-    .card:last-child { page-break-after: auto; }
-    @page { size: A4; margin: 0; }
+    .section-title { display: none; }
+    .page-a6 { margin: 0; box-shadow: none; page-break-before: always; page-break-after: avoid; page-break-inside: avoid; }
+    .page-a6:first-child { page-break-before: avoid; }
+    @page { size: A6; margin: 0; }
   }
 
   .brand { position: absolute; top: 20pt; left: 28pt; right: 28pt; font-size: 11pt; color: var(--card-dim); letter-spacing: 0.04em; }
@@ -107,6 +121,7 @@
 <!-- ================= 01. 선형대수 — PCA ================= -->
 <p class="section-title">01 · 선형대수 (LINALG)</p>
 
+<div class="page-a6">
 <div class="card front">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -129,7 +144,9 @@
     <span class="answer-chip"><span class="dot"></span>정답 보기</span>
   </div>
 </div>
+</div>
 
+<div class="page-a6">
 <div class="card back">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -152,10 +169,12 @@
     <span class="answer-chip"><span class="dot"></span>다음 문제</span>
   </div>
 </div>
+</div>
 
 <!-- ================= 02. 미적분·최적화 — 경사하강법 ================= -->
 <p class="section-title">02 · 미적분 · 최적화 (CALC)</p>
 
+<div class="page-a6">
 <div class="card front">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -178,7 +197,9 @@
     <span class="answer-chip"><span class="dot"></span>정답 보기</span>
   </div>
 </div>
+</div>
 
+<div class="page-a6">
 <div class="card back">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -201,10 +222,12 @@
     <span class="answer-chip"><span class="dot"></span>다음 문제</span>
   </div>
 </div>
+</div>
 
 <!-- ================= 03. 확률·통계 — 베이즈 정리 ================= -->
 <p class="section-title">03 · 확률 · 통계 (PROB)</p>
 
+<div class="page-a6">
 <div class="card front">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -227,7 +250,9 @@
     <span class="answer-chip"><span class="dot"></span>정답 보기</span>
   </div>
 </div>
+</div>
 
+<div class="page-a6">
 <div class="card back">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -250,10 +275,12 @@
     <span class="answer-chip"><span class="dot"></span>다음 문제</span>
   </div>
 </div>
+</div>
 
 <!-- ================= 04. 정보이론 — 교차엔트로피 ================= -->
 <p class="section-title">04 · 정보이론 (INFO)</p>
 
+<div class="page-a6">
 <div class="card front">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -276,7 +303,9 @@
     <span class="answer-chip"><span class="dot"></span>정답 보기</span>
   </div>
 </div>
+</div>
 
+<div class="page-a6">
 <div class="card back">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -299,10 +328,12 @@
     <span class="answer-chip"><span class="dot"></span>다음 문제</span>
   </div>
 </div>
+</div>
 
 <!-- ================= 05. 이산수학 — 의사결정나무 ================= -->
 <p class="section-title">05 · 이산수학 (DISC)</p>
 
+<div class="page-a6">
 <div class="card front">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -325,7 +356,9 @@
     <span class="answer-chip"><span class="dot"></span>정답 보기</span>
   </div>
 </div>
+</div>
 
+<div class="page-a6">
 <div class="card back">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -348,10 +381,12 @@
     <span class="answer-chip"><span class="dot"></span>다음 문제</span>
   </div>
 </div>
+</div>
 
 <!-- ================= 06. 수치해석 — 조건수 ================= -->
 <p class="section-title">06 · 수치해석 (NUMERIC)</p>
 
+<div class="page-a6">
 <div class="card front">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -374,7 +409,9 @@
     <span class="answer-chip"><span class="dot"></span>정답 보기</span>
   </div>
 </div>
+</div>
 
+<div class="page-a6">
 <div class="card back">
   <p class="brand">수학 × AI 매트릭스</p>
   <div class="divider" style="top:62pt;"></div>
@@ -396,6 +433,7 @@
     <span class="answer-chip"><span class="dot"></span>관련 개념</span>
     <span class="answer-chip"><span class="dot"></span>다음 문제</span>
   </div>
+</div>
 </div>
 
 </body>
