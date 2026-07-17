@@ -107,6 +107,11 @@
   .topic p { margin: 0 0 8px; font-size: 14.5px; color: var(--ink-dim); }
   .topic p:last-child { margin-bottom: 0; }
   .topic strong { color: var(--ink); }
+  .detail-link {
+    display: inline-block; margin-top: 10px; font-size: 12.5px; font-weight: 700;
+    color: var(--highlight); text-decoration: none;
+  }
+  .detail-link:hover { text-decoration: underline; }
 
   .crosslink-note {
     margin-top: 12px; padding: 18px 20px; border-radius: 12px;
@@ -194,6 +199,7 @@
       "두 방향이 얼마나 같은 쪽을 보고 있는가"를 숫자 하나로 압축한 거예요. 이 하나의
       직관이 추천시스템의 코사인 유사도, 어텐션의 쿼리·키 유사도까지 전부로 이어집니다.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-vector-geometric-meaning">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -209,6 +215,7 @@
       존재한다는 건 그 변환이 정보를 잃지 않고 되돌릴 수 있다는 뜻이고요. 이 감각이
       없으면 신경망의 순전파 $Wx+b$가 그냥 기계적 계산으로만 보여요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-matrix-operations-intuition">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -223,6 +230,7 @@
       있다", "두 평면이 만난다" 같은 그림을 한 번이라도 손으로 그려본 사람은 고차원
       공간을 다룰 때도 그 그림을 그대로 확장해서 씁니다.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-3d-coordinate-space">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -236,6 +244,7 @@
       하고 방향은 안 바꾼다")를 그림으로 먼저 이해하면, PCA나 스펙트럴 정리 같은
       기초 매트릭스의 증명들이 계산이 아니라 그림으로 먼저 읽혀요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-linear-transformation-geometry">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -248,6 +257,7 @@
       "이게 결국 유한하거나 무한한 항을 더한 것"이라는 감각과, "더할수록 특정 값에
       가까워진다(수렴)"는 감각이 붙어 있어야 긴 수식을 겁내지 않고 읽습니다.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-sequence-limit-sigma">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -260,6 +270,7 @@
       그려져요. "왜 손실함수를 그릴 때 타원 모양 등고선이 나오는가"를 한 번 짚어두면
       경사하강법이 왜 지그재그로 움직이는지도 그림으로 바로 이해돼요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-conic-sections">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -273,6 +284,7 @@
       잡아두면, 왜 확률의 곱을 로그를 씌워 합으로 바꿔서 계산하는지(로그가능도)가
       자연스럽게 이해됩니다.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-log-exp-advanced">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -285,6 +297,7 @@
       출제 범위에서도 완전히 빠져요. 복잡한 함수의 극한을 다루는 감각이 부족하면
       최적화 이론에서 "이 근사가 왜 성립하는지"를 받아들이는 데 시간이 더 걸려요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-calc2-limits">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -299,6 +312,7 @@
       분산을 "그 값 주변으로 얼마나 퍼져 있는가"로 그림처럼 갖고 있으면 이후
       모든 통계·생성모델 개념이 훨씬 편해집니다.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-random-variable-intuition">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -312,6 +326,7 @@
       때문이에요. 공식을 외우기보다 그래프가 어떻게 늘어나고 밀리는지 감으로 아는
       쪽이 더 오래갑니다.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-trig-identity-graph">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -325,6 +340,7 @@
       귀납법 한두 문제만 손으로 풀어봐도 "다음 단계로 넘어가려면 무엇을 보여야
       하는가"를 스스로 묻는 습관이 붙어요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-mathematical-induction">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -337,6 +353,7 @@
       정확히 세는" 능력이 은근히 자주 필요해요. 점과 선으로 관계를 그리는 그래프의
       기본 어휘(노드·엣지·경로)에 익숙해두면 이산수학 행 전체가 덜 낯설어요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-permutation-graph-basics">자세히 보기 →</a>
   </div>
 
   <div class="topic">
@@ -351,6 +368,7 @@
       화살표 다발로 나온다"는 그림 하나만 미리 가지고 있으면 미적분 행의 제약
       최적화·경사기반 옵티마이저를 처음 볼 때 덜 당황하게 돼요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-multivariable-preview">자세히 보기 →</a>
   </div>
 
   <div class="crosslink-note">

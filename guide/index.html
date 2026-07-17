@@ -123,6 +123,11 @@
   .axis-item p { margin: 0 0 8px; font-size: 14.5px; color: var(--ink-dim); }
   .axis-item p:last-child { margin-bottom: 0; }
   .axis-item strong { color: var(--ink); }
+  .detail-link {
+    display: inline-block; margin-top: 10px; font-size: 12.5px; font-weight: 700;
+    color: var(--highlight); text-decoration: none;
+  }
+  .detail-link:hover { text-decoration: underline; }
 
   .cross-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 8px 0 0; }
   @media (min-width: 620px) { .cross-grid { grid-template-columns: 1fr 1fr; } }
@@ -210,6 +215,7 @@
       할 때 여전히 이쪽이 먼저 시도됩니다. 딥러닝이 이긴 영역은 생각보다 좁고, 정형
       데이터·표 형태 데이터에서는 그래디언트 부스팅 계열이 지금도 최상위권이에요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-classical-ml">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -222,6 +228,7 @@
       훑어 내려가는 게 역전파예요. 결국 딥러닝 한 칸 한 칸은 "행렬곱 + 미분"이 반복되는
       구조라서, 이 매트릭스의 선형대수·미적분 행과 가장 촘촘히 얽혀 있는 열이기도 해요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-deep-learning">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -243,6 +250,7 @@
       "확률분포를 어떻게 다루기 쉬운 형태로 쪼갤 것인가"라는 같은 질문에 대한 서로
       다른 답인 셈이에요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-generative-models">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -255,6 +263,7 @@
       그리고 정책을 직접 최적화하는 경사법이 다 같이 필요해요. 최근 LLM을 사람 선호에
       맞추는 RLHF도 결국 이 열의 도구를 언어모델에 그대로 얹은 거예요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-reinforcement-learning">자세히 보기 →</a>
   </div>
 
   <h2><span class="idx">03</span>행(세로) — 그 밑에 깔린 수학</h2>
@@ -273,6 +282,7 @@
       번역이고요. 고유값분해 하나만 알아도 PCA·스펙트럴 클러스터링·추천시스템의
       행렬분해가 전부 같은 그림이라는 걸 알아챌 수 있어요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-linear-algebra">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -285,6 +295,7 @@
       변형이 얹혀 있고, 딥러닝 학습 과정 전체가 사실상 이 행 하나의 응용이라고 봐도
       크게 틀리지 않아요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-calculus-optimization">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -299,6 +310,7 @@
       나옵니다. 기초 매트릭스가 "확률을 어떻게 계산하는가"를 다룬다면, 심화 매트릭스의
       추정이론·가설검정·모델선택은 "그 확률적 결론을 얼마나 믿을 수 있는가"를 다뤄요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-probability-statistics">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -310,6 +322,7 @@
       "내 예측이 실제 분포와 얼마나 다른가"에 적용한 것이고요. 손실함수 이름에
       "엔트로피"나 "발산"이 들어가 있으면 거의 예외 없이 이 행에서 온 개념이에요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-information-theory">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -322,6 +335,7 @@
       수학이 이산수학이에요. GNN(그래프 신경망)이 딥러닝 열에서 유독 다른 계열과
       느낌이 다른 이유도, 그 밑에 깔린 행이 선형대수가 아니라 그래프 이론이기 때문이에요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-discrete-math">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -335,6 +349,7 @@
       묻는 행이 바로 이거고, 딥러닝 학습이 실제로 발산하지 않고 수렴하는 이유의
       상당 부분이 여기서 설명돼요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-numerical-analysis">자세히 보기 →</a>
   </div>
 
   <div class="axis-item">
@@ -347,6 +362,7 @@
       있어요. 예측을 아무리 잘해도 인과를 모르면 "왜"에는 답할 수 없다는 게
       이 행이 존재하는 이유예요.
     </p>
+    <a class="detail-link" href="../concepts/index.html?c=axis-causal-inference">자세히 보기 →</a>
   </div>
 
   <h2><span class="idx">04</span>행과 열이 만나는 곳</h2>

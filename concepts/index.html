@@ -43,6 +43,8 @@
     --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
     --c-linalg2: #4a3d8a; --c-calc2: #8a6a1f; --c-info2: #8a2f5a;
     --c-linalg2-bg: #ece9f7; --c-calc2-bg: #f2ecdb; --c-info2-bg: #f5e3ec;
+    --c-found: #2f7a4a; --c-axis: #2f6a7a;
+    --c-found-bg: #e6f2ea; --c-axis-bg: #e6f0f2;
 
     --font-kr: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
       "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -67,6 +69,8 @@
       --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
       --c-linalg2: #a89bdb; --c-calc2: #d4bb6f; --c-info2: #d68fac;
       --c-linalg2-bg: #23203a; --c-calc2-bg: #2c2618; --c-info2-bg: #2e1f28;
+      --c-found: #7ecb96; --c-axis: #7ecbd6;
+      --c-found-bg: #1a2b20; --c-axis-bg: #1a2a2c;
     }
   }
   :root[data-theme="dark"] {
@@ -86,6 +90,8 @@
     --c-stat-bg: #1e2733; --c-causal-bg: #33221e; --c-disc2-bg: #232c1c; --c-num2-bg: #17282a;
     --c-linalg2: #a89bdb; --c-calc2: #d4bb6f; --c-info2: #d68fac;
     --c-linalg2-bg: #23203a; --c-calc2-bg: #2c2618; --c-info2-bg: #2e1f28;
+    --c-found: #7ecb96; --c-axis: #7ecbd6;
+    --c-found-bg: #1a2b20; --c-axis-bg: #1a2a2c;
   }
   :root[data-theme="light"] {
     --paper: #eef0f3; --surface: #fbfbfc; --surface-2: #ffffff;
@@ -104,6 +110,8 @@
     --c-stat-bg: #e7ecf3; --c-causal-bg: #f7e6e3; --c-disc2-bg: #eef2e3; --c-num2-bg: #e1eef0;
     --c-linalg2: #4a3d8a; --c-calc2: #8a6a1f; --c-info2: #8a2f5a;
     --c-linalg2-bg: #ece9f7; --c-calc2-bg: #f2ecdb; --c-info2-bg: #f5e3ec;
+    --c-found: #2f7a4a; --c-axis: #2f6a7a;
+    --c-found-bg: #e6f2ea; --c-axis-bg: #e6f0f2;
   }
 
   * { box-sizing: border-box; }
@@ -311,7 +319,8 @@
     xai: "XAI · 해석가능성", llm: "LLM/Agent", product: "서비스 · 프로덕트 분석",
     mlops: "MLOps · 인프라", recsys: "추천시스템 · 랭킹", arch: "모델 아키텍처 심화", pm: "Process Mining",
     stat: "추론통계", causal: "인과추론", disc2: "이산수학 심화", num2: "수치해석 심화",
-    linalg2: "선형대수 심화", calc2: "미적분 심화", info2: "정보이론 심화"
+    linalg2: "선형대수 심화", calc2: "미적분 심화", info2: "정보이론 심화",
+    found: "예비수학", axis: "매트릭스 읽는 법"
   };
 
   var BACK_HREF = {
@@ -320,8 +329,16 @@
     pm: "../process-mining/index.html",
     stat: "../advanced/index.html", causal: "../advanced/index.html",
     disc2: "../advanced/index.html", num2: "../advanced/index.html",
-    linalg2: "../advanced/index.html", calc2: "../advanced/index.html", info2: "../advanced/index.html"
+    linalg2: "../advanced/index.html", calc2: "../advanced/index.html", info2: "../advanced/index.html",
+    found: "../foundations/index.html", axis: "../guide/index.html"
   };
+
+  function withRoParticle(word) {
+    var last = word.charCodeAt(word.length - 1);
+    if (last < 0xac00 || last > 0xd7a3) return "로";
+    var finalConsonant = (last - 0xac00) % 28;
+    return (finalConsonant === 0 || finalConsonant === 8) ? "로" : "으로";
+  }
 
   function qs(name) {
     return new URLSearchParams(window.location.search).get(name);
@@ -515,7 +532,8 @@
     if (backLink) {
       var backHref = BACK_HREF[concept.domain] || "../index.html";
       backLink.setAttribute("href", backHref);
-      backLink.textContent = "← " + (DOMAIN_LABEL[concept.domain] ? DOMAIN_LABEL[concept.domain] : "매트릭스") + "로 돌아가기";
+      var backLabel = DOMAIN_LABEL[concept.domain] ? DOMAIN_LABEL[concept.domain] : "매트릭스";
+      backLink.textContent = "← " + backLabel + withRoParticle(backLabel) + " 돌아가기";
     }
     var hasProof = concept.sections && concept.sections.length > 0;
     document.title = concept.title + (hasProof ? " · 개념 증명" : " · 개념 노트");
