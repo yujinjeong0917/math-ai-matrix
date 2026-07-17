@@ -18,6 +18,30 @@ $$\Sigma=\begin{pmatrix}3&1\\1&3\end{pmatrix}$$
 <p>이 행렬의 고유값은 4와 2이고 각각의 고유벡터는 $(1,1)/\sqrt2$와 $(1,-1)/\sqrt2$입니다. 실제로 $\Sigma(1,1)^T=(4,4)^T=4(1,1)^T$이고 $\Sigma(1,-1)^T=(2,-2)^T=2(1,-1)^T$이므로 고유값 방정식이 그대로 성립합니다.</p>
 <p>이제 단위벡터 몇 개를 골라 사영분산 $w^T\Sigma w$를 직접 재봅니다. $w=(1,0)$이면 $w^T\Sigma w=3$입니다. $w=(1,1)/\sqrt2$이면 $w^T\Sigma w=4$입니다. $w=(1,-1)/\sqrt2$이면 $w^T\Sigma w=2$입니다.</p>
 <p>세 값 중 가장 큰 것은 4이고 이때 쓴 방향이 정확히 가장 큰 고유값 4에 대응하는 고유벡터입니다. 반대로 가장 작은 값 2도 가장 작은 고유값에 대응하는 고유벡터에서 나왔습니다. 아래 증명은 이 대응이 우연이 아니라 라그랑주 승수법으로 언제나 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="120" x2="370" y2="120" class="dg-line" stroke-width="1"/>
+<line x1="200" y1="15" x2="200" y2="225" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="120" rx="115" ry="42" transform="rotate(-38 200 120)" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="110" cy="185" r="4" class="dg-accent"/>
+<circle cx="140" cy="168" r="4" class="dg-accent"/>
+<circle cx="165" cy="150" r="4" class="dg-accent"/>
+<circle cx="185" cy="145" r="4" class="dg-accent"/>
+<circle cx="200" cy="122" r="4" class="dg-accent"/>
+<circle cx="215" cy="112" r="4" class="dg-accent"/>
+<circle cx="235" cy="100" r="4" class="dg-accent"/>
+<circle cx="255" cy="90" r="4" class="dg-accent"/>
+<circle cx="280" cy="75" r="4" class="dg-accent"/>
+<circle cx="295" cy="60" r="4" class="dg-accent"/>
+<circle cx="175" cy="110" r="4" class="dg-accent"/>
+<circle cx="225" cy="145" r="4" class="dg-accent"/>
+<line x1="115" y1="192" x2="288" y2="55" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="288,55 276,60 282,68" class="dg-accent"/>
+<line x1="168" y1="98" x2="232" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<text x="30" y="18" font-size="12" class="dg-dim">2D 데이터 산점도와 공분산 타원</text>
+<text x="215" y="45" font-size="12">최대분산 방향(고유값 4)</text>
+<text x="236" y="168" font-size="11" class="dg-dim">단축(고유값 2)</text>
+</svg>`,
+    diagramCaption: String.raw`공분산 타원의 장축은 데이터가 가장 넓게 퍼진 방향, 즉 최대 고유값에 대응하는 고유벡터와 일치한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 특정 방향으로 데이터를 눌러 보았을 때 그 방향이 원래 정보를 얼마나 잘 남기는지를 수식으로 표현하는 것이다. 단위벡터 $w$ 위로 데이터를 사영하면 사영값들이 얼마나 퍼져 있는지로 그 정보량을 잴 수 있다. $w$는 $\|w\|=1$인 길이 1짜리 방향벡터다. 이 사영값들의 분산은 $\mathrm{Var}(Xw) = w^T\Sigma w$ 로 계산된다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 $w^T\Sigma w$를 최대화하는 것이다. 다만 아무 $w$나 되는 게 아니라 $\|w\|=1$이라는 제약을 지켜야 한다. 목적함수만 놓고 미분해서는 이 제약을 반영할 수 없다. 그래서 제약이 있는 최댓값 문제를 풀 때 쓰는 표준 도구인 라그랑주 승수법을 쓴다. 제약을 어기면 벌점을 주는 새 변수 $\lambda$를 도입해서 목적함수와 제약을 하나의 식으로 합친다. 이렇게 만든 식을 라그랑지안이라 부르고 $L(w,\lambda) = w^T\Sigma w - \lambda($[[blank:가]]$)$ 로 쓴다.`,
@@ -45,6 +69,26 @@ $$A=\begin{pmatrix}4&2\\2&1\end{pmatrix}$$
 $$Q=\begin{pmatrix}2/\sqrt5&1/\sqrt5\\1/\sqrt5&-2/\sqrt5\end{pmatrix},\quad \Lambda=\begin{pmatrix}5&0\\0&0\end{pmatrix}$$
 <p>$Q$의 두 열은 각각 길이가 1이고 서로 수직이므로 $Q^TQ=I$가 성립합니다. 실제로 $Q\Lambda Q^T$를 계산해보면 다시 $\begin{pmatrix}4&2\\2&1\end{pmatrix}$가 나와 원래의 $A$와 정확히 일치합니다.</p>
 <p>대칭행렬 하나를 직접 뜯어봤더니 직교행렬과 대각행렬로 정말 깔끔하게 갈라졌습니다. 아래 증명은 이 분해가 특정 행렬만의 우연이 아니라 모든 실수 대칭행렬에서 항상 가능하다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<text x="140" y="20" font-size="13" text-anchor="middle">단위원</text>
+<circle cx="140" cy="130" r="60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="140" y1="130" x2="182" y2="88" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="182,88 172,90 178,98" class="dg-accent"/>
+<line x1="140" y1="130" x2="98" y2="172" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="188" y="82" font-size="11">v₁</text>
+<text x="88" y="182" font-size="11" class="dg-dim">v₂</text>
+<line x1="290" y1="130" x2="350" y2="130" class="dg-line" stroke-width="1.5"/>
+<polygon points="350,130 340,125 340,135" class="dg-dim"/>
+<text x="320" y="118" font-size="12" text-anchor="middle">A</text>
+<text x="490" y="20" font-size="13" text-anchor="middle">A로 사상된 타원</text>
+<ellipse cx="490" cy="130" rx="95" ry="32" transform="rotate(-25 490 130)" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="490" y1="130" x2="576" y2="90" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="576,90 564,90 568,100" class="dg-accent"/>
+<line x1="490" y1="130" x2="454" y2="102" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="580" y="86" font-size="11">장축 = λ₁v₁</text>
+<text x="410" y="98" font-size="11" class="dg-dim">단축 = λ₂v₂</text>
+</svg>`,
+    diagramCaption: String.raw`대칭행렬 A는 단위원을 타원으로 사상하며, 서로 직교하는 두 고유벡터가 정확히 타원의 장축·단축 방향이 된다.`,
     sections: [
       { id: "s1", text: String.raw`$A$가 $n\times n$ 실수 대칭행렬이라 하자. 지금 목표는 $A=Q\Lambda Q^T$를 만족하는 직교행렬 $Q$와 대각행렬 $\Lambda$가 실제로 존재함을 보이는 것이다. 이걸 보이려면 먼저 대칭행렬의 고유벡터들이 어떤 성질을 갖는지부터 확인해야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`직교행렬 $Q$를 만들려면 그 열로 쓸 고유벡터들이 서로 수직이어야 한다. 그래서 먼저 대칭행렬의 고유벡터들이 실제로 서로 직각을 이루는지부터 확인한다. 서로 다른 고유값 $\lambda_i\neq\lambda_j$에 대응하는 고유벡터 $v_i,v_j$는 [[blank:가]] 이다. 이는 곧 두 고유벡터가 서로 직교한다는 뜻이다.`,
@@ -70,6 +114,23 @@ $$\theta'=3-0.2\times6=1.8$$
 <p>손실값을 비교하면 $L(3)=9$이고 $L(1.8)=3.24$입니다. 실제로 손실이 $5.76$만큼 줄었습니다.</p>
 <p>증명에서 얻는 2차 상한식도 이 숫자와 정확히 맞아떨어집니다. $\frac{K\eta}{2}=0.2$이므로 $1-\frac{K\eta}{2}=0.8$이고, 상한식이 예측하는 감소량은 $\eta\left(1-\frac{K\eta}{2}\right)\|\nabla L(3)\|^2=0.2\times0.8\times36=5.76$입니다. 함수가 정확히 이차식이라 상한식이 등호로 딱 맞습니다.</p>
 <p>아래 증명은 이 감소가 이 함수 하나만의 우연이 아니라 립시츠 조건과 작은 학습률만 있으면 항상 성립하는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="210" cy="160" rx="175" ry="115" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="210" cy="160" rx="135" ry="88" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<ellipse cx="210" cy="160" rx="95" ry="61" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="210" cy="160" rx="55" ry="34" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<circle cx="210" cy="160" r="3" class="dg-accent"/>
+<path d="M50,50 L100,88 L145,130 L178,150 L200,158" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="50" cy="50" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="100" cy="88" r="3" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="145" cy="130" r="3" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="178" cy="150" r="3" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="200,158 188,151 190,162" class="dg-stroke-accent"/>
+<text x="20" y="38" font-size="12">θ₀ (시작점)</text>
+<text x="215" y="150" font-size="12">최소점</text>
+<text x="45" y="270" class="dg-dim" font-size="12">등고선: 손실함수 L(θ)의 레벨셋</text>
+</svg>`,
+    diagramCaption: String.raw`손실 등고선 위에서 경사하강법이 내리막 방향으로 스텝을 밟아 최소점에 수렴한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 한 스텝을 밟았을 때 손실이 실제로 줄어드는지를 확인하는 것이다. 그러려면 새 지점에서의 손실값 $L(\theta')$을 다루기 쉬운 형태로 위에서 눌러 잡아야 한다. 여기서 그래디언트가 립시츠 연속이라는 가정이 쓰인다. 이 가정 덕분에 $L(\theta')$을 2차식으로 위에서 눌러 잡을 수 있다: $L(\theta')\le L(\theta)+\nabla L(\theta)^T(\theta'-\theta)+\frac{K}{2}\|\theta'-\theta\|^2$. 이 부등식을 2차 상한이라 부른다.`, blanks: [] },
       { id: "s2", text: String.raw`이제 이 상한식 안의 $\theta'-\theta$ 자리에, 우리가 실제로 쓰는 경사하강법의 갱신식 $\theta'=\theta-\eta\nabla L(\theta)$을 대입할 차례다. 이항만 하면 $\theta'-\theta = $[[blank:가]] 이다.`,
@@ -94,6 +155,34 @@ $$\theta'=3-0.2\times6=1.8$$
 $$\frac{\partial L}{\partial W}=5\times12\times3=180$$
 <p>이 값이 맞는지는 $L$을 $W$만의 식으로 직접 풀어서도 확인할 수 있습니다. $L=5(Wx)^2=5W^2x^2$이므로 $\frac{\partial L}{\partial W}=10Wx^2=10\times2\times9=180$입니다. 세 조각을 따로 곱한 값과 정확히 같습니다.</p>
 <p>아래 증명은 이렇게 세 조각으로 쪼개는 방식이 특정 함수에서만 통하는 게 아니라 합성함수라면 항상 성립하는 체인룰의 일반적인 결과임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="70" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="45" y="95" font-size="13">x</text>
+<rect x="190" y="70" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="197" y="95" font-size="12">h=Wx</text>
+<rect x="350" y="70" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="357" y="95" font-size="12">z=g(h)</text>
+<rect x="510" y="70" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="517" y="95" font-size="12">L=f(z)</text>
+<line x1="90" y1="80" x2="185" y2="80" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="185,80 173,75 173,85" class="dg-stroke-ink"/>
+<line x1="250" y1="80" x2="345" y2="80" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="345,80 333,75 333,85" class="dg-stroke-ink"/>
+<line x1="410" y1="80" x2="505" y2="80" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="505,80 493,75 493,85" class="dg-stroke-ink"/>
+<text x="110" y="65" font-size="11" class="dg-dim">순전파 (값 전달)</text>
+<line x1="505" y1="130" x2="410" y2="130" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="410,130 422,125 422,135" class="dg-stroke-accent"/>
+<line x1="345" y1="130" x2="250" y2="130" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="250,130 262,125 262,135" class="dg-stroke-accent"/>
+<line x1="185" y1="130" x2="90" y2="130" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="90,130 102,125 102,135" class="dg-stroke-accent"/>
+<text x="415" y="150" font-size="11">∂L/∂z</text>
+<text x="258" y="150" font-size="11">∂z/∂h</text>
+<text x="95" y="150" font-size="11">∂h/∂W=x</text>
+<text x="150" y="185" class="dg-dim" font-size="12">역전파: 체인룰로 그래디언트를 거꾸로 곱해 전달</text>
+</svg>`,
+    diagramCaption: String.raw`순전파의 값 전달(위) 방향과 역전파의 그래디언트 전달(아래) 방향을 함께 보인다.`,
     sections: [
       { id: "s1", text: String.raw`$h=Wx$, $z=g(h)$, $L=f(z)$라 하자. 지금 목표는 $L$을 $W$로 미분한 $\frac{\partial L}{\partial W}$를 구하는 것이다. $L$은 $z$를 거치고 $z$는 다시 $h$를 거쳐서 $W$에 의존한다. 그러니 $L$은 결국 $W$에 대한 합성함수다.`, blanks: [] },
       { id: "s2", text: String.raw`합성함수를 미분할 땐 체인룰을 쓴다. 바깥 함수를 먼저 미분하고 안쪽 함수의 미분을 곱해나가는 규칙이다. $L$은 $z$를 통해서만 $W$에 의존한다. 그러니 가장 바깥쪽부터 한 겹을 벗겨내면 $\frac{\partial L}{\partial W} = \frac{\partial L}{\partial z}\cdot$[[blank:가]] 이다.`,
@@ -115,6 +204,26 @@ $$\frac{\partial L}{\partial W}=5\times12\times3=180$$
 <p>이 지점에서 $\nabla f(x^*)=2(1-3)=-4$이고 $\nabla g(x^*)=1$입니다. $\nabla f(x^*)+\mu^*\nabla g(x^*)=0$을 풀면 $\mu^*=4$이고, 이는 $\mu^*\ge0$을 만족합니다. 상보슬랙성도 $\mu^*g(x^*)=4\times0=0$으로 성립합니다.</p>
 <p><strong>제약이 느슨한 경우.</strong> 같은 $f$를 $g(x)=x-5\le0$ 아래 최소화하면 무제약 최적해 $x=3$이 이미 $g(3)=-2<0$으로 여유 있게 허용됩니다. 이때는 $\nabla f(3)=0$이므로 $\mu^*=0$일 수밖에 없고, 상보슬랙성도 자연스럽게 $0\times(-2)=0$으로 맞아떨어집니다.</p>
 <p>아래 증명은 이 두 경우, 즉 제약이 경계에서 붙드는 경우와 느슨한 경우가 KKT 조건 안에 항상 정확히 이렇게 나뉘어 담긴다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
+<circle cx="120" cy="150" r="130" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="120" cy="150" r="95" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<circle cx="120" cy="150" r="60" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="120" cy="150" r="25" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<circle cx="120" cy="150" r="2.5" class="dg-accent"/>
+<text x="60" y="35" font-size="12">목적함수 f의 등고선</text>
+<path d="M250,40 Q210,150 250,260" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="255" y="270" font-size="12">제약: g(x)=0</text>
+<circle cx="250" cy="150" r="4" class="dg-accent"/>
+<text x="255" y="145" font-size="11" class="dg-dim">최적해 x*</text>
+<line x1="250" y1="145" x2="188" y2="145" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="188,145 200,140 200,150" class="dg-stroke-accent"/>
+<text x="192" y="133" font-size="12">∇f</text>
+<line x1="250" y1="165" x2="188" y2="165" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="4,3"/>
+<polygon points="188,165 200,160 200,170" class="dg-stroke-ink"/>
+<text x="192" y="183" font-size="12">∇g</text>
+<text x="55" y="290" class="dg-dim" font-size="12">접점에서 ∇f = -μ∇g: 두 그래디언트가 평행</text>
+</svg>`,
+    diagramCaption: String.raw`목적함수 등고선과 제약 곡선이 만나는 접점에서 두 그래디언트가 평행하다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 풀려는 문제를 다시 봅니다. 목적함수는 $f(x)$를 최소화하는 것이고 제약은 $g(x)\le0$입니다. 제약이 있는 최적화는 목적함수만 보면 다루기 어렵습니다. 그래서 제약까지 하나의 식 안에 같이 담아서 생각합니다. 제약을 어긴 정도인 $g(x)$에 벌점 역할을 하는 계수 $\mu\ge0$을 곱해서 목적함수에 더합니다. 이렇게 만든 식을 라그랑지안이라 부르고 $\mathcal{L}(x,\mu)=f(x)+\mu g(x)$ 로 씁니다.`, blanks: [] },
       { id: "s2", text: String.raw`이제 최적해 $x^*$에서 무슨 일이 일어나는지 봅니다. 최적해에서는 $x$를 아주 조금 움직여도 목적함수가 더 줄어들지 않아야 합니다. 미분 가능한 함수에서는 이 성질이 기울기가 0이라는 조건으로 나타납니다. 여기서는 $f$ 대신 라그랑지안 $\mathcal{L}$을 최적화하고 있으니 $x$에 대한 기울기도 0이어야 합니다. 다만 이 조건이 성립하려면 제약이 지나치게 특이하지 않아야 합니다. 이걸 constraint qualification이라 부르고 여기서는 이 조건이 성립한다고 가정합니다. 정리하면 $\nabla_x\mathcal{L}(x^*,\mu^*) = $[[blank:가]] 입니다.`,
@@ -138,6 +247,27 @@ $$P(B) = 0.9\times0.01 + 0.05\times0.99 = 0.009+0.0495=0.0585$$
 <p>이제 베이즈 정리를 그대로 적용합니다.</p>
 $$P(A|B) = \dfrac{0.9\times0.01}{0.0585} = \dfrac{0.009}{0.0585} \approx 0.154$$
 <p>양성 판정을 받아도 실제로 질병일 확률은 약 15.4%밖에 되지 않습니다. 검사가 꽤 정확해 보여도 유병률 자체가 낮으면 사전확률의 영향이 그만큼 크게 남습니다. 아래 증명은 이 계산이 우연이 아니라 조건부확률의 정의에서 항상 성립하는 공식임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+  <line x1="55" y1="110" x2="210" y2="55" class="dg-stroke-ink" stroke-width="2"/>
+  <line x1="55" y1="110" x2="210" y2="175" class="dg-stroke-ink" stroke-width="2"/>
+  <line x1="220" y1="50" x2="400" y2="25" class="dg-stroke-accent" stroke-width="3"/>
+  <line x1="220" y1="50" x2="400" y2="80" class="dg-line" stroke-width="1.3" stroke-dasharray="5,4"/>
+  <line x1="220" y1="170" x2="400" y2="145" class="dg-stroke-accent" stroke-width="3"/>
+  <line x1="220" y1="170" x2="400" y2="200" class="dg-line" stroke-width="1.3" stroke-dasharray="5,4"/>
+  <circle cx="50" cy="110" r="4" class="dg-dim"/>
+  <text x="10" y="105" font-size="12">시작</text>
+  <text x="70" y="40" font-size="12">사전확률</text>
+  <text x="225" y="42" font-size="12">질병 A (0.01)</text>
+  <text x="225" y="195" font-size="12">건강 Aᶜ (0.99)</text>
+  <text x="280" y="8" font-size="12">우도</text>
+  <text x="405" y="20" font-size="12" font-weight="700">양성 B (0.9)</text>
+  <text x="405" y="98" font-size="11">음성 (0.1)</text>
+  <text x="405" y="140" font-size="12" font-weight="700">양성 B (0.05)</text>
+  <text x="405" y="218" font-size="11">음성 (0.95)</text>
+  <polygon points="400,25 388,20 388,30" class="dg-accent"/>
+  <polygon points="400,145 388,140 388,150" class="dg-accent"/>
+</svg>`,
+    diagramCaption: String.raw`사전확률 갈래(A/Aᶜ) 뒤에 우도 갈래(양성/음성)가 이어진다. 실선·굵은선(양성)과 점선(음성)으로 흑백에서도 경로가 구분된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 알고 싶은 것은 증거 $B$를 관찰했을 때 원인 $A$가 맞을 확률 $P(A|B)$입니다. 그런데 손에 쥔 정보는 보통 반대 방향입니다. 원인 $A$가 사실일 때 증거 $B$가 나타날 확률 $P(B|A)$ 쪽이 계산하기 쉬운 경우가 많습니다. 이 둘을 잇는 다리가 바로 조건부확률의 정의입니다. 조건부확률은 어떤 사건이 일어났다는 전제 아래 다른 사건이 일어날 확률을 뜻합니다. 이 정의를 두 방향 모두에 그대로 적어봅니다. $P(A|B)=\dfrac{P(A\cap B)}{P(B)}$ 이고 $P(B|A)=\dfrac{P(A\cap B)}{P(A)}$ 입니다.`, blanks: [] },
       { id: "s2", text: String.raw`두 식을 자세히 보면 공통점이 있습니다. 둘 다 $P(A\cap B)$를 담고 있습니다. 이것은 두 사건이 동시에 일어날 확률입니다. 이 공통항을 다리 삼아 두 식을 하나로 잇는 것이 다음 목표입니다. 그러려면 먼저 두 번째 식을 $P(A\cap B)$ 하나만 남도록 정리해야 합니다. $P(B|A)=\dfrac{P(A\cap B)}{P(A)}$ 의 양변에 $P(A)$를 곱하면 $P(A\cap B) = $[[blank:가]] 입니다.`,
@@ -300,6 +430,23 @@ $$E[X]=0.5\times0+0.5\times4=2,\qquad f(E[X])=2^2=4$$
 $$E[f(X)]=0.5\times f(0)+0.5\times f(4)=0.5\times0+0.5\times16=8$$
 <p>$4\le8$이니 부등식이 성립합니다. 값이 두 곳으로 흩어져 있을수록 $f(X)$의 기댓값이 $f(E[X])$보다 더 크게 벌어지는 것도 확인할 수 있습니다.</p>
 <p>아래 증명은 이 벌어지는 방향이 이 예시 하나만의 우연이 아니라 볼록함수라면 항상 같은 방향으로 성립한다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="195" x2="380" y2="195" class="dg-line" stroke-width="1.5"/>
+<line x1="30" y1="195" x2="30" y2="20" class="dg-line" stroke-width="1.5"/>
+<path d="M60,60 Q200,190 340,80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="100" cy="98" r="4" class="dg-accent"/>
+<circle cx="300" cy="103" r="4" class="dg-accent"/>
+<line x1="100" y1="98" x2="300" y2="103" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<line x1="200" y1="130" x2="200" y2="100" class="dg-line" stroke-width="1.5" stroke-dasharray="2,3"/>
+<circle cx="200" cy="130" r="3" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="200" cy="100" r="3" class="dg-accent"/>
+<text x="95" y="88" font-size="12">x</text>
+<text x="295" y="93" font-size="12">y</text>
+<text x="205" y="95" font-size="12">E[f(X)] (현 위)</text>
+<text x="205" y="150" font-size="12">f(E[X])</text>
+<text x="45" y="210" class="dg-dim" font-size="12">현이 항상 곡선 위쪽: f(E[X]) ≤ E[f(X)]</text>
+</svg>`,
+    diagramCaption: String.raw`볼록함수 그래프 위 두 점을 잇는 현은 항상 그래프보다 위쪽에 있다.`,
     sections: [
       { id: "s1", text: String.raw`지금 보이려는 것은 볼록함수라면 기댓값을 먼저 낸 뒤 함수에 넣은 값이 함수에 먼저 넣고 기댓값을 낸 값보다 작거나 같다는 사실입니다. 이걸 확인하려면 먼저 볼록함수의 정의부터 다시 봐야 합니다. $f$가 볼록함수라는 건 두 점 $x,y$를 어떤 비율 $t\in[0,1]$로 섞었을 때 함수값이 각 점의 함수값을 같은 비율로 섞은 것보다 작거나 같다는 뜻입니다. 식으로 쓰면 $f(tx+(1-t)y)\le tf(x)+(1-t)f(y)$ 입니다.`, blanks: [] },
       { id: "s2", text: String.raw`이 정의는 딱 두 점에 대한 것이라 아직 확률변수 전체를 다루기엔 부족합니다. 그래서 두 점을 여러 점 $x_1,\dots,x_n$과 가중치 $p_i\ge0,\sum_ip_i=1$로 확장합니다. 두 점 사이의 볼록성 부등식을 점을 하나씩 늘려가며 반복 적용하면 여러 점의 가중평균에 대해서도 같은 모양의 부등식이 성립한다는 걸 보일 수 있습니다. $f\left(\sum_i p_ix_i\right) \le \sum_i$[[blank:가]] 입니다.`,
@@ -324,6 +471,27 @@ $$d(A)=\min(d(S)+4,\ d(B)+1)=\min(4,\ 3)=3$$
 <p>$C$도 같은 방식으로 구해봅니다.</p>
 $$d(C)=\min(d(A)+5,\ d(B)+8)=\min(8,\ 10)=8$$
 <p>$A$를 거치는 길이 8로 더 짧습니다. 아래 증명은 이 재귀식이 이 작은 그래프뿐 아니라 모든 그래프에서 항상 성립하는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="110" x2="240" y2="50" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="240" y1="50" x2="240" y2="170" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="240" y1="170" x2="420" y2="110" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="60" y1="110" x2="240" y2="170" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3" />
+<line x1="240" y1="50" x2="420" y2="110" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3" />
+<circle cx="60" cy="110" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="240" cy="50" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="240" cy="170" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="420" cy="110" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="55" y="115" font-size="12">S</text>
+<text x="235" y="55" font-size="12">B</text>
+<text x="235" y="175" font-size="12">A</text>
+<text x="415" y="115" font-size="12">C</text>
+<text x="130" y="72" font-size="11">2</text>
+<text x="248" y="113" font-size="11">1</text>
+<text x="320" y="132" font-size="11">5</text>
+<text x="130" y="150" font-size="11" class="dg-dim">4</text>
+<text x="320" y="72" font-size="11" class="dg-dim">8</text>
+</svg>`,
+    diagramCaption: String.raw`굵은 실선 S→B→A→C가 최단경로(총 8), 점선은 더 긴 대안 간선.`,
     sections: [
       { id: "s1", text: String.raw`최단경로를 구하는 문제를 생각해봅니다. 그래프가 조금만 커져도 가능한 경로의 수는 감당하기 어려울 만큼 늘어납니다. 모든 경로를 일일이 나열해서 비교하는 방법은 쓸 수 없습니다. 그래서 전체 최단거리를 한 번에 구하는 대신 이웃 노드까지의 최단거리로부터 재귀적으로 계산하는 방법을 찾으려 합니다. 그 재귀식을 확인하는 것이 지금 목표입니다. 목표를 수식으로 쓰면 이렇습니다. 노드 $v$까지의 최단거리 $d(v)$를 $v$의 이웃 노드들의 최단거리 $d(u)$로 표현하는 것입니다.`, blanks: [] },
       { id: "s2", text: String.raw`이 재귀식이 정말 성립하는지 확인하려면 실제로 존재하는 최단경로 하나를 붙잡고 그 구조를 직접 들여다보는 게 가장 확실한 방법입니다. $s$에서 $v$까지의 어떤 한 최단경로를 $P$라 하겠습니다. $P$ 위에서 $v$ 바로 직전에 거치는 노드를 $u$라 하겠습니다.`, blanks: [] },
@@ -351,6 +519,24 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>$A^{-1}=\begin{pmatrix}1&0\\0&100\end{pmatrix}$이므로 $\delta x=A^{-1}\delta b=\begin{pmatrix}0\\0.01\end{pmatrix}$입니다. $x$의 상대오차는 $\|\delta x\|/\|x\|\approx0.01/1.41421\approx0.00707$입니다.</p>
 <p>입력의 상대오차는 $0.0001$인데 해의 상대오차는 $0.00707$로 약 $70$배나 커졌습니다. $70$은 정확히 조건수 $\kappa(A)=100$이 정해둔 상한 아래에 들어갑니다.</p>
 <p>아래 증명은 이 증폭 배율이 이 특정한 행렬에서만 생기는 우연이 아니라 임의의 $A$와 임의의 오차에서 조건수로 정확히 상한이 잡히는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<text x="110" y="20" font-size="12" text-anchor="middle">단위원 (오차 δb)</text>
+<circle cx="110" cy="120" r="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="110" y1="120" x2="170" y2="120" class="dg-stroke-accent" stroke-width="2"/>
+<text x="175" y="115" font-size="10" class="dg-dim">σ₁=1</text>
+<line x1="110" y1="120" x2="110" y2="90" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<text x="115" y="85" font-size="10">σ₂=1</text>
+<line x1="200" y1="120" x2="260" y2="120" class="dg-line" stroke-width="1.5"/>
+<polygon points="260,120 248,114 248,126" class="dg-stroke-ink"/>
+<text x="205" y="105" font-size="11">A</text>
+<text x="380" y="20" font-size="12" text-anchor="middle">κ(A)=100배 증폭된 타원</text>
+<ellipse cx="380" cy="120" rx="60" ry="4" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="390" y="112" font-size="10" class="dg-dim">장축 60 (κ배 증폭)</text>
+<line x1="380" y1="120" x2="380" y2="116" class="dg-line" stroke-width="1.5" stroke-dasharray="2,2"/>
+<text x="330" y="150" font-size="10">단축 극도로 얇음 (σ₂=0.01)</text>
+<text x="60" y="200" font-size="11">‖δx‖/‖x‖ ≤ κ(A)·‖δb‖/‖b‖ = 100 × 상대오차</text>
+</svg>`,
+    diagramCaption: String.raw`단위원이 A를 거치며 극도로 납작한 타원이 되면 오차가 특이값 비율 κ(A)만큼 증폭된다.`,
     sections: [
       { id: "s1", text: String.raw`선형시스템 $Ax=b$를 풀 때 컴퓨터에 입력하는 $b$ 값부터 이미 완벽하지 않습니다. 실수를 유한한 자리수로 저장하다 보니 반올림 오차가 아주 작게라도 항상 섞여 들어갑니다. 이 자체는 피할 수 없습니다. 정말 중요한 질문은 따로 있습니다. 이 작은 오차가 답 $x$에는 얼마나 큰 오차로 나타나는지입니다. 입력의 오차가 그대로 작게 남을 수도 있습니다. 아니면 계산 과정에서 몇 배나 몇십 배로 증폭될 수도 있습니다. 지금 목표는 이 증폭 정도를 정확한 부등식으로 잡아내는 것입니다.`, blanks: [] },
       { id: "s2", text: String.raw`이 증폭 정도를 재려면 먼저 오차가 있는 상황을 수식으로 표현해야 합니다. $Ax=b$의 우변에 작은 오차가 섞여 $b+\delta b$가 되었다고 하겠습니다. 그러면 그에 대응하는 해도 조금 바뀌어서 $A(x+\delta x)=b+\delta b$를 만족하게 됩니다. 이제 $\delta b$와 $\delta x$ 사이의 관계를 밝히는 것이 다음 목표입니다.`, blanks: [] },
@@ -375,6 +561,20 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p><strong>가역인 경우.</strong> $A=\begin{pmatrix}1&2\\3&4\end{pmatrix}$를 봅니다. $\det(A)=1\times4-2\times3=-2$로 0이 아닙니다. 수반행렬은 $\mathrm{adj}(A)=\begin{pmatrix}4&-2\\-3&1\end{pmatrix}$이고 $A^{-1}=\mathrm{adj}(A)/\det(A)$를 계산하면 $\begin{pmatrix}-2&1\\1.5&-0.5\end{pmatrix}$가 나옵니다. 실제로 $Ax=0$을 풀어보면 $x_1=-2x_2$와 $3x_1+4x_2=0$을 동시에 만족해야 하는데 대입하면 $x_2=0$이 나오고 따라서 $x_1=0$만 남습니다. 자명해뿐입니다.</p>
 <p><strong>가역이 아닌 경우.</strong> $A'=\begin{pmatrix}2&4\\1&2\end{pmatrix}$를 봅니다. 둘째 열이 첫째 열의 2배라 $\det(A')=2\times2-4\times1=0$입니다. 수반행렬은 $\mathrm{adj}(A')=\begin{pmatrix}2&-4\\-1&2\end{pmatrix}$입니다. 이 행렬의 첫째 열 $x_0=(2,-1)$을 $A'$에 곱해보면 $A'x_0=(2\times2+4\times(-1),\ 1\times2+2\times(-1))=(0,0)$이 나옵니다. $x_0\neq0$인데도 $A'x_0=0$이니 자명하지 않은 해가 존재합니다.</p>
 <p>행렬식이 0이 되자마자 정확히 그 자리에서 자명하지 않은 해가 튀어나왔습니다. 아래 증명은 이 대응이 이 두 예제만의 우연이 아니라 모든 정사각행렬에서 항상 성립하는 동치관계임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="20" font-size="13" text-anchor="middle">det(A) ≠ 0: 넓이 보존</text>
+<polygon points="150,190 230,190 230,110 150,110" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<polygon points="150,190 230,166 278,86 198,110" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="150" y="208" font-size="11" class="dg-dim">단위정사각형</text>
+<text x="285" y="90" font-size="11">Ax (평행사변형)</text>
+<text x="490" y="20" font-size="13" text-anchor="middle">det(A)=0: 직선으로 붕괴</text>
+<polygon points="490,190 570,190 570,110 490,110" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="490" y1="190" x2="565" y2="40" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="565,40 555,50 567,54" class="dg-accent"/>
+<text x="490" y="208" font-size="11" class="dg-dim">단위정사각형</text>
+<text x="575" y="60" font-size="11">Ax (넓이 0인 직선)</text>
+</svg>`,
+    diagramCaption: String.raw`가역인 A는 정사각형을 넓이가 있는 평행사변형으로 보내고(det≠0), 비가역인 A는 넓이를 완전히 짓눌러 한 직선으로 붕괴시킨다(det=0).`,
     sections: [
       { id: "s1", text: String.raw`지금 확인하려는 것은 $\det(A)\neq0$이라는 조건과 $A$의 영공간이 0벡터 하나뿐이라는 조건이 서로를 함의한다는 사실이다. 두 방향을 모두 보여야 완전한 동치가 된다. 먼저 $\det(A)\neq0$에서 출발해서 영공간이 자명하다는 것을 보인다. 그다음 반대 방향을 본다. 이 결과가 왜 중요한지는 선형회귀를 떠올리면 바로 알 수 있다. 정규방정식 $\beta=(X^TX)^{-1}X^Ty$에서 역행렬이 존재하려면 정확히 $X^TX$가 이 조건을 만족해야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 $\det(A)\neq0$이라는 조건만으로 $A$의 역행렬이 실제로 존재함을 확인하는 것이다. 존재한다고 그냥 가정하지 않고 직접 만들어 보이는 것이 가장 확실한 증명이다. 그래서 여인수로 만든 수반행렬 $\mathrm{adj}(A)$를 쓴다. 이 행렬은 항상 $A\,\mathrm{adj}(A) = \det(A)I$ 라는 항등식을 만족한다는 사실이 알려져 있다. $\det(A)\neq0$이므로 양변을 $\det(A)$로 나누어도 된다. 그러면 $A^{-1} = $[[blank:가]] 를 얻는다.`,
@@ -400,6 +600,31 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>출력 쪽 그래디언트를 $g_3=(1,1)$이라 하면 $\|g_3\|=\sqrt2\approx1.414$입니다. 한 층씩 거슬러 올라가며 곱해봅니다. $g_2=Jg_3=(0.5,0.4)$, $g_1=Jg_2=(0.25,0.16)$, $g_0=Jg_1=(0.125,0.064)$입니다.</p>
 <p>$g_0$의 노름은 $\|g_0\|\approx0.140$입니다. 명제가 말하는 상한은 $\rho^3\|g_3\|=0.125\times1.414\approx0.177$입니다. 실제 값 $0.140$이 이 상한 아래에 있습니다.</p>
 <p>세 층을 거치는 동안 그래디언트의 길이가 $1.414$에서 $0.140$까지 줄어들었습니다. 아래 증명은 이 감쇠가 이 특정 대각행렬만의 우연이 아니라 고유값이 $\rho$ 이하인 모든 대칭 야코비안에서 항상 보장됨을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 210" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="175" x2="540" y2="175" class="dg-line" stroke-width="1"/>
+<line x1="80" y1="175" x2="80" y2="50" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="80,50 73,63 87,63" class="dg-accent"/>
+<text x="80" y="38" font-size="12" text-anchor="middle">g_L</text>
+<line x1="220" y1="175" x2="220" y2="112" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="220,112 213,125 227,125" class="dg-accent"/>
+<text x="220" y="100" font-size="12" text-anchor="middle">g_{L-1}</text>
+<line x1="360" y1="175" x2="360" y2="143" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="360,143 353,156 367,156" class="dg-accent"/>
+<text x="360" y="131" font-size="12" text-anchor="middle">g_1</text>
+<line x1="500" y1="175" x2="500" y2="159" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="500,159 493,172 507,172" class="dg-accent"/>
+<text x="500" y="147" font-size="12" text-anchor="middle">g_0</text>
+<line x1="98" y1="112" x2="202" y2="112" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<polygon points="202,112 192,107 192,117" class="dg-dim"/>
+<line x1="238" y1="143" x2="342" y2="143" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<polygon points="342,143 332,138 332,148" class="dg-dim"/>
+<line x1="378" y1="159" x2="482" y2="159" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<polygon points="482,159 472,154 472,164" class="dg-dim"/>
+<text x="150" y="196" font-size="11" class="dg-dim">×J_Lᵀ (≤ρ배)</text>
+<text x="290" y="196" font-size="11" class="dg-dim">×J_2ᵀ (≤ρ배)</text>
+<text x="430" y="196" font-size="11" class="dg-dim">×J_1ᵀ (≤ρ배)</text>
+</svg>`,
+    diagramCaption: String.raw`고유값이 ρ<1인 야코비안을 한 층씩 거칠 때마다 그래디언트 길이가 ρ배 이하로 줄어, L개 층을 지나면 ρ^L배까지 감쇠한다.`,
     sections: [
       { id: "s1", text: String.raw`$L$개 층으로 이루어진 신경망을 생각한다. $l$번째 층은 $x_l=f_l(x_{l-1})$로 벡터 $x_{l-1}$을 받아 벡터 $x_l$을 내놓는다. 이 층의 야코비안을 $J_l=\partial x_l/\partial x_{l-1}$이라 하자. 손실 $L$은 맨 끝 $x_L$에서 계산된다. $g_l=\partial L/\partial x_l$이라 두면 역전파는 $g_L$에서 시작해서 $g_{L-1},g_{L-2},\dots$를 차례로 구해 최종적으로 $g_0$까지 거슬러 올라가는 과정이다. 지금 목표는 이 과정에서 그래디언트의 크기가 층을 지날수록 어떻게 변하는지를 정확한 부등식으로 잡아내는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 한 층을 거슬러 올라갈 때 그래디언트가 어떻게 바뀌는지를 정확한 식으로 쓰는 것이다. $L$은 $x_l$을 거쳐서만 $x_{l-1}$에 의존하므로 체인룰을 쓴다. 다만 이번엔 $x_l$이 벡터이므로 스칼라 체인룰이 아니라 야코비안과 벡터의 곱으로 나타난다. 관례상 그래디언트를 열벡터로 쓰기 때문에 곱하는 순서를 맞추려면 야코비안을 전치해서 곱해야 한다. $g_{l-1} = \dfrac{\partial L}{\partial x_{l-1}} = $[[blank:가]] 이다.`,
@@ -424,6 +649,26 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>$Q^{-1}B=Q^TB=\dfrac{1}{\sqrt2}(1,1)^T\approx(0.707,0.707)$입니다. 좌표를 바꾸면 재귀는 $z_t^{(1)}=3z_{t-1}^{(1)}+0.707x_t$와 $z_t^{(2)}=1\cdot z_{t-1}^{(2)}+0.707x_t$라는 서로 완전히 독립인 두 스칼라 재귀로 갈라집니다.</p>
 <p>$h_0=(0,0)$에서 시작해서 $x_1=1$을 넣으면 원래 재귀로는 $h_1=Ah_0+Bx_1=(1,0)$입니다. 이걸 $Q^T$로 옮기면 $z_1=Q^Th_1\approx(0.707,0.707)$입니다. 방금 구한 독립 재귀식으로 직접 계산해도 $z_1^{(1)}=3\times0+0.707\times1=0.707$이고 $z_1^{(2)}=1\times0+0.707\times1=0.707$로 정확히 같은 값이 나옵니다.</p>
 <p>얽혀 있던 2차원 재귀를 두 개의 독립된 스칼라 재귀로 풀었더니 원래 계산과 정확히 맞아떨어졌습니다. 아래 증명은 이 분리가 이 특정 행렬만의 우연이 아니라 대각화 가능한 모든 $A$에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="20" font-size="13" text-anchor="middle">원래 좌표: h₁, h₂가 얽힌 재귀</text>
+<line x1="60" y1="190" x2="240" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="150" y1="210" x2="150" y2="50" class="dg-line" stroke-width="1"/>
+<path d="M115,175 Q160,110 195,140 Q225,165 195,90 Q175,50 235,65" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="235,65 222,66 228,76" class="dg-dim"/>
+<text x="65" y="185" font-size="11" class="dg-dim">h₁</text>
+<text x="155" y="58" font-size="11" class="dg-dim">h₂</text>
+<line x1="320" y1="130" x2="380" y2="130" class="dg-line" stroke-width="1.5"/>
+<polygon points="380,130 370,125 370,135" class="dg-dim"/>
+<text x="350" y="118" font-size="12" text-anchor="middle">Q⁻¹</text>
+<text x="490" y="20" font-size="13" text-anchor="middle">고유기저: z⁽¹⁾, z⁽²⁾는 서로 독립</text>
+<line x1="490" y1="190" x2="490" y2="55" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="490,55 484,68 496,68" class="dg-accent"/>
+<line x1="410" y1="190" x2="605" y2="190" class="dg-line" stroke-width="2.5" stroke-dasharray="6,3"/>
+<polygon points="605,190 594,185 594,195" class="dg-dim"/>
+<text x="497" y="70" font-size="11">z⁽¹⁾_t = λ₁z⁽¹⁾_{t-1}+b₁x_t</text>
+<text x="500" y="205" font-size="11" class="dg-dim">z⁽²⁾_t = λ₂z⁽²⁾_{t-1}+b₂x_t</text>
+</svg>`,
+    diagramCaption: String.raw`좌표를 A의 고유기저로 바꾸면 서로 얽혀 있던 재귀가 축마다 완전히 독립인 스칼라 재귀로 풀린다.`,
     sections: [
       { id: "s1", text: String.raw`재귀식 $h_t=Ah_{t-1}+Bx_t$을 그대로 보면 $h_t$의 $i$번째 성분을 구하려 해도 $h_{t-1}$의 모든 성분이 $A$를 통해 뒤섞여 들어온다. $d$개 좌표가 전부 얽혀 있으니 한 스텝의 계산도 행렬곱 전체를 거쳐야 한다. 여러 스텝을 미리 병렬로 계산하기도 어렵다. 지금 목표는 이 얽힘을 풀어서 각 좌표가 서로 상관없이 독립적으로 진화하는 형태를 얻는 것이다. 그러면 스칼라 재귀 하나하나는 닫힌 형태로 풀 수 있으니 계산이 훨씬 쉬워진다.`, blanks: [] },
       { id: "s2", text: String.raw`얽힘을 풀려면 좌표계를 바꿔야 한다. $A$가 $A=Q\Lambda Q^{-1}$로 대각화된다고 하자. $A$가 자연스럽게 대각으로 보이는 좌표계는 $Q$의 열인 고유벡터들이 기준이 되는 좌표계다. 그래서 $h_t=Qz_t$로 두고 새 변수 $z_t=Q^{-1}h_t$를 도입한다. 이걸 원래 재귀식에 대입하면 $Qz_t = AQz_{t-1}+Bx_t$가 된다. 양변 왼쪽에 $Q^{-1}$을 곱해서 $z_t$만 남기면 $z_t = $[[blank:가]]$\,z_{t-1} + Q^{-1}Bx_t$ 이다.`,
@@ -446,6 +691,36 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>실제로 분산이 보존되는지 확인해봅니다. $0.849^2+0.529^2\approx0.72+0.28=1$입니다. 두 계수의 제곱합이 정확히 1로 맞아떨어집니다.</p>
 <p>이 값은 각 스텝의 노이즈를 따로 더해서 얻은 값과도 일치합니다. $\alpha_2(1-\alpha_1)+(1-\alpha_2)=0.8\times0.1+0.2=0.08+0.2=0.28$로 앞서 구한 $1-\bar\alpha_2$와 정확히 같습니다.</p>
 <p>두 스텝을 직접 합성해봤더니 $\bar\alpha_2=\alpha_1\alpha_2$라는 누적곱이 그대로 닫힌 식의 계수가 되었습니다. 아래 증명은 이 패턴이 두 스텝만이 아니라 임의의 $t$번째 스텝까지 그대로 이어짐을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+<text x="350" y="18" font-size="13" text-anchor="middle">순방향 과정: 원본이 스텝마다 조금씩 가우시안 노이즈에 덮인다</text>
+<rect x="20" y="40" width="110" height="110" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="75" cy="95" r="20" class="dg-accent"/>
+<circle cx="66" cy="86" r="2.5" class="dg-dim"/><circle cx="92" cy="112" r="2.5" class="dg-dim"/>
+<text x="75" y="168" font-size="12" text-anchor="middle">x₀ (원본)</text>
+<rect x="160" y="40" width="110" height="110" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="215" cy="95" r="14" class="dg-accent"/>
+<circle cx="180" cy="60" r="2.5" class="dg-dim"/><circle cx="206" cy="86" r="2.5" class="dg-dim"/><circle cx="258" cy="86" r="2.5" class="dg-dim"/><circle cx="232" cy="112" r="2.5" class="dg-dim"/><circle cx="232" cy="138" r="2.5" class="dg-dim"/>
+<text x="215" y="168" font-size="12" text-anchor="middle">x₁</text>
+<rect x="300" y="40" width="110" height="110" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="355" cy="95" r="9" class="dg-accent"/>
+<circle cx="320" cy="60" r="2.5" class="dg-dim"/><circle cx="346" cy="60" r="2.5" class="dg-dim"/><circle cx="398" cy="60" r="2.5" class="dg-dim"/><circle cx="346" cy="86" r="2.5" class="dg-dim"/><circle cx="372" cy="86" r="2.5" class="dg-dim"/><circle cx="346" cy="112" r="2.5" class="dg-dim"/><circle cx="372" cy="112" r="2.5" class="dg-dim"/><circle cx="320" cy="138" r="2.5" class="dg-dim"/><circle cx="372" cy="138" r="2.5" class="dg-dim"/>
+<text x="355" y="168" font-size="12" text-anchor="middle">x₂</text>
+<rect x="440" y="40" width="110" height="110" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="495" cy="95" r="4" class="dg-accent"/>
+<circle cx="460" cy="60" r="2.5" class="dg-dim"/><circle cx="512" cy="60" r="2.5" class="dg-dim"/><circle cx="538" cy="60" r="2.5" class="dg-dim"/><circle cx="460" cy="86" r="2.5" class="dg-dim"/><circle cx="486" cy="86" r="2.5" class="dg-dim"/><circle cx="538" cy="86" r="2.5" class="dg-dim"/><circle cx="460" cy="112" r="2.5" class="dg-dim"/><circle cx="486" cy="112" r="2.5" class="dg-dim"/><circle cx="512" cy="112" r="2.5" class="dg-dim"/><circle cx="460" cy="138" r="2.5" class="dg-dim"/><circle cx="486" cy="138" r="2.5" class="dg-dim"/><circle cx="512" cy="138" r="2.5" class="dg-dim"/><circle cx="538" cy="138" r="2.5" class="dg-dim"/>
+<text x="495" y="168" font-size="12" text-anchor="middle">x₃</text>
+<rect x="580" y="40" width="110" height="110" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="600" cy="60" r="2.5" class="dg-dim"/><circle cx="626" cy="60" r="2.5" class="dg-dim"/><circle cx="652" cy="60" r="2.5" class="dg-dim"/><circle cx="678" cy="60" r="2.5" class="dg-dim"/>
+<circle cx="600" cy="86" r="2.5" class="dg-dim"/><circle cx="626" cy="86" r="2.5" class="dg-dim"/><circle cx="652" cy="86" r="2.5" class="dg-dim"/><circle cx="678" cy="86" r="2.5" class="dg-dim"/>
+<circle cx="600" cy="112" r="2.5" class="dg-dim"/><circle cx="626" cy="112" r="2.5" class="dg-dim"/><circle cx="652" cy="112" r="2.5" class="dg-dim"/><circle cx="678" cy="112" r="2.5" class="dg-dim"/>
+<circle cx="600" cy="138" r="2.5" class="dg-dim"/><circle cx="626" cy="138" r="2.5" class="dg-dim"/><circle cx="652" cy="138" r="2.5" class="dg-dim"/><circle cx="678" cy="138" r="2.5" class="dg-dim"/>
+<text x="635" y="168" font-size="12" text-anchor="middle">x_T (순수 노이즈)</text>
+<line x1="132" y1="95" x2="157" y2="95" class="dg-line" stroke-width="1.5"/><polygon points="157,95 148,90 148,100" class="dg-dim"/>
+<line x1="272" y1="95" x2="297" y2="95" class="dg-line" stroke-width="1.5"/><polygon points="297,95 288,90 288,100" class="dg-dim"/>
+<line x1="412" y1="95" x2="437" y2="95" class="dg-line" stroke-width="1.5"/><polygon points="437,95 428,90 428,100" class="dg-dim"/>
+<line x1="552" y1="95" x2="577" y2="95" class="dg-line" stroke-width="1.5"/><polygon points="577,95 568,90 568,100" class="dg-dim"/>
+</svg>`,
+    diagramCaption: String.raw`매 스텝 √αₜ만큼 신호를 남기고 √(1-αₜ)만큼 노이즈를 더하면, t가 커질수록 원본의 흔적은 옅어지고 결국 순수 가우시안 노이즈만 남는다.`,
     sections: [
       { id: "s1", text: String.raw`순방향 과정은 각 스텝마다 $x_t=\sqrt{\alpha_t}x_{t-1}+\sqrt{1-\alpha_t}\epsilon_t$로 정의된다. 여기서 $\epsilon_t$는 평균 0, 분산 1인 표준정규분포를 따르고 서로 독립이다. 지금 목표는 이 재귀를 $t$번 반복하지 않고 $x_t$를 원본 $x_0$와 노이즈 하나로 한 번에 표현하는 닫힌 식을 얻는 것이다. 그래야 학습 중에 임의의 시점 $t$를 골라 그 시점의 노이즈 낀 데이터를 즉시 샘플링할 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`닫힌 식을 구하기 전에 이 재귀가 왜 이런 계수 $\sqrt{\alpha_t}$와 $\sqrt{1-\alpha_t}$를 쓰는지부터 확인해 둘 필요가 있다. $x_{t-1}$의 분산이 1이라고 하자. $x_{t-1}$과 $\epsilon_t$는 서로 독립이므로 합의 분산은 각 항의 분산을 더한 것과 같다. $\mathrm{Var}(x_t) = \alpha_t\cdot\mathrm{Var}(x_{t-1}) + (1-\alpha_t)\cdot\mathrm{Var}(\epsilon_t) = \alpha_t\cdot1+(1-\alpha_t)\cdot1 = $[[blank:가]] 이다.`,
@@ -471,6 +746,27 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>두 표의 거리는 $\|Q_1-Q_2\|_\infty=\max(|5-3|,|1-1|)=2$입니다. 여기에 $T$를 한 번 적용해봅니다. $\max_{a'}Q_1(s,a')=5$이고 $\max_{a'}Q_2(s,a')=3$입니다.</p>
 <p>$(TQ_1)(s,a_1)=2+0.9\times5=6.5$이고 $(TQ_2)(s,a_1)=2+0.9\times3=4.7$입니다. $(TQ_1)(s,a_2)=0+0.9\times5=4.5$이고 $(TQ_2)(s,a_2)=0+0.9\times3=2.7$입니다.</p>
 <p>새 거리는 $\|TQ_1-TQ_2\|_\infty=\max(|6.5-4.7|,|4.5-2.7|)=1.8$입니다. 정확히 $\gamma\times2=0.9\times2=1.8$입니다. $T$를 한 번 적용했더니 거리가 정확히 $\gamma$배로 줄었습니다. 아래 증명은 이 축소 비율이 이 특정 표만의 우연이 아니라 항상 $\gamma$ 이하로 보장됨을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="20" x2="40" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="190" x2="440" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="450" y="194" font-size="11" class="dg-dim">Q*(고정점)</text>
+<text x="10" y="18" font-size="11" class="dg-dim">‖Qₖ-Q*‖</text>
+<path d="M70,30 L160,94 L250,132 L340,155 L430,169" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="70" cy="30" r="5" class="dg-accent"/>
+<circle cx="160" cy="94" r="5" class="dg-accent"/>
+<circle cx="250" cy="132" r="5" class="dg-accent"/>
+<circle cx="340" cy="155" r="5" class="dg-accent"/>
+<circle cx="430" cy="169" r="5" class="dg-accent"/>
+<text x="70" y="205" font-size="11" text-anchor="middle">Q₀</text>
+<text x="160" y="205" font-size="11" text-anchor="middle">TQ₀</text>
+<text x="250" y="205" font-size="11" text-anchor="middle">T²Q₀</text>
+<text x="340" y="205" font-size="11" text-anchor="middle">T³Q₀</text>
+<text x="430" y="205" font-size="11" text-anchor="middle">T⁴Q₀</text>
+<text x="115" y="55" font-size="11" class="dg-dim">≤γ배</text>
+<text x="205" y="105" font-size="11" class="dg-dim">≤γ배</text>
+<text x="295" y="135" font-size="11" class="dg-dim">≤γ배</text>
+</svg>`,
+    diagramCaption: String.raw`벨만 최적 연산자를 반복 적용할 때마다 임의의 Q-테이블과 고정점 Q* 사이의 거리는 매번 γ배 이하로 줄어 결국 Q*로 수렴한다.`,
     sections: [
       { id: "s1", text: String.raw`Q-테이블은 상태 $s$와 행동 $a$의 모든 조합에 대해 값 $Q(s,a)$를 저장한 $|S|\times|A|$ 크기의 표다. 벨만 최적 연산자 $T$는 표 전체를 한 번에 새 표로 바꾸는 함수다. $(TQ)(s,a)=R(s,a)+\gamma\sum_{s'}P(s'|s,a)\max_{a'}Q(s',a')$로 정의된다. 지금 목표는 임의의 두 표 $Q_1,Q_2$ 사이의 거리를 $\|Q_1-Q_2\|_\infty=\max_{s,a}|Q_1(s,a)-Q_2(s,a)|$로 잴 때, $T$를 한 번 적용한 뒤의 거리가 원래 거리보다 얼마나 줄어드는지 확인하는 것이다. 이 거리가 확실히 줄어든다는 것만 보이면 반복해서 $T$를 적용했을 때 표가 어딘가로 수렴한다는 것을 보장할 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`두 표에 각각 $T$를 적용한 뒤 그 차이를 계산해본다. $(TQ_1)(s,a)-(TQ_2)(s,a)$를 정의대로 풀어쓰면 두 식에 똑같이 들어있는 보상항 $R(s,a)$는 빼는 과정에서 서로 상쇄되어 사라진다. 남는 것은 max항의 차이뿐이다. $(TQ_1)(s,a)-(TQ_2)(s,a) = \gamma\sum_{s'}P(s'|s,a)($[[blank:가]]$)$ 이다.`,
@@ -493,6 +789,31 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>같은 방식으로 $w^Tx=-1$을 만족하는 점은 $x_-=-w/25=(-0.12,-0.16)$입니다.</p>
 <p>두 점 사이의 거리는 $\|x_+-x_-\|=\|(0.24,0.32)\|=\sqrt{0.0576+0.1024}=\sqrt{0.16}=0.4$입니다. 이 값은 정확히 $2/\|w\|=2/5=0.4$와 일치합니다.</p>
 <p>좌표를 직접 찍어 재본 거리가 공식과 정확히 맞아떨어졌습니다. 아래 증명은 이 일치가 이 특정 $w$만의 우연이 아니라 임의의 $w,b$에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="230" x2="420" y2="50" class="dg-stroke-ink" stroke-width="2.5"/>
+<line x1="73" y1="257" x2="433" y2="77" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="47" y1="203" x2="407" y2="23" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<circle cx="180" cy="240" r="7" class="dg-accent"/>
+<circle cx="260" cy="215" r="7" class="dg-accent"/>
+<circle cx="340" cy="175" r="7" class="dg-accent"/>
+<circle cx="253" cy="167" r="7" class="dg-accent"/>
+<circle cx="253" cy="167" r="12" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<rect x="134" y="134" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="214" y="84" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="304" y="54" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="220" y="106" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="227" cy="113" r="12" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="240" y1="140" x2="262" y2="185" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="262,185 250,178 256,192" class="dg-accent"/>
+<text x="266" y="182" font-size="12">w</text>
+<line x1="299" y1="77" x2="325" y2="131" class="dg-line" stroke-width="1.5"/>
+<polygon points="299,77 305,88 292,86" class="dg-dim"/>
+<polygon points="325,131 319,120 332,122" class="dg-dim"/>
+<text x="335" y="105" font-size="12">마진 = 2/‖w‖</text>
+<text x="330" y="95" font-size="11" class="dg-dim">wᵀx+b=+1</text>
+<text x="270" y="45" font-size="11" class="dg-dim">wᵀx+b=-1</text>
+</svg>`,
+    diagramCaption: String.raw`서포트 벡터(테두리로 표시)가 놓인 두 지지 초평면 사이의 수직거리가 마진이며, 그 폭은 정확히 2/‖w‖다.`,
     sections: [
       { id: "s1", text: String.raw`분리 초평면은 $w^Tx+b=0$이다. 정규화된 SVM에서는 가장 가까운 데이터점들이 이 초평면과 평행한 두 지지 초평면 $w^Tx+b=1$, $w^Tx+b=-1$ 위에 놓이도록 $w,b$의 스케일을 맞춘다. 지금 목표는 이 두 평행한 평면 사이의 수직거리, 즉 마진의 폭을 정확한 식으로 구하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`마진의 폭을 재려면 한 평면에서 다른 평면까지 수직으로 가로지르는 최단 경로의 길이를 구하면 된다. $w^Tx+b=0$의 법선벡터가 정확히 $w$라는 사실을 이용한다. 그러니 이 최단 경로는 반드시 $w$ 방향과 나란해야 한다. $+1$ 평면 위의 점 $x_+$와 $-1$ 평면 위의 점 $x_-$를 이 최단 경로의 양 끝점으로 잡으면, 두 점의 차이는 $w$ 방향의 단위벡터에 어떤 스칼라 $t$를 곱한 형태로 쓸 수 있다. $x_+-x_- = t\dfrac{w}{\|w\|}$ 이다.`, blanks: [] },
@@ -518,6 +839,31 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>데이터만 보고 구한 음의 로그우도가 $\mathrm{NLL}(w)=(w-4)^2$ 형태라고 합시다. 정규화가 없다면 이 식을 최소화하는 $w$는 그대로 $4$입니다. 데이터만 놓고 본 최적값입니다.</p>
 <p>이제 사전분포를 반영한 목적함수 $(w-4)^2+\lambda w^2=(w-4)^2+w^2$를 최소화합니다. 미분해서 0으로 놓으면 $2(w-4)+2w=0$이 되고 $4w=8$이므로 $w^*=2$입니다.</p>
 <p>정규화가 없을 때는 $4$였던 추정값이 가우시안 사전분포를 더하자 $0$ 쪽으로 절반 끌려와 $2$가 되었습니다. 아래 증명은 이 끌림이 이 특정 숫자만의 우연이 아니라 $\lambda=1/(2\tau^2)$라는 정확한 비율로 항상 일어남을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="18" font-size="13" text-anchor="middle">L2: 원형 제약(가우시안 사전분포)</text>
+<line x1="60" y1="140" x2="260" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="150" y1="40" x2="150" y2="240" class="dg-line" stroke-width="1"/>
+<circle cx="150" cy="140" r="55" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<ellipse cx="230" cy="90" rx="25" ry="15" transform="rotate(-20 230 90)" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,2"/>
+<ellipse cx="230" cy="90" rx="50" ry="30" transform="rotate(-20 230 90)" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,2"/>
+<ellipse cx="230" cy="90" rx="75" ry="45" transform="rotate(-20 230 90)" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,2"/>
+<circle cx="230" cy="90" r="3" class="dg-dim"/>
+<text x="238" y="80" font-size="10" class="dg-dim">데이터만의 최적해</text>
+<circle cx="196" cy="111" r="6" class="dg-accent"/>
+<text x="200" y="130" font-size="11">w*_L2 (원점 쪽으로 수축)</text>
+<text x="490" y="18" font-size="13" text-anchor="middle">L1: 마름모꼴 제약(라플라스 사전분포)</text>
+<line x1="400" y1="140" x2="600" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="490" y1="40" x2="490" y2="240" class="dg-line" stroke-width="1"/>
+<polygon points="490,85 545,140 490,195 435,140" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<ellipse cx="570" cy="90" rx="25" ry="15" transform="rotate(-20 570 90)" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,2"/>
+<ellipse cx="570" cy="90" rx="50" ry="30" transform="rotate(-20 570 90)" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,2"/>
+<ellipse cx="570" cy="90" rx="75" ry="45" transform="rotate(-20 570 90)" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,2"/>
+<circle cx="570" cy="90" r="3" class="dg-dim"/>
+<text x="578" y="80" font-size="10" class="dg-dim">데이터만의 최적해</text>
+<circle cx="490" cy="85" r="6" class="dg-accent"/>
+<text x="497" y="82" font-size="11">w*_L1 (한 성분이 정확히 0)</text>
+</svg>`,
+    diagramCaption: String.raw`L2 제약은 둥근 경계 어디서나 접해 원점 쪽으로 부드럽게 수축시키지만, L1의 뾰족한 꼭짓점은 축 위에서 자주 접해 일부 가중치를 정확히 0으로 만든다.`,
     sections: [
       { id: "s1", text: String.raw`MAP 추정은 데이터 $D$를 관찰한 뒤 가장 그럴듯한 가중치 $w_{MAP}=\arg\max_w p(w|D)$를 찾는 것이다. 베이즈 정리를 쓰면 $p(w|D) = p(D|w)p(w)/p(D)$이다. 분모 $p(D)$는 $w$와 무관한 상수이므로 $\arg\max$를 취할 때는 있으나 없으나 결과가 같다. 그러니 $w_{MAP} = \arg\max_w p(D|w)p(w)$로 써도 된다. 지금 목표는 이 식이 가우시안 사전분포 $p(w)$ 아래에서 정확히 어떤 손실함수를 최소화하는 문제로 바뀌는지 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$p(D|w)p(w)$는 두 확률을 곱한 식이라 미분해서 최댓값을 찾기 번거롭다. 로그는 곱을 합으로 바꾸면서도 강한 증가함수라 최댓값의 위치를 그대로 보존한다. 로그를 씌운 뒤 최대화해도 결과는 같다. $\arg\max_w p(D|w)p(w) = \arg\max_w[\log p(D|w) + $[[blank:가]]$]$ 이다.`,
@@ -540,6 +886,23 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>$v_2=a_2-\dfrac{a_2\cdot v_1}{v_1\cdot v_1}v_1$을 계산합니다. $a_2\cdot v_1=2\times3+2\times1=8$이고 $v_1\cdot v_1=9+1=10$이므로 계수는 $0.8$입니다. $v_2=(2,2)-0.8(3,1)=(2-2.4,\ 2-0.8)=(-0.4,1.2)$입니다.</p>
 <p>실제로 $v_2\cdot v_1=(-0.4)\times3+1.2\times1=-1.2+1.2=0$입니다. $a_2$에서 $v_1$ 방향 성분을 정확히 그만큼 빼냈더니 남은 $v_2$에는 $v_1$ 방향이 조금도 남지 않았습니다.</p>
 <p>두 벡터로 직접 확인해봤더니 사영 성분을 뺀 나머지가 정확히 직교했습니다. 아래 증명은 이 직교성이 이 두 벡터만의 우연이 아니라 벡터가 몇 개든 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="20" y1="190" x2="280" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="20" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="190" x2="195" y2="145" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="195,145 183,144 187,155" class="dg-accent"/>
+<text x="198" y="140" font-size="12">v₁ = a₁</text>
+<line x1="60" y1="190" x2="150" y2="100" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="150,100 145,112 158,110" class="dg-dim"/>
+<text x="128" y="88" font-size="12">a₂</text>
+<line x1="150" y1="100" x2="168" y2="154" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="159" y="145" width="8" height="8" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<line x1="168" y1="154" x2="150" y2="100" class="dg-stroke-accent" stroke-width="2.5" stroke-dasharray="7,3"/>
+<text x="178" y="130" font-size="11">v₂ = a₂ - proj_{v₁}(a₂)</text>
+<circle cx="168" cy="154" r="3" class="dg-dim"/>
+<text x="150" y="205" font-size="11" class="dg-dim">사영 성분(빼는 부분)은 v₁ 위에 놓인다</text>
+</svg>`,
+    diagramCaption: String.raw`a₂에서 v₁ 방향 사영 성분을 빼고 남은 v₂는 정확히 v₁과 수직이다.`,
     sections: [
       { id: "s1", text: String.raw`선형독립인 벡터 $a_1,\dots,a_n$이 있다. $v_1=a_1$로 시작하고 $k\ge2$에 대해 $v_k = a_k - \sum_{j=1}^{k-1}\dfrac{a_k\cdot v_j}{v_j\cdot v_j}v_j$로 정의한다. $a_1,\dots,a_n$이 선형독립이므로 이렇게 만들어지는 $v_j$들은 모두 0이 아닌 벡터임이 보장된다. 그래서 분모 $v_j\cdot v_j$로 나누는 것이 항상 가능하다. 여기서 빼는 항 $\dfrac{a_k\cdot v_j}{v_j\cdot v_j}v_j$는 $a_k$를 $v_j$ 방향으로 사영한 성분이다. 이 사영 성분들을 전부 빼고 남은 나머지가 이전 벡터들과 정말 수직이 되는지가 지금 확인할 목표다. $v_1,\dots,v_{k-1}$이 이미 서로 직교한다고 가정한 상태에서 $v_k$도 그 벡터들 전부와 직교함을 보이면, 귀납적으로 $v_1,\dots,v_n$ 전체가 서로 직교한다는 결론에 도달한다.`, blanks: [] },
       { id: "s2", text: String.raw`$i<k$인 하나의 $i$를 고정하고 $v_k\cdot v_i$가 정말 0인지 직접 계산해본다. $v_k$의 정의를 그대로 대입하면 $v_k\cdot v_i = a_k\cdot v_i - \sum_{j=1}^{k-1}\dfrac{a_k\cdot v_j}{v_j\cdot v_j}(v_j\cdot v_i)$ 이다.`, blanks: [] },
@@ -563,6 +926,19 @@ $$Ax=b,\quad x=\begin{pmatrix}1\\1\end{pmatrix},\quad b=\begin{pmatrix}1\\0.01\e
 <p>$\hat g=c\,g/\|g\|=2(3,4)/5=(1.2,1.6)$입니다. 실제로 $\|\hat g\|=\sqrt{1.2^2+1.6^2}=\sqrt{1.44+2.56}=\sqrt4=2$로 정확히 상한 $c$와 같습니다.</p>
 <p>방향도 확인해봅니다. $\hat g/\|\hat g\|=(0.6,0.8)$이고 원래 $g/\|g\|=(3,4)/5=(0.6,0.8)$입니다. 완전히 같은 방향입니다.</p>
 <p>학습률을 $\eta=0.1$이라 하면 실제 파라미터 이동량은 $\|\eta\hat g\|=0.1\times2=0.2=\eta c$입니다. 방향은 그대로인 채 길이만 정확히 상한에 맞춰 눌렸습니다. 아래 증명은 이 보존과 상한이 이 특정 $g$만의 우연이 아니라 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="190" x2="230" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="20" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<circle cx="60" cy="190" r="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="112" y="230" font-size="11" class="dg-dim">‖·‖=c (클리핑 반지름)</text>
+<line x1="60" y1="190" x2="150" y2="70" class="dg-line" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="150,70 138,74 144,84" class="dg-dim"/>
+<text x="155" y="65" font-size="12">g (‖g‖=5)</text>
+<line x1="60" y1="190" x2="96" y2="142" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="96,142 86,148 92,156" class="dg-accent"/>
+<text x="20" y="130" font-size="12">ĝ = c·g/‖g‖ (‖ĝ‖=c)</text>
+</svg>`,
+    diagramCaption: String.raw`클리핑은 그래디언트의 방향은 그대로 두고 길이만 눌러 반지름 c인 원 경계 위로 가져온다.`,
     sections: [
       { id: "s1", text: String.raw`그래디언트 $g$의 노름이 상한 $c$ 이하이면 그대로 둔다. $\|g\|>c$일 때만 $\hat g=c\,g/\|g\|$로 바꾼다. 지금 흥미로운 경우는 후자다. 목표는 이렇게 바꾼 $\hat g$가 원래 $g$와 정말 같은 방향을 가리키는지, 그리고 그 길이가 정확히 $c$로 눌리는지를 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$\hat g=c\,g/\|g\|$라는 식을 다시 보면 이것은 $g$에 어떤 스칼라를 곱한 것일 뿐이다. $\hat g = $[[blank:가]]$\cdot g$ 로 쓸 수 있다. 이 스칼라는 $c>0$이고 $\|g\|>0$이므로 항상 양수다.`,
@@ -617,6 +993,21 @@ $$x=(3,1,5)$$
 $$\hat x=Qc=q\cdot 2\sqrt2=(2,\ 2,\ 0)$$
 <p>잔차는 $x-\hat x=(1,-1,5)$입니다. 이 잔차와 $q$의 내적을 계산하면 $\frac{1}{\sqrt2}\cdot1+\frac{1}{\sqrt2}\cdot(-1)+0\cdot5=0$이므로 잔차는 정확히 $U$와 수직입니다.</p>
 <p>길이도 맞아떨어집니다. $\|x\|^2=9+1+25=35$이고 $\|\hat x\|^2=4+4=8$이니 $\|x\|^2-\|\hat x\|^2=27$인데, 잔차의 길이를 직접 재도 $1+1+25=27$로 똑같습니다. 아래 증명은 이 수직성과 길이 관계가 특정 벡터가 아니라 임의의 $x$와 임의의 정규직교기저 $Q$에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="170" x2="330" y2="170" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="330,170 318,165 318,175" class="dg-dim"/>
+<text x="335" y="174" font-size="12">U (부분공간, 기저 Q)</text>
+<line x1="30" y1="170" x2="250" y2="60" class="dg-line" stroke-width="2"/>
+<polygon points="250,60 238,66 244,75" class="dg-dim"/>
+<text x="256" y="55" font-size="12">x</text>
+<line x1="30" y1="170" x2="250" y2="170" class="dg-stroke-accent" stroke-width="2.5"/>
+<circle cx="250" cy="170" r="4" class="dg-accent"/>
+<text x="205" y="190" font-size="12">x̂ = QQᵀx</text>
+<line x1="250" y1="60" x2="250" y2="170" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<rect x="240" y="160" width="10" height="10" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<text x="255" y="115" font-size="11" class="dg-dim">잔차 x-x̂ ⊥ U</text>
+</svg>`,
+    diagramCaption: String.raw`x에서 부분공간 U로 내린 수선의 발이 최적 사영 x̂이고, 남은 잔차는 반드시 U와 직각을 이룬다.`,
     sections: [
       { id: "s1", text: String.raw`$U$를 $k$차원 부분공간이라 하고 $Q\in\mathbb{R}^{n\times k}$의 열들이 $U$의 정규직교기저($Q^TQ=I$)라 하자. $U$ 안의 임의의 점은 $u=Qc$ 형태로 쓸 수 있다. 여기서 $c\in\mathbb{R}^k$는 그 점을 기저로 표현한 좌표다. 지금 목표는 $U$ 안의 모든 점 $u$ 중에서 원래 벡터 $x$까지의 거리 $\|x-u\|$를 가장 작게 만드는 점이 정확히 무엇인지, 그리고 그 점이 왜 직교사영이라 불리는지를 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`거리 대신 그 제곱 $\|x-Qc\|^2$을 최소화하는 $c$를 찾는다. 제곱근보다 제곱이 미분하기 쉽고 최솟값의 위치는 똑같기 때문이다. 전개하면 $\|x-Qc\|^2 = x^Tx - 2c^TQ^Tx + c^TQ^TQc = x^Tx-2c^TQ^Tx+c^Tc$ 이다 ($Q^TQ=I$를 썼다). 이 식을 $c$로 미분해서 0으로 놓으면 $-2Q^Tx+2c = $[[blank:가]] 이다.`,
@@ -643,6 +1034,23 @@ $$\hat x=Qc=q\cdot 2\sqrt2=(2,\ 2,\ 0)$$
 <p><strong>곡률이 작은 방향.</strong> 반대로 $\delta_1=0$으로 두면 $\delta_2^2\le1$이므로 $|\delta_2|\le1$까지 움직일 수 있습니다. 같은 $\epsilon$ 안에서도 곡률이 큰 방향은 더 좁게, 곡률이 작은 방향은 더 넓게 허용되는 타원이 만들어집니다.</p>
 <p>이제 그래디언트가 $g=(2,4)$라 하면 자연그래디언트 방향은 $F^{-1}g=(2/4,\ 4/1)=(0.5,\ 4)$입니다. 원래 그래디언트의 첫 성분은 곡률이 커서 $F^{-1}$을 거치며 4분의 1로 줄어들고, 둘째 성분은 곡률이 작아 그대로 남습니다.</p>
 <p>아래 증명은 이 타원형 제약과 방향 보정이 특정 숫자가 아니라 임의의 피셔정보행렬 $F$와 그래디언트 $g$에서 항상 이런 식으로 유도됨을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="90" y1="140" x2="330" y2="140" class="dg-line" stroke-width="1"/>
+<line x1="210" y1="30" x2="210" y2="230" class="dg-line" stroke-width="1"/>
+<circle cx="210" cy="140" r="65" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<ellipse cx="210" cy="140" rx="45" ry="90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="255" y="45" font-size="11" class="dg-dim">유클리드 공 ‖δ‖≤√(2ε)</text>
+<text x="90" y="220" font-size="11">피셔 타원 δᵀFδ≤2ε</text>
+<line x1="210" y1="140" x2="240" y2="80" class="dg-line" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="240,80 228,84 234,93" class="dg-dim"/>
+<text x="245" y="75" font-size="12">g</text>
+<line x1="210" y1="140" x2="217" y2="80" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="217,80 209,88 219,90" class="dg-accent"/>
+<text x="222" y="65" font-size="12">F⁻¹g (자연그래디언트)</text>
+<text x="100" y="150" font-size="10" class="dg-dim">δ₁: 곡률 큼 → 좁게 허용</text>
+<text x="215" y="235" font-size="10" class="dg-dim">δ₂: 곡률 작음 → 넓게 허용</text>
+</svg>`,
+    diagramCaption: String.raw`KL 제약을 2차 근사하면 피셔정보행렬을 계량으로 쓰는 타원형 신뢰영역이 되고, 곡률이 큰 방향일수록 좁게, 작은 방향일수록 넓게 허용된다.`,
     sections: [
       { id: "s1", text: String.raw`TRPO는 정책을 크게 개선하고 싶으면서도 행동 분포 자체가 갑자기 확 바뀌는 것은 피하고 싶어한다. 그래서 새 정책과 옛 정책 사이의 KL발산을 일정한 한도 $\epsilon$ 이하로 묶어두는 제약을 건다. 문제는 KL발산이 파라미터 변화 $\delta=\theta'-\theta$에 대해 단순한 형태가 아니라서, 이 제약이 파라미터 공간에서 정확히 어떤 모양을 만드는지 바로 보이지 않는다는 점이다. 지금 목표는 $\delta$가 아주 작을 때로 한정해서 KL발산을 다루기 쉬운 근사식으로 바꾸는 것이다. 그러면 이 제약이 익숙한 노름 제약과 같은 모양이라는 것을 확인할 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`$D_{KL}(\pi_\theta\|\pi_{\theta+\delta})$를 $\delta=0$ 근처에서 테일러 전개한다. $\delta=0$일 때는 두 분포가 완전히 같으므로 $D_{KL}=0$이다. KL발산은 항상 0 이상이고 $\delta=0$에서 정확히 최솟값 0을 갖기 때문에, 그 지점에서 $\delta$에 대한 1차 미분항도 반드시 0이다. 그러니 테일러 전개는 2차항부터 시작한다. $D_{KL}(\pi_\theta\|\pi_{\theta+\delta}) \approx \frac12\delta^T$[[blank:가]]$\delta$ 이고, 여기서 빈칸은 $\delta=0$에서 계산한 KL발산의 헤시안(2차미분행렬)이다.`,
@@ -694,6 +1102,27 @@ $$\log\tilde p(x)=-\frac{x^2}{2},\qquad \nabla_x\log\tilde p(2)=-2$$
 $$\nabla_x\log p(2)=-2-0=-2$$
 <p>$Z$의 값이 $2.5066$이든 다른 어떤 값이든 상관없이 두 계산 모두 $-2$로 똑같이 나옵니다.</p>
 <p>아래 증명은 이 소거가 가우시안 하나만의 특별한 사정이 아니라 $Z$가 $x$와 무관한 상수이기만 하면 항상 일어나는 일임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="200" cy="150" rx="150" ry="100" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="200" cy="150" rx="100" ry="65" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<ellipse cx="200" cy="150" rx="50" ry="32" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="200" cy="150" r="3" class="dg-accent"/>
+<line x1="70" y1="70" x2="120" y2="105" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="120,105 108,102 113,113" class="dg-stroke-accent"/>
+<line x1="330" y1="70" x2="278" y2="105" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="278,105 288,100 285,111" class="dg-stroke-accent"/>
+<line x1="330" y1="230" x2="278" y2="195" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="278,195 288,198 285,187" class="dg-stroke-accent"/>
+<line x1="70" y1="230" x2="120" y2="195" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="120,195 108,197 112,187" class="dg-stroke-accent"/>
+<line x1="200" y1="30" x2="200" y2="75" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="200,75 195,64 205,64" class="dg-stroke-accent"/>
+<line x1="200" y1="270" x2="200" y2="225" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="200,225 195,236 205,236" class="dg-stroke-accent"/>
+<text x="205" y="145" font-size="11">밀도 최고점</text>
+<text x="25" y="280" class="dg-dim" font-size="12">화살표: ∇log p(x), 정규화 상수와 무관하게 밀도가 높은 중심을 향함</text>
+</svg>`,
+    diagramCaption: String.raw`데이터 분포 위 여러 점에서 ∇log p(x)는 밀도가 높은 쪽을 가리키는 벡터장을 이룬다.`,
     sections: [
       { id: "s1", text: String.raw`많은 모델은 확률밀도를 $p(x)=\tilde p(x)/Z$ 형태로 정의한다. $\tilde p(x)$는 신경망으로 자유롭게 표현할 수 있는 정규화되지 않은 밀도다. $Z=\int\tilde p(x')dx'$ 는 전체 적분값을 1로 맞추기 위한 정규화 상수다. 문제는 고차원에서 이 적분이 대개 계산 불가능하다는 점이다. 지금 목표는 정규화 상수 $Z$를 몰라도 스코어 함수 $\nabla_x\log p(x)$를 정확히 계산할 수 있음을 보이는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 $\log p(x)$를 두 조각으로 쪼개는 것이 다음 목표다. 로그는 나눗셈을 뺄셈으로 바꾸는 성질이 있다. 이 성질을 그대로 적용하면 $\log p(x) = \log\dfrac{\tilde p(x)}{Z} = $[[blank:가]] 이다.`,
@@ -718,6 +1147,38 @@ $$\nabla_x\log p(2)=-2-0=-2$$
 $$\nabla_\phi f(g_\phi(\varepsilon))=2\times3.5\times1=7$$
 <p>이 값 하나는 $\varepsilon$을 어떻게 뽑았는지에 따라 매번 달라지는 표본일 뿐입니다. 진짜 목표는 $\varepsilon$을 계속 다시 뽑아 평균을 낸 값입니다. $\varepsilon\sim N(0,1)$이므로 $E_\varepsilon[2(\phi+\varepsilon)]=2\phi+2E[\varepsilon]=2\times3+0=6$이 참값입니다. 방금 얻은 $7$은 이 참값 $6$을 중심으로 흔들리는 편향 없는 추정값입니다.</p>
 <p>아래 증명은 이렇게 $\varepsilon$을 먼저 뽑고 결정론적 변환을 미분하는 방식이 왜 매번 편향 없이 참값을 추정하는 셈이 되는지 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="22" font-size="13">A. 직접 샘플링 (그래디언트 차단)</text>
+<rect x="30" y="55" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="45" y="80" font-size="12">φ</text>
+<rect x="170" y="55" width="90" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="180" y="80" font-size="12">z~q_φ(z)</text>
+<rect x="320" y="55" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="335" y="80" font-size="12">f(z)</text>
+<line x1="90" y1="75" x2="165" y2="75" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="165,75 153,70 153,80" class="dg-stroke-ink"/>
+<line x1="260" y1="75" x2="315" y2="75" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="315,75 303,70 303,80" class="dg-stroke-ink"/>
+<line x1="320" y1="125" x2="90" y2="125" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<line x1="205" y1="117" x2="215" y2="133" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="215" y1="117" x2="225" y2="133" class="dg-stroke-ink" stroke-width="2"/>
+<text x="95" y="145" font-size="11" class="dg-dim">샘플링은 φ로 미분 불가</text>
+
+<text x="400" y="22" font-size="13">B. 재매개변수화 (그래디언트 흐름)</text>
+<rect x="400" y="55" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="410" y="80" font-size="12">φ,ε</text>
+<rect x="510" y="55" width="100" height="40" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="518" y="80" font-size="12">z=μ_φ+σ_φε</text>
+<line x1="460" y1="75" x2="505" y2="75" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="505,75 493,70 493,80" class="dg-stroke-ink"/>
+<line x1="620" y1="75" x2="650" y2="75" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="650,75 638,70 638,80" class="dg-stroke-ink"/>
+<text x="655" y="80" font-size="12">f(z)</text>
+<line x1="655" y1="125" x2="400" y2="125" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="400,125 412,120 412,130" class="dg-stroke-accent"/>
+<text x="440" y="145" font-size="11">∇_φf(g_φ(ε)) 역전파 가능</text>
+</svg>`,
+    diagramCaption: String.raw`직접 샘플링은 그래디언트를 막지만 z=μ+σε 결정론적 경로는 그래디언트가 그대로 흐른다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 $\nabla_\phi E_{z\sim q_\phi}[f(z)]$ 를 계산하는 것이다. 그런데 기댓값을 취하는 분포 $q_\phi(z)$ 자체가 $\phi$에 따라 달라진다. 그러니 $\nabla_\phi$를 곧바로 기댓값 안으로 밀어넣을 수 없다. 게다가 $z\sim q_\phi(z)$를 뽑는 샘플링 절차 자체는 $\phi$에 대한 미분 가능한 연산이 아니다. 이 문제를 피하려면 무작위성이 들어 있는 부분과 $\phi$에 의존하는 부분을 분리해야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`분리하는 방법은 이렇다. $\phi$와 무관한 고정분포 $p(\varepsilon)$에서 $\varepsilon$을 뽑은 뒤 $z=g_\phi(\varepsilon)=\mu_\phi+\sigma_\phi\odot\varepsilon$ 라는 결정론적 변환을 거친다. 정규분포의 성질에 따르면 $\varepsilon\sim N(0,I)$일 때 이렇게 만든 $z$는 정확히 $q_\phi(z)=N(z;\mu_\phi,\sigma_\phi^2)$ 분포를 따른다. 무작위성은 전부 $\varepsilon$ 하나에 담겨 있고 $\phi$는 결정론적 변환 $g_\phi$ 안에만 들어 있다.`, blanks: [] },
@@ -744,6 +1205,22 @@ $$\left|\frac{dL_{sat}}{dD}\right|=\frac{1}{0.99}\approx1.01,\qquad \left|\frac{
 $$\left|\frac{dL_{sat}}{dD}\right|=\frac{1}{0.5}=2,\qquad \left|\frac{dL_{nonsat}}{dD}\right|=\frac{1}{0.5}=2$$
 <p>두 손실의 그래디언트 크기가 정확히 같습니다. 두 손실의 차이는 $D$가 낮을 때만 벌어집니다.</p>
 <p>아래 증명은 이 $99$배라는 격차가 우연한 숫자가 아니라 $D\to0$일수록 두 그래디언트의 비 $(1-D)/D$가 무한히 커진다는 일반적인 사실에서 나온다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="220" x2="520" y2="220" class="dg-line" stroke-width="1.5"/>
+<polygon points="520,220 508,215 508,225" class="dg-line"/>
+<text x="500" y="240" font-size="12">D</text>
+<line x1="50" y1="220" x2="50" y2="30" class="dg-line" stroke-width="1.5"/>
+<polygon points="50,30 45,42 55,42" class="dg-line"/>
+<text x="15" y="35" font-size="12">|기울기|</text>
+<path d="M60,35 Q90,120 150,165 Q220,190 300,195 Q390,200 470,205" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="330" y="185" font-size="12">-log D (대안 손실)</text>
+<path d="M60,150 Q200,160 350,175 Q430,190 470,215" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="330" y="165" font-size="12">log(1-D) (원래 손실)</text>
+<line x1="90" y1="220" x2="90" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="65" y="235" font-size="11" class="dg-dim">D≈0 (생성자가 서툴다)</text>
+<text x="50" y="255" class="dg-dim" font-size="12">D→0에서 -log D는 가파르고 log(1-D)는 거의 평평함(그래디언트 포화)</text>
+</svg>`,
+    diagramCaption: String.raw`log(1-D)와 -log(D)의 기울기를 D에 대해 비교하면 D→0 부근에서 원래 손실만 포화된다.`,
     sections: [
       { id: "s1", text: String.raw`생성자의 목표는 판별자가 가짜 샘플을 진짜로 착각하게 만드는 것이다. 즉 $D(G(z))$를 1에 가깝게 밀어붙이는 것이다. 학습 초반에는 생성자가 서툴러서 $D(G(z))$가 0에 가깝다. 여기서는 $D=D(G(z))$라 줄여 쓰고, 원래 손실 $\log(1-D)$와 대안 손실 $-\log D$ 각각이 $D$가 0 근처일 때 얼마나 강한 그래디언트 신호를 주는지 직접 비교하는 것이 목표다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 원래 손실 $L_{sat}(D)=\log(1-D)$ 를 $D$로 미분해 본다. $\log(1-D)$는 $\log u$에 $u=1-D$를 대입한 합성함수이므로 연쇄법칙을 쓴다. 바깥 함수 $\log u$의 도함수는 $1/u$이고 안쪽 함수 $u=1-D$의 도함수는 $-1$이다. 둘을 곱하면 $\dfrac{dL_{sat}}{dD} = $[[blank:가]] 이다.`,
@@ -820,6 +1297,22 @@ $$\hat\beta_{ols}=\frac{X^Ty}{X^TX}=\frac{12}{5}=2.4$$
 $$\hat\beta_{map}=\frac{X^Ty}{X^TX+\lambda}=\frac{12}{6}=2$$
 <p>가중치가 $0$ 근처에 있을 거라는 사전믿음이 추정값을 $2.4$에서 $2$로 정확히 $0$ 쪽으로 눌렀습니다.</p>
 <p>아래 증명은 이 눌림이 이 숫자 하나만의 우연이 아니라 가우시안 사전믿음 아래 MAP 추정이 항상 이런 닫힌 형태의 축소로 이어진다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+<circle cx="70" cy="290" r="130" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="70" cy="290" r="90" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="70" cy="290" r="50" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="70" cy="290" r="3" class="dg-accent"/>
+<ellipse cx="330" cy="110" rx="130" ry="80" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="330" cy="110" rx="90" ry="55" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="330" cy="110" rx="50" ry="30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="330" cy="110" r="3" class="dg-accent"/>
+<line x1="70" y1="290" x2="330" y2="110" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<circle cx="205" cy="197" r="5" class="dg-accent"/>
+<text x="205" y="185" font-size="12" text-anchor="middle">MAP 해 (축소됨)</text>
+<text x="330" y="95" font-size="12" text-anchor="middle">OLS 해</text>
+<text x="70" y="315" font-size="12" text-anchor="middle">원점 (사전믿음 중심)</text>
+</svg>`,
+    diagramCaption: String.raw`가우시안 사전(원점 중심 원)이 손실 등고선과 결합해 MAP 추정치를 원점 쪽으로 당긴다.`,
     sections: [
       { id: "s1", text: String.raw`데이터 $y$가 $y|X,\beta\sim N(X\beta,\sigma^2I)$ 에서 나왔다고 가정한다. 이건 그냥 회귀에서 흔히 쓰는 가우시안 잡음 가정이다. 여기에 가중치가 0 근처에 있을 거라는 사전믿음을 $\beta\sim N(0,\tau^2I)$ 로 표현한다. 지금 목표는 데이터를 관찰한 뒤 이 믿음을 갱신한 사후분포 $p(\beta|X,y)\propto p(y|X,\beta)p(\beta)$ 를 최대화하는 $\beta$, 즉 MAP 추정량을 구하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`사후분포를 최대화하는 것은 mle 항목에서 확인한 것과 같은 이유로 사후분포의 로그를 최대화하는 것과 같다. 로그는 강한 증가함수라 최댓값의 위치를 바꾸지 않는다. 가우시안 밀도의 로그는 지수 안의 이차식만 남고 나머지는 $\beta$와 무관한 상수다. 그러니 로그사후분포에서 $\beta$에 의존하는 항만 남기면 $\log p(\beta|X,y) \propto -\dfrac{1}{2\sigma^2}\|y-X\beta\|^2 - $[[blank:가]] 이다.`,
@@ -846,6 +1339,19 @@ $$D^*(x)=\frac{0.8}{0.8+0.2}=0.8$$
 $$D^*(x)=\frac{0.5}{0.5+0.5}=0.5$$
 <p>진짜와 가짜를 반반으로도 구분하지 못하는 상태입니다. 이것이 GAN이 이르고자 하는 내시균형입니다.</p>
 <p>아래 증명은 이 공식이 특정 확률값 두 쌍만의 우연이 아니라 임의의 $p_{data}(x)$와 $p_g(x)$에 대해 항상 이런 형태로 나온다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="200" x2="520" y2="200" class="dg-line" stroke-width="1.5"/>
+<text x="500" y="220" font-size="12">x</text>
+<path d="M60,190 Q170,40 260,190" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="130" y="55" font-size="12">p_data(x)</text>
+<path d="M180,190 Q290,70 400,190" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="330" y="85" font-size="12">p_g(x)</text>
+<path d="M60,130 Q220,90 260,80 Q340,95 460,140" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="350" y="118" font-size="12">D*(x)=p_data/(p_data+p_g)</text>
+<line x1="230" y1="200" x2="230" y2="30" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="190" y="25" font-size="11" class="dg-dim">두 분포가 겹치는 지점 (D*≈0.5)</text>
+</svg>`,
+    diagramCaption: String.raw`실제분포와 생성분포가 겹친 그림 위에 최적 판별자 D*(x)=p_data/(p_data+p_g) 곡선을 함께 그린다.`,
     sections: [
       { id: "s1", text: String.raw`GAN의 목적함수는 $V(D,G)=E_{x\sim p_{data}}[\log D(x)]+E_{z\sim p_z}[\log(1-D(G(z)))]$ 다. 지금 목표는 생성자 $G$를 고정해 두고 판별자 $D$만 이 값을 최대로 만들도록 최적화했을 때, 그 최적 판별자 $D^*$가 정확히 어떤 함수인지 구하는 것이다. 이걸 알면 판별자가 학습 도중 사실상 무엇을 배우고 있는지 정확히 알 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`두 번째 항은 $z$에 대한 기댓값인데 $x=G(z)$로 치환하면 $x$에 대한 적분으로 바꿀 수 있다. $p_g$는 $G$가 $p_z$를 밀어서 만드는 $x$ 공간의 분포다. 그러면 $V(D,G)=\int\left[p_{data}(x)\log D(x)+p_g(x)\log(1-D(x))\right]dx$ 라는 하나의 적분이 된다. 이 적분에서 각 지점 $x$의 $D(x)$ 값은 오직 그 지점의 피적분함수 항에만 영향을 준다. 그러니 적분 전체를 $D$라는 함수에 대해 최대화하는 것은, $x$ 하나하나에서 피적분함수를 따로따로 최대화하는 것과 같다.`, blanks: [] },
@@ -873,6 +1379,19 @@ $$E_p[f]-E_q[f]=f(0)-f(3)=0-(-3)=3$$
 $$E_p[h]-E_q[h]=h(0)-h(3)=0-(-6)=6$$
 <p>$6$은 $W(p,q)=3$을 넘어버립니다. 함수가 너무 가파르면 부등식 자체가 깨진다는 뜻입니다. WGAN이 critic을 1-립시츠로 억지로 붙잡아 두는 이유가 바로 여기에 있습니다.</p>
 <p>아래 증명은 1-립시츠라는 조건 하나만 지키면 어떤 결합분포를 쓰든 이 부등식이 항상 성립한다는 사실을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="520" y2="180" class="dg-line" stroke-width="1.5"/>
+<text x="500" y="200" font-size="12">x</text>
+<line x1="120" y1="180" x2="120" y2="60" class="dg-stroke-ink" stroke-width="3"/>
+<text x="90" y="50" font-size="12">p (x=0)</text>
+<line x1="400" y1="180" x2="400" y2="60" class="dg-stroke-ink" stroke-width="3" stroke-dasharray="6,3"/>
+<text x="365" y="50" font-size="12">q (x=d)</text>
+<path d="M130,120 Q260,70 390,120" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="390,120 378,113 380,124" class="dg-stroke-accent"/>
+<text x="215" y="80" font-size="12">확률질량 이동</text>
+<text x="150" y="200" class="dg-dim" font-size="12">W(p,q) = 옮겨야 할 거리: 두 분포가 겹치지 않아도 유의미한 거리</text>
+</svg>`,
+    diagramCaption: String.raw`한 분포에서 다른 분포로 확률질량을 옮기는 이동으로 겹치지 않는 분포 사이에도 의미 있는 거리를 정의한다.`,
     sections: [
       { id: "s1", text: String.raw`두 분포 $p,q$ 사이의 Wasserstein 거리는 $W(p,q)=\inf_{\gamma\in\Pi(p,q)}E_{(x,y)\sim\gamma}[\|x-y\|]$ 로 정의된다. $\Pi(p,q)$는 $x$쪽 주변분포가 $p$이고 $y$쪽 주변분포가 $q$인 모든 결합분포의 모임이다. 이 정의 그대로는 계산이 거의 불가능하다. 가능한 결합분포 전체를 뒤져서 최솟값을 찾아야 하기 때문이다. 지금 목표는 신경망 하나로 계산할 수 있는 다른 방법을 찾는 것이다. 그 발판으로, 임의의 1-립시츠 함수 $f$ 하나만 있으면 $W(p,q)$의 하한을 바로 얻을 수 있음을 보인다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 $E_p[f]-E_q[f]$를 결합분포 $\gamma$ 하나의 언어로 다시 쓰는 것이다. $\Pi(p,q)$에 속하는 임의의 결합분포 $\gamma$를 하나 고정한다. $\gamma$의 정의상 $x$만 따로 봤을 때의 분포는 $p$이고 $y$만 따로 봤을 때의 분포는 $q$다. 그러니 $x$만의 함수인 $f(x)$의 기댓값은 $p$ 아래에서 구하든 $\gamma$ 아래에서 구하든 같은 값이 나온다. $y$ 쪽도 마찬가지다. $E_{x\sim p}[f(x)] - E_{y\sim q}[f(y)] = E_{(x,y)\sim\gamma}[$[[blank:가]]$]$ 이다.`,
@@ -984,6 +1503,22 @@ $$\hat m_2=\frac{m_2}{1-\beta_1^2}=\frac{0.19}{0.19}=1.0$$
 $$\nabla f(0,0.1)=(2x,-2y)=(0,-0.2)$$
 <p>크기는 $\|\nabla f\|=0.2$이고 명제가 말하는 값 $|t||\lambda|=0.1\times2=0.2$와 정확히 일치합니다. $f$가 순수한 이차식이라 여기서는 근사가 아니라 정확한 등식입니다.</p>
 <p>아래 증명은 이 결과가 이차식뿐 아니라 임의의 함수를 안장점 근처에서 2차 근사했을 때도 똑같은 논리로 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<line x1="200" y1="270" x2="200" y2="30" class="dg-line" stroke-width="1"/>
+<line x1="50" y1="150" x2="350" y2="150" class="dg-line" stroke-width="1"/>
+<path d="M120,60 Q200,150 120,240" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M280,60 Q200,150 280,240" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M90,40 Q200,150 90,260" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<path d="M310,40 Q200,150 310,260" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<path d="M60,150 Q200,80 340,150" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M60,150 Q200,220 340,150" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="200" cy="150" r="3" class="dg-accent"/>
+<text x="205" y="145" font-size="12">안장점 (∇f=0)</text>
+<text x="225" y="70" font-size="12">+ 방향(볼록)</text>
+<text x="45" y="150" font-size="12">- 방향(오목)</text>
+<text x="45" y="285" class="dg-dim" font-size="12">한 방향은 오목, 다른 방향은 볼록: 헤시안 고윳값 부호가 섞여 있음</text>
+</svg>`,
+    diagramCaption: String.raw`안장점에서는 한 방향은 오목, 다른 방향은 볼록해서 그래디언트가 0이면서도 극값이 아니다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 안장점 근처에서 그래디언트의 크기가 왜 천천히 커지는지, 즉 경사하강법이 이 지점 근처에서 왜 오래 정체하는지 확인하는 것이다. 그러려면 먼저 안장점 $x^*$에서 헤시안 $H=\nabla^2f(x^*)$가 어떤 구조를 갖는지부터 봐야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`손실함수가 두 번 미분 가능하면 헤시안의 $(i,j)$ 성분과 $(j,i)$ 성분은 편미분 순서를 바꿔도 같다. 그러니 $H$는 대칭행렬이다. 대칭행렬은 항상 직교대각화된다는 사실을 스펙트럴 정리에서 이미 확인했다. 그러니 $H=Q\Lambda Q^T$로 쓸 수 있고 $\Lambda$의 대각성분은 실수인 고윳값들이다. 안장점이라는 말은 이 고윳값들 중 어떤 것은 양수이고 어떤 것은 음수라는 뜻이다. 즉 어떤 인덱스 $i,j$에 대해 $($[[blank:가]]$)$ 가 성립한다.`,
@@ -1008,6 +1543,18 @@ $$\nabla f(0,0.1)=(2x,-2y)=(0,-0.2)$$
 $$E_q[\log p(x|z)]=0.7\log0.8+0.3\log0.2\approx0.7(-0.223)+0.3(-1.609)\approx-0.639$$
 $$D_{KL}(q\|p(z))=0.7\log\frac{0.7}{0.5}+0.3\log\frac{0.3}{0.5}\approx0.2356-0.1533\approx0.082$$
 <p>두 값을 합치면 $\mathrm{ELBO}\approx-0.639-0.082=-0.721$이고 실제로 $-0.721\le-0.693$이 성립합니다. $q$를 참 사후분포와 다르게 골랐더니 그 격차만큼 로그가능도보다 작아진 것입니다. 아래 증명은 이 격차가 옌센 부등식에서 나온다는 것을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="60" x2="360" y2="60" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="50" font-size="13">log p(x)</text>
+<line x1="40" y1="130" x2="360" y2="130" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="60" y="150" font-size="12">ELBO = E_q[log p(x|z)] - D_KL(q‖p(z))</text>
+<line x1="380" y1="60" x2="380" y2="130" class="dg-line" stroke-width="1.5"/>
+<polygon points="380,60 375,72 385,72" class="dg-line"/>
+<polygon points="380,130 375,118 385,118" class="dg-line"/>
+<text x="30" y="100" font-size="12">= D_KL(q(z|x)‖p(z|x))</text>
+<text x="40" y="185" class="dg-dim" font-size="12">ELBO는 항상 로그가능도 아래: 간격이 근사분포 q와 실제 사후분포의 KL발산</text>
+</svg>`,
+    diagramCaption: String.raw`로그가능도와 그 아래 ELBO 하한 사이의 간격은 정확히 KL발산이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 계산할 수 없는 $\log p(x)$를 계산 가능한 다른 식으로 아래에서 받쳐주는 것이다. 출발점은 잠재변수 $z$를 도입해 $p(x)$를 $z$에 대한 적분으로 쓰는 것이다. $p(x) = \int p(x,z)\,dz$ 이다.`, blanks: [] },
       { id: "s2", text: String.raw`이 적분을 그대로 다루기는 어렵다. 임의로 고른 분포 $q(z|x)$를 분자와 분모에 동시에 곱해 넣어도 값은 바뀌지 않는다. $p(x) = \int q(z|x)\dfrac{p(x,z)}{q(z|x)}\,dz$ 이다. 이 적분은 $z\sim q(z|x)$일 때 $p(x,z)/q(z|x)$의 기댓값과 같은 모양이다. $p(x) = $[[blank:가]] 이다.`,
@@ -1031,6 +1578,20 @@ $$D_{KL}(q\|p(z))=0.7\log\frac{0.7}{0.5}+0.3\log\frac{0.3}{0.5}\approx0.2356-0.1
 <p>분류기 쪽은 $\log p(y=1|x)=\log\sigma(x)$이고 $\nabla_x\log\sigma(x)=1-\sigma(x)$입니다. $\sigma(1)\approx0.731$이므로 이 값은 $1-0.731=0.269$입니다.</p>
 $$\nabla_x\log p(x)+\nabla_x\log p(y|x)\approx-1+0.269=-0.731$$
 <p>실제로 베이즈 정리로 $p(x|y=1)\propto\sigma(x)\,p(x)$를 직접 미분해도 $\nabla_x\log p(x|y=1)=(1-\sigma(x))-x$이므로 $x=1$에서 같은 값 $-0.731$이 나옵니다. 무조건부 스코어와 분류기의 그래디언트를 따로 계산해서 더한 것과 조건부 스코어를 직접 미분한 것이 정확히 일치합니다. 아래 증명은 이 일치가 특정 함수에서만 성립하는 게 아니라 베이즈 정리와 로그의 성질만으로 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="100" cy="150" r="3" class="dg-accent"/>
+<line x1="100" y1="150" x2="220" y2="90" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="220,90 205,95 213,103" class="dg-stroke-ink"/>
+<text x="130" y="105" font-size="12">∇log p(x) (무조건부 스코어)</text>
+<line x1="220" y1="90" x2="300" y2="130" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<polygon points="300,130 285,127 292,138" class="dg-stroke-ink"/>
+<text x="215" y="155" font-size="12">∇log p(y|x) (분류기 그래디언트)</text>
+<line x1="100" y1="150" x2="300" y2="130" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="300,130 286,127 291,140" class="dg-stroke-accent"/>
+<text x="310" y="120" font-size="12">∇log p(x|y) (조건부 스코어)</text>
+<text x="50" y="195" class="dg-dim" font-size="12">무조건부 스코어와 분류기 그래디언트를 더하면 조건부 스코어가 된다</text>
+</svg>`,
+    diagramCaption: String.raw`무조건부 스코어 벡터에 분류기 그래디언트 벡터를 더하면 조건부 스코어 벡터가 된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 원하는 클래스 $y$로 조건화된 생성을 만들기 위한 그래디언트 $\nabla_x\log p(x|y)$를, 이미 알고 있는 무조건부 스코어 $\nabla_x\log p(x)$와 분류기의 그래디언트 $\nabla_x\log p(y|x)$로 쪼개는 것이다. 시작점은 $p(x|y)$를 다른 방향의 확률로 바꿔주는 베이즈 정리다. $p(x|y) = \dfrac{p(y|x)p(x)}{p(y)}$ 이다.`, blanks: [] },
       { id: "s2", text: String.raw`이 식은 곱과 나눗셈이 섞여 있어 그대로 미분하면 번거롭다. 로그를 씌우면 곱은 덧셈으로 나눗셈은 뺄셈으로 바뀌어 각 항을 따로 다룰 수 있다. 양변에 로그를 씌우면 $\log p(x|y) = \log p(y|x) + \log p(x) - $[[blank:가]] 이다.`,
@@ -1078,6 +1639,21 @@ $$E[\nabla_\theta\log\pi_\theta(a|s)]=0.6(0.8)+0.4(-1.2)=0.48-0.48=0$$
 $$|f(0)-f(\pi/2)|=|0-2|=2,\qquad K|0-\pi/2|=2\times1.571\approx3.14$$
 <p>$2\le3.14$이므로 립시츠 조건을 만족합니다. 이제 그래디언트를 직접 봅니다. $x=0$에서 $f'(0)=2\cos0=2$로 상한 $K=2$에 정확히 닿고 $x=\pi/3$에서는 $f'(\pi/3)=2\cos(\pi/3)=1$로 상한보다 작습니다.</p>
 <p>어느 점에서도 $|f'(x)|=2|\cos x|\le2=K$를 벗어나지 않습니다. 아래 증명은 이 상한이 이 특정 함수만의 성질이 아니라 립시츠 연속이기만 하면 미분 가능한 모든 함수에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="380" y2="190" class="dg-line" stroke-width="1.5"/>
+<line x1="30" y1="190" x2="30" y2="20" class="dg-line" stroke-width="1.5"/>
+<line x1="200" y1="120" x2="340" y2="40" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="200" y1="120" x2="340" y2="200" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="200" y1="120" x2="60" y2="40" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="200" y1="120" x2="60" y2="200" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<path d="M60,150 Q130,90 200,120 Q270,150 340,80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="200" cy="120" r="4" class="dg-accent"/>
+<text x="205" y="110" font-size="12">x</text>
+<text x="315" y="35" font-size="11" class="dg-dim">기울기 +K</text>
+<text x="315" y="215" font-size="11" class="dg-dim">기울기 -K</text>
+<text x="40" y="210" class="dg-dim" font-size="12">함수 그래프는 이 콘(기울기 ±K) 밖으로 나갈 수 없다</text>
+</svg>`,
+    diagramCaption: String.raw`K-립시츠 함수의 그래프는 어느 점에서든 기울기 ±K인 콘 안에서만 움직인다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 $K$-립시츠 연속이라는 성질이 그래디언트의 크기에 대해 무엇을 말해주는지 확인하는 것이다. 정의부터 다시 본다. $f$가 $K$-립시츠 연속이라는 건 임의의 두 점 $x,y$에 대해 $|f(x)-f(y)|\le K\|x-y\|$ 가 성립한다는 뜻이다. 두 입력 사이의 거리에 $K$배를 곱한 값이 출력 차이의 상한이 된다.`, blanks: [] },
       { id: "s2", text: String.raw`이 부등식은 임의의 두 점에 대한 것이라 아직 그래디언트와 바로 연결되지 않는다. 그래디언트는 한 점 근처의 국소적인 변화율이다. $y$를 $x$에서 단위벡터 $u$ 방향으로 살짝 옮긴 점 $x+tu$로 좁혀서 본다. 정의의 $y$ 자리에 $x+tu$를 넣으면 $|f(x+tu)-f(x)| \le K\|tu\| = $[[blank:가]] 이다.`,
@@ -1101,6 +1677,29 @@ $$G(z_t)=(1.6,1.2),\qquad G(z_s)=(4,3)$$
 <p>두 출력의 차이는 $(-2.4,-1.8)$이고 그 크기는 다음과 같습니다.</p>
 $$\|G(z_t)-G(z_s)\|=\sqrt{2.4^2+1.8^2}=\sqrt{9}=3$$
 <p>명제가 말하는 상한 $L\|z_1-z_0\||t-s|=2\times5\times0.3=3$과 정확히 같습니다. $G$가 선형이라 이 경우는 상한에 딱 맞아떨어지는 극단적인 예입니다. 아래 증명은 이 상한이 이 선형 예뿐 아니라 임의의 $L$-립시츠 디코더와 임의의 보간점 쌍에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="22" font-size="13">잠재공간: 직선 보간</text>
+<line x1="40" y1="100" x2="300" y2="100" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="40" cy="100" r="5" class="dg-accent"/>
+<circle cx="300" cy="100" r="5" class="dg-accent"/>
+<circle cx="120" cy="100" r="3" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="200" cy="100" r="3" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="260" cy="100" r="3" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="30" y="122" font-size="12">z₀</text>
+<text x="295" y="122" font-size="12">z₁</text>
+<text x="90" y="145" font-size="11" class="dg-dim">z_t=(1-t)z₀+tz₁</text>
+<text x="380" y="22" font-size="13">출력공간: G를 통과한 이미지 시퀀스</text>
+<line x1="360" y1="70" x2="640" y2="70" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="640,70 628,65 628,75" class="dg-stroke-accent"/>
+<text x="490" y="60" font-size="11">G</text>
+<rect x="360" y="120" width="35" height="35" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="425" y="120" width="35" height="35" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="490" y="120" width="35" height="35" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="555" y="120" width="35" height="35" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="620" y="120" width="35" height="35" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="200" class="dg-dim" font-size="12">L-립시츠 G가 직선 보간을 부드럽게 이어지는 이미지 시퀀스로 옮긴다</text>
+</svg>`,
+    diagramCaption: String.raw`두 잠재점의 직선 보간이 G를 통과해 출력공간에서 부드러운 이미지 시퀀스로 나타난다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 두 잠재벡터 $z_0,z_1$을 직선으로 보간한 경로 $z_t=(1-t)z_0+tz_1$을 $G$에 통과시켰을 때 출력 경로 $G(z_t)$가 갑자기 튀지 않는다는 것을 확인하는 것이다. 먼저 두 보간점 $z_s,z_t$ 사이의 거리부터 계산해야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`$z_t-z_s$를 정의대로 풀어쓴다. $z_t-z_s = ((1-t)z_0+tz_1) - ((1-s)z_0+sz_1)$ 이다. $z_0$의 계수끼리 $z_1$의 계수끼리 묶으면 $z_t-z_s = (s-t)z_0+(t-s)z_1 = (t-s)($[[blank:가]]$)$ 이다.`,
@@ -1147,6 +1746,19 @@ $$J(\theta')=0.5(0.5-0.5)+0.5(0.2-0.8)=0-0.3=-0.3$$
 <p>$x_0=0$에서 시작합니다. $f'(x)=2x-4$이므로 $f'(0)=-4$이고 $f''(x)=2$로 어디서나 일정합니다.</p>
 $$x_1=x_0-\frac{f'(x_0)}{f''(x_0)}=0-\frac{-4}{2}=0+2=2$$
 <p>단 한 번의 갱신으로 정확한 최솟값 $x=2$에 도달합니다. $f$ 자체가 이차식이라서 2차 테일러 근사가 근사가 아니라 $f$와 완전히 같기 때문입니다. $f$가 이차식이 아니라면 매 스텝마다 근사식이 조금씩 달라지므로 여러 번 반복해야 하지만 갱신식 자체는 지금과 똑같습니다. 아래 증명은 이 갱신식이 이 특수한 경우에서만 나오는 게 아니라 두 번 미분 가능한 임의의 함수의 2차 근사에서 일반적으로 나온다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="380" y2="190" class="dg-line" stroke-width="1.5"/>
+<path d="M50,80 Q150,40 200,90 Q260,150 350,60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M120,180 Q210,20 300,170" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<circle cx="150" cy="65" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="118" y="55" font-size="12">x_n</text>
+<circle cx="212" cy="42" r="4" class="dg-accent"/>
+<text x="200" y="30" font-size="12">x_{n+1} (근사식의 꼭짓점)</text>
+<line x1="150" y1="65" x2="150" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="212" y1="42" x2="212" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<text x="40" y="210" class="dg-dim" font-size="12">실선: f(x), 점선(강조): x_n에서의 2차 테일러 근사</text>
+</svg>`,
+    diagramCaption: String.raw`x_n 근처의 2차 테일러 근사(포물선)의 꼭짓점이 다음 뉴턴 반복점 x_{n+1}이 된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 1차 정보인 기울기뿐 아니라 2차 정보인 곡률까지 활용하는 갱신식을 유도하는 것이다. 그러려면 먼저 $f$를 현재 지점 $x_n$ 근처에서 다항식으로 근사해야 한다. 테일러 전개로 2차항까지 펼치면 $f(x) \approx f(x_n) + f'(x_n)(x-x_n) + \dfrac{f''(x_n)}{2}(x-x_n)^2$ 이다.`, blanks: [] },
       { id: "s2", text: String.raw`뉴턴법의 아이디어는 원래 함수 $f$ 대신 이 2차 근사식을 최적화하는 것이다. 2차식은 정확히 하나의 임계점을 가지므로 그 지점을 다음 단계 $x_{n+1}$로 삼는다. 근사식을 $x$로 미분하면 상수항은 사라지고 $\dfrac{d}{dx}\left[f(x_n)+f'(x_n)(x-x_n)+\dfrac{f''(x_n)}{2}(x-x_n)^2\right] = f'(x_n) + $[[blank:가]] 이다.`,
@@ -1171,6 +1783,19 @@ $$\sigma(10(0.5-1))=\sigma(-5)\approx0.007,\qquad \sigma(10(1.5-1))=\sigma(5)\ap
 $$x=1.5:\ \sigma(5)-\sigma(-5)\approx0.993-0.007=0.986$$
 $$x=0.5:\ \sigma(-5)-\sigma(-15)\approx0.007-0.000=0.007$$
 <p>구간 안쪽에서는 값이 1에 가깝고 바깥쪽에서는 0에 가까워 정확히 범프 모양이 됩니다. 아래 증명은 이런 범프를 목표함수의 구간별 값에 맞춰 여러 개 겹쳐 쌓으면 임의의 연속함수를 원하는 정확도로 흉내낼 수 있다는 것을 스케치합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="30" y="22" font-size="13">A. 가파른 시그모이드 → 계단함수</text>
+<line x1="40" y1="150" x2="300" y2="150" class="dg-line" stroke-width="1.5"/>
+<path d="M50,140 Q195,140 195,60 Q195,20 290,20" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M50,140 L190,140 L190,20 L290,20" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="130" y="175" font-size="11" class="dg-dim">w→∞일수록 계단에 가까워짐</text>
+<text x="380" y="22" font-size="13">B. 계단(범프)을 쌓아 연속함수 근사</text>
+<line x1="380" y1="150" x2="660" y2="150" class="dg-line" stroke-width="1.5"/>
+<path d="M390,120 Q480,40 550,70 Q610,100 650,60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<polyline points="390,120 415,120 415,90 445,90 445,70 475,70 475,55 505,55 505,75 535,75 535,90 565,90 565,80 595,80 595,65 625,65 625,60 650,60" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="400" y="175" font-size="11" class="dg-dim">계단식 근사가 연속함수 f에 촘촘히 접근</text>
+</svg>`,
+    diagramCaption: String.raw`가파른 시그모이드가 계단함수를 근사하고, 그 계단들을 쌓아 임의의 연속함수를 흉내낸다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 은닉층이 하나뿐인 신경망만으로 임의의 연속함수 $f$를 원하는 정확도로 흉내낼 수 있다는 것을 스케치로 확인하는 것이다. 전략은 두 단계다. 먼저 시그모이드 하나로 계단함수를 만든다. 그다음 그 계단들을 쌓아서 연속함수를 흉내낸다.`, blanks: [] },
       { id: "s2", text: String.raw`첫 단계로 시그모이드 뉴런 하나가 계단함수에 가까워질 수 있는지 본다. 시그모이드는 $\sigma(z) = 1/(1+e^{-z})$ 로 정의되고 $z$가 커지면 1로 작아지면 0으로 부드럽게 변한다. 뉴런의 출력은 $\sigma(w(x-c))$ 형태다. $w$는 기울기를 조절하는 가중치이고 $c$는 계단이 생기는 위치다. $w$를 점점 크게 만들면 전환 구간이 점점 좁아진다. $w\to$[[blank:가]] 인 극한을 취하면 이 함수는 $x=c$에서 정확히 뛰어오르는 계단함수로 수렴한다.`,
@@ -1243,6 +1868,54 @@ $$n=5:\ (0.8)^5\approx0.328,\qquad n=20:\ (0.95)^{20}\approx0.358,\qquad n=100:\
 <p>$n$이 커질수록 값이 점점 한 방향으로 다가갑니다. 실제로 극한값은 $1/e\approx0.368$입니다.</p>
 $$0.328 \to 0.358 \to 0.366 \to \cdots \to \frac1e\approx0.368$$
 <p>표본 크기가 5만 되어도 이미 극한값에 상당히 가까워지고, 100쯤 되면 거의 차이가 없어집니다. 아래 증명은 이 수렴이 특정 $n$에서 우연히 가까워 보이는 게 아니라 $n\to\infty$일 때 정확히 $1/e$로 향한다는 사실을 지수극한 공식으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="20" font-size="12" class="dg-dim">원본 데이터</text>
+  <text x="10" y="205" font-size="12" class="dg-dim">부트스트랩 표본(복원추출 8회)</text>
+  <line x1="220" y1="170" x2="220" y2="50" class="dg-stroke-accent" stroke-width="2.5"/>
+  <line x1="220" y1="170" x2="220" y2="50" class="dg-stroke-accent" stroke-width="2.5" transform="translate(3,0)"/>
+  <line x1="220" y1="170" x2="220" y2="50" class="dg-stroke-accent" stroke-width="2.5" transform="translate(-3,0)"/>
+  <line x1="60" y1="170" x2="60" y2="50" class="dg-stroke-ink" stroke-width="1.6"/>
+  <line x1="380" y1="170" x2="380" y2="50" class="dg-stroke-accent" stroke-width="2.5" transform="translate(3,0)"/>
+  <line x1="380" y1="170" x2="380" y2="50" class="dg-stroke-accent" stroke-width="2.5" transform="translate(-3,0)"/>
+  <line x1="540" y1="170" x2="540" y2="50" class="dg-stroke-ink" stroke-width="1.6"/>
+  <line x1="620" y1="170" x2="620" y2="50" class="dg-stroke-ink" stroke-width="1.6"/>
+  <g>
+    <circle cx="60" cy="50" r="12" class="dg-dim"/>
+    <circle cx="140" cy="50" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <circle cx="220" cy="50" r="15" class="dg-accent"/>
+    <circle cx="300" cy="50" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <circle cx="380" cy="50" r="14" class="dg-accent"/>
+    <circle cx="460" cy="50" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <circle cx="540" cy="50" r="12" class="dg-dim"/>
+    <circle cx="620" cy="50" r="12" class="dg-dim"/>
+  </g>
+  <text x="55" y="55" font-size="11">1</text>
+  <text x="135" y="55" font-size="11">2</text>
+  <text x="215" y="56" font-size="12" font-weight="700">3</text>
+  <text x="295" y="55" font-size="11">4</text>
+  <text x="375" y="56" font-size="12" font-weight="700">5</text>
+  <text x="455" y="55" font-size="11">6</text>
+  <text x="535" y="55" font-size="11">7</text>
+  <text x="615" y="55" font-size="11">8</text>
+  <text x="205" y="30" font-size="11" font-weight="700">×3 중복</text>
+  <text x="360" y="30" font-size="11" font-weight="700">×2 중복</text>
+  <text x="118" y="95" font-size="10" class="dg-dim">OOB</text>
+  <text x="278" y="95" font-size="10" class="dg-dim">OOB</text>
+  <text x="438" y="95" font-size="10" class="dg-dim">OOB</text>
+  <g>
+    <rect x="50" y="163" width="20" height="14" class="dg-dim"/>
+    <rect x="210" y="163" width="20" height="14" class="dg-dim"/>
+    <rect x="370" y="163" width="20" height="14" class="dg-dim"/>
+    <rect x="530" y="163" width="20" height="14" class="dg-dim"/>
+    <rect x="610" y="163" width="20" height="14" class="dg-dim"/>
+  </g>
+  <text x="55" y="174" font-size="10">3</text>
+  <text x="215" y="174" font-size="10">1</text>
+  <text x="375" y="174" font-size="10">7</text>
+  <text x="533" y="174" font-size="10">3</text>
+  <text x="613" y="174" font-size="10">5</text>
+</svg>`,
+    diagramCaption: String.raw`원본 점 8개 중 3번·5번은 복원추출로 여러 번 뽑혀 굵은 강조선으로 표시되고, 2·4·6번은 한 번도 뽑히지 않아 점선 원(OOB)으로 남는다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 부트스트랩 표본을 뽑을 때 특정 데이터 하나가 단 한 번도 뽑히지 않을 확률이 $n$이 커지면서 어떤 값으로 향하는지 확인하는 것이다. 이걸 보려면 먼저 한 번의 추출에서 그 데이터가 뽑히지 않을 확률부터 구해야 한다. 데이터는 모두 $n$개이고 매번 그중 하나를 균등한 확률로 복원추출한다.<br><br>특정 데이터 하나가 한 번의 추출에서 뽑힐 확률은 $\frac1n$이므로 뽑히지 않을 확률은 $q = $[[blank:가]] 이다.`,
         blanks: [{ id: "가", latex: String.raw`1-\frac{1}{n}`, why: String.raw`전체 확률은 1이다. 뽑힐 확률 $1/n$을 빼면 뽑히지 않을 확률이 남는다. 여사건의 확률을 구하는 가장 기본적인 방법이다.` }] },
@@ -1265,6 +1938,57 @@ $$0.328 \to 0.358 \to 0.366 \to \cdots \to \frac1e\approx0.368$$
 <p>각 폴드의 오차 추정치가 분산 $\sigma^2=4$를 갖고 폴드끼리 상관계수 $\rho=0.2$ 정도로 겹친다고 하겠습니다. 폴드 수는 $k=5$입니다. 단일 홀드아웃의 분산은 그대로 $\sigma^2=4$입니다. 이제 5-fold 평균의 분산을 공식에 대입해봅니다.</p>
 $$\mathrm{Var}(\bar L) = \rho\sigma^2 + \frac{1-\rho}{k}\sigma^2 = 0.2\times4 + \frac{0.8}{5}\times4 = 0.8+0.64=1.44$$
 <p>$1.44$는 홀드아웃의 분산 $4$보다 훨씬 작습니다. 폴드끼리 겹치는 정도 $\rho$가 0에 더 가까웠다면 분산은 $\sigma^2/k=4/5=0.8$까지도 줄어들 수 있었습니다. 반대로 폴드들이 데이터를 완전히 겹쳐 쓴다면 $\rho\to1$이 되어 분산은 다시 $\sigma^2$에 가까워집니다. 아래 증명은 이 부등식 $\mathrm{Var}(\bar L)\le\sigma^2$이 특정 숫자에서만 성립하는 게 아니라 $\rho\le1$이기만 하면 항상 성립한다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 250" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="16" font-size="12" class="dg-dim">라운드</text>
+  <text x="130" y="16" font-size="11">폴드1</text>
+  <text x="190" y="16" font-size="11">폴드2</text>
+  <text x="250" y="16" font-size="11">폴드3</text>
+  <text x="310" y="16" font-size="11">폴드4</text>
+  <text x="370" y="16" font-size="11">폴드5</text>
+  <g>
+    <text x="10" y="45" font-size="11">1</text>
+    <rect x="120" y="26" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="180" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="26" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="89" font-size="11">2</text>
+    <rect x="120" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="70" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="240" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="70" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="133" font-size="11">3</text>
+    <rect x="120" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="114" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="300" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="114" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="177" font-size="11">4</text>
+    <rect x="120" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="158" width="55" height="26" class="dg-accent" stroke="none"/>
+    <rect x="360" y="158" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+  </g>
+  <g>
+    <text x="10" y="221" font-size="11">5</text>
+    <rect x="120" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="180" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="240" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="300" y="202" width="55" height="26" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="360" y="202" width="55" height="26" class="dg-accent" stroke="none"/>
+  </g>
+  <text x="430" y="45" font-size="10" class="dg-dim">검증</text>
+  <text x="430" y="52" font-size="10" class="dg-dim">(채움)</text>
+</svg>`,
+    diagramCaption: String.raw`5-fold 교차검증에서 매 라운드 정확히 한 조각(채운 칸)만 검증용으로 바뀌며 대각선을 따라 회전한다. 나머지는 점선 테두리의 학습 조각이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 k-fold 교차검증에서 얻는 평균 오차 추정치가 한 번짜리 홀드아웃보다 정말로 더 안정적인지, 즉 분산이 더 작은지를 확인하는 것이다. 이를 위해 먼저 각 폴드에서 얻는 오차 추정치 $L_1,\dots,L_k$를 확률변수로 놓는다. 이들은 같은 학습 과정을 거치기 때문에 평균 $\mu$와 분산 $\sigma^2$은 모두 같다고 볼 수 있다.<br><br>다만 폴드들이 학습 데이터를 서로 겹쳐서 공유하기 때문에 완전히 독립은 아니고 서로 간에 상관계수 $\rho\ge0$ 정도의 상관관계를 가진다고 하자. 실제로 쓰는 추정치는 이 $k$개의 평균 $\bar L=\frac1k\sum_{i=1}^kL_i$이다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 $\bar L$의 분산을 실제로 계산하는 것이다. 여러 확률변수를 더한 합의 분산을 구하려면 각 변수 자신의 분산뿐 아니라 서로 다른 변수끼리의 공분산까지 전부 더해야 한다는 분산의 일반 공식을 쓴다. $\mathrm{Cov}(L_i,L_j)=\rho\sigma^2$ ($i\neq j$)이고 $\mathrm{Var}(L_i)=\sigma^2$이다.<br><br>이 공식을 그대로 적용하면 $\mathrm{Var}\left(\sum_{i=1}^kL_i\right) = \sum_i\mathrm{Var}(L_i) + \sum_{i\neq j}\mathrm{Cov}(L_i,L_j) = $[[blank:가]] 이다.`,
@@ -1310,6 +2034,26 @@ $$\frac{(0.1)^2+(-0.1)^2+(0.3)^2+(-0.3)^2}{4} = \frac{0.20}{4} = 0.05$$
 <p>이제 $x=2$인 지점에서 랑주뱅 방정식의 결정론적 이동 방향 $b(x)=\frac12\nabla\log p(x)=-\frac{x}{2}$를 계산해봅니다.</p>
 $$b(2) = -\frac{2}{2} = -1$$
 <p>부호가 음수이므로 $x=2$에 있는 입자는 매 순간 $x$가 작아지는 쪽, 즉 밀도가 더 높은 $x=0$ 방향으로 밀려납니다. 밀도가 낮은 곳에 있을수록 스코어함수는 더 강하게 밀도가 높은 쪽을 가리키는 셈입니다. 여기에 무작위 흔들림 $dW_t$를 조금씩 섞어가며 계속 이 방향으로 걸으면 입자들은 결국 $p(x)$가 큰 곳에 더 자주 머물게 됩니다. 아래 증명은 이 직관을 포커-플랑크 방정식으로 정확히 확인해서, 이렇게 걸었을 때 도달하는 정상분포가 정말 $p(x)$ 그 자체임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="240" cy="165" r="115" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <circle cx="240" cy="165" r="78" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <circle cx="240" cy="165" r="42" fill="none" class="dg-stroke-ink" stroke-width="1.4" stroke-dasharray="3,4"/>
+  <circle cx="240" cy="165" r="4" class="dg-accent"/>
+  <text x="248" y="150" font-size="11" class="dg-dim">p(x) 최댓값</text>
+  <line x1="240" y1="45" x2="240" y2="85" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="240,85 235,73 245,73" class="dg-accent"/>
+  <line x1="360" y1="165" x2="320" y2="165" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="320,165 332,160 332,170" class="dg-accent"/>
+  <line x1="240" y1="285" x2="240" y2="245" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="240,245 235,257 245,257" class="dg-accent"/>
+  <line x1="120" y1="165" x2="160" y2="165" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="160,165 148,160 148,170" class="dg-accent"/>
+  <text x="245" y="40" font-size="10">∇log p</text>
+  <path d="M380,70 Q350,95 355,115 Q315,130 320,150 Q290,145 285,175 Q260,168 250,172" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="2,3"/>
+  <circle cx="380" cy="70" r="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+  <text x="385" y="65" font-size="10" class="dg-dim">시작(잡음 섞인 걸음)</text>
+</svg>`,
+    diagramCaption: String.raw`밀도 등고선(점선) 위에서 스코어함수 ∇log p는 항상 고밀도 중심을 향하고, 잡음 섞인 궤적(가는 점선)은 그 방향을 따라 결국 중심에 정착한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 랑주뱅 동역학이 왜 스코어함수 $\nabla\log p(x)$ 방향으로 걸어야 하는지, 그리고 그렇게 걸었을 때 정말 $p(x)$에 정착하는지를 확인하는 것이다. 확률미분방정식 $dx_t=b(x_t)dt+dW_t$를 따르는 입자들의 분포 $p_t$가 시간에 따라 어떻게 변하는지는 포커-플랑크 방정식이 알려준다. $\frac{\partial p_t}{\partial t} = -\nabla\cdot(bp_t) + \frac12\Delta p_t$ 이다.<br><br>여기서 $b(x)=\frac12\nabla\log p(x)$로 두고 $p_t=p$를 대입했을 때 우변이 정말로 0이 되는지 확인하면 된다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 우변의 첫째 항 $\nabla\cdot(bp)$를 실제로 계산하는 것이다. $b=\frac12\nabla\log p$이므로 $bp = \frac12 p\nabla\log p$이다. 로그의 미분 정의 $\nabla\log p = \nabla p/p$를 쓰면 $p$와 분모의 $p$가 약분된다.<br><br>그러면 $p\nabla\log p = p\cdot\frac{\nabla p}{p} = $[[blank:가]] 이다.`,
@@ -1378,6 +2122,34 @@ $$P(y=\text{정상})\,P(x_1|\text{정상})\,P(x_2|\text{정상}) = 0.6\times0.1\
 <p>두 값을 더해서 정규화하면 실제 확률을 얻습니다.</p>
 $$P(\text{스팸}|x_1,x_2) = \frac{0.056}{0.056+0.018} \approx 0.757,\qquad P(\text{정상}|x_1,x_2) \approx 0.243$$
 <p>특성이 여러 개라도 곱셈 몇 번과 덧셈 한 번으로 사후확률까지 구할 수 있었습니다. 특성끼리 정말 독립인지 따로 확인할 필요조차 없었습니다. 아래 증명은 이 곱셈 구조가 연쇄법칙과 조건부독립 가정만으로 항상 성립한다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="250" cy="40" r="24" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+  <text x="243" y="46" font-size="14" font-weight="700">y</text>
+  <circle cx="70" cy="175" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="190" cy="175" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="310" cy="175" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="430" cy="175" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <text x="62" y="180" font-size="12">x₁</text>
+  <text x="182" y="180" font-size="12">x₂</text>
+  <text x="300" y="180" font-size="12">x₃</text>
+  <text x="420" y="180" font-size="12">x_d</text>
+  <line x1="235" y1="58" x2="90" y2="158" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="90,158 100,150 105,163" class="dg-accent"/>
+  <line x1="245" y1="64" x2="205" y2="156" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="205,156 210,143 220,152" class="dg-accent"/>
+  <line x1="255" y1="64" x2="295" y2="156" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="295,156 290,143 280,152" class="dg-accent"/>
+  <line x1="265" y1="58" x2="410" y2="158" class="dg-stroke-accent" stroke-width="2"/>
+  <polygon points="410,158 400,150 395,163" class="dg-accent"/>
+  <line x1="90" y1="175" x2="170" y2="175" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <text x="118" y="170" font-size="13" class="dg-dim">✕</text>
+  <line x1="210" y1="175" x2="290" y2="175" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <text x="238" y="170" font-size="13" class="dg-dim">✕</text>
+  <line x1="330" y1="175" x2="410" y2="175" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <text x="358" y="170" font-size="13" class="dg-dim">✕</text>
+  <text x="150" y="205" font-size="11" class="dg-dim">특성끼리는 연결이 없다(조건부독립)</text>
+</svg>`,
+    diagramCaption: String.raw`클래스 노드 y에서 특성 x₁…x_d로만 화살표가 뻗고, 특성끼리는 어떤 연결도 없다(✕)는 것이 나이브베이즈의 그래픽모델이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 특성들을 관찰했을 때 클래스 $y$일 확률 $P(y|x_1,\dots,x_d)$를 계산하기 쉬운 형태로 바꾸는 것이다. 이 값을 직접 다루기는 어려우니 베이즈 정리를 써서 반대 방향의 확률로 바꾼다. 베이즈 정리에 따르면 $P(y|x_1,\dots,x_d) = \dfrac{P(x_1,\dots,x_d|y)P(y)}{P(x_1,\dots,x_d)}$이다.<br><br>분모 $P(x_1,\dots,x_d)$는 $y$가 무엇이든 상관없이 같은 값이므로, $y$에 대해 이 확률을 최대화하거나 비교할 때는 분모를 무시하고 분자만 봐도 충분하다. $P(y|x) \propto P(x_1,\dots,x_d|y)P(y)$이다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 분자에 남은 $P(x_1,\dots,x_d|y)$를 더 다루기 쉬운 형태로 풀어쓰는 것이다. 아직 조건부독립 가정은 쓰지 않는다. 대신 여러 사건이 동시에 일어날 확률을 순서대로 조건부확률의 곱으로 풀어내는 확률의 연쇄법칙을 쓴다. 이 법칙은 항상 성립하는 항등식이며 어떤 가정도 필요 없다.<br><br>연쇄법칙을 그대로 적용하면 $P(x_1,\dots,x_d|y) = $[[blank:가]] 이다.`,
@@ -1402,6 +2174,27 @@ $$H[N(0,1)] = \frac12\log(2\pi e) \approx 1.419\text{ (nats)}$$
 <p>이번엔 균등분포의 엔트로피를 계산합니다. 구간의 길이는 $2\sqrt3\approx3.464$입니다.</p>
 $$H[\text{Unif}] = \log(2\sqrt3) \approx 1.242\text{ (nats)}$$
 <p>평균과 분산이 완전히 같은데도 정규분포의 엔트로피가 균등분포보다 더 큽니다. 다른 어떤 후보 분포를 골라와도 평균 0, 분산 1이라는 조건 아래에서는 정규분포의 엔트로피를 넘어설 수 없습니다. 아래 증명은 이 우위가 우연한 비교 결과가 아니라 라그랑주 승수법으로 정확히 증명되는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+  <line x1="60" y1="170" x2="500" y2="170" class="dg-line" stroke-width="1.3"/>
+  <line x1="280" y1="170" x2="280" y2="180" class="dg-line" stroke-width="1.3"/>
+  <text x="272" y="196" font-size="11" class="dg-dim">평균 0</text>
+  <path d="M90,168 C150,168 170,45 280,45 C390,45 410,168 470,168" fill="none" class="dg-stroke-accent" stroke-width="2.8"/>
+  <path d="M150,168 L150,108 L410,108 L410,168" fill="none" class="dg-stroke-ink" stroke-width="1.8" stroke-dasharray="7,5"/>
+  <path d="M105,168 Q150,85 195,112 Q240,140 280,140 Q320,140 365,112 Q410,85 455,168" fill="none" class="dg-line" stroke-width="1.6" stroke-dasharray="2,4"/>
+  <g>
+    <line x1="60" y1="20" x2="90" y2="20" class="dg-stroke-accent" stroke-width="2.8"/>
+    <text x="96" y="24" font-size="12">정규분포 N(0,1) — 엔트로피 최대(실선·굵게)</text>
+  </g>
+  <g>
+    <line x1="60" y1="40" x2="90" y2="40" class="dg-stroke-ink" stroke-width="1.8" stroke-dasharray="7,5"/>
+    <text x="96" y="44" font-size="12">균등분포 [-√3,√3] (파선)</text>
+  </g>
+  <g>
+    <line x1="60" y1="60" x2="90" y2="60" class="dg-line" stroke-width="1.6" stroke-dasharray="2,4"/>
+    <text x="96" y="64" font-size="12">이중봉 분포 (점선)</text>
+  </g>
+</svg>`,
+    diagramCaption: String.raw`평균 0·분산 1로 똑같이 맞춘 세 분포를 겹쳐 그리면, 정규분포(굵은 실선)가 가장 퍼진 형태이며 엔트로피가 가장 크다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 평균과 분산이 고정되어 있다는 조건 아래 엔트로피를 가장 크게 만드는 분포가 정규분포임을 보이는 것이다. 이번에는 최적화 대상이 숫자 하나가 아니라 함수 $p(x)$ 자체라는 점이 다르다. 그래도 다루는 방식은 제약이 있는 최적화 문제와 같다. 목적함수 $H[p]=-\int p\log p\,dx$를 제약 $\int p\,dx=1$, $\int xp\,dx=\mu$, $\int(x-\mu)^2p\,dx=\sigma^2$ 아래에서 최대화한다.<br><br>제약이 있는 최적화이므로 라그랑주 승수법을 그대로 함수 공간으로 확장해서 쓴다. 각 제약에 승수 $\lambda_0,\lambda_1,\lambda_2$를 붙여 라그랑지안 $\mathcal{L}[p]=-\int p\log p\,dx-\lambda_0\left(\int p\,dx-1\right)-\lambda_1\left(\int xp\,dx-\mu\right)-\lambda_2\left(\int(x-\mu)^2p\,dx-\sigma^2\right)$을 만든다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 이 라그랑지안이 최댓값을 갖는 지점에서 $p(x)$가 만족해야 할 조건을 구하는 것이다. 함수가 극값을 가지려면 기울기가 0이어야 한다는 원리를 여기서도 그대로 쓴다. 이번엔 미분 대상이 숫자 변수가 아니라 함수 $p(x)$ 자체이므로, 각 지점 $x$에서 $p(x)$를 아주 살짝 바꿨을 때 $\mathcal{L}$이 변하지 않는다는 조건을 쓴다. $-p\log p$를 $p$로 미분하면 $-\log p-1$이 되고 나머지 제약항들은 $p$에 대해 각각 선형이라 그대로 미분된다.<br><br>이 조건을 정리하면 $-\log p(x)-1-\lambda_0-\lambda_1x-\lambda_2(x-\mu)^2 = $[[blank:가]] 이다.`,
@@ -1472,6 +2265,21 @@ $$\mathrm{Bias}^2+\mathrm{Var}+\sigma^2 = (-2)^2+0+1 = 5$$
 $$\mathrm{Var} = \frac{(8-10)^2+(10-10)^2+(12-10)^2}{3} = \frac{4+0+4}{3} \approx 2.667$$
 $$\mathrm{Bias}^2+\mathrm{Var}+\sigma^2 = 0+2.667+1 \approx 3.667$$
 <p>단순한 모델은 분산이 0인데도 편향이 커서 전체 오차가 5로 더 큽니다. 복잡한 모델은 편향을 0으로 없앤 대신 분산이 커졌지만 그래도 전체 오차는 3.667로 더 작습니다. 편향과 분산을 줄이는 방향이 서로 반대라 어느 한쪽만 밀어붙이면 손해를 볼 수 있다는 뜻입니다. 아래 증명은 기대제곱오차가 정확히 이 세 조각의 합으로 쪼개진다는 것을 대수적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+  <line x1="60" y1="220" x2="500" y2="220" class="dg-line" stroke-width="1.4"/>
+  <line x1="60" y1="220" x2="60" y2="30" class="dg-line" stroke-width="1.4"/>
+  <text x="220" y="245" font-size="12" class="dg-dim">모델 복잡도 →</text>
+  <text x="10" y="30" font-size="11" class="dg-dim">오차</text>
+  <line x1="300" y1="220" x2="300" y2="40" class="dg-line" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <text x="245" y="35" font-size="11" class="dg-dim">최적 복잡도</text>
+  <path d="M80,55 C220,68 320,140 480,205" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,4"/>
+  <path d="M80,205 C220,190 320,110 480,50" fill="none" class="dg-line" stroke-width="1.8" stroke-dasharray="2,4"/>
+  <path d="M80,55 C180,150 260,190 300,192 C340,190 420,150 480,60" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+  <text x="330" y="70" font-size="12" font-weight="700">총오차(실선·굵게)</text>
+  <text x="330" y="205" font-size="11">분산(파선)</text>
+  <text x="90" y="45" font-size="11">편향²(긴 파선)</text>
+</svg>`,
+    diagramCaption: String.raw`편향²(긴 파선)은 복잡도가 늘수록 줄고, 분산(파선)은 늘어난다. 둘을 더한 총오차(굵은 실선)는 U자형이며 최적점(점선)에서 최소가 된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 예측오차의 기댓값을 세 가지 서로 다른 원인, 즉 편향과 분산과 잡음으로 쪼개는 것이다. 참값은 $y=f(x)+\varepsilon$처럼 실제 관계 $f(x)$에 평균 0, 분산 $\sigma^2$인 잡음 $\varepsilon$이 더해진 것이라 하자. 추정량 $\hat f(x)$는 학습 데이터 $D$로부터 얻어지므로 $D$가 어떻게 뽑히느냐에 따라 매번 달라지는 확률변수다.<br><br>지금 구하려는 것은 데이터 $D$와 잡음 $\varepsilon$ 양쪽에 대해 평균 낸 기대제곱오차 $E_{D,\varepsilon}[(y-\hat f(x))^2]$이다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 $y$를 $f(x)+\varepsilon$로 풀어써서 잡음 항을 나머지와 분리하는 것이다. $(y-\hat f)^2 = (f+\varepsilon-\hat f)^2 = (f-\hat f)^2+2\varepsilon(f-\hat f)+\varepsilon^2$으로 전개된다. $\varepsilon$은 학습 데이터 $D$와 무관하게 독립으로 생기는 잡음이고 평균이 0이므로, 교차항의 기댓값 $2E[\varepsilon]E[f-\hat f]$는 0이 되어 사라진다.<br><br>교차항이 사라지므로 $E_{D,\varepsilon}[(y-\hat f)^2] = E_D[(f-\hat f)^2] + E[\varepsilon^2] = E_D[(f-\hat f)^2] + $[[blank:가]] 이다.`,
@@ -1542,6 +2350,26 @@ $$\frac{dA}{d\eta}=\frac{e^\eta}{1+e^\eta}=\frac{0.4286}{1.4286}=0.3$$
 $$\sqrt{\frac{2.9957}{2\times10}}\approx0.3870,\qquad \sqrt{\frac{2.9957}{2\times100}}\approx0.1224$$
 <p>신뢰상한은 $\mu\le\bar X_n+\sqrt{\log(1/\delta)/(2n)}$이므로 행동 A의 신뢰상한은 $0.5+0.3870=0.887$이고 행동 B의 신뢰상한은 $0.5+0.1224=0.622$입니다.</p>
 <p>평균은 똑같이 $0.5$인데도 적게 시도한 <strong>행동 A</strong>의 신뢰상한이 훨씬 높습니다. 아직 관측이 적어 참 평균이 더 클 통계적 여지가 남아 있기 때문입니다. 아래 증명은 이 여유분 $\sqrt{\log(1/\delta)/(2n)}$이 Hoeffding 부등식에서 정확히 어떻게 유도되는지 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+  <line x1="50" y1="200" x2="440" y2="200" class="dg-line" stroke-width="1.4"/>
+  <line x1="50" y1="200" x2="50" y2="30" class="dg-line" stroke-width="1.4"/>
+  <line x1="45" y1="140" x2="440" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="2,4"/>
+  <text x="10" y="144" font-size="10" class="dg-dim">평균 0.5</text>
+  <line x1="130" y1="140" x2="130" y2="45" class="dg-stroke-accent" stroke-width="2.6"/>
+  <line x1="112" y1="45" x2="148" y2="45" class="dg-stroke-accent" stroke-width="2.6"/>
+  <circle cx="130" cy="140" r="6" class="dg-dim"/>
+  <text x="105" y="222" font-size="12">A (n=10)</text>
+  <line x1="255" y1="140" x2="255" y2="90" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+  <line x1="240" y1="90" x2="270" y2="90" class="dg-stroke-ink" stroke-width="2"/>
+  <circle cx="255" cy="140" r="6" class="dg-dim"/>
+  <text x="228" y="222" font-size="12">B (n=100)</text>
+  <line x1="380" y1="140" x2="380" y2="118" class="dg-line" stroke-width="1.6" stroke-dasharray="2,3"/>
+  <line x1="368" y1="118" x2="392" y2="118" class="dg-line" stroke-width="1.6"/>
+  <circle cx="380" cy="140" r="6" class="dg-dim"/>
+  <text x="345" y="222" font-size="12">C (n=1000)</text>
+  <text x="150" y="55" font-size="11" font-weight="700">관측 적음 → 구간 넓음</text>
+</svg>`,
+    diagramCaption: String.raw`세 행동 모두 관측 평균은 0.5로 같지만, 관측 횟수 n이 적을수록(A) 신뢰상한 여유분이 커서 굵은 실선 에러바가 훨씬 길다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 관측된 평균 보상만으로 참 평균 보상의 상한을 통계적으로 신뢰할 수 있게 잡아내는 것이다. 이게 가능해야 아직 충분히 시도하지 않은 행동에게도 낙관적으로 기회를 줄 근거가 생긴다. 여기서 쓰는 도구는 Hoeffding 부등식이다. $[0,1]$ 구간에 속하는 i.i.d. 확률변수 $X_1,\dots,X_n$의 표본평균 $\bar X_n=\frac1n\sum_iX_i$가 참 평균 $\mu$에서 벗어날 확률을 분포의 구체적인 모양과 상관없이 눌러 잡아주는 부등식이다.<br><br>이 부등식은 $P(\mu-\bar X_n\ge\varepsilon)\le\exp(-2n\varepsilon^2)$ 형태로 쓰인다. 참 평균이 관측된 평균보다 $\varepsilon$ 이상 높을 확률이 이 값을 넘지 않는다는 뜻이다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 이 실패확률을 우리가 원하는 작은 값 $\delta$로 직접 통제하는 것이다. 그러려면 확률의 상한 $\exp(-2n\varepsilon^2)$이 정확히 $\delta$가 되도록 $\varepsilon$을 역으로 구해야 한다. 양변에 로그를 씌우면 $-2n\varepsilon^2 = \log\delta$이고, 양변에 $-1$을 곱하면 $2n\varepsilon^2 = \log(1/\delta)$이다.<br><br>이제 $\varepsilon^2$을 구하고 제곱근을 씌우면 $\varepsilon = $[[blank:가]] 이다.`,
@@ -1566,6 +2394,34 @@ $$H(S)=-0.75\log_2 0.75-0.25\log_2 0.25\approx 0.311+0.5=0.811$$
 $$H(S_1)=0,\qquad H(S_2)=-0.5\log_2 0.5-0.5\log_2 0.5=1$$
 <p>가중평균 엔트로피는 $0.5\times0+0.5\times1=0.5$입니다. 부모의 엔트로피 $0.811$에서 이 값을 빼면 정보이득은 $0.811-0.5=0.311$로 여전히 양수입니다.</p>
 <p>아래 증명은 어떤 속성으로 어떻게 나누어도 이 차이가 음수로 뒤집히는 일이 절대 없다는 것을 엔트로피의 오목성으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="18" font-size="12" class="dg-dim">분기: 부모→자식</text>
+<circle cx="110" cy="45" r="26" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="110" y="42" font-size="11" text-anchor="middle">S</text>
+<text x="110" y="56" font-size="9" text-anchor="middle" class="dg-dim">H=0.811</text>
+<line x1="95" y1="68" x2="55" y2="120" class="dg-line" stroke-width="1.5"/>
+<line x1="125" y1="68" x2="165" y2="120" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="55" cy="145" r="24" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="55" y="142" font-size="11" text-anchor="middle">S₁</text>
+<text x="55" y="153" font-size="9" text-anchor="middle" class="dg-dim">H=0</text>
+<circle cx="165" cy="145" r="24" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="165" y="142" font-size="11" text-anchor="middle">S₂</text>
+<text x="165" y="153" font-size="9" text-anchor="middle" class="dg-dim">H=1</text>
+<text x="10" y="200" font-size="11">가중평균 H = 0.5×0+0.5×1 = 0.5 ≤ H(S)</text>
+<line x1="260" y1="10" x2="260" y2="210" class="dg-line" stroke-width="1"/>
+<text x="300" y="18" font-size="12" class="dg-dim">엔트로피의 오목성</text>
+<line x1="300" y1="190" x2="670" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="300" y1="190" x2="300" y2="30" class="dg-line" stroke-width="1"/>
+<path d="M300,190 Q485,-10 670,190" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="345" y1="150" x2="600" y2="150" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="345" cy="150" r="3.5" class="dg-accent"/>
+<circle cx="600" cy="150" r="3.5" class="dg-accent"/>
+<circle cx="472" cy="55" r="3.5" class="dg-accent"/>
+<line x1="472" y1="55" x2="472" y2="150" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="472" y="45" font-size="10" text-anchor="middle">가중평균 위치</text>
+<text x="480" y="170" font-size="9" class="dg-dim">현(chord)</text>
+</svg>`,
+    diagramCaption: String.raw`오목한 엔트로피 곡선은 현보다 위에 있어 자식 노드의 가중평균 엔트로피가 부모를 넘지 못한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 어떤 속성으로 분할하더라도 정보이득이 절대 음수가 되지 않는다는 것을 보이는 일입니다. 먼저 정보이득이 무엇을 재는 값인지부터 다시 짚어봅니다. 정보이득은 분할 전 엔트로피 $H(S)$에서 분할 후 각 자식 노드의 엔트로피를 그 크기 비율로 가중평균한 값을 뺀 것입니다.<br><br>즉 $IG(S,A) = H(S) - \sum_v w_vH(S_v)$ 이고 이 값이 항상 $0$ 이상이라는 것이 지금부터 보일 명제입니다.`, blanks: [] },
       { id: "s2", text: String.raw`이 부등식을 보이려면 부모 노드의 클래스 분포와 자식 노드들의 클래스 분포가 어떤 관계인지부터 정리해야 합니다. 엔트로피는 분포 하나에 대해 정의되는 값이라 부모의 분포를 자식 분포들로 표현할 수 있어야 비교가 가능해지기 때문입니다. 클래스 $c$를 가진 데이터 개수를 세어보면 $S$ 안에서 클래스 $c$의 비율은 각 자식 $S_v$ 안에서의 비율을 그 크기 비율 $w_v$로 가중평균한 것과 정확히 같습니다.<br><br>분포를 벡터 $p,p_v$로 나타내면 $p = $[[blank:가]] 이다.`,
@@ -1591,6 +2447,45 @@ $$H(X)=-0.5\log_2 0.5-0.25\log_2 0.25-0.25\log_2 0.25=0.5+0.5+0.5=1.5$$
 <p>기호마다 길이 $1,2,2$인 prefix code를 씁니다. 예를 들어 $0,10,11$입니다. 기대 부호길이는 $L=0.5\times1+0.25\times2+0.25\times2=1.5$로 엔트로피와 정확히 같습니다.</p>
 <p><strong>비효율적인 부호.</strong> 대신 세 기호 모두에 길이 2를 고정으로 쓰는 부호를 골랐다고 해봅니다. $L'=0.5\times2+0.25\times2+0.25\times2=2$가 되어 엔트로피 $1.5$보다 커집니다.</p>
 <p>아무리 잘 설계한 부호도 $1.5$ 밑으로는 내려가지 않고 잘못 설계한 부호는 그 위에서 낭비를 만듭니다. 아래 증명은 Kraft 부등식과 KL발산의 비음성을 이어붙여 이 하한이 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="10" y="18" font-size="12" class="dg-dim">효율적 부호: 0, 10, 11 (L=1.5=H)</text>
+<circle cx="80" cy="40" r="4" class="dg-accent"/>
+<line x1="80" y1="40" x2="40" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="55" y="65" font-size="10">0</text>
+<circle cx="40" cy="90" r="4" class="dg-accent"/>
+<text x="15" y="105" font-size="10">부호 0 (길이1)</text>
+<line x1="80" y1="40" x2="120" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="98" y="65" font-size="10">1</text>
+<circle cx="120" cy="90" r="4" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<line x1="120" y1="90" x2="90" y2="140" class="dg-line" stroke-width="1.5"/>
+<text x="98" y="115" font-size="10">0</text>
+<circle cx="90" cy="140" r="4" class="dg-accent"/>
+<text x="55" y="160" font-size="10">부호 10 (길이2)</text>
+<line x1="120" y1="90" x2="150" y2="140" class="dg-line" stroke-width="1.5"/>
+<text x="140" y="115" font-size="10">1</text>
+<circle cx="150" cy="140" r="4" class="dg-accent"/>
+<text x="140" y="160" font-size="10">부호 11 (길이2)</text>
+<line x1="230" y1="10" x2="230" y2="210" class="dg-line" stroke-width="1"/>
+<text x="260" y="18" font-size="12" class="dg-dim">비효율적 부호: 모두 길이 2 (L′=2 &gt; H)</text>
+<circle cx="290" cy="40" r="4" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<line x1="290" y1="40" x2="260" y2="90" class="dg-line" stroke-width="1.5"/>
+<circle cx="260" cy="90" r="4" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<line x1="260" y1="90" x2="240" y2="140" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<circle cx="240" cy="140" r="4" class="dg-accent"/>
+<text x="200" y="160" font-size="9" class="dg-dim">00 (길이2)</text>
+<line x1="260" y1="90" x2="280" y2="140" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<circle cx="280" cy="140" r="4" class="dg-accent"/>
+<text x="255" y="160" font-size="9" class="dg-dim">01 (길이2)</text>
+<line x1="290" y1="40" x2="340" y2="90" class="dg-line" stroke-width="1.5"/>
+<circle cx="340" cy="90" r="4" class="dg-accent"/>
+<text x="320" y="105" font-size="9" class="dg-dim">11 (길이2)</text>
+<text x="420" y="60" font-size="12">L = 1.5 bit</text>
+<line x1="420" y1="70" x2="500" y2="70" class="dg-stroke-ink" stroke-width="2"/>
+<text x="420" y="100" font-size="12">L′ = 2 bit</text>
+<line x1="420" y1="110" x2="560" y2="110" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="420" y="140" font-size="11" class="dg-dim">L 하한 = H(X) = 1.5 bit</text>
+</svg>`,
+    diagramCaption: String.raw`prefix code의 이진트리에서 기대 부호길이는 엔트로피를 하한으로 갖는다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 어떤 prefix code를 쓰더라도 평균 부호길이가 엔트로피보다 짧을 수 없다는 것을 보이는 일입니다. prefix code란 어떤 부호도 다른 부호의 앞부분이 되지 않는 부호를 말하며, 그 덕분에 끝까지 읽지 않고도 바로바로 복호할 수 있습니다. 이런 부호의 길이 $\ell(x)$들은 Kraft 부등식이라 불리는 $\sum_x2^{-\ell(x)}\le1$을 항상 만족한다는 사실이 알려져 있습니다. 이 합을 $K=\sum_x2^{-\ell(x)}$라 두겠습니다.<br><br>기대 부호길이는 $L=\sum_xp(x)\ell(x)$로 정의되고 지금부터 보일 것은 $L\ge H(X)=-\sum_xp(x)\log p(x)$입니다.`, blanks: [] },
       { id: "s2", text: String.raw`부호길이들로부터 새로운 확률분포 하나를 만들어봅니다. 왜 이런 분포가 필요한가 하면, KL발산의 비음성이라는 강력한 도구를 쓰려면 비교할 두 번째 분포가 있어야 하기 때문입니다. $q(x) = 2^{-\ell(x)}/K$로 정의합니다.<br><br>이렇게 두면 $\sum_xq(x) = $[[blank:가]] 이다.`,
@@ -1638,6 +2533,23 @@ $$H(X)=-0.5\log_2 0.5-0.25\log_2 0.25-0.25\log_2 0.25=0.5+0.5+0.5=1.5$$
 <p>라그랑주 조건 $R'(D^*)=\beta$에 대입하면 $D^*=4-\beta$를 얻습니다.</p>
 <p>$\beta=1$이면 $D^*=3$이고 $\beta=3$이면 $D^*=1$입니다. $\beta$를 1에서 3으로 세 배 키우자 $D^*$는 3에서 1로 줄어들었습니다.</p>
 <p>아래 증명은 이 함수 하나에서 관찰한 감소 경향이 $R$이 오목하기만 하면 항상 성립하는 일반적인 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="190" x2="470" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="50" y1="190" x2="50" y2="20" class="dg-line" stroke-width="1"/>
+<text x="470" y="205" font-size="11" text-anchor="end">D (정보량)</text>
+<text x="30" y="20" font-size="11">R(D)</text>
+<path d="M50,110 Q160,10 380,45" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="230" cy="65" r="4" class="dg-accent"/>
+<line x1="130" y1="105" x2="330" y2="25" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="335" y="22" font-size="10">기울기 = β</text>
+<line x1="230" y1="65" x2="230" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="230" y="205" font-size="10" text-anchor="middle">D*(β)</text>
+<circle cx="150" cy="86" r="4" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<line x1="150" y1="86" x2="150" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="150" y="205" font-size="10" text-anchor="middle" class="dg-dim">D*(β′), β′&gt;β</text>
+<text x="60" y="40" font-size="11" class="dg-dim">R(D): 오목함수</text>
+</svg>`,
+    diagramCaption: String.raw`β가 커질수록 접선의 기울기가 커지고 최적 접점 D*는 왼쪽으로, 즉 더 작은 값으로 이동한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 $\beta$를 키우면 왜 잠재변수가 담는 정보량이 줄어드는지를 실제 최적화 논증으로 보이는 것입니다. $D=D_{KL}(q(z|x)\|p(z))$를 인코더가 사전분포로부터 얼마나 벗어나도 되는지를 나타내는 정보 예산이라 부르겠습니다. $R(D)$는 그 예산 $D$가 주어졌을 때 얻을 수 있는 최선의 기대 재구성 품질 $\mathbb{E}[\log p(x|z)]$라 하겠습니다. 예산이 늘면 인코더가 할 수 있는 일이 늘어날 뿐이니 $R$은 감소하지 않는 오목함수라고 가정합니다.<br><br>원래 문제는 예산 $D\le C$ 아래 $R(D)$를 최대화하는 제약 최적화이고 이것을 라그랑지안으로 바꿔 다루는 것이 다음 목표입니다.`, blanks: [] },
       { id: "s2", text: String.raw`제약이 있는 문제 $\max_DR(D)\ \text{s.t.}\ D\le C$의 라그랑지안을 lagrange-kkt와 같은 방식으로 만듭니다. 제약을 등호로 정리한 식에 벌점 계수 $\beta\ge0$을 곱해서 목적함수에 더합니다.<br><br>$\mathcal{L}(D,\beta) = R(D) - \beta($[[blank:가]]$)$ 이다.`,
@@ -1695,6 +2607,15 @@ $$H(Y|X=0)=-0.8\log_2 0.8-0.2\log_2 0.2\approx0.722$$
 $$I(X;Y)=H(Y)-H(Y|X)=1-0.722=0.278$$
 <p>$X$를 알고 나면 $Y$에 대한 불확실성이 $1$비트에서 $0.722$비트로 줄어들었고 그 차이 $0.278$비트가 바로 상호정보량입니다. 이 값이 특징 선택에서 $X$가 $Y$를 예측하는 데 실제로 쓸모가 있다는 신호입니다.</p>
 <p>아래 증명은 이 값이 항상 0 이상이며 오직 $X,Y$가 독립일 때만 0이 된다는 사실을 KL발산의 비음성으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="180" cy="100" r="70" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+  <circle cx="260" cy="100" r="70" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3" />
+  <text x="140" y="70" font-size="12">H(X)</text>
+  <text x="290" y="70" font-size="12">H(Y)</text>
+  <text x="210" y="105" class="dg-dim" font-size="11">I(X;Y)=0.278</text>
+  <text x="130" y="180" font-size="11" class="dg-dim">H(Y|X)=0.722 (겹치지 않는 Y 영역)</text>
+</svg>`,
+    diagramCaption: String.raw`두 원의 겹친 영역이 상호정보량이며, X를 알아도 남는 불확실성이 H(Y|X)다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 상호정보량이 항상 0 이상이라는 사실과, 그것이 $H(Y)-H(Y|X)$라는 익숙한 형태로도 쓰인다는 사실을 함께 확인하는 일입니다. 상호정보량은 원래 두 분포 사이의 거리로 정의됩니다.<br><br>$I(X;Y) = D_{KL}\big(p(x,y)\|p(x)p(y)\big) = \sum_{x,y}p(x,y)\log\dfrac{p(x,y)}{p(x)p(y)}$ 입니다.`, blanks: [] },
       { id: "s2", text: String.raw`이 정의를 그대로 풀어봅니다. 로그 안 분수의 분자 $p(x,y)$를 $p(x)p(y|x)$로 바꿔 쓰면 분모의 $p(x)$와 약분되어 조건부확률만 남습니다.<br><br>$\log\dfrac{p(x,y)}{p(x)p(y)} = \log\dfrac{p(y|x)}{p(y)} = \log p(y|x) - $[[blank:가]] 이다.`,
@@ -1721,6 +2642,23 @@ $$I(X;Y)=H(Y)-H(Y|X)=1-0.722=0.278$$
 $$\mathcal{L}(Z)=5-2\times2=1,\qquad \mathcal{L}(Z')=1-2\times0.6=-0.2$$
 <p>목적함수는 작을수록 좋으므로 $-0.2$인 압축된 인코더가 더 낫습니다. 예측력을 조금만 포기하고 정보량을 훨씬 많이 줄인 쪽이 이겼습니다.</p>
 <p>아래 증명은 $I(Z;Y)$가 왜 $I(X;Y)$라는 상한을 절대 넘을 수 없는지를 데이터처리부등식으로 보이고 이 경합이 라그랑지안 하나로 정확히 표현됨을 확인합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="90" cy="100" r="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="90" y="105" font-size="14" text-anchor="middle">X</text>
+<path d="M124,100 L230,100" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="230,100 218,94 218,106" class="dg-stroke-ink"/>
+<circle cx="280" cy="100" r="22" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="280" y="105" font-size="13" text-anchor="middle">Z</text>
+<text x="230" y="80" font-size="10" class="dg-dim">I(X;Z) 압축</text>
+<path d="M302,100 L410,100" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="410,100 398,94 398,106" class="dg-stroke-ink"/>
+<circle cx="460" cy="100" r="34" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="460" y="105" font-size="14" text-anchor="middle">Y</text>
+<text x="330" y="80" font-size="10" class="dg-dim">I(Z;Y) 예측</text>
+<text x="150" y="30" font-size="11" class="dg-dim">Z는 X보다 좁게 그려 압축을 표현</text>
+<text x="90" y="160" font-size="11">min I(X;Z) − β·I(Z;Y), 단 I(Z;Y) ≤ I(X;Y)</text>
+</svg>`,
+    diagramCaption: String.raw`Z는 X를 압축하면서도 Y 예측에 필요한 정보만 남기려 한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 압축과 예측이라는 두 요구를 하나의 목적함수로 합치는 일입니다. 압축된 표현 $Z$는 $X$로부터만 만들어지고 $Y$를 직접 보지 않습니다. 이 관계를 $Y-X-Z$의 마르코프 체인이라 부릅니다. 풀고 싶은 문제는 $I(Z;Y)\ge I_0$라는 최소한의 예측력을 지키면서 $I(X;Z)$를 최소화하는 인코더 $p(z|x)$를 찾는 것입니다.<br><br>이 제약 최적화를 다루기 쉬운 형태로 바꾸는 것이 다음 목표입니다.`, blanks: [] },
       { id: "s2", text: String.raw`제약이 있는 문제이니 lagrange-kkt와 beta-vae에서 쓴 것과 같은 도구인 라그랑주 승수법을 씁니다. 제약을 등호로 정리한 식에 승수 $\beta\ge0$을 곱해서 목적함수에 더합니다.<br><br>$\mathcal{L}(p(z|x),\beta) = I(X;Z) - \beta($[[blank:가]]$)$ 이다.`,
@@ -1746,6 +2684,24 @@ $$I(X;Y)=1-H_b(0.1)=1-0.469=0.531$$
 $$I(X;Z)=1-H_b(0.18)=1-0.680=0.320$$
 <p>한 단계만 거친 $I(X;Y)=0.531$비트가 두 단계를 거친 $I(X;Z)=0.320$비트보다 큽니다. 채널을 하나 더 통과할 때마다 $X$에 대한 정보가 새로 생기기는커녕 그대로 줄어들었습니다.</p>
 <p>아래 증명은 이 감소가 잡음의 세기와 무관하게 어떤 마르코프 체인에서도 항상 성립하는 사실임을 상호정보량의 체인룰로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="80" y="105" font-size="14" text-anchor="middle">X</text>
+<line x1="110" y1="100" x2="200" y2="100" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="200,100 188,94 188,106" class="dg-stroke-ink"/>
+<circle cx="230" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="230" y="105" font-size="14" text-anchor="middle">Y</text>
+<line x1="260" y1="100" x2="350" y2="100" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="350,100 338,94 338,106" class="dg-stroke-accent"/>
+<circle cx="380" cy="100" r="30" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="380" y="105" font-size="14" text-anchor="middle">Z</text>
+<path d="M80,70 Q230,10 380,70" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="230" y="20" font-size="11" class="dg-dim">직접 경로 없음 (Y를 거쳐서만 연결)</text>
+<text x="140" y="130" font-size="11">I(X;Y)=0.531</text>
+<text x="290" y="130" font-size="11" class="dg-dim">I(X;Z)=0.320</text>
+<text x="120" y="175" font-size="12">I(X;Y) ≥ I(X;Z): 가공을 거칠수록 정보는 줄어들 뿐</text>
+</svg>`,
+    diagramCaption: String.raw`Y를 거쳐서만 연결된 마르코프 체인에서는 Z로 갈수록 X에 대한 정보가 늘어날 수 없다.`,
     sections: [
       { id: "s1", text: String.raw`$X-Y-Z$가 마르코프 체인이라 하겠습니다. 이는 $Y$가 주어지면 $Z$는 더 이상 $X$에 대해 아무것도 알려주지 않는다는 뜻이고 식으로는 $p(z|x,y)=p(z|y)$로 씁니다. 지금 목표는 $I(X;Y)\ge I(X;Z)$를 보이는 일입니다.<br><br>이때 쓸 핵심 도구는 상호정보량의 체인룰입니다. 엔트로피의 체인룰 $H(Y,Z)=H(Y)+H(Z|Y)$처럼, 두 변수를 한 번에 조건으로 걸 때 상호정보량도 $I(X;Y,Z) = I(X;Y) + I(X;Z|Y)$로 쪼갤 수 있습니다.`, blanks: [] },
       { id: "s2", text: String.raw`이 체인룰의 두 번째 항 $I(X;Z|Y)$를 봅니다. $X-Y-Z$가 마르코프 체인이라는 것은 $Y$를 알고 나면 $X$와 $Z$가 조건부독립이라는 뜻입니다. 조건부독립이면 조건부 상호정보량도 완전히 사라집니다.<br><br>$I(X;Z|Y) = $[[blank:가]] 이다.`,
@@ -1879,6 +2835,31 @@ $$D_{KL}(\pi\|u)=\sum_a\pi(a)\log_2\frac{\pi(a)}{0.25}\approx0.154$$
 <p>이제 모든 잎에 데이터가 정확히 1개씩만 남았다. 분기란 정의상 데이터를 두 개의 비어있지 않은 부분집합으로 나누는 것인데 데이터가 1개뿐인 잎은 더 쪼갤 방법이 없다.</p>
 $$k_{\max}=3=n-1=4-1$$
 <p>분기는 정확히 3번에서 멈췄고 이는 $n-1$과 같다. 아래 증명은 이 한계가 데이터 4개짜리 특수한 경우가 아니라 임의의 $n$에서 항상 성립하는 사실임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="280" y1="46" x2="170" y2="95" class="dg-line" stroke-width="1.5" />
+<line x1="280" y1="46" x2="390" y2="95" class="dg-line" stroke-width="1.5" />
+<line x1="170" y1="95" x2="110" y2="160" class="dg-line" stroke-width="1.5" />
+<line x1="170" y1="95" x2="230" y2="160" class="dg-line" stroke-width="1.5" />
+<line x1="110" y1="160" x2="75" y2="215" class="dg-line" stroke-width="1.5" />
+<line x1="110" y1="160" x2="145" y2="215" class="dg-line" stroke-width="1.5" />
+<circle cx="280" cy="46" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="170" cy="95" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="110" cy="160" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="390" cy="95" r="12" class="dg-accent" />
+<circle cx="230" cy="160" r="12" class="dg-accent" />
+<circle cx="75" cy="215" r="10" class="dg-accent" />
+<circle cx="145" cy="215" r="10" class="dg-accent" />
+<text x="280" y="50" font-size="12" text-anchor="middle">4</text>
+<text x="170" y="99" font-size="12" text-anchor="middle">3</text>
+<text x="390" y="99" font-size="12" text-anchor="middle">1</text>
+<text x="110" y="164" font-size="12" text-anchor="middle">2</text>
+<text x="230" y="164" font-size="12" text-anchor="middle">1</text>
+<text x="75" y="219" font-size="11" text-anchor="middle">1</text>
+<text x="145" y="219" font-size="11" text-anchor="middle">1</text>
+<text x="20" y="20" font-size="11" class="dg-dim">테두리만 = 아직 분기 가능</text>
+<text x="20" y="235" font-size="11" class="dg-dim">채워진 원 = 더 못 쪼개는 잎(크기 1)</text>
+</svg>`,
+    diagramCaption: String.raw`분기 3번(=n-1) 만에 잎 4개가 전부 데이터 1개짜리로 멈춘다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 의사결정나무를 만드는 재귀적 분기 과정이 유한한 데이터에서 반드시 유한 번 만에 멈춘다는 것을 보이는 것이다. 나무는 뿌리 노드 하나에서 시작해서 각 노드의 데이터를 어떤 기준으로 둘로 쪼개는 걸 반복한다. 여기서 분기라는 말의 의미부터 분명히 해두어야 한다. 한 노드의 데이터를 두 개의 비어있지 않은 부분집합으로 나누는 것만 분기로 인정한다.<br><br>이 재귀 과정에서 매 순간 나무가 가진 잎(leaf) 노드의 개수를 $L$이라 하면, 뿌리만 있는 시작 상태는 $L=1$이다.`, blanks: [] },
       { id: "s2", text: String.raw`분기가 한 번 일어날 때마다 나무의 구조에 무슨 일이 일어나는지 살펴본다. 잎 노드 하나를 골라 그 데이터를 둘로 쪼개면, 그 잎은 더 이상 잎이 아니게 되고 대신 새로운 잎 두 개가 생긴다. 잎 하나가 사라지고 잎 두 개가 새로 생기므로 잎의 총 개수는 정확히 하나만큼 늘어난다.<br><br>그러니 분기를 $k$번 반복한 뒤의 잎 개수는 [[blank:가]] 이다.`,
@@ -1956,6 +2937,29 @@ $$\mathrm{softmax}_{0.2}(z)\approx(0.993,\ 0.007,\ 0.000)$$
 $$s_2=\max(-0.9,-1.0,-1.7,-2.9)=-0.9$$
 <p>빔서치가 유지하는 후보 중 최고 점수는 "나는 밥"의 $-0.9$이다. 그리디도 "나는"에서 이어질 수 있는 후보 중 점수가 가장 높은 "나는 밥"을 골라 $g_2=-0.9$에 도달하므로 $s_2\ge g_2$가 등호로 성립한다.</p>
 <p>문제는 이렇게 가지치기당한 후보들이다. "나는 잠"과 "저는 책"은 둘째 스텝에서 상위 $k$ 안에 들지 못해 이미 버려졌다. 만약 이 중 하나가 셋째 스텝부터 점수가 극적으로 좋아지는 경로였다 해도 빔서치는 그 가능성을 다시 확인할 방법이 없다. 아래 증명은 이 보장이 정확히 어디까지 성립하고 왜 그 이후로는 깨질 수 있는지를 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="60" y="16" font-size="12" class="dg-dim">빔서치 (k=2)</text>
+<circle cx="60" cy="110" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<line x1="72" y1="103" x2="200" y2="50" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="72" y1="117" x2="200" y2="170" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="215" cy="50" r="12" class="dg-accent" />
+<circle cx="215" cy="170" r="12" class="dg-accent" />
+<text x="245" y="45" font-size="11">"나는" −0.5</text>
+<text x="245" y="175" font-size="11">"저는" −0.9</text>
+<line x1="227" y1="44" x2="380" y2="20" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="227" y1="56" x2="380" y2="80" class="dg-line" stroke-width="1" stroke-dasharray="4,3" />
+<line x1="227" y1="164" x2="380" y2="140" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="227" y1="176" x2="380" y2="200" class="dg-line" stroke-width="1" stroke-dasharray="4,3" />
+<circle cx="395" cy="20" r="10" class="dg-accent" />
+<circle cx="395" cy="80" r="8" fill="none" class="dg-dim" stroke-width="1.2" stroke-dasharray="2,2" />
+<circle cx="395" cy="140" r="10" class="dg-accent" />
+<circle cx="395" cy="200" r="8" fill="none" class="dg-dim" stroke-width="1.2" stroke-dasharray="2,2" />
+<text x="410" y="24" font-size="11">"나는 밥" −0.9 (유지)</text>
+<text x="410" y="84" font-size="11" class="dg-dim">"나는 잠" −1.7 (가지치기)</text>
+<text x="410" y="144" font-size="11">"저는 학교" −1.0 (유지)</text>
+<text x="410" y="204" font-size="11" class="dg-dim">"저는 책" −2.9 (가지치기)</text>
+</svg>`,
+    diagramCaption: String.raw`실선 굵은 가지는 빔에 남는 상위 k=2 후보, 점선은 가지치기된 후보(점수 표시).`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 빔서치가 그리디 디코딩보다 나쁜 시퀀스를 내놓지 않는다고 말할 수 있는 지점이 정확히 어디까지인지를 확인하는 것이다. 매 스텝에서 시퀀스의 점수를 그때까지 고른 토큰들의 로그확률을 모두 더한 값으로 정의한다. 그리디 디코딩은 매 스텝마다 지금까지의 점수에 로그확률이 가장 큰 다음 토큰 하나만 이어붙이는 방법이다.<br><br>빔서치는 이 점을 확장해서, 매 스텝마다 점수가 가장 높은 후보 $k$개를 동시에 유지하면서 다음 스텝으로 넘어간다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 $k=1$인 경우를 본다. 매 스텝마다 점수가 가장 높은 후보를 딱 하나만 남기고 나머지는 전부 버린다는 것은, 매 스텝 최고 점수 토큰 하나만 골라 이어붙이는 절차와 다르지 않다.<br><br>그러니 빔서치에서 $k=$[[blank:가]] 로 두면 이 절차는 그리디 디코딩과 정확히 같은 알고리즘이 된다.`,
@@ -1981,6 +2985,22 @@ $$s_2=\max(-0.9,-1.0,-1.7,-2.9)=-0.9$$
 $$\mathrm{UCT}(a_1)=0.6+1.4\sqrt{\frac{\ln100}{40}}\approx0.6+1.4\times0.339\approx1.075$$
 $$\mathrm{UCT}(a_2)=0.5+1.4\sqrt{\frac{\ln100}{10}}\approx0.5+1.4\times0.679\approx1.450$$
 <p>평균 보상은 $a_1$이 더 높지만 UCT 점수는 $a_2$가 더 높다. 방문 횟수가 적어 불확실한 $a_2$에게 신뢰폭이라는 보너스가 더 크게 붙었기 때문이다. 다음 시뮬레이션은 평균이 낮은데도 $a_2$ 쪽으로 향한다. 아래 증명은 이 보너스 항이 임의로 고른 것이 아니라 Hoeffding 부등식에서 정확히 유도되는 형태임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="110" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="80" y="115" font-size="12" text-anchor="middle">s</text>
+<line x1="94" y1="100" x2="230" y2="50" class="dg-line" stroke-width="1.5" />
+<line x1="94" y1="120" x2="230" y2="170" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="250" cy="50" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="250" y="55" font-size="12" text-anchor="middle">a₁</text>
+<circle cx="250" cy="170" r="16" class="dg-accent" />
+<text x="250" y="175" font-size="12" text-anchor="middle">a₂</text>
+<text x="280" y="28" font-size="11">N=40, Q=0.60</text>
+<text x="280" y="44" font-size="11" class="dg-dim">UCT ≈ 1.075</text>
+<text x="280" y="148" font-size="11">N=10, Q=0.50</text>
+<text x="280" y="164" font-size="11">UCT ≈ 1.450 (선택)</text>
+<text x="30" y="20" font-size="11" class="dg-dim">방문 적은 a₂가 신뢰폭 보너스로 다음 선택됨</text>
+</svg>`,
+    diagramCaption: String.raw`Q값은 a₁이 높지만 방문이 적은 a₂의 UCT가 더 커서 다음 탐색으로 선택된다(굵은 선).`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 자식 노드를 고를 때 평균 보상만 보는 게 아니라 그 평균이 얼마나 믿을만한지까지 함께 반영하는 선택 기준을 만드는 것이다. 자식 $a$를 $N(s,a)$번 방문해서 얻은 평균 보상 $Q(s,a)$는 진짜 기대 보상 $\mu_a$의 추정값일 뿐이고, 방문 횟수가 적을수록 이 추정값은 진짜 값에서 크게 벗어나 있을 수 있다.<br><br>이 벗어난 정도를 확률적으로 통제하는 도구가 표본평균의 오차를 재는 Hoeffding 부등식이다.`, blanks: [] },
       { id: "s2", text: String.raw`Hoeffding 부등식은 독립인 표본을 $n$번 뽑아 평균을 낸 값이 진짜 평균에서 $\epsilon$ 이상 벗어날 확률을 위에서 눌러준다. 보상이 $[0,1]$ 범위에 있다고 하면 그 형태는 $P(\mu_a > Q(s,a)+\epsilon) \le \exp(-2N(s,a)\epsilon^2)$ 이다.<br><br>이 부등식이 말하는 건, 방문 횟수 $N(s,a)$가 많을수록 그리고 $\epsilon$이 클수록 진짜 평균이 관측 평균보다 $\epsilon$ 이상 높을 확률이 기하급수적으로 작아진다는 것이다.`, blanks: [] },
@@ -2005,6 +3025,31 @@ $$\mathrm{UCT}(a_2)=0.5+1.4\sqrt{\frac{\ln100}{10}}\approx0.5+1.4\times0.679\app
 <p>거리 기준 $r=8$에서 잘라본다. 이웃한 세 쌍의 거리가 모두 $1,1,8$로 전부 $r=8$ 이하다.</p>
 $$d(p_0,p_1)\le8,\quad d(p_1,p_2)\le8,\quad d(p_2,p_3)\le8\ \Rightarrow\ C_8(p_0)=C_8(p_3)$$
 <p>그런데 정작 양 끝 $p_0$과 $p_3$ 사이의 직접 거리는 $d(p_0,p_3)=10$으로 $r=8$보다 크다. 직접 거리만 보면 절대 같은 군집에 들어갈 수 없어 보이는 두 점이 중간의 사슬 덕분에 거리 8에서 이미 같은 군집으로 묶여버린다. 아래 증명은 이 사슬 연결 현상이 이 네 점만의 특이한 배치가 아니라 단일연결이라면 항상 성립하는 구조적 성질임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="186" x2="110" y2="186" class="dg-line" stroke-width="1.5" />
+<line x1="60" y1="200" x2="60" y2="186" class="dg-line" stroke-width="1.5" />
+<line x1="110" y1="200" x2="110" y2="186" class="dg-line" stroke-width="1.5" />
+<line x1="85" y1="186" x2="85" y2="182" class="dg-line" stroke-width="1.5" />
+<line x1="85" y1="182" x2="160" y2="182" class="dg-line" stroke-width="1.5" />
+<line x1="160" y1="200" x2="160" y2="182" class="dg-line" stroke-width="1.5" />
+<line x1="122" y1="182" x2="122" y2="88" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="122" y1="88" x2="400" y2="88" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="400" y1="200" x2="400" y2="88" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="20" y1="88" x2="440" y2="88" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="60" cy="200" r="6" class="dg-accent" />
+<circle cx="110" cy="200" r="6" class="dg-accent" />
+<circle cx="160" cy="200" r="6" class="dg-accent" />
+<circle cx="400" cy="200" r="6" class="dg-accent" />
+<text x="60" y="216" font-size="11" text-anchor="middle">p₀=0</text>
+<text x="110" y="216" font-size="11" text-anchor="middle">p₁=1</text>
+<text x="160" y="216" font-size="11" text-anchor="middle">p₂=2</text>
+<text x="400" y="216" font-size="11" text-anchor="middle">p₃=10</text>
+<text x="70" y="178" font-size="10">1</text>
+<text x="130" y="176" font-size="10">1</text>
+<text x="230" y="82" font-size="11">병합거리 r=8</text>
+<text x="20" y="40" font-size="11" class="dg-dim">직접거리 d(p₀,p₃)=10 &gt; 8인데도 사슬을 타고 r=8에서 합쳐짐</text>
+</svg>`,
+    diagramCaption: String.raw`덴드로그램: 이웃 거리 1,1,8을 타고 오르면 양끝은 r=8에서 이미 같은 군집.`,
     sections: [
       { id: "s1", text: String.raw`계층적 군집화는 가장 가까운 두 군집을 계속 합쳐 나가는 방법이다. 군집 사이의 거리를 재는 기준에 따라 결과가 달라지는데, 단일연결은 두 군집에서 각각 점을 하나씩 골라 만들 수 있는 모든 쌍의 거리 중 가장 작은 값을 군집 간 거리로 삼는다. 즉 $d(A,B) = \min_{a\in A,\ b\in B} d(a,b)$ 이다.<br><br>지금 보이려는 것은, 가까운 점들이 사슬처럼 이어져 있으면 그 사슬의 양 끝이 거리 기준 $r$에서 항상 같은 군집으로 묶인다는 사실이다.`, blanks: [] },
       { id: "s2", text: String.raw`이 성질을 한 번에 증명하는 대신, 먼저 딱 두 점 $p,q$ 사이에만 성립하는 더 단순한 사실 하나를 확인한다. 만약 $d(p,q)\le r$인 임의의 두 점 $p,q$가 항상 거리 $r$에서 같은 군집에 속한다는 것을 보일 수 있다면, 사슬 위의 이웃한 점들 각각에 이 사실을 적용한 뒤 이어붙이기만 해도 사슬 전체의 결론을 얻을 수 있다.<br><br>그러니 먼저 이 더 단순한 사실부터 확인한다. 거리 $r$에서 $p$가 속한 군집을 $C_r(p)$라 쓰기로 한다.`, blanks: [] },
@@ -2029,6 +3074,24 @@ $$d(p_0,p_1)\le8,\quad d(p_1,p_2)\le8,\quad d(p_2,p_3)\le8\ \Rightarrow\ C_8(p_0
 $$L=\begin{pmatrix}1&-1&0&0\\-1&1&0&0\\0&0&1&-1\\0&0&-1&1\end{pmatrix}$$
 <p>이 행렬의 고유값을 직접 풀면 $0,0,2,2$가 나온다. 작은 순서로 나열하면 $\lambda_1=0,\ \lambda_2=0$이라서 Fiedler 값인 두 번째로 작은 고유값도 정확히 0이다.</p>
 <p>실제로 $A$ 덩어리를 가리키는 지시벡터 $\mathbf{1}_A=(1,1,0,0)$을 넣어보면 $L\mathbf{1}_A=(1-1,\ -1+1,\ 0,\ 0)=(0,0,0,0)$으로 고유값 0의 고유벡터임이 바로 확인된다. 아래 증명은 이 두 번째 0이 이 특정 그래프의 우연이 아니라 그래프가 두 덩어리로 쪼개져 있기만 하면 항상 나타나는 사실임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="90" y1="80" x2="60" y2="20" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4" />
+<line x1="90" y1="80" x2="120" y2="20" class="dg-line" stroke-width="1.5" stroke-dasharray="4,4" />
+<line x1="60" y1="80" x2="140" y2="80" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="60" cy="80" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="140" cy="80" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="55" y="85" font-size="12">A</text>
+<text x="135" y="85" font-size="12">B</text>
+<line x1="320" y1="80" x2="400" y2="80" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="320" cy="80" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="400" cy="80" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="315" y="85" font-size="12">C</text>
+<text x="395" y="85" font-size="12">D</text>
+<line x1="230" y1="10" x2="230" y2="150" class="dg-line" stroke-width="1.2" stroke-dasharray="2,4" />
+<text x="30" y="150" font-size="12">고유값 0,0,2,2</text>
+<text x="30" y="170" font-size="11" class="dg-dim">두 성분 → Fiedler값(λ₂) = 0</text>
+</svg>`,
+    diagramCaption: String.raw`서로 연결되지 않은 두 성분 {A,B}, {C,D} → 라플라시안 고유값에 0이 두 번(λ₁=λ₂=0) 나타난다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 그래프가 몇 개의 조각으로 끊어져 있는지가 라플라시안의 고유값에 어떻게 그대로 드러나는지를 확인하는 것이다. 그래프의 인접행렬을 $W$, 각 노드의 차수를 대각선에 놓은 행렬을 $D$라 하면 라플라시안은 $L=D-W$로 정의된다.<br><br>먼저 임의의 벡터 $x$에 대해 이차형식 $x^TLx$가 어떤 값을 갖는지부터 확인한다.`, blanks: [] },
       { id: "s2", text: String.raw`라플라시안의 정의를 성분별로 풀어서 이차형식을 다시 써보면, 이 값이 변으로 이어진 두 노드 값의 차이의 제곱들을 더한 형태로 정리된다. 그래프의 각 변 $(i,j)$에 대해 가중치 $w_{ij}$와 두 끝점 값의 차이 $(x_i-x_j)^2$를 곱해서 모두 더하면 된다.<br><br>정리하면 $x^TLx = \dfrac{1}{2}\sum_{i,j} w_{ij}(x_i-x_j)^2$[[blank:가]]$0$ 이다.`,
@@ -2054,6 +3117,32 @@ $$f(A,X)=AXW=(5,\ 1,\ 1)^T$$
 <p>이제 $A$와 $B$의 순서를 맞바꾸는 순열 $P$를 적용해본다. 노드 순서가 $(B,A,C)$로 바뀌면 특징도 $PX=(2,1,3)^T$로, 인접행렬도 그 순서에 맞게 $PAP^T$로 바뀐다.</p>
 $$f(PAP^T,PX)=(PAP^T)(PX)W=(1,\ 5,\ 1)^T$$
 <p>한편 원래 결과 $f(A,X)=(5,1,1)^T$의 성분을 그대로 같은 순서 $(B,A,C)$로 재배열한 $Pf(A,X)$도 정확히 $(1,5,1)^T$이다. 노드를 재배열해서 계산한 결과와 원래 결과를 재배열한 것이 똑같이 나온다. 아래 증명은 이 일치가 이 특정 그래프에서만 성립하는 게 아니라 임의의 그래프와 순열에서 항상 성립하는 사실임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="150" y="16" font-size="12" text-anchor="middle" class="dg-dim">원래 순서 (A,B,C)</text>
+<line x1="150" y1="45" x2="90" y2="130" class="dg-line" stroke-width="1.5" />
+<line x1="150" y1="45" x2="210" y2="130" class="dg-line" stroke-width="1.5" />
+<circle cx="150" cy="35" r="16" fill="none" class="dg-stroke-accent" stroke-width="2" />
+<circle cx="90" cy="140" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="210" cy="140" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="150" y="40" font-size="12" text-anchor="middle">A</text>
+<text x="90" y="145" font-size="12" text-anchor="middle">B</text>
+<text x="210" y="145" font-size="12" text-anchor="middle">C</text>
+<text x="150" y="185" font-size="11" text-anchor="middle">f(A,X)=(5,1,1)ᵀ</text>
+<line x1="290" y1="110" x2="410" y2="110" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3" />
+<polygon points="410,110 400,105 400,115" class="dg-dim" />
+<text x="350" y="100" font-size="11" text-anchor="middle">P (A↔B 재배열)</text>
+<text x="550" y="16" font-size="12" text-anchor="middle" class="dg-dim">재배열 순서 (B,A,C)</text>
+<line x1="550" y1="45" x2="490" y2="130" class="dg-line" stroke-width="1.5" />
+<line x1="550" y1="45" x2="610" y2="130" class="dg-line" stroke-width="1.5" />
+<circle cx="550" cy="35" r="16" fill="none" class="dg-stroke-accent" stroke-width="2" />
+<circle cx="490" cy="140" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="610" cy="140" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="550" y="40" font-size="12" text-anchor="middle">A</text>
+<text x="490" y="145" font-size="12" text-anchor="middle">B</text>
+<text x="610" y="145" font-size="12" text-anchor="middle">C</text>
+<text x="550" y="185" font-size="11" text-anchor="middle">f(PAPᵀ,PX)=(1,5,1)ᵀ=Pf(A,X)</text>
+</svg>`,
+    diagramCaption: String.raw`같은 별 모양 그래프, 노드 이름만 맞바꿔도(A↔B) 출력값은 그대로 같은 방식으로 재배열된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 노드를 재배열해서 넣어도 층의 계산 결과가 그 재배열에 맞춰 똑같이 재배열될 뿐이라는 것을 확인하는 것이다. 노드를 재배열하는 조작은 순열행렬 $P$(각 행과 열에 1이 정확히 하나씩 있고 나머지는 0인 행렬)를 곱하는 것으로 나타낼 수 있다.<br><br>인접행렬은 $A\to PAP^T$로, 특징행렬은 $X\to PX$로 바뀐다.`, blanks: [] },
       { id: "s2", text: String.raw`메시지패싱 한 층을 가장 단순한 형태로 적어보면, 각 노드가 자신의 이웃들의 특징을 더해 모은 뒤 가중치 $W$를 곱하고 비선형함수 $\sigma$를 씌우는 식이다. 이웃의 특징을 모으는 연산이 정확히 인접행렬을 곱하는 것과 같다는 점이 핵심이다.<br><br>그래서 한 층의 연산을 $f(A,X) = \sigma(AXW)$ 로 쓸 수 있다. 지금 보이려는 것은 $f(PAP^T, PX) = Pf(A,X)$가 성립한다는 것이다.`, blanks: [] },
@@ -2099,6 +3188,23 @@ $$p(x_1{=}H)\cdot p(x_2{=}H\mid x_1{=}H)\cdot p(x_3{=}H\mid x_1{=}H,x_2{=}H)=0.6
 <p>잠재벡터 $z=(1,2)$가 있고 코드북은 $e_1=(0,0),\ e_2=(1,1),\ e_3=(3,3)$ 세 개라 하자. 각 코드까지의 왜곡을 계산한다.</p>
 $$\|z-e_1\|^2=1^2+2^2=5,\quad \|z-e_2\|^2=0^2+1^2=1,\quad \|z-e_3\|^2=2^2+1^2=5$$
 <p>$e_2$의 왜곡이 1로 가장 작다. 최근접 규칙 $q(z)=\arg\min_k\|z-e_k\|^2$은 이 세 값을 비교해서 그대로 $e_2$를 고른다. $e_1$이나 $e_3$을 대신 골랐다면 왜곡이 5로 다섯 배나 커졌을 것이다. 아래 증명은 이렇게 후보를 비교해서 최솟값을 고르는 절차가 왜 코드북 안에서 항상 최적의 선택이 되는지를 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="42" y1="137" x2="122" y2="217" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="110" y1="70" x2="190" y2="150" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="105" y1="110" x2="60" y2="200" class="dg-line" stroke-width="1" stroke-dasharray="4,3" />
+<line x1="105" y1="110" x2="195" y2="65" class="dg-line" stroke-width="1" stroke-dasharray="4,3" />
+<line x1="105" y1="110" x2="105" y2="155" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="60" cy="200" r="7" class="dg-accent" />
+<circle cx="105" cy="155" r="7" class="dg-accent" />
+<circle cx="195" cy="65" r="7" class="dg-accent" />
+<circle cx="105" cy="110" r="6" fill="none" class="dg-stroke-ink" stroke-width="2" />
+<text x="35" y="216" font-size="11">e₁=(0,0)</text>
+<text x="112" y="150" font-size="11">e₂=(1,1)</text>
+<text x="200" y="60" font-size="11">e₃=(3,3)</text>
+<text x="112" y="108" font-size="11">z=(1,2)</text>
+<text x="20" y="20" font-size="11" class="dg-dim">점선 = 보로노이 경계, z는 가장 가까운 e₂로 양자화(굵은 선)</text>
+</svg>`,
+    diagramCaption: String.raw`잠재벡터 z는 왜곡이 가장 작은(=1) 코드북 벡터 e₂에 최근접 배정된다.`,
     sections: [
       { id: "s1", text: String.raw`VQ-VAE의 인코더는 연속적인 잠재벡터 $z$를 만들지만, 디코더에 넣기 전에 이 값을 코드북 $\{e_1,\dots,e_K\}$ 안의 벡터 하나로 반드시 바꿔치기해야 한다. VQ-VAE는 $z$와 가장 가까운 코드북 벡터를 고르는 최근접 규칙을 쓴다.<br><br>지금 보이려는 것은 이 최근접 규칙이 주어진 코드북 안에서 왜곡 $\|z-e\|^2$을 가장 작게 만드는 진짜 최적의 선택이라는 사실이다.`, blanks: [] },
       { id: "s2", text: String.raw`왜곡을 재는 기준부터 분명히 한다. 코드북에서 벡터 $e_k$를 골랐을 때 그 대가로 치르는 손실을 $z$와 $e_k$ 사이의 유클리드 거리의 제곱으로 정의한다.<br><br>즉 코드북 인덱스 $k$를 고를 때의 왜곡은 $D(k) = $[[blank:가]] 이다.`,
@@ -2121,6 +3227,21 @@ $$\|z-e_1\|^2=1^2+2^2=5,\quad \|z-e_2\|^2=0^2+1^2=1,\quad \|z-e_3\|^2=2^2+1^2=5$
 <p>상태 $s_1,s_2$가 있고 각 상태에서 행동은 하나뿐이며 그 행동은 상대 상태로 확률 1로 넘어가고 보상은 0이라 하자. 할인율은 $\gamma=0.9$다. 두 가치함수를 $V_1=(10,0)$, $V_2=(0,10)$으로 두면 $\|V_1-V_2\|_\infty=10$이다.</p>
 $$TV_1=(0+0.9\times0,\ 0+0.9\times10)=(0,\ 9),\qquad TV_2=(0+0.9\times10,\ 0+0.9\times0)=(9,\ 0)$$
 <p>두 결과의 성분별 차이는 $|0-9|=9$와 $|9-0|=9$로 모두 9다. 그러니 $\|TV_1-TV_2\|_\infty=9$이고 이는 정확히 $\gamma\|V_1-V_2\|_\infty=0.9\times10=9$와 같다. 벨만 연산자를 한 번 적용했더니 두 가치함수 사이의 거리가 정확히 $\gamma$배로 줄어든 것이다. 아래 증명은 이 축소 비율 $\gamma$가 이 예제에서만 성립하는 게 아니라 임의의 $V_1,V_2$에서 상한으로 항상 성립하는 사실임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="120" cy="100" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="340" cy="100" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<path d="M 136 88 Q 230 40 324 88" fill="none" class="dg-stroke-accent" stroke-width="2" />
+<polygon points="324,88 313,86 318,95" class="dg-accent" />
+<path d="M 324 112 Q 230 160 136 112" fill="none" class="dg-stroke-accent" stroke-width="2" />
+<polygon points="136,112 147,110 142,119" class="dg-accent" />
+<text x="120" y="105" font-size="12" text-anchor="middle">s₁</text>
+<text x="340" y="105" font-size="12" text-anchor="middle">s₂</text>
+<text x="230" y="30" font-size="11" text-anchor="middle">a: P=1, r=0</text>
+<text x="230" y="178" font-size="11" text-anchor="middle">a: P=1, r=0</text>
+<text x="30" y="20" font-size="11">V₁=(10,0), V₂=(0,10) → ‖V₁−V₂‖∞=10</text>
+<text x="30" y="196" font-size="11" class="dg-dim">TV₁=(0,9), TV₂=(9,0) → ‖TV₁−TV₂‖∞=9=γ·10 (γ=0.9)</text>
+</svg>`,
+    diagramCaption: String.raw`벨만 연산자 T를 한 번 적용하면 두 가치함수 사이 거리가 정확히 γ배로 줄어든다.`,
     sections: [
       { id: "s1", text: String.raw`최단경로 그래프에서 $d(v)=\min_u(d(u)+w(u,v))$라는 재귀식을 반복 적용하면 결국 진짜 최단거리에 도달했다. MDP의 상태-행동 전이그래프에서도 비슷한 재귀식이 있다. 다만 전이가 결정론적인 간선이 아니라 확률적인 분포이고, 최소 대신 최대를 구한다는 점이 다르다.<br><br>지금 목표는 이 재귀식을 반복 적용하는 가치반복이 실제로 참값에 수렴한다는 것을, 최단경로 때와 비슷한 논리로 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`벨만 최적 연산자 $T$를 가치함수 $V$에 적용하면 $(TV)(s) = \max_a \sum_{s'} P(s'|s,a)\left[r(s,a,s')+\gamma V(s')\right]$ 를 얻는다. 이 식은 상태 $s$에서 행동 $a$를 골랐을 때, 가능한 다음 상태 $s'$들에 대해 즉시보상과 할인된 다음 가치를 기댓값으로 묶은 뒤 그중 가장 좋은 행동을 고르는 과정이다.<br><br>이 연산자를 반복해서 적용하는 것이 가치반복이고, 이 반복이 정말 하나의 값으로 수렴하는지를 보이려면 $T$가 두 가치함수 사이의 거리를 얼마나 줄이는지부터 확인해야 한다.`, blanks: [] },
@@ -2193,6 +3314,39 @@ $$\binom{6}{2}\binom{4}{2}\binom{2}{2}=15\times6\times1=90=\frac{6!}{(2!)^3}$$
 $$\begin{pmatrix}0&1&2&3&4\\1&0&1&2&3\\2&1&0&1&2\\3&2&1&1&2\\4&3&2&2&2\end{pmatrix}$$
 <p>예를 들어 $d(3,3)=1$은 "foo"를 "for"로 바꾸는 데 $o\to r$ 치환 한 번이면 충분하다는 뜻이다. 마지막 글자 $d,t$는 다르므로 $d(4,4)=\min(d(3,4)+1,\ d(4,3)+1,\ d(3,3)+1)=\min(3,3,2)=2$가 된다.</p>
 <p>표의 오른쪽 아래 끝 $d(4,4)=2$가 "food"를 "fort"로 바꾸는 최소 연산 횟수다. 실제로 $o\to r$, $d\to t$ 두 번의 치환이면 충분하니 그대로 맞아떨어진다. 아래 증명은 표의 각 칸이 왜 바로 앞 세 칸의 값만으로 채워질 수 있는지를 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 380 270" xmlns="http://www.w3.org/2000/svg">
+<line x1="110" y1="26" x2="110" y2="236" class="dg-line" stroke-width="1" />
+<line x1="152" y1="26" x2="152" y2="236" class="dg-line" stroke-width="1" />
+<line x1="194" y1="26" x2="194" y2="236" class="dg-line" stroke-width="1" />
+<line x1="236" y1="26" x2="236" y2="236" class="dg-line" stroke-width="1" />
+<line x1="278" y1="26" x2="278" y2="236" class="dg-line" stroke-width="1" />
+<line x1="320" y1="26" x2="320" y2="236" class="dg-line" stroke-width="1" />
+<line x1="110" y1="26" x2="320" y2="26" class="dg-line" stroke-width="1" />
+<line x1="110" y1="68" x2="320" y2="68" class="dg-line" stroke-width="1" />
+<line x1="110" y1="110" x2="320" y2="110" class="dg-line" stroke-width="1" />
+<line x1="110" y1="152" x2="320" y2="152" class="dg-line" stroke-width="1" />
+<line x1="110" y1="194" x2="320" y2="194" class="dg-line" stroke-width="1" />
+<line x1="110" y1="236" x2="320" y2="236" class="dg-line" stroke-width="1" />
+<text x="131" y="18" font-size="11" text-anchor="middle" class="dg-dim">f</text>
+<text x="173" y="18" font-size="11" text-anchor="middle" class="dg-dim">o</text>
+<text x="215" y="18" font-size="11" text-anchor="middle" class="dg-dim">r</text>
+<text x="257" y="18" font-size="11" text-anchor="middle" class="dg-dim">t</text>
+<text x="98" y="51" font-size="11" text-anchor="end" class="dg-dim">f</text>
+<text x="98" y="93" font-size="11" text-anchor="end" class="dg-dim">o</text>
+<text x="98" y="135" font-size="11" text-anchor="end" class="dg-dim">o</text>
+<text x="98" y="177" font-size="11" text-anchor="end" class="dg-dim">d</text>
+<text x="131" y="51" font-size="12" text-anchor="middle">0</text><text x="173" y="51" font-size="12" text-anchor="middle">1</text><text x="215" y="51" font-size="12" text-anchor="middle">2</text><text x="257" y="51" font-size="12" text-anchor="middle">3</text><text x="299" y="51" font-size="12" text-anchor="middle">4</text>
+<text x="131" y="93" font-size="12" text-anchor="middle">1</text><text x="173" y="93" font-size="12" text-anchor="middle">0</text><text x="215" y="93" font-size="12" text-anchor="middle">1</text><text x="257" y="93" font-size="12" text-anchor="middle">2</text><text x="299" y="93" font-size="12" text-anchor="middle">3</text>
+<text x="131" y="135" font-size="12" text-anchor="middle">2</text><text x="173" y="135" font-size="12" text-anchor="middle">1</text><text x="215" y="135" font-size="12" text-anchor="middle">0</text><text x="257" y="135" font-size="12" text-anchor="middle">1</text><text x="299" y="135" font-size="12" text-anchor="middle">2</text>
+<text x="131" y="177" font-size="12" text-anchor="middle">3</text><text x="173" y="177" font-size="12" text-anchor="middle">2</text><text x="215" y="177" font-size="12" text-anchor="middle">1</text><text x="257" y="177" font-size="12" text-anchor="middle">1</text><text x="299" y="177" font-size="12" text-anchor="middle">2</text>
+<text x="131" y="219" font-size="12" text-anchor="middle">4</text><text x="173" y="219" font-size="12" text-anchor="middle">3</text><text x="215" y="219" font-size="12" text-anchor="middle">2</text><text x="257" y="219" font-size="12" text-anchor="middle">2</text><text x="299" y="219" font-size="12" text-anchor="middle">2</text>
+<rect x="278" y="194" width="42" height="42" fill="none" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="257" y1="173" x2="292" y2="208" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="299" y1="177" x2="299" y2="208" class="dg-line" stroke-width="1.2" stroke-dasharray="3,3" />
+<line x1="261" y1="215" x2="292" y2="215" class="dg-line" stroke-width="1.2" stroke-dasharray="3,3" />
+<text x="20" y="255" font-size="11" class="dg-dim">굵은 대각선 = 치환(cost 2, 선택), 점선 = 삭제·삽입(cost 3, 미선택)</text>
+</svg>`,
+    diagramCaption: String.raw`d(4,4)는 왼쪽·위·대각선 세 칸 중 최소인 대각선(치환)에서 정해진다.`,
     sections: [
       { id: "s1", text: String.raw`두 시퀀스를 삽입, 삭제, 치환 세 가지 연산만으로 서로 같게 맞추려 할 때 최소한 몇 번의 연산이 필요한지를 편집거리라 부른다. 두 시퀀스 전체를 한 번에 비교하는 대신, 접두사끼리의 편집거리로부터 재귀적으로 계산하는 방법을 찾는 것이 목표다.<br><br>$a$의 앞 $i$글자와 $b$의 앞 $j$글자 사이의 편집거리를 $d(i,j)$라 쓴다.`, blanks: [] },
       { id: "s2", text: String.raw`$a_1\cdots a_i$를 $b_1\cdots b_j$로 바꾸는 최적의 연산열이 하나 있다고 하자. 이 연산열의 맨 마지막 한 수만 따로 떼어서 본다. 마지막 수로 가능한 경우는 딱 세 가지뿐이다. $a_i$를 지우는 삭제, $b_j$를 새로 끼워넣는 삽입, 아니면 $a_i$를 $b_j$로 맞추는 매칭 또는 치환이다.<br><br>이 세 가지 경우 각각에서 마지막 수를 떼어내고 남는 부분이 어떤 부분문제와 대응되는지를 따져본다.`, blanks: [] },
@@ -2217,6 +3371,33 @@ $$\begin{pmatrix}0&1&2&3&4\\1&0&1&2&3\\2&1&0&1&2\\3&2&1&1&2\\4&3&2&2&2\end{pmatr
 <p>이제 문장을 "나는 오늘"로, 다시 "나는 오늘 학교"로 늘려가며 $h_1$을 다시 계산해도 위치 1은 여전히 뒤에 오는 "오늘"이나 "학교"를 들여다볼 수 없다.</p>
 $$h_1^{(t=1)}=h_1^{(t=2)}=h_1^{(t=3)}=(0.42,-0.17)$$
 <p>그러니 여기서 계산되는 키와 값 $K_1=W_Kh_1,\ V_1=W_Vh_1$도 문장이 아무리 길어져도 똑같은 값으로 남는다. 매 스텝 다시 계산하는 대신 처음 계산한 값을 그대로 저장해 재사용해도 결과가 달라지지 않는다는 뜻이다. 아래 증명은 이 불변성이 위치 1뿐 아니라 모든 층 모든 위치에서 인과적 마스킹만으로 항상 성립하는 사실임을 보인다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="112" y="16" font-size="12" text-anchor="middle" class="dg-dim">인과적 마스킹 (쿼리 i가 키 j를 볼 수 있음: j≤i)</text>
+<rect x="40" y="30" width="36" height="36" class="dg-accent" /><rect x="76" y="30" width="36" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2" /><rect x="112" y="30" width="36" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2" /><rect x="148" y="30" width="36" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2" />
+<rect x="40" y="66" width="36" height="36" class="dg-accent" /><rect x="76" y="66" width="36" height="36" class="dg-accent" /><rect x="112" y="66" width="36" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2" /><rect x="148" y="66" width="36" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2" />
+<rect x="40" y="102" width="36" height="36" class="dg-accent" /><rect x="76" y="102" width="36" height="36" class="dg-accent" /><rect x="112" y="102" width="36" height="36" class="dg-accent" /><rect x="148" y="102" width="36" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2" />
+<rect x="40" y="138" width="36" height="36" class="dg-accent" /><rect x="76" y="138" width="36" height="36" class="dg-accent" /><rect x="112" y="138" width="36" height="36" class="dg-accent" /><rect x="148" y="138" width="36" height="36" class="dg-accent" />
+<line x1="40" y1="30" x2="184" y2="30" class="dg-line" stroke-width="1" /><line x1="40" y1="66" x2="184" y2="66" class="dg-line" stroke-width="1" /><line x1="40" y1="102" x2="184" y2="102" class="dg-line" stroke-width="1" /><line x1="40" y1="138" x2="184" y2="138" class="dg-line" stroke-width="1" /><line x1="40" y1="174" x2="184" y2="174" class="dg-line" stroke-width="1" />
+<line x1="40" y1="30" x2="40" y2="174" class="dg-line" stroke-width="1" /><line x1="76" y1="30" x2="76" y2="174" class="dg-line" stroke-width="1" /><line x1="112" y1="30" x2="112" y2="174" class="dg-line" stroke-width="1" /><line x1="148" y1="30" x2="148" y2="174" class="dg-line" stroke-width="1" /><line x1="184" y1="30" x2="184" y2="174" class="dg-line" stroke-width="1" />
+<text x="20" y="195" font-size="10" class="dg-dim">채움=허용, 점선=마스킹됨</text>
+<line x1="420" y1="60" x2="470" y2="60" class="dg-stroke-ink" stroke-width="1.5" />
+<rect x="420" y="42" width="60" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="450" y="64" font-size="11" text-anchor="middle">K₁,V₁</text>
+<rect x="490" y="42" width="60" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="520" y="64" font-size="11" text-anchor="middle">K₂,V₂</text>
+<rect x="560" y="42" width="60" height="36" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="590" y="64" font-size="11" text-anchor="middle">K₃,V₃</text>
+<rect x="630" y="42" width="55" height="36" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3" />
+<text x="657" y="64" font-size="11" text-anchor="middle">K₄,V₄</text>
+<text x="420" y="26" font-size="11" class="dg-dim">캐시(재사용, 실선) + 신규(점선)</text>
+<line x1="450" y1="80" x2="640" y2="130" class="dg-line" stroke-width="1.2" />
+<line x1="520" y1="80" x2="640" y2="130" class="dg-line" stroke-width="1.2" />
+<line x1="590" y1="80" x2="640" y2="130" class="dg-line" stroke-width="1.2" />
+<line x1="657" y1="78" x2="640" y2="130" class="dg-stroke-accent" stroke-width="2" />
+<rect x="580" y="130" width="120" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="640" y="150" font-size="11" text-anchor="middle">t=4 어텐션 출력</text>
+</svg>`,
+    diagramCaption: String.raw`왼쪽: 쿼리 i는 j≤i인 키만 본다(하삼각). 오른쪽: 이전 K,V는 캐시에서 재사용하고 새 토큰의 K₄,V₄만 새로 계산.`,
     sections: [
       { id: "s1", text: String.raw`오토리그레시브 생성은 $p(x_t|x_{<t})$를 매 스텝 다시 계산해야 할 것 같지만, 실제로는 이전 스텝에서 이미 계산해 둔 값들을 그대로 재사용할 수 있다. 트랜스포머의 셀프어텐션은 각 위치 $i$마다 키벡터 $K_i$와 값벡터 $V_i$를 계산하는데, 오토리그레시브 모델에서는 인과적 마스킹 때문에 위치 $i$가 자기 자신보다 뒤에 오는 위치는 절대 들여다보지 않는다.<br><br>지금 보이려는 것은, 이 마스킹 덕분에 위치 $i$에서의 은닉상태가 오직 $x_1,\dots,x_i$에만 의존하고 그 뒤에 어떤 토큰이 이어붙든 전혀 바뀌지 않는다는 사실이다.`, blanks: [] },
       { id: "s2", text: String.raw`층을 쌓아 올라가면서 이 성질이 유지되는지 층에 대한 귀납법으로 확인한다. $l$번째 층에서 위치 $i$의 은닉상태를 $h_i^{(l)}$이라 쓴다.<br><br>맨 아래층인 $l=0$에서는 $h_i^{(0)}$이 토큰 $x_i$ 하나를 임베딩한 벡터일 뿐이라서, 정의상 $x_i$ 하나에만 의존한다. 이는 곧 $x_1,\dots,x_i$에만 의존한다는 조건도 자동으로 만족한다.`, blanks: [] },
@@ -2243,6 +3424,22 @@ $$X=\begin{pmatrix}1&1\\1&2\\1&3\end{pmatrix},\quad y=\begin{pmatrix}2\\3\\5\end
 $$\beta=(X^TX)^{-1}X^Ty=\begin{pmatrix}1/3\\3/2\end{pmatrix}$$
 <p>이 직선은 $x=1,2,3$에서 각각 $11/6,\ 10/3,\ 29/6$을 예측합니다. 실제값 $2,3,5$와 완전히 같지는 않지만 오차제곱합을 가장 작게 만드는 계수가 바로 이 값입니다.</p>
 <p>아래 증명은 임의의 설계행렬 $X$와 목표값 $y$에 대해 오차제곱합을 최소화하는 계수가 항상 이 공식으로 정확히 계산됨을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="220" x2="330" y2="220" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="20" x2="40" y2="220" class="dg-line" stroke-width="1"/>
+<line x1="75" y1="184" x2="285" y2="36" class="dg-stroke-ink" stroke-width="2"/>
+<text x="290" y="32" font-size="12">Xβ (최적 직선)</text>
+<circle cx="110" cy="154" r="5" class="dg-accent"/>
+<circle cx="180" cy="121" r="5" class="dg-accent"/>
+<circle cx="250" cy="55" r="5" class="dg-accent"/>
+<line x1="110" y1="154" x2="110" y2="159.5" class="dg-line" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="180" y1="110" x2="180" y2="121" class="dg-line" stroke-width="2" stroke-dasharray="4,2"/>
+<line x1="250" y1="55" x2="250" y2="60.5" class="dg-line" stroke-width="2" stroke-dasharray="4,2"/>
+<text x="55" y="200" font-size="11" class="dg-dim">y</text>
+<text x="315" y="215" font-size="11" class="dg-dim">x</text>
+<text x="60" y="45" font-size="11" class="dg-dim">각 점에서 직선까지의 수직 잔차(y-Xβ)</text>
+</svg>`,
+    diagramCaption: String.raw`정규방정식이 찾는 직선은 각 데이터점의 수직 잔차 제곱합을 가장 작게 만드는 직선이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 예측이 얼마나 틀렸는지를 하나의 숫자로 요약하는 것이다. 예측값 $X\beta$와 실제값 $y$의 차이를 성분마다 재는 대신 전체를 하나의 지표로 합치고 싶다. 그래서 차이 벡터의 노름을 제곱한 값을 오차로 정의한다. 제곱을 쓰는 이유는 미분이 매끄럽고 이 함수가 아래로 볼록해서 최솟값을 찾기 쉬워지기 때문이다. 오차함수는 $J(\beta) = \|X\beta-y\|^2$ 로 정의된다.`, blanks: [] },
       { id: "s2", text: String.raw`이 노름의 제곱을 그대로는 미분하기 어렵다. 미분하려면 내적으로 풀어써야 한다. 노름의 제곱은 자기 자신과의 내적과 같다는 성질을 쓰면 $J(\beta) = (X\beta-y)^T(X\beta-y)$ 이다. 이걸 전개하면 $J(\beta) = \beta^TX^TX\beta - 2y^TX\beta + $[[blank:가]] 이다.`,
@@ -2268,6 +3465,29 @@ $$\beta=(X^TX)^{-1}X^Ty=\begin{pmatrix}1/3\\3/2\end{pmatrix}$$
 <p><strong>정반대 방향.</strong> $v=(-3,-4)=-u$라 하면 $u\cdot v=-9-16=-25$, $\|v\|=5$이므로 $\cos(u,v)=-25/25=-1$입니다.</p>
 <p><strong>수직인 방향.</strong> $v=(4,-3)$이라 하면 $u\cdot v=12-12=0$이므로 $\cos(u,v)=0$입니다.</p>
 <p>세 값 모두 정확히 $-1,\ 0,\ 1$로 구간의 양 끝과 가운데를 채웁니다. 아래 증명은 이 경계값들이 우연이 아니라 임의의 $u,v$에서 코사인 유사도가 항상 이 구간 안에 머무는 이유를 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 660 210" xmlns="http://www.w3.org/2000/svg">
+<circle cx="100" cy="150" r="2" class="dg-dim"/>
+<line x1="100" y1="150" x2="142" y2="94" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="142,94 130,96 135,105" class="dg-dim"/>
+<line x1="100" y1="150" x2="163" y2="66" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="163,66 151,70 155,79" class="dg-accent"/>
+<text x="60" y="185" font-size="12" text-anchor="middle">같은 방향</text>
+<text x="60" y="200" font-size="11" class="dg-dim" text-anchor="middle">θ=0°, cos=1</text>
+<line x1="320" y1="150" x2="362" y2="94" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="362,94 350,96 355,105" class="dg-dim"/>
+<line x1="320" y1="150" x2="376" y2="192" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="376,192 372,180 363,186" class="dg-accent"/>
+<path d="M320,130 A20,20 0 0 1 341,145" fill="none" class="dg-line" stroke-width="1"/>
+<text x="280" y="198" font-size="12" text-anchor="middle">수직</text>
+<text x="405" y="130" font-size="11" class="dg-dim" text-anchor="middle">θ=90°, cos=0</text>
+<line x1="540" y1="130" x2="582" y2="74" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="582,74 570,76 575,85" class="dg-dim"/>
+<line x1="540" y1="130" x2="498" y2="186" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="498,186 505,175 512,183" class="dg-accent"/>
+<text x="540" y="198" font-size="12" text-anchor="middle">정반대 방향</text>
+<text x="605" y="130" font-size="11" class="dg-dim" text-anchor="middle">θ=180°, cos=-1</text>
+</svg>`,
+    diagramCaption: String.raw`u(검정)와 v(강조)가 이루는 각도에 따라 코사인 유사도는 같은 방향에서 1, 수직에서 0, 정반대에서 -1의 극값을 갖는다.`,
     sections: [
       { id: "s1", text: String.raw`영벡터가 아닌 두 벡터 $u,v\in\mathbb{R}^d$에 대해 코사인 유사도를 $\cos(u,v)=\dfrac{u\cdot v}{\|u\|\|v\|}$ 로 정의한다. 지금 목표는 이 값이 항상 $-1$과 $1$ 사이에 있음을 확인하는 것이다. 그러려면 먼저 내적 $u\cdot v$의 크기가 두 벡터의 길이로 얼마나 눌려 있는지부터 알아야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`내적의 크기를 누르는 부등식을 직접 만들어본다. 임의의 실수 $t$에 대해 $\|u-tv\|^2$는 노름의 제곱이므로 절대 음수가 될 수 없다. 이 사실을 그대로 전개해서 이용한다. 전개하면 $\|u-tv\|^2 = \|u\|^2 - 2t(u\cdot v) + $[[blank:가]] 이다.`,
@@ -2291,6 +3511,26 @@ $$\beta=(X^TX)^{-1}X^Ty=\begin{pmatrix}1/3\\3/2\end{pmatrix}$$
 $$x=-2v_1+5v_2=(-2,0)+(5,5)=(3,5)$$
 <p>이제 다른 좌표 $d_1,d_2$로도 같은 $x$를 표현할 수 있다고 가정해봅니다. 두 표현을 빼면 $(c_1-d_1)v_1+(c_2-d_2)v_2=0$인데, $v_1,v_2$가 선형독립이므로 이 조합이 0이 되려면 계수가 전부 0이어야 합니다. 즉 $d_1=-2$, $d_2=5$로 강제되어 처음 구한 좌표와 똑같습니다.</p>
 <p>아래 증명은 이 유일성이 이 기저와 이 벡터에서만 성립하는 것이 아니라 임의의 기저와 임의의 벡터에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="200" x2="290" y2="200" class="dg-line" stroke-width="1"/>
+<line x1="90" y1="20" x2="90" y2="220" class="dg-line" stroke-width="1"/>
+<line x1="90" y1="200" x2="120" y2="200" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="120,200 110,196 110,204" class="dg-dim"/>
+<text x="122" y="196" font-size="11">v₁</text>
+<line x1="90" y1="200" x2="120" y2="170" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="120,170 109,171 114,180" class="dg-dim"/>
+<text x="122" y="165" font-size="11">v₂</text>
+<line x1="90" y1="200" x2="180" y2="50" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="180,50 168,54 173,64" class="dg-accent"/>
+<text x="184" y="46" font-size="12">x = c₁v₁ + c₂v₂</text>
+<line x1="90" y1="200" x2="30" y2="200" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="30" y1="200" x2="180" y2="50" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="90" y1="200" x2="240" y2="50" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="240" y1="50" x2="180" y2="50" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="5" y="215" font-size="10" class="dg-dim">c₁v₁ (c₁=-2)</text>
+<text x="200" y="215" font-size="10" class="dg-dim">c₂v₂ (c₂=5)</text>
+</svg>`,
+    diagramCaption: String.raw`평행사변형법: 벡터 x는 기저 v₁, v₂ 방향 성분 c₁v₁, c₂v₂로 유일하게 분해된다.`,
     sections: [
       { id: "s1", text: String.raw`$\{v_1,\dots,v_n\}$이 $V$의 기저라 하자. 기저라는 말은 두 가지를 동시에 뜻한다. 이 벡터들의 선형결합으로 $V$의 모든 벡터를 만들 수 있다는 스팬 조건과, 그중 어느 것도 나머지의 선형결합으로 표현되지 않는다는 선형독립 조건이다. 지금 목표는 $V$ 안의 임의의 벡터 $x$가 이 기저에 대해 정확히 하나의 좌표로만 표현됨을 보이는 것이다. 좌표가 유일하지 않다면 같은 데이터를 서로 다른 숫자로 표현할 수 있게 되어 특징벡터로서 쓸모가 없어진다.`, blanks: [] },
       { id: "s2", text: String.raw`이 유일성 논증에서 나중에 쓸 도구를 먼저 정확히 정의해 둔다. 선형독립이라는 성질은 벡터들을 섞어서 0을 만드는 방법이 계수를 전부 0으로 두는 것 말고는 없다는 뜻이다. 정의대로 적으면, $\sum_ia_iv_i=0$을 만족시키는 계수 조합은 모든 $i$에서 $a_i = $[[blank:가]] 인 경우 하나뿐이다.`,
@@ -2389,6 +3629,22 @@ $$Y=X+\mathbf1_3b^T=\begin{pmatrix}11&22\\13&24\\15&26\end{pmatrix}$$
 <p><strong>$pos=0$인 경우.</strong> $(s(0),c(0))=(0,1)$이고 $M(k)$를 곱하면 $(0\cdot0+1\cdot1,\ -1\cdot0+0\cdot1)=(1,0)$입니다. 실제로 $(s(\pi/2),c(\pi/2))=(1,0)$이니 정확히 일치합니다.</p>
 <p><strong>$pos=\pi/6$인 경우.</strong> $(s(\pi/6),c(\pi/6))=(1/2,\ \sqrt3/2)$이고 $M(k)$를 곱하면 $(\sqrt3/2,\ -1/2)$입니다. 실제로 $pos+k=2\pi/3$에서 $(s(2\pi/3),c(2\pi/3))=(\sqrt3/2,-1/2)$이니 역시 정확히 일치합니다.</p>
 <p>서로 다른 $pos$에서 출발했는데도 같은 행렬 $M(k)$ 하나로 오프셋 $k$만큼의 이동이 똑같이 재현됩니다. 아래 증명은 이 행렬이 임의의 $\omega$, $pos$, $k$에서도 언제나 $pos$와 무관하게 정의됨을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 340 290" xmlns="http://www.w3.org/2000/svg">
+<circle cx="160" cy="150" r="110" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M160,40 A110,110 0 0 1 270,150" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<circle cx="160" cy="40" r="5" class="dg-accent"/>
+<circle cx="270" cy="150" r="5" class="dg-accent"/>
+<text x="160" y="26" font-size="11" text-anchor="middle">pos=0</text>
+<text x="288" y="154" font-size="11">pos+k</text>
+<path d="M215,55 A110,110 0 0 1 255,205" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<rect x="209" y="49" width="12" height="12" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="249" y="199" width="12" height="12" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="192" y="42" font-size="11">pos=π/6</text>
+<text x="264" y="222" font-size="11">pos+k</text>
+<text x="80" y="278" font-size="11" class="dg-dim" text-anchor="middle">좌표는 (sin(ω·pos), cos(ω·pos))</text>
+<text x="160" y="150" font-size="10" class="dg-dim" text-anchor="middle">두 호 모두 각도 ωk 회전 — pos와 무관</text>
+</svg>`,
+    diagramCaption: String.raw`서로 다른 위치 pos=0과 pos=π/6에서 출발해도 오프셋 k만큼의 회전은 항상 같은 각도이며, pos에 의존하지 않는다.`,
     sections: [
       { id: "s1", text: String.raw`위치 임베딩의 한 주파수 성분을 $s(pos)=\sin(\omega\,pos)$, $c(pos)=\cos(\omega\,pos)$라 하자. 지금 목표는 위치를 $k$만큼 옮긴 $pos+k$에서의 값 $s(pos+k), c(pos+k)$가 원래 위치 $pos$에서의 값들로부터 어떻게 얻어지는지를 확인하는 것이다. 특히 그 관계가 $pos$가 얼마인지와 상관없이 오직 오프셋 $k$에만 의존하는 고정된 선형변환인지가 핵심이다. 그래야 모델이 절대위치가 아니라 상대위치만으로 두 토큰의 관계를 학습할 수 있기 때문이다.`, blanks: [] },
       { id: "s2", text: String.raw`$s(pos+k)=\sin(\omega(pos+k))$부터 전개한다. 괄호 안이 합으로 되어 있으니 삼각함수의 덧셈정리를 쓰는 것이 자연스럽다. 덧셈정리를 적용하면 $\sin(\omega(pos+k)) = \sin(\omega\,pos)\cos(\omega k) + $[[blank:가]] 이다.`,
@@ -2457,6 +3713,30 @@ $$\mathcal N(1;0,1)=\frac{1}{\sqrt{2\pi}}e^{-0.5}\approx0.2420,\qquad \mathcal N
 <p>이 값들을 책임값 공식에 대입합니다.</p>
 $$\gamma_1(1)=\frac{0.5\times0.2420}{0.5\times0.2420+0.5\times0.0540}=\frac{0.1210}{0.1480}\approx0.818,\qquad \gamma_2(1)\approx0.182$$
 <p>$x=1$은 $\mu_1=0$에 더 가깝지만 $\mu_2=3$에서 완전히 먼 것도 아니라서, 책임값도 한쪽으로 완전히 쏠리지 않고 $0.818$과 $0.182$로 나뉩니다. 두 값을 더하면 정확히 $1$이 되어 $x=1$이 성분 1과 성분 2에서 나왔을 확률을 온전히 나눠 가진 셈입니다. 아래 증명은 이 책임값이 베이즈 정리를 곧이곧대로 적용한 결과라는 것을 일반적인 $K$개 성분에 대해 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="150" cy="150" rx="80" ry="55" fill="none" class="dg-stroke-ink" stroke-width="1.4"/>
+  <ellipse cx="150" cy="150" rx="45" ry="30" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+  <ellipse cx="330" cy="150" rx="80" ry="55" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="6,4"/>
+  <ellipse cx="330" cy="150" rx="45" ry="30" fill="none" class="dg-line" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <circle cx="150" cy="150" r="3" class="dg-dim"/>
+  <circle cx="330" cy="150" r="3" class="dg-dim"/>
+  <text x="140" y="130" font-size="12" font-weight="700">μ₁ (실선)</text>
+  <text x="315" y="130" font-size="12" font-weight="700">μ₂ (파선)</text>
+  <circle cx="110" cy="150" r="7" class="dg-dim"/>
+  <circle cx="130" cy="175" r="7" class="dg-dim"/>
+  <circle cx="165" cy="115" r="7" class="dg-dim"/>
+  <rect x="358" y="140" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <rect x="380" y="165" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <rect x="315" y="112" width="14" height="14" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <g transform="translate(240,150)">
+    <path d="M0,-9 A9,9 0 0,1 0,9 Z" class="dg-dim"/>
+    <path d="M0,-9 A9,9 0 0,0 0,9 Z" fill="none" class="dg-stroke-ink" stroke-width="1.4"/>
+  </g>
+  <text x="195" y="185" font-size="10" class="dg-dim">γ≈0.5/0.5 (반반 표시)</text>
+  <text x="60" y="230" font-size="11">● 원 = 성분1 책임값 우세</text>
+  <text x="270" y="230" font-size="11">□ 사각 = 성분2 책임값 우세</text>
+</svg>`,
+    diagramCaption: String.raw`두 성분의 등고선(실선/파선)에 각 점의 모양(원/사각형)으로 책임값이 어느 쪽에 쏠렸는지 표시하고, 애매한 점은 반씩 채운 원으로 나타낸다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 데이터 $x$ 하나가 주어졌을 때 이 데이터가 성분 $k$에서 나왔을 확률 $P(z=k\mid x)$를 구하는 것이다. 먼저 GMM이 데이터를 만들어내는 과정을 그대로 적어본다. 성분 하나를 확률 $\pi_k$로 고르고, 그 성분의 가우시안분포에서 $x$를 뽑는다고 가정한다.<br><br>이 생성 과정을 식으로 쓰면 $P(z=k)=\pi_k$ 이고 $p(x\mid z=k)=\mathcal N(x;\mu_k,\Sigma_k)$ 이다.`, blanks: [] },
       { id: "s2", text: String.raw`손에 쥔 건 $z$가 주어졌을 때 $x$가 나올 확률인 $p(x\mid z=k)$ 쪽이다. 하지만 정말 알고 싶은 건 반대 방향인 $P(z=k\mid x)$다. 이 둘을 잇는 다리가 베이즈 정리다.<br><br>bayes-theorem에서 확인한 그대로 적용하면 $P(z=k\mid x) = $[[blank:가]] 이다.`,
@@ -2601,6 +3881,32 @@ $$\alpha_1(\text{Rain})=0.6\times0.9=0.54,\qquad \alpha_1(\text{Sun})=0.4\times0
 $$\alpha_2(\text{Rain})=[0.54\times0.7+0.08\times0.4]\times0.9=0.41\times0.9=0.369$$
 $$\alpha_2(\text{Sun})=[0.54\times0.3+0.08\times0.6]\times0.2=0.21\times0.2=0.042$$
 <p>둘째 날의 상태별 경로는 네 갈래지만 하나하나 나열하지 않고도 $\alpha_1$ 두 값과 전이확률만으로 $\alpha_2$를 바로 얻었습니다. 아래 증명은 이 재귀식이 시점이 아무리 늘어나도 경로를 일일이 나열할 필요 없이 항상 성립한다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 260" xmlns="http://www.w3.org/2000/svg">
+  <text x="120" y="25" font-size="12" class="dg-dim">시점 t-1</text>
+  <text x="320" y="25" font-size="12" class="dg-dim">시점 t</text>
+  <line x1="230" y1="40" x2="230" y2="250" class="dg-line" stroke-width="1" stroke-dasharray="2,4"/>
+  <circle cx="140" cy="70" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="140" cy="150" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <circle cx="140" cy="230" r="18" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <text x="120" y="75" font-size="11">α(1)</text>
+  <text x="120" y="155" font-size="11">α(2)</text>
+  <text x="120" y="235" font-size="11">α(3)</text>
+  <circle cx="340" cy="150" r="20" class="dg-accent"/>
+  <circle cx="340" cy="70" r="16" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <circle cx="340" cy="230" r="16" fill="none" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="328" y="155" font-size="12" font-weight="700">αₜ(j)</text>
+  <line x1="158" y1="70" x2="320" y2="145" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="320,145 306,140 310,152" class="dg-accent"/>
+  <line x1="158" y1="150" x2="320" y2="150" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="320,150 306,145 306,155" class="dg-accent"/>
+  <line x1="158" y1="230" x2="320" y2="155" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="320,155 306,158 310,146" class="dg-accent"/>
+  <text x="200" y="105" font-size="10">P(j|1)</text>
+  <text x="220" y="140" font-size="10">P(j|2)</text>
+  <text x="200" y="200" font-size="10">P(j|3)</text>
+  <text x="360" y="220" font-size="11" class="dg-dim">···이어지는 시점</text>
+</svg>`,
+    diagramCaption: String.raw`시점 t-1의 모든 상태(원)에서 화살표가 αₜ(j)(강조 원)로 모여 재귀적으로 합산되고, 나머지 상태(점선 원)는 같은 방식으로 병렬 계산된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 $t$ 시점의 전방변수 $\alpha_t(j)=P(o_1,\dots,o_t,s_t=j)$를 $t-1$ 시점의 $\alpha_{t-1}$들로 표현하는 재귀식을 얻는 것이다. 첫 걸음은 전확률법칙으로 $t-1$ 시점의 숨은 상태 $s_{t-1}$에 대해 나눠 더하는 것이다.<br><br>$\alpha_t(j) = \sum_i $[[blank:가]] 이다.`,
         blanks: [{ id: "가", latex: String.raw`P(o_1,\dots,o_t,s_{t-1}=i,s_t=j)`, why: String.raw`$s_{t-1}$이 가질 수 있는 모든 값 $i$로 나눠서 더해도 전체 확률은 그대로다. 전확률법칙을 결합확률에 그대로 적용한 것이다.` }] },
@@ -2650,6 +3956,32 @@ $$x_2=\sqrt{0.8}\,x_1+\sqrt{0.2}\,\epsilon_2\approx0.8944x_1+0.4472\epsilon_2$$
 $$x_2\approx0.8944(0.9487x_0+0.3162\epsilon_1)+0.4472\epsilon_2=0.8485x_0+0.2828\epsilon_1+0.4472\epsilon_2$$
 <p>$x_0$의 계수 $0.8485$는 $\sqrt{\bar\alpha_2}=\sqrt{0.72}\approx0.8485$와 정확히 같습니다. 잡음 두 항의 분산을 더하면 $0.2828^2+0.4472^2\approx0.08+0.20=0.28=1-\bar\alpha_2$가 되어, 둘을 합친 잡음도 정규분포를 따르면서 분산이 딱 $1-\bar\alpha_2$가 됩니다.</p>
 <p>두 번의 잡음 주입을 거쳤는데도 결국 $x_0$에 계수 $\sqrt{\bar\alpha_2}$를 곱하고 분산 $1-\bar\alpha_2$짜리 잡음 하나를 더한 것과 똑같은 모양이 나왔습니다. 아래 증명은 이 압축이 두 스텝뿐 아니라 임의의 $t$스텝에서도 귀납법으로 항상 성립한다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="100" r="20" class="dg-dim"/>
+  <circle cx="180" cy="100" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.6" stroke-dasharray="8,2"/>
+  <circle cx="300" cy="100" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.6" stroke-dasharray="5,3"/>
+  <circle cx="420" cy="100" r="20" fill="none" class="dg-line" stroke-width="1.6" stroke-dasharray="3,3"/>
+  <circle cx="540" cy="100" r="20" fill="none" class="dg-line" stroke-width="1.6" stroke-dasharray="2,4"/>
+  <text x="52" y="105" font-size="12" font-weight="700">x₀</text>
+  <text x="170" y="105" font-size="11">x₁</text>
+  <text x="290" y="105" font-size="11">x_t</text>
+  <text x="410" y="105" font-size="11">x_t+1</text>
+  <text x="530" y="105" font-size="11">x_T</text>
+  <text x="20" y="135" font-size="10" class="dg-dim">잡음 없음</text>
+  <text x="510" y="135" font-size="10" class="dg-dim">순수 잡음</text>
+  <line x1="82" y1="100" x2="158" y2="100" class="dg-stroke-ink" stroke-width="1.8"/>
+  <polygon points="158,100 146,95 146,105" class="dg-dim"/>
+  <line x1="202" y1="100" x2="278" y2="100" class="dg-stroke-ink" stroke-width="1.8"/>
+  <polygon points="278,100 266,95 266,105" class="dg-dim"/>
+  <line x1="322" y1="100" x2="398" y2="100" class="dg-stroke-ink" stroke-width="1.8"/>
+  <polygon points="398,100 386,95 386,105" class="dg-dim"/>
+  <line x1="442" y1="100" x2="518" y2="100" class="dg-stroke-ink" stroke-width="1.8"/>
+  <polygon points="518,100 506,95 506,105" class="dg-dim"/>
+  <path d="M60,80 C160,10 250,10 300,78" fill="none" class="dg-stroke-accent" stroke-width="2.2" stroke-dasharray="6,3"/>
+  <polygon points="300,78 288,68 296,82" class="dg-accent"/>
+  <text x="130" y="35" font-size="11" font-weight="700">임의의 t로 한 번에 점프</text>
+</svg>`,
+    diagramCaption: String.raw`x₀→x₁→…→x_T로 갈수록 원 테두리의 점선이 성겨지며 잡음이 강해진다. 위쪽 강조 화살표는 x₀에서 임의의 t로 바로 뛰는 닫힌 형태 샘플링을 뜻한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 $t$번의 잡음 주입을 반복한 결과 $x_t$가, 사실은 $x_0$에서 단 한 번의 잡음 주입만으로도 똑같이 얻어진다는 걸 보이는 것이다. 먼저 정방향과정의 한 스텝을 재매개변수화 트릭으로 적어둔다. $x_t=\sqrt{\alpha_t}x_{t-1}+\sqrt{1-\alpha_t}\epsilon_t$ 이고 $\epsilon_t\sim\mathcal N(0,I)$는 스텝마다 독립으로 뽑는다.<br><br>$\bar\alpha_t:=\prod_{s=1}^t\alpha_s$ 로 정의하고, $t$에 대한 귀납법으로 닫힌 형태를 보인다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 $t=1$인 기초단계를 확인한다. $\bar\alpha_t$의 정의 $\prod_{s=1}^t\alpha_s$에서 $t=1$일 때는 곱해지는 항이 $\alpha_1$ 하나뿐이다.<br><br>$\bar\alpha_1 = $[[blank:가]] 이다. 그러면 $x_1=\sqrt{\alpha_1}x_0+\sqrt{1-\alpha_1}\epsilon_1 = \sqrt{\bar\alpha_1}x_0+\sqrt{1-\bar\alpha_1}\epsilon_1$이 되어 원하는 형태가 $t=1$에서 성립한다.`,
@@ -2678,6 +4010,25 @@ $$\hat x_0=\frac{8.7499-\sqrt{0.28}\times0.5}{\sqrt{0.72}}=\frac{8.4853}{0.8485}
 <p>추정치 $\hat x_0$가 진짜 $x_0=10$과 정확히 일치합니다. 이제 이 값을 DDIM 갱신식에 넣어 $x_1$을 결정론적으로 구합니다.</p>
 $$x_1=\sqrt{0.9}\times10+\sqrt{0.1}\times0.5\approx9.4868+0.1581=9.6449$$
 <p>새로 무작위 잡음을 뽑지 않고 처음 $x_2$를 만들 때 썼던 $\epsilon=0.5$를 그대로 재사용했을 뿐인데도, 이 값은 diffusion-forward-process의 닫힌 형태로 직접 계산한 $x_1=\sqrt{0.9}\times10+\sqrt{0.1}\times0.5=9.6449$와 소수점까지 완전히 같습니다. 아래 증명은 이 일치가 우연이 아니라 노이즈 예측이 정확하기만 하면 항상 성립한다는 것을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+  <line x1="350" y1="15" x2="350" y2="205" class="dg-line" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="80" y="22" font-size="13" font-weight="700">DDPM: 확률적 경로 다발</text>
+  <text x="440" y="22" font-size="13" font-weight="700">DDIM: 결정론적 단일 경로</text>
+  <text x="165" y="45" font-size="12">x_T</text>
+  <text x="165" y="195" font-size="12">x₀</text>
+  <text x="515" y="45" font-size="12">x_T</text>
+  <text x="515" y="195" font-size="12">x₀</text>
+  <circle cx="175" cy="35" r="7" class="dg-dim"/>
+  <circle cx="175" cy="185" r="7" class="dg-dim"/>
+  <circle cx="525" cy="35" r="7" class="dg-dim"/>
+  <circle cx="525" cy="185" r="7" class="dg-dim"/>
+  <path d="M175,40 Q120,90 150,110 Q100,140 140,160 Q110,175 175,182" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="4,3"/>
+  <path d="M175,40 Q220,80 195,105 Q240,135 200,155 Q230,172 175,182" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="2,4"/>
+  <path d="M175,40 Q150,85 175,110 Q155,140 175,160 Q160,172 175,182" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="6,3"/>
+  <path d="M525,40 C500,90 550,130 525,182" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+  <polygon points="525,182 519,168 531,168" class="dg-accent"/>
+</svg>`,
+    diagramCaption: String.raw`왼쪽 DDPM은 매 스텝 새 무작위성을 더해 여러 갈래의 점선 경로를 만들고, 오른쪽 DDIM은 같은 x_T에서 굵은 실선 하나의 결정론적 경로로 x₀에 도달한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 DDIM의 결정론적 갱신식이, 확률적 과정 없이도 diffusion-forward-process에서 구한 것과 정확히 같은 주변분포를 만들어낸다는 걸 확인하는 것이다. DDIM의 핵심 아이디어는 $x_t$로부터 곧바로 $x_0$의 추정치 $\hat x_0$를 계산한 다음, 이 추정치를 이용해 $x_{t-1}$을 결정론적으로 구하는 것이다.<br><br>그러려면 먼저 정방향과정의 닫힌 형태 $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$을 $x_0$에 대해 풀어야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`$x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\epsilon$ 을 $x_0$에 대해 풀어본다. 양변에서 잡음항을 이항한 뒤 $\sqrt{\bar\alpha_t}$로 나눈다.<br><br>$x_0 = $[[blank:가]] 이다.`,
@@ -2702,6 +4053,45 @@ $$x_1=\sqrt{0.9}\times10+\sqrt{0.1}\times0.5\approx9.4868+0.1581=9.6449$$
 $$P(s_{t+2}=1\mid s_t=1)=P(1|1)P(1|1)+P(1|0)P(0|1)=0.7\times0.7+0.4\times0.3=0.49+0.12=0.61$$
 <p>이 계산에는 $s_t=1$ 이전에 어떤 상태들을 거쳐왔는지, 즉 이력 $H_{t-1}$이 무엇이었는지가 전혀 들어가지 않았습니다. 오직 $s_t=1$이라는 사실과 1스텝 전이확률만으로 2스텝 뒤의 확률 $0.61$이 완전히 정해집니다.</p>
 <p>이력을 알든 모르든 답이 똑같다는 것은 $k=1$일 때의 마르코프성이 $k=2$에서도 그대로 이어진다는 뜻입니다. 아래 증명은 이 이어짐이 2스텝뿐 아니라 모든 $k$스텝에서 귀납법으로 성립한다는 것을 보이고, 이것이 가치함수 $V(s)$가 상태 하나만으로 잘 정의되는 이유로 이어집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+  <line x1="345" y1="15" x2="345" y2="205" class="dg-line" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="80" y="24" font-size="13" font-weight="700">마르코프: s_t에서만 화살표</text>
+  <text x="420" y="24" font-size="13" font-weight="700">비마르코프: 전체 이력에서 화살표</text>
+  <circle cx="50" cy="120" r="16" class="dg-dim"/>
+  <circle cx="120" cy="120" r="16" class="dg-dim"/>
+  <circle cx="190" cy="120" r="16" class="dg-dim"/>
+  <circle cx="260" cy="120" r="16" class="dg-dim"/>
+  <circle cx="330" cy="120" r="18" class="dg-accent"/>
+  <text x="42" y="125" font-size="10">s₀</text>
+  <text x="112" y="125" font-size="10">s₁</text>
+  <text x="182" y="125" font-size="10">s₂</text>
+  <text x="252" y="125" font-size="10">s₃</text>
+  <text x="318" y="125" font-size="10" font-weight="700">s_t</text>
+  <line x1="66" y1="120" x2="104" y2="120" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="104,120 94,115 94,125" class="dg-accent"/>
+  <line x1="136" y1="120" x2="174" y2="120" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="174,120 164,115 164,125" class="dg-accent"/>
+  <line x1="206" y1="120" x2="244" y2="120" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="244,120 234,115 234,125" class="dg-accent"/>
+  <line x1="276" y1="120" x2="312" y2="120" class="dg-stroke-accent" stroke-width="2.4"/>
+  <polygon points="312,120 302,115 302,125" class="dg-accent"/>
+  <circle cx="400" cy="120" r="16" class="dg-dim"/>
+  <circle cx="470" cy="120" r="16" class="dg-dim"/>
+  <circle cx="540" cy="120" r="16" class="dg-dim"/>
+  <circle cx="610" cy="120" r="16" class="dg-dim"/>
+  <circle cx="680" cy="120" r="18" class="dg-accent"/>
+  <text x="392" y="125" font-size="10">s₀</text>
+  <text x="462" y="125" font-size="10">s₁</text>
+  <text x="532" y="125" font-size="10">s₂</text>
+  <text x="602" y="125" font-size="10">s₃</text>
+  <text x="668" y="125" font-size="10" font-weight="700">s_t</text>
+  <path d="M400,108 C480,50 600,50 668,110" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="2,4"/>
+  <path d="M470,108 C520,70 610,70 665,112" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="3,4"/>
+  <path d="M540,110 C580,90 620,90 662,115" fill="none" class="dg-line" stroke-width="1.4" stroke-dasharray="4,3"/>
+  <line x1="626" y1="120" x2="662" y2="120" class="dg-line" stroke-width="1.4" stroke-dasharray="2,4"/>
+  <polygon points="662,120 654,115 654,125" class="dg-dim"/>
+</svg>`,
+    diagramCaption: String.raw`왼쪽은 화살표가 오직 바로 전 상태 s_t에서만 나오는 마르코프 전이, 오른쪽은 s₀부터 전체 이력이 화살표(점선)로 s_t에 영향을 주는 비마르코프 전이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 딱 한 스텝짜리 마르코프 성질만으로도, 몇 스텝 뒤든 미래 상태의 분포가 오직 현재 상태에만 의존한다는 훨씬 강한 사실을 이끌어낼 수 있음을 보이는 것이다. 정책 $\pi$를 고정하고 $t$ 이전의 상태 이력을 $H_{t-1}=(s_0,\dots,s_{t-1})$이라 쓰자.<br><br>가정하는 것은 1단계 마르코프 성질 $P(s_{t+1}\mid s_t,H_{t-1})=P(s_{t+1}\mid s_t)$뿐이며, 이걸로 모든 $k\ge1$에 대해 $P(s_{t+k}\mid s_t,H_{t-1})=P(s_{t+k}\mid s_t)$가 성립함을 $k$에 대한 귀납법으로 보인다.`, blanks: [] },
       { id: "s2", text: String.raw`기초단계는 $k=1$이다. 이때 주장 $P(s_{t+1}\mid s_t,H_{t-1})=P(s_{t+1}\mid s_t)$가 정말 성립하는지 본다.<br><br>이건 처음에 가정한 1단계 마르코프 성질 그 자체이므로 별도의 계산 없이 성립한다.`, blanks: [] },
@@ -2751,6 +4141,23 @@ $$p(y_1,y_2,y_3)=0.3\times0.5\times0.8=0.12$$
 <p>층마다 겨우 $20\%$씩만 줄어드는데도 $5$개 층을 지나면 그래디언트는 원래 크기의 $3$분의 $1$ 아래로 떨어집니다.</p>
 <p><strong>폭주 쪽.</strong> 반대로 $c=1+0.2=1.2$라 하면 $c^5=1.2^5=2.48832$이고 이는 $e^{5\ln1.2}=e^{0.91161}\approx2.48832$와 정확히 같습니다. 같은 $20\%$의 편차가 이번엔 그래디언트를 원래 크기의 $2.5$배 가까이로 불려놓습니다.</p>
 <p>아래 증명은 이 두 배율이 각각 $e^{-\epsilon L}$과 $e^{L\ln(1+\epsilon)}$라는 정확한 지수식으로 항상 통제된다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="190" x2="430" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="50" y1="190" x2="50" y2="15" class="dg-line" stroke-width="1"/>
+<text x="430" y="205" font-size="11" text-anchor="end">층 수 L</text>
+<text x="30" y="15" font-size="11">|gₗ|</text>
+<line x1="50" y1="120" x2="430" y2="120" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="10" y="124" font-size="9" class="dg-dim">1</text>
+<path d="M50,120 C130,60 250,25 430,15" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="330" y="35" font-size="11">c=1.2: (1+ε)^L 폭주</text>
+<path d="M50,120 C130,155 250,180 430,188" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="300" y="170" font-size="11" class="dg-dim">c=0.8: (1−ε)^L 소실</text>
+<circle cx="230" cy="45" r="3.5" class="dg-accent"/>
+<text x="235" y="43" font-size="9">L=5: 2.49배</text>
+<circle cx="230" cy="168" r="3.5" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="235" y="180" font-size="9" class="dg-dim">L=5: 0.33배</text>
+</svg>`,
+    diagramCaption: String.raw`같은 크기의 층별 편차 ε라도 층 수가 늘어나면 한쪽은 지수적으로 폭주하고 한쪽은 지수적으로 소실한다.`,
     sections: [
       { id: "s1", text: String.raw`$L$겹으로 층이 쌓인 스칼라 선형 네트워크 $x_l=w_lx_{l-1}$을 생각하자. 손실을 $\ell$이라 쓰고 $g_l=\partial \ell/\partial x_l$이라 하면 backprop-jacobian 항목과 같은 체인룰로 $g_{l-1}=w_lg_l$이 성립한다. 지금 목표는 이 관계를 $L$번 반복했을 때 $g_0$이 $g_L$에 비해 얼마나 커지거나 작아지는지를 정확한 식으로 잡아내는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$g_{l-1}=w_lg_l$을 $l=L,L-1,\dots,1$까지 차례로 적용하면 매번 새 계수가 하나씩 곱해져 쌓인다.<br><br>$g_0 = ($[[blank:가]]$)g_L$ 이다.`,
@@ -2799,6 +4206,24 @@ $$T=100 \Rightarrow h=\frac{1}{100}=0.01,\quad \text{누적오차}\approx0.01$$
 <p>$9$는 정확히 $\gamma\times10=9$입니다. 거리가 정확히 $\gamma$배로 줄어든 것을 확인할 수 있습니다.</p>
 <p>$V_1$에 $T$를 계속 적용하면 $10,\,9,\,8.1,\,7.29,\dots$로 $\gamma$의 거듭제곱 속도로 $0$에 수렴합니다. 이게 바로 유일한 고정점 $V^*=(0,0)$입니다.</p>
 <p>아래 증명은 이 $\gamma$배 축소가 이 특수한 예에서만이 아니라 임의의 두 가치함수 사이에서 항상 성립한다는 사실을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="190" x2="440" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="190" x2="40" y2="20" class="dg-line" stroke-width="1"/>
+<text x="440" y="205" font-size="11" text-anchor="end">반복 횟수 k</text>
+<text x="20" y="20" font-size="11">‖Vₖ−V*‖∞</text>
+<rect x="55" y="30" width="30" height="150" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<rect x="105" y="57" width="30" height="123" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<rect x="155" y="79" width="30" height="101" class="dg-stroke-accent" fill="none" stroke-width="2" stroke-dasharray="4,3"/>
+<rect x="205" y="97" width="30" height="83" class="dg-stroke-accent" fill="none" stroke-width="2" stroke-dasharray="4,3"/>
+<rect x="255" y="111" width="30" height="69" class="dg-stroke-accent" fill="none" stroke-width="2" stroke-dasharray="4,3"/>
+<rect x="305" y="122" width="30" height="58" class="dg-accent"/>
+<rect x="355" y="130" width="30" height="50" class="dg-accent"/>
+<rect x="400" y="137" width="20" height="43" class="dg-accent"/>
+<line x1="40" y1="180" x2="440" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="380" y="196" font-size="10" class="dg-dim">V* (고정점)</text>
+<text x="60" y="25" font-size="10">거리 × γ 마다 감소</text>
+</svg>`,
+    diagramCaption: String.raw`벨만 연산자를 반복 적용할 때마다 거리가 γ배씩 줄어들어 유일한 고정점으로 축약수렴한다.`,
     sections: [
       { id: "s1", text: String.raw`가치반복은 벨만 최적연산자 $T$를 반복해서 적용하는 알고리즘이다. 두 가치함수 사이의 거리는 $\|V_1-V_2\|_\infty = \max_s|V_1(s)-V_2(s)|$라는 sup노름으로 잰다. 지금 목표는 $T$를 한 번 적용했을 때 이 거리가 항상 $\gamma$배 이하로 줄어든다는 사실, 즉 $T$가 축약사상임을 보이는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 $s$를 하나 고정한다. $(TV_1)(s)$와 $(TV_2)(s)$는 둘 다 $\max_a[\cdots]$ 형태인데, $|\max_af(a)-\max_ag(a)|\le\max_a|f(a)-g(a)|$라는 표준 부등식을 쓰면 최댓값끼리의 차이를 행동별 차이의 최댓값으로 눌러 잡을 수 있다. 이때 두 식에 똑같이 들어있는 $r(s,a)$ 항은 빼는 과정에서 사라진다.<br><br>$|(TV_1)(s)-(TV_2)(s)| \le \gamma\max_a|\sum_{s'}P(s'|s,a)($[[blank:가]]$)|$ 이다.`,
@@ -2823,6 +4248,22 @@ $$x(t)=(\cos t,\sin t,0),\qquad x_0=x(0)=(1,0,0)$$
 $$x(0.1)=(0.995004,\,0.099833,\,0),\qquad x_0+0.1v_1=(1,\,0.1,\,0)$$
 <p>두 점의 차이는 $(-0.004996,\,-0.000167,\,0)$이고 그 크기는 약 $0.005$입니다. $t^2/2=0.01/2=0.005$와 정확히 맞아떨어집니다. 오차가 $t$가 아니라 $t^2$ 크기로 아주 작다는 것을 확인할 수 있습니다.</p>
 <p>아래 증명은 이 관찰이 원이라는 특수한 경우만이 아니라 매끄러운 $d$차원 다양체 전반에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="20" width="400" height="180" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="40" y="40" font-size="11" class="dg-dim">고차원 공간 ℝᴰ</text>
+<path d="M60,150 C120,60 200,180 260,80 C320,10 380,120 410,60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="270" y="40" font-size="11">저차원 다양체 M (d차원)</text>
+<circle cx="120" cy="112" r="3" class="dg-accent"/>
+<circle cx="180" cy="130" r="3" class="dg-accent"/>
+<circle cx="230" cy="105" r="3" class="dg-accent"/>
+<circle cx="290" cy="60" r="3" class="dg-accent"/>
+<circle cx="340" cy="80" r="3" class="dg-accent"/>
+<circle cx="230" cy="105" r="6" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="205" y1="95" x2="255" y2="115" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="200" y="165" font-size="10">접공간 T_x₀M (d차원, 국소근사)</text>
+<text x="55" y="200" font-size="10" class="dg-dim">데이터는 M 위(또는 근처)에만 분포</text>
+</svg>`,
+    diagramCaption: String.raw`고차원 공간 속 데이터가 실제로는 접혀 있는 저차원 곡면 위에 분포한다는 가정이다.`,
     sections: [
       { id: "s1", text: String.raw`매니폴드 가정은 고차원 데이터 $x\in\mathbb{R}^D$가 실제로는 훨씬 낮은 차원 $d\ll D$짜리 매끄러운 다양체 $M$ 위에(또는 그 근처에) 분포한다는 가정이다. 이건 증명된 정리가 아니라 데이터에서 관찰되는 경험적 가정이다. 지금 목표는 이 가정이 참이라면 $M$위의 한 점 근방이 실제로 $d$개의 자유도만 갖는다는 결론이 뒤따른다는 것을 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`점 $x_0\in M$에서 $M$에 접하는 모든 방향을 모은 벡터공간을 접공간 $T_{x_0}M$이라 부른다. $M$이 $d$차원 다양체라는 정의 자체가 이 접공간의 차원을 결정한다.<br><br>$\dim T_{x_0}M = $[[blank:가]] 이다.`,
@@ -2848,6 +4289,27 @@ $$D_{KL}(p_{0.5}\|p_{0.6})=0.5\ln\frac{0.5}{0.6}+0.5\ln\frac{0.5}{0.4}=0.5(-0.18
 $$\frac12d\theta^2F(0.5)=\frac12(0.1)^2(4)=0.02$$
 <p>정확한 KL값 $0.02041$과 이차근사 $0.02$가 소수점 둘째 자리까지 거의 일치합니다. $d\theta$가 더 작아질수록 두 값의 차이는 더 빨리 사라집니다.</p>
 <p>아래 증명은 이 근사가 우연히 잘 맞은 것이 아니라 테일러전개의 이차항이 항상 피셔정보행렬로 정확히 결정된다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="40" x2="60" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="60" y1="40" x2="200" y2="40" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="60" y1="180" x2="200" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="200" y1="40" x2="200" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="60" y="30" font-size="10" class="dg-dim">파라미터공간 격자 (유클리드)</text>
+<circle cx="130" cy="110" r="3" class="dg-stroke-ink"/>
+<line x1="130" y1="110" x2="180" y2="70" class="dg-line" stroke-width="1.5"/>
+<text x="185" y="65" font-size="10" class="dg-dim">∇J(θ)</text>
+<text x="250" y="30" font-size="10" class="dg-dim">KL 계량으로 본 같은 격자</text>
+<ellipse cx="330" cy="110" rx="90" ry="35" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<ellipse cx="330" cy="110" rx="55" ry="21" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="330" cy="110" r="3" class="dg-accent"/>
+<line x1="330" y1="110" x2="368" y2="87" class="dg-line" stroke-width="1.5"/>
+<text x="372" y="83" font-size="10" class="dg-dim">∇J(θ)</text>
+<line x1="330" y1="110" x2="373" y2="130" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="373,130 361,127 366,138" class="dg-stroke-accent"/>
+<text x="378" y="145" font-size="10">F(θ)⁻¹∇J(θ)</text>
+<text x="60" y="205" font-size="11">자연그래디언트는 곡률(피셔정보)을 보정한 방향</text>
+</svg>`,
+    diagramCaption: String.raw`같은 유클리드 그래디언트도 KL 계량의 곡률에 맞춰 보정하면 자연그래디언트 방향이 된다.`,
     sections: [
       { id: "s1", text: String.raw`$\theta$를 아주 살짝 $\theta+d\theta$로 바꿨을 때 $D_{KL}(p_\theta\|p_{\theta+d\theta})$가 얼마나 커지는지 알고 싶다. 지금 목표는 이 값을 $f(d\theta):=D_{KL}(p_\theta\|p_{\theta+d\theta})$라 두고 $d\theta=0$ 근방에서 테일러전개로 다루기 쉬운 이차식으로 근사하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$d\theta=0$이면 $p_{\theta+d\theta}=p_\theta$이므로 두 분포가 완전히 같다. 자기 자신과의 KL발산은 정의상 항상 0이다.<br><br>$f(0) = D_{KL}(p_\theta\|p_\theta) = $[[blank:가]] 이다.`,
@@ -2874,6 +4336,26 @@ $$\|g(z_1)-g(z_0)\|=\|(1,1)-(0,0)\|=\sqrt2\approx1.41421$$
 $$L=\int_0^1\sqrt{1+4t^2}\,dt\approx1.47895$$
 <p>$1.47895>1.41421$이니 포물선을 따라가는 실제 경로가 직선거리보다 확실히 더 깁니다. $g$가 직선이 아니라 곡선이기 때문에 생기는 초과분입니다.</p>
 <p>아래 증명은 이 초과분이 이 포물선에서만 생기는 게 아니라 디코더가 아핀이 아닌 한 항상 나타난다는 사실을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<text x="120" y="20" font-size="12" text-anchor="middle">잠재공간 z</text>
+<line x1="60" y1="110" x2="180" y2="110" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="60" cy="110" r="4" class="dg-accent"/>
+<circle cx="180" cy="110" r="4" class="dg-accent"/>
+<text x="55" y="130" font-size="10">z₀</text>
+<text x="175" y="130" font-size="10">z₁</text>
+<text x="70" y="95" font-size="9" class="dg-dim">직선보간 z_lin(t)</text>
+<line x1="230" y1="10" x2="230" y2="210" class="dg-line" stroke-width="1"/>
+<text x="340" y="20" font-size="12" text-anchor="middle">출력공간 g(z)</text>
+<path d="M270,150 Q345,20 420,90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="270" cy="150" r="4" class="dg-accent"/>
+<circle cx="420" cy="90" r="4" class="dg-accent"/>
+<text x="260" y="170" font-size="10">g(z₀)</text>
+<text x="415" y="75" font-size="10">g(z₁)</text>
+<line x1="270" y1="150" x2="420" y2="90" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<text x="330" y="145" font-size="10" class="dg-dim">직선거리 ‖g(z₁)−g(z₀)‖</text>
+<text x="290" y="45" font-size="10">직선보간의 상 (측지선 아님, 더 김)</text>
+</svg>`,
+    diagramCaption: String.raw`잠재공간의 직선보간은 비선형 디코더를 거치며 굽은 경로가 되어 최단경로보다 길어진다.`,
     sections: [
       { id: "s1", text: String.raw`두 잠재코드 $z_0,z_1$을 직선 $z_{lin}(t)=(1-t)z_0+tz_1$으로 이었다고 하자. 지금 목표는 이 직선이 만드는 출력경로 $g(z_{lin}(t))$가 실제로 $g(z_0)$에서 $g(z_1)$까지 가는 가장 짧은 경로, 즉 측지선인지 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$\mathbb{R}^D$의 임의의 두 점 $p,q$를 잇는 매끄러운 곡선 $\sigma(t)$($\sigma(0)=p,\sigma(1)=q$)의 길이는 항상 두 점 사이의 직선거리 이상이라는 사실은 삼각부등식에서 바로 나온다.<br><br>$\int_0^1\|\sigma'(t)\|dt \ge$[[blank:가]] 이다.`,
@@ -9356,6 +10838,31 @@ $$\epsilon \approx \sqrt{0.00061030} \approx 0.0247$$
 <p>점 $P_1=(0,0)$, $P_2=(2,0)$, $P_3=(1,2)$를 놓습니다. 세 점 모두 $+1$인 라벨링은 세 점보다 훨씬 아래를 지나는 직선, 예를 들어 $y=-1$의 위쪽 반평면 전체를 $+1$로 두면 그대로 실현됩니다. $P_1$ 하나만 $-1$이고 $P_2,P_3$가 $+1$인 라벨링은 직선 $x+y=0.5$로 실현됩니다. $P_1$에서는 $x+y=0$으로 $0.5$보다 작고, $P_2$에서는 $x+y=2$, $P_3$에서는 $x+y=3$으로 둘 다 $0.5$보다 큽니다. $x+y<0.5$인 쪽을 $-1$, $x+y>0.5$인 쪽을 $+1$로 두면 정확히 원하는 라벨링이 나옵니다.</p>
 <p>이번엔 4개 점으로는 실현되지 않는 라벨링을 확인합니다. 단위정사각형의 네 꼭짓점 $A=(0,0)$, $B=(1,0)$, $C=(1,1)$, $D=(0,1)$을 놓습니다. 대각선으로 마주보는 $A,C$에는 $+1$을, $B,D$에는 $-1$을 주는 라벨링을 시도해봅니다. $A,C$를 한쪽에 두고 $B,D$를 반대쪽에 두는 직선은 아무리 찾아도 나오지 않습니다. 대각선 $AC$와 $BD$가 정사각형 한가운데서 서로 교차하고 있어서, 어떤 직선을 그어도 그 직선의 한쪽에는 $A,C$ 중 하나와 $B,D$ 중 하나가 항상 함께 남기 때문입니다.</p>
 <p>점 3개에서는 어떤 라벨링이든 실현되지만 점 4개에서는 실현되지 않는 라벨링이 곧바로 나타납니다. 아래 증명은 이 경계가 이 특정 좌표뿐 아니라 임의의 점 배치에서 항상 3에서 그어짐을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+  <line x1="345" y1="15" x2="345" y2="225" class="dg-line" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="60" y="24" font-size="13" font-weight="700">점 3개: 어떤 라벨링도 직선으로 분리</text>
+  <text x="420" y="24" font-size="13" font-weight="700">점 4개(XOR 배치): 분리 불가능</text>
+  <line x1="45" y1="195" x2="290" y2="55" class="dg-stroke-accent" stroke-width="2.4"/>
+  <circle cx="90" cy="150" r="9" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+  <circle cx="170" cy="90" r="9" class="dg-dim"/>
+  <circle cx="240" cy="160" r="9" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+  <text x="78" y="175" font-size="10">−</text>
+  <text x="163" y="70" font-size="10" font-weight="700">+</text>
+  <text x="228" y="185" font-size="10">−</text>
+  <line x1="450" y1="70" x2="600" y2="190" class="dg-line" stroke-width="1.3" stroke-dasharray="4,3"/>
+  <line x1="600" y1="70" x2="450" y2="190" class="dg-line" stroke-width="1.3" stroke-dasharray="4,3"/>
+  <circle cx="450" cy="70" r="9" class="dg-dim"/>
+  <circle cx="600" cy="70" r="9" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+  <circle cx="600" cy="190" r="9" class="dg-dim"/>
+  <circle cx="450" cy="190" r="9" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+  <text x="440" y="55" font-size="10" font-weight="700">A +</text>
+  <text x="605" y="55" font-size="10">B −</text>
+  <text x="605" y="210" font-size="10" font-weight="700">C +</text>
+  <text x="425" y="210" font-size="10">D −</text>
+  <text x="512" y="135" font-size="16" font-weight="700">✕</text>
+  <text x="470" y="228" font-size="10" class="dg-dim">대각선이 이미 교차 → 분리선 없음</text>
+</svg>`,
+    diagramCaption: String.raw`왼쪽은 일직선 위에 있지 않은 점 3개의 임의 라벨링을 직선(굵은 실선)으로 분리한 예. 오른쪽은 대각으로 교차하는 라벨링(A,C=+ / B,D=−)의 점 4개가 어떤 직선으로도 분리되지 않음(✕)을 보여준다.`,
     sections: [
       { id: "s1", text: String.raw`가설공간 $H$가 크기 $m$인 점집합 $D=\{x_1,\dots,x_m\}$을 shatter한다는 것은, $D$의 각 점에 $+1$ 또는 $-1$ 라벨을 임의로 배정한 모든 경우에 대해 $H$ 안에 그 라벨링을 정확히 재현하는 가설이 적어도 하나씩 존재한다는 뜻이다. 점이 $m$개이고 각 점이 두 가지 라벨 중 하나를 가지므로 가능한 라벨링의 총 개수는 $2^m$가지다. VC 차원은 이렇게 shatter되는 점집합이 존재하는 가장 큰 $m$으로 정의된다. 지금 목표는 2차원 평면 위의 직선을 가설로 쓰는 선형분류기의 VC 차원이 정확히 3임을 보이는 것이고, 이를 위해 두 방향을 모두 확인해야 한다. 크기 3인 점집합 중 shatter되는 것이 적어도 하나 있다는 것과, 크기 4인 점집합은 어느 것도 shatter될 수 없다는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 3개 점을 shatter할 수 있는지 본다. 일직선 위에 있지 않은 점 세 개, 즉 삼각형을 이루는 점 $P_1,P_2,P_3$를 고른다. 이 세 점에 대해 가능한 라벨링의 개수부터 세어본다. 각 점이 $+1$ 또는 $-1$ 두 가지 값을 가질 수 있으므로 전체 라벨링의 개수는 $2^3=$[[blank:가]] 가지다.`, blanks: [{ id: "가", latex: String.raw`8`, why: String.raw`라벨링은 세 점 각각에 독립적으로 $+1$ 또는 $-1$을 배정하는 것이므로 경우의 수는 $2\times2\times2=2^3$이다. 이를 계산하면 $8$가지다.` }] },
@@ -9434,6 +10941,22 @@ $$\epsilon \approx \sqrt{\frac{180.05+35.06}{1000}} = \sqrt{0.2151} \approx 0.46
 <p>그러니 $\alpha_1=\alpha_2=0.25$, $w=0.25(2,2)=(0.5,0.5)$, $b=-1$입니다. 이제 쌍대목적함수 값을 직접 계산해봅니다. $\sum_i\alpha_i=0.25+0.25=0.5$이고 이중합은 $x_1^Tx_1=8$, $x_1^Tx_2=x_2^Tx_1=0$, $x_2^Tx_2=0$이므로 $\sum_i\sum_j\alpha_i\alpha_jy_iy_jx_i^Tx_j=0.25^2\times1\times8=0.5$뿐입니다.</p>
 $$\sum_i\alpha_i-\frac12\sum_i\sum_j\alpha_i\alpha_jy_iy_jx_i^Tx_j=0.5-0.25=0.25$$
 <p>원문제 목적함수 $\frac12\|w\|^2=\frac12(0.5^2+0.5^2)=0.25$와 정확히 같은 값이 나옵니다. 아래 증명은 이렇게 원문제와 쌍대문제가 만나는 이 계산이 임의의 데이터셋에서 항상 일반적으로 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="230" x2="420" y2="50" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="73" y1="257" x2="433" y2="77" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="47" y1="203" x2="407" y2="23" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<circle cx="253" cy="167" r="6" class="dg-accent"/>
+<circle cx="253" cy="167" r="11" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="262" y="163" font-size="11">αᵢ&gt;0 (서포트벡터)</text>
+<circle cx="227" cy="113" r="6" class="dg-accent"/>
+<circle cx="227" cy="113" r="11" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<text x="140" y="100" font-size="11">αᵢ&gt;0 (서포트벡터)</text>
+<circle cx="340" cy="175" r="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="350" y="180" font-size="11" class="dg-dim">αᵢ=0 (마진 안쪽)</text>
+<circle cx="310" cy="60" r="4" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="290" y="45" font-size="11" class="dg-dim">αᵢ=0 (마진 안쪽)</text>
+</svg>`,
+    diagramCaption: String.raw`마진 경계 위의 점만 αᵢ>0인 서포트벡터로 w*=Σαᵢyᵢxᵢ에 기여하고, 마진 안쪽 점은 αᵢ=0이라 결정에 영향을 주지 않는다.`,
     sections: [
       { id: "s1", text: String.raw`svm-margin에서 두 지지 초평면 $w^Tx+b=1$과 $w^Tx+b=-1$ 사이의 거리가 $2/\|w\|$임을 확인했다. 그 결과 마진을 최대화하는 문제는 $\min_{w,b}\frac12\|w\|^2$ s.t. $y_i(w^Tx_i+b)\ge1$ ($i=1,\dots,n$)이라는 제약 최적화로 정리되었다. 지금 목표는 이 원문제를 라그랑주 승수법으로 쌍대문제로 바꾸는 것이다. 쌍대문제로 바꾸고 나면 데이터가 오직 내적 $x_i^Tx_j$ 형태로만 등장하게 되는데 이 성질이 뒤에서 커널트릭을 가능하게 하는 결정적인 발판이 된다.`, blanks: [] },
       { id: "s2", text: String.raw`제약이 $n$개 있으므로 각 제약마다 라그랑주 승수 $\alpha_i\ge0$을 하나씩 붙인다. 제약을 어긴 정도 즉 $1-y_i(w^Tx_i+b)$가 양수라면 그만큼 벌점을 주고 음수라면 벌점을 주지 않아야 하므로 이 값에 승수를 곱해 목적함수에 더한다. 이렇게 만든 라그랑지안은 $L(w,b,\alpha)=\dfrac12\|w\|^2+\sum_{i=1}^n\alpha_i\Bigl($[[blank:가]]$\Bigr)$ 이다.`, blanks: [{ id: "가", latex: String.raw`1-y_i(w^Tx_i+b)`, why: String.raw`라그랑지안은 목적함수에 각 제약의 위반량과 승수의 곱을 더해 만든다. 제약은 $y_i(w^Tx_i+b)\ge1$ 즉 $1-y_i(w^Tx_i+b)\le0$ 형태로 바꿔 쓸 수 있으므로 벌점항은 정확히 $1-y_i(w^Tx_i+b)$다.` }] },
@@ -9457,6 +10980,35 @@ $$\sum_i\alpha_i-\frac12\sum_i\sum_j\alpha_i\alpha_jy_iy_jx_i^Tx_j=0.5-0.25=0.25
 <p><strong>$\sigma^2=1$인 경우.</strong> $\gamma_{j1}\approx\dfrac{0.198}{0.198+0.089}\approx0.690$, $\gamma_{j2}\approx0.310$으로 이미 한쪽으로 조금 더 기울었습니다.</p>
 <p><strong>$\sigma^2=0.25$인 경우.</strong> $\gamma_{j1}\approx\dfrac{0.00153}{0.00153+0.00006}\approx0.961$, $\gamma_{j2}\approx0.039$로 거의 완전히 $\mu_1$ 쪽으로 쏠립니다.</p>
 <p>$\sigma^2$를 4에서 1, 0.25로 줄여가는 것만으로 책임값이 0.550 대 0.450이던 것이 0.961 대 0.039까지 날카로워집니다. 아래 증명은 $\sigma^2\to0$의 극한에서 이 값이 결국 정확히 1과 0으로 수렴하고 그 결과 EM 반복 전체가 k-평균과 같아짐을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 940 260" xmlns="http://www.w3.org/2000/svg">
+  <line x1="310" y1="20" x2="310" y2="220" class="dg-line" stroke-width="1" stroke-dasharray="2,4"/>
+  <line x1="630" y1="20" x2="630" y2="220" class="dg-line" stroke-width="1" stroke-dasharray="2,4"/>
+  <text x="60" y="24" font-size="12" font-weight="700">σ² 큼: 부드러운 겹침</text>
+  <text x="380" y="24" font-size="12" font-weight="700">σ² 중간: 겹침 축소</text>
+  <text x="700" y="24" font-size="12" font-weight="700">σ²→0: 보로노이 직선경계</text>
+  <ellipse cx="100" cy="140" rx="95" ry="65" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <ellipse cx="215" cy="140" rx="95" ry="65" fill="none" class="dg-line" stroke-width="1.6" stroke-dasharray="6,4"/>
+  <circle cx="100" cy="140" r="3" class="dg-dim"/>
+  <circle cx="215" cy="140" r="3" class="dg-dim"/>
+  <text x="85" y="120" font-size="10">μ₁</text>
+  <text x="205" y="120" font-size="10">μ₂</text>
+  <ellipse cx="420" cy="140" rx="55" ry="38" fill="none" class="dg-stroke-ink" stroke-width="1.6"/>
+  <ellipse cx="520" cy="140" rx="55" ry="38" fill="none" class="dg-line" stroke-width="1.6" stroke-dasharray="6,4"/>
+  <circle cx="420" cy="140" r="3" class="dg-dim"/>
+  <circle cx="520" cy="140" r="3" class="dg-dim"/>
+  <text x="405" y="120" font-size="10">μ₁</text>
+  <text x="510" y="120" font-size="10">μ₂</text>
+  <ellipse cx="750" cy="140" rx="16" ry="12" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+  <ellipse cx="850" cy="140" rx="16" ry="12" fill="none" class="dg-line" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <circle cx="750" cy="140" r="3" class="dg-dim"/>
+  <circle cx="850" cy="140" r="3" class="dg-dim"/>
+  <text x="735" y="120" font-size="10">μ₁</text>
+  <text x="838" y="120" font-size="10">μ₂</text>
+  <line x1="800" y1="30" x2="800" y2="220" class="dg-stroke-accent" stroke-width="2.6"/>
+  <text x="765" y="240" font-size="10" class="dg-dim">직선 경계(k-평균)</text>
+  <text x="380" y="255" font-size="12" font-weight="700">σ² 감소 →</text>
+</svg>`,
+    diagramCaption: String.raw`σ²를 줄여가면 겹치던 가우시안 등고선(실선/파선)이 점점 좁아지다가 극한에서 두 점 사이 수직이등분선(굵은 실선)이라는 보로노이 직선경계로 변한다.`,
     sections: [
       { id: "s1", text: String.raw`gmm-em에서 책임값은 $\gamma_{ji}=P(z_j=i\mid x_j)=\dfrac{\alpha_i\mathcal N(x_j\mid\mu_i,\Sigma_i)}{\sum_l\alpha_l\mathcal N(x_j\mid\mu_l,\Sigma_l)}$로 베이즈 정리를 통해 유도되었다. 이 값은 데이터 $x_j$가 성분 $i$에 얼마나 걸쳐 있는지를 나타내는 부드러운 소속이다. 지금 목표는 모든 성분의 공분산을 같은 등방 공분산 $\sigma^2I$로 묶어두고 $\sigma^2\to0$인 극한을 취하면 이 부드러운 소속이 어떻게 변하는지 그리고 그 결과 EM 반복이 어떤 알고리즘으로 귀결되는지를 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 다변량 가우시안 밀도에 $\Sigma_i=\sigma^2I$를 대입한다. 일반적인 공분산 $\Sigma_i$ 아래에서 밀도는 $\mathcal N(x\mid\mu_i,\Sigma_i)=\dfrac{1}{(2\pi)^{n/2}|\Sigma_i|^{1/2}}\exp\left(-\dfrac12(x-\mu_i)^T\Sigma_i^{-1}(x-\mu_i)\right)$인데 $\Sigma_i=\sigma^2I$를 넣으면 $|\Sigma_i|^{1/2}=(\sigma^2)^{n/2}$이고 이차형식도 $\|x-\mu_i\|^2/\sigma^2$로 단순해진다. 그러니 $\mathcal N(x\mid\mu_i,\sigma^2I) = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`\dfrac{1}{(2\pi\sigma^2)^{n/2}}\exp\left(-\dfrac{\|x-\mu_i\|^2}{2\sigma^2}\right)`, why: String.raw`$|\sigma^2I|=(\sigma^2)^n$이므로 $|\Sigma_i|^{1/2}=(\sigma^2)^{n/2}$이고 $(2\pi)^{n/2}(\sigma^2)^{n/2}=(2\pi\sigma^2)^{n/2}$로 합쳐진다. 이차형식도 $\Sigma_i^{-1}=I/\sigma^2$이므로 $\|x-\mu_i\|^2/\sigma^2$로 정리된다.` }] },
@@ -9504,6 +11056,28 @@ $$\alpha_1=\frac1m\sum_j\gamma_{j1}=\frac{0.9+0.3}{2}=0.6$$
 <p>$p_b$는 $p_2$까지 거리가 $1$이라 $N_\epsilon(p_2)$ 안에는 들어가지만 정작 $p_b$ 자신의 이웃은 $\{p_b,p_2\}$로 크기 $2$뿐이라 핵심객체 조건을 만족하지 못합니다. 반면 $p_4,p_5$는 서로의 거리만 $1$일 뿐 나머지 점들과는 모두 $\epsilon$보다 멀리 떨어져 있어서 둘 다 이웃 크기가 $2$에 그치고 어느 핵심객체의 이웃에도 들지 못합니다.</p>
 <p>이제 $p_1$을 씨앗으로 삼아 사슬을 하나 따라가봅니다. $p_1$이 핵심객체이고 $p_2\in N_\epsilon(p_1)$이므로 $p_2$는 $p_1$로부터 직접 밀도로 도달 가능합니다. 이어서 $p_2$도 핵심객체이고 $p_b\in N_\epsilon(p_2)$이므로 $p_b$는 $p_2$로부터 직접 밀도로 도달 가능합니다. 두 단계를 이어붙이면 $p_1,p_2,p_b$라는 사슬을 통해 $p_b$는 $p_1$로부터 밀도로 도달 가능합니다.</p>
 <p>그러니 $p_1$에서 시작해 얻는 군집은 $X=\{p_1,p_2,p_3,p_b\}$입니다. $p_b$는 스스로 핵심객체는 아니지만 핵심객체 $p_2$의 이웃이라 경계점으로 군집에 포함됩니다. 반면 $p_4,p_5$는 어떤 핵심객체로부터도 밀도로 도달할 수 없어서 $X$ 어디에도 들어가지 못하고 잡음으로 남습니다. 아래 증명은 이렇게 얻어진 $X$가 항상 연결성과 최대성을 만족하는 완결된 집합임을 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="190" r="42" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="88" cy="190" r="42" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="60" cy="162" r="42" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="60" y1="190" x2="88" y2="190" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="88" y1="190" x2="116" y2="190" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="60" y1="190" x2="60" y2="162" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="60" cy="190" r="6" class="dg-accent" />
+<circle cx="88" cy="190" r="6" class="dg-accent" />
+<circle cx="60" cy="162" r="6" class="dg-accent" />
+<circle cx="116" cy="190" r="6" fill="none" class="dg-stroke-ink" stroke-width="2" />
+<circle cx="200" cy="50" r="4" class="dg-dim" />
+<circle cx="200" cy="22" r="4" class="dg-dim" />
+<text x="60" y="204" font-size="10" text-anchor="middle">p₁</text>
+<text x="88" y="204" font-size="10" text-anchor="middle">p₂</text>
+<text x="46" y="158" font-size="10" text-anchor="middle">p₃</text>
+<text x="116" y="204" font-size="10" text-anchor="middle">p_b</text>
+<text x="210" y="52" font-size="10" class="dg-dim">p₄</text>
+<text x="210" y="24" font-size="10" class="dg-dim">p₅</text>
+<text x="150" y="130" font-size="11">핵심(●,점선=ε-이웃) · 경계(○) · 잡음(옅은 점)</text>
+</svg>`,
+    diagramCaption: String.raw`p₁→p₂→p_b 사슬로 밀도 도달, X={p₁,p₂,p₃,p_b}. p₄,p₅는 잡음으로 남는다.`,
     sections: [
       { id: "s1", text: String.raw`DBSCAN의 정의부터 다시 정리한다. $\epsilon$-이웃은 $N_\epsilon(x)=\{x_i\in D\mid dist(x_i,x)\le\epsilon\}$이다. 핵심객체는 이 이웃 안에 충분히 많은 점을 가진 점이다. 최소 이웃 개수를 나타내는 기준값을 $MinPts$라 하면 핵심객체의 조건은 $|N_\epsilon(x)| \ge $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`MinPts`, why: String.raw`핵심객체는 자기 자신의 $\epsilon$-이웃 안에 충분히 많은 이웃 즉 최소한 $MinPts$개 이상의 점을 가진 점으로 정의된다. 이 개수 기준이 이웃의 크기 $|N_\epsilon(x)|$에 대한 하한이다.` }] },
       { id: "s2", text: String.raw`이 위에 몇 가지 정의를 더 쌓는다. 점 $x_j$가 핵심객체 $x_i$로부터 직접 밀도로 도달 가능하다는 것은 $x_j\in N_\epsilon(x_i)$라는 뜻이다. 밀도로 도달 가능하다는 것은 이 직접 도달 가능 관계를 사슬로 이어붙인 것이다. 즉 $x_1,x_2,\dots,x_n$이라는 사슬에서 각 점이 바로 앞 점으로부터 직접 밀도로 도달 가능하고 마지막 점을 제외한 모든 점이 핵심객체다. 밀도로 연결되어 있다는 것은 $x_i,x_j$ 둘 다로부터 동시에 밀도로 도달 가능한 어떤 $x_k$가 존재한다는 뜻이다. 지금 목표는 핵심객체 $x$ 하나에서 출발해서 그로부터 밀도로 도달 가능한 점을 전부 모은 집합 $X$가 정말로 연결성과 최대성을 모두 만족하는지 확인하는 것이다.`, blanks: [] },
@@ -11324,6 +12898,21 @@ $$N_{\mathrm{patch}} = 24 \times 24 = 576$$
 <p><strong>그래디언트가 매번 부호를 바꾸는 경우</strong> ($g_1=1,g_2=-1,g_3=1,g_4=-1,\dots$)는 $v_1=1$, $v_2=0.9(1)+(-1)=-0.1$, $v_3=0.9(-0.1)+1=0.91$, $v_4=0.9(0.91)+(-1)=-0.181$로 부호를 바꿔가며 크기가 억제됩니다.</p>
 <p>스텝을 계속 밟아나가면 첫 번째 경우의 속도는 $g/(1-\beta)=1/0.1=10$으로 수렴하고, 두 번째 경우의 속도 크기는 $g/(1+\beta)=1/1.9\approx0.526$으로 수렴합니다. 두 극한값의 비는 $10/0.526\approx19$입니다. 같은 크기의 그래디언트라도 부호가 일관된 방향으로는 최종 속도가 19배 가까이 크게 유지된다는 뜻입니다.</p>
 <p>아래 증명은 이 두 극한값이 우연이 아니라 등비수열의 합에서 정확히 이렇게 결정된다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="350" cy="130" rx="320" ry="60" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="350" cy="130" rx="240" ry="42" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<ellipse cx="350" cy="130" rx="160" ry="26" fill="none" class="dg-line" stroke-width="1.5"/>
+<ellipse cx="350" cy="130" rx="80" ry="12" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="6,3"/>
+<circle cx="350" cy="130" r="3" class="dg-accent"/>
+<path d="M60,60 L110,190 L160,75 L210,175 L260,95 L300,150 L330,120 L350,130" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<polygon points="350,130 337,124 337,136" class="dg-stroke-accent"/>
+<text x="55" y="45" font-size="12">SGD (지그재그)</text>
+<path d="M60,80 Q200,110 300,122 T350,130" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<polygon points="350,130 336,126 338,137" class="dg-stroke-ink"/>
+<text x="55" y="225" font-size="12">모멘텀 (매끄러운 경로)</text>
+<text x="45" y="250" class="dg-dim" font-size="12">좁고 긴 골짜기: SGD는 가파른 축에서 진동, 모멘텀은 완만한 축으로 가속</text>
+</svg>`,
+    diagramCaption: String.raw`좁고 긴 골짜기 등고선에서 SGD의 지그재그 경로와 모멘텀의 매끄러운 경로를 비교한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 속도 $v_t=\beta v_{t-1}+g_t$가 그래디언트의 부호 패턴에 따라 얼마나 다르게 자라나는지 확인하는 것이다. 두 가지 극단적인 시나리오를 비교한다. 하나는 매 스텝 그래디언트의 부호가 같은 경우 $g_t=g$이고, 다른 하나는 매 스텝 부호가 뒤바뀌는 경우 $g_t=g(-1)^{t+1}$이다. 전자는 좁은 골짜기의 완만한 축을 따라가는 방향, 후자는 골짜기의 가파른 벽 사이를 오가는 방향에 대응한다. 먼저 두 경우 모두에 쓸 수 있는 $v_t$의 일반적인 형태부터 구한다.`, blanks: [] },
       { id: "s2", text: String.raw`재귀식 $v_t=\beta v_{t-1}+g_t$를 $v_0=0$부터 한 스텝씩 풀어헤쳐 본다. $v_1=g_1$이고 $v_2=\beta g_1+g_2$이고 $v_3=\beta^2g_1+\beta g_2+g_3$이다. 옛 그래디언트일수록 $\beta$의 지수가 하나씩 늘어나는 패턴이 보인다. 이 패턴을 일반화하면 $v_t = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`\sum_{k=1}^t \beta^{t-k} g_k`, why: String.raw`한 스텝씩 풀어헤친 패턴을 보면 $k$번째 그래디언트 $g_k$에는 정확히 $\beta^{t-k}$가 곱해져 있다. $k=t$일 때는 $\beta^0=1$이 곱해지고 $k=1$일 때는 $\beta^{t-1}$이 곱해지는 식이다. 이 항들을 모두 더하면 이 합이 된다.` }] },
@@ -11370,6 +12959,21 @@ $$\mathrm{Var}(h_{l+1})=100\times0.01\times0.5=0.5$$
 <p>층을 거칠 때마다 분산이 계속 절반씩 줄어드는 셈입니다. 그런데 He 조건대로 $\mathrm{Var}(w)=2/100=0.02$로 바꾸면 다음과 같습니다.</p>
 $$\mathrm{Var}(h_{l+1})=100\times0.02\times0.5=1$$
 <p>ReLU가 신호를 절반으로 줄이는 만큼 가중치 분산을 정확히 두 배로 키워서 다시 상쇄한 것입니다. 아래 증명은 이 절반과 두 배가 특정 숫자의 우연이 아니라 ReLU의 대칭성에서 항상 정확히 나온다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="70" y1="20" x2="70" y2="190" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="70" y1="190" x2="580" y2="190" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M70,150 L160,120 L250,85 L340,55 L430,35 L520,22 L580,18" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M70,150 L160,162 L250,172 L340,180 L430,185 L520,188 L580,189" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,4"/>
+<path d="M70,150 L160,148 L250,151 L340,149 L430,150 L520,149 L580,150" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<circle cx="160" cy="148" r="3" class="dg-accent"/>
+<circle cx="340" cy="149" r="3" class="dg-accent"/>
+<circle cx="520" cy="149" r="3" class="dg-accent"/>
+<text x="75" y="35" font-size="12">폭발 (분산 과대 초기화)</text>
+<text x="380" y="195" font-size="12" class="dg-dim">소실 (분산 과소 초기화)</text>
+<text x="330" y="135" font-size="12">일정 유지 (Xavier / He)</text>
+<text x="500" y="205" font-size="12" text-anchor="middle" class="dg-dim">층 깊이 →</text>
+</svg>`,
+    diagramCaption: String.raw`층을 거칠수록 신호 분산이 폭발·소실하는 두 경우와, 적절한 스케일로 분산이 그대로 유지되는 경우를 비교한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 완전연결층 $h=\sum_{i=1}^{n_{in}}w_ix_i$을 거쳤을 때 신호의 분산이 입력과 같은 크기로 유지되려면 가중치의 분산 $\mathrm{Var}(w)$가 얼마여야 하는지 찾는 것이다. $w_i$는 서로 독립이고 평균 $0$인 값들로 초기화된다고 하고, $x_i$도 평균 $0$이며 $w$와 독립이라 하자. 목표는 $\mathrm{Var}(h)=\mathrm{Var}(x)$가 되는 조건을 구하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$h$는 $n_{in}$개의 곱 $w_ix_i$를 더한 합이다. $w_i$가 서로 독립이고 평균이 $0$이면 서로 다른 두 항 $w_ix_i$와 $w_jx_j$($i\neq j$)의 공분산은 $0$이 되어 사라진다. 그러니 합의 분산은 각 항의 분산을 단순히 더한 것과 같다. 모든 항이 서로 같은 분포를 따르므로 $n_{in}$개의 동일한 분산을 더한 값이 된다: $\mathrm{Var}(h) = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`n_{in}\cdot\mathrm{Var}(w_1x_1)`, why: String.raw`서로 독립인 항들의 합의 분산은 각 항의 분산의 합과 같다는 성질을 썼다. $n_{in}$개의 항이 모두 같은 분포 $w_ix_i$를 따르므로 그 합은 $\mathrm{Var}(w_1x_1)$을 $n_{in}$번 더한 것과 같다.` }] },
@@ -11434,6 +13038,45 @@ $$E[y]=0.7\times15+0.3\times10=10.5+3=13.5$$
 <p>여기에 출력 사영행렬 $W_O=\begin{pmatrix}1&0&1&0\\0&1&0&1\\1&0&-1&0\\0&1&0&-1\end{pmatrix}$를 곱합니다.</p>
 $$W_O\begin{pmatrix}0.7\\-0.3\\1.2\\0.4\end{pmatrix}=\begin{pmatrix}0.7+1.2\\-0.3+0.4\\0.7-1.2\\-0.3-0.4\end{pmatrix}=\begin{pmatrix}1.9\\0.1\\-0.5\\-0.7\end{pmatrix}$$
 <p>네 개의 출력 성분 $(1.9,0.1,-0.5,-0.7)$ 각각에 두 헤드의 값이 $W_O$를 통해 섞여 들어갑니다. 이어붙이기 자체는 단순한 벡터 결합이지만 그 뒤에 곱해지는 $W_O$가 헤드별 정보를 다시 하나로 엮어내는 역할을 합니다. 아래 증명은 이렇게 헤드를 나눈 구조가 같은 파라미터 수의 단일헤드보다 표현할 수 있는 함수가 항상 많거나 같다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<text x="94" y="20" font-size="12" text-anchor="middle">단일 헤드: 공유된 A 하나</text>
+<rect x="40" y="50" width="36" height="36" class="dg-accent"/>
+<rect x="76" y="50" width="36" height="36" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="112" y="50" width="36" height="36" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="40" y="86" width="36" height="36" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="76" y="86" width="36" height="36" class="dg-accent"/>
+<rect x="112" y="86" width="36" height="36" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="40" y="122" width="36" height="36" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="76" y="122" width="36" height="36" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="112" y="122" width="36" height="36" class="dg-accent"/>
+<text x="94" y="180" font-size="11" class="dg-dim">모든 위치가 한 가지 방식으로만 섞임</text>
+<text x="220" y="108" font-size="16" text-anchor="middle">≠</text>
+<text x="428" y="20" font-size="12" text-anchor="middle">멀티헤드: 헤드마다 다른 패턴</text>
+<rect x="300" y="50" width="32" height="32" class="dg-accent"/>
+<rect x="332" y="50" width="32" height="32" class="dg-accent"/>
+<rect x="364" y="50" width="32" height="32" class="dg-accent"/>
+<rect x="300" y="82" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="332" y="82" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="364" y="82" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="300" y="114" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="332" y="114" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="364" y="114" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<text x="348" y="180" font-size="11" class="dg-dim">head₁: 앞쪽 위치에 집중</text>
+<rect x="460" y="50" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="492" y="50" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="524" y="50" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<line x1="524" y1="50" x2="556" y2="82" class="dg-stroke-accent" stroke-width="2.5"/>
+<rect x="460" y="82" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="492" y="82" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<line x1="492" y1="82" x2="524" y2="114" class="dg-stroke-accent" stroke-width="2.5"/>
+<rect x="524" y="82" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="460" y="114" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<line x1="460" y1="114" x2="492" y2="146" class="dg-stroke-accent" stroke-width="2.5"/>
+<rect x="492" y="114" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<rect x="524" y="114" width="32" height="32" fill="none" class="dg-stroke-ink" stroke-width="1"/>
+<text x="508" y="180" font-size="11" class="dg-dim">head₂: 반대 대각선에 집중</text>
+</svg>`,
+    diagramCaption: String.raw`하나의 공유된 어텐션 행렬은 한 가지 방식으로만 섞을 수 있지만, 헤드를 나누면 서로 다른 어텐션 패턴 여러 개를 동시에 표현할 수 있다.`,
     sections: [
       { id: "s1", text: String.raw`지금 비교하려는 것은 두 가지 구조입니다. 하나는 입력 $X\in\mathbb R^{n\times d}$에 대해 어텐션 행렬 $A=\mathrm{softmax}(XW_QW_K^\top X^\top/\sqrt d)$ 하나만 계산한 뒤 $Y_{single}=AXW_VW_O$로 값을 섞고 다시 사영하는 단일헤드입니다. $W_Q,W_K,W_V,W_O$는 모두 $d\times d$ 행렬입니다. 다른 하나는 차원을 $h$개의 헤드로 쪼개 각 헤드 $j$마다 자신만의 $d\times d_h$ 행렬 $W_Q^{(j)},W_K^{(j)},W_V^{(j)}$로 어텐션 행렬 $A^{(j)}$와 출력 $\mathrm{head}_j=A^{(j)}XW_V^{(j)}$를 따로 계산한 다음 이어붙이고 $d\times d$ 행렬 $W_O$로 사영하는 $Y_{multi}=[\mathrm{head}_1\ \cdots\ \mathrm{head}_h]W_O$입니다. 총 파라미터 수를 맞춰두면 이 둘 중 어느 쪽이 더 넓은 함수족을 표현하는지가 지금 확인할 질문입니다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 멀티헤드가 단일헤드를 특수한 경우로 포함하는지부터 봅니다. 모든 헤드의 쿼리, 키 가중치를 서로 다른 $A^{(j)}$ 대신 하나의 공통된 행렬 $A$를 공유하도록 고른다고 하겠습니다. 즉 $A^{(1)}=\cdots=A^{(h)}=A$라 하겠습니다. 그러면 각 헤드의 출력은 $\mathrm{head}_j=AXW_V^{(j)}$로 똑같은 $AX$가 왼쪽에 곱해진 형태가 됩니다. $h$개를 나란히 이어붙인 행렬은 모든 블록에 $AX$가 공통이므로 그 공통인수를 앞으로 뺄 수 있습니다. $[\mathrm{head}_1\ \cdots\ \mathrm{head}_h] = $[[blank:가]] 입니다.`, blanks: [{ id: "가", latex: String.raw`AX[W_V^{(1)}\ \cdots\ W_V^{(h)}]`, why: String.raw`모든 헤드가 같은 $A$를 공유하므로 각 블록 $AXW_V^{(j)}$에서 $AX$가 공통입니다. 공통으로 곱해지는 인수를 블록마다 따로 두지 않고 앞으로 뺄 수 있으므로 $h$개의 블록을 나란히 이어붙인 것이 $AX$ 뒤에 $W_V^{(j)}$들을 나란히 이어붙인 것과 같아집니다.` }] },
@@ -11454,6 +13097,28 @@ $$W_O\begin{pmatrix}0.7\\-0.3\\1.2\\0.4\end{pmatrix}=\begin{pmatrix}0.7+1.2\\-0.
 <p>상대위치 공식으로도 확인해봅니다. $(n-m)\theta=2\times60^\circ=120^\circ$이므로 $q^\top R(120^\circ)k=(1,0)\begin{pmatrix}-0.5&-0.8660\\0.8660&-0.5\end{pmatrix}\begin{pmatrix}0\\1\end{pmatrix}=(1,0)\begin{pmatrix}-0.8660\\-0.5\end{pmatrix}=-0.8660$으로 정확히 같습니다.</p>
 <p><strong>$m=6$, $n=8$인 경우.</strong> 상대위치는 여전히 $n-m=2$입니다. $m\theta=360^\circ$이므로 $R(360^\circ)=I$이고 $\tilde q_6=q=(1,0)$입니다. $n\theta=480^\circ$인데 $480^\circ-360^\circ=120^\circ$이므로 $R(480^\circ)=R(120^\circ)$이고 $\tilde k_8=R(120^\circ)k=(-0.8660,-0.5)$입니다. 내적은 $\tilde q_6^\top\tilde k_8=1\times(-0.8660)+0\times(-0.5)=-0.8660$으로 앞의 경우와 완전히 같습니다.</p>
 <p>$m,n$의 실제 값은 $1,3$에서 $6,8$로 전부 바뀌었지만 차이가 $2$로 같으니 내적값도 정확히 같게 나왔습니다. 아래 증명은 이 일치가 우연이 아니라 임의의 $m,n,\theta$에서 항상 성립하는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 240" xmlns="http://www.w3.org/2000/svg">
+<text x="110" y="20" font-size="12" text-anchor="middle">m=1, n=3 (n-m=2)</text>
+<circle cx="110" cy="140" r="90" fill="none" class="dg-line" stroke-width="1"/>
+<line x1="110" y1="140" x2="178.9" y2="82.1" class="dg-stroke-ink" stroke-width="2.5"/>
+<polygon points="178.9,82.1 167,84 172,94" class="dg-dim"/>
+<text x="184" y="78" font-size="11">q̃_m</text>
+<line x1="110" y1="140" x2="32.1" y2="185" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="32.1,185 44,182 41,193" class="dg-accent"/>
+<text x="10" y="200" font-size="11">k̃_n</text>
+<path d="M132.98,120.72 A30,30 0 0 0 84.02,155" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="380" y="20" font-size="12" text-anchor="middle">m=6, n=8 (n-m=2)</text>
+<circle cx="400" cy="140" r="90" fill="none" class="dg-line" stroke-width="1"/>
+<line x1="400" y1="140" x2="355" y2="217.9" class="dg-stroke-ink" stroke-width="2.5"/>
+<polygon points="355,217.9 362,208 371,214" class="dg-dim"/>
+<text x="352" y="234" font-size="11">q̃_m</text>
+<line x1="400" y1="140" x2="457.9" y2="71.1" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="457.9,71.1 446,74 449,84" class="dg-accent"/>
+<text x="462" y="64" font-size="11">k̃_n</text>
+<path d="M385,165.98 A30,30 0 0 1 419.28,117.02" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="260" y="130" font-size="11" class="dg-dim" text-anchor="middle">두 경우 모두 q̃와 k̃ 사이 상대각도 (n-m)θ가 동일</text>
+</svg>`,
+    diagramCaption: String.raw`m,n의 절대값은 다르지만 차이 n-m이 같으면 회전된 쿼리·키 사이 상대각도와 내적이 정확히 같다.`,
     sections: [
       { id: "s1", text: String.raw`회전행렬로 위치를 표현하는 이유는 셀프어텐션의 핵심 연산이 결국 쿼리와 키의 내적이기 때문입니다. 벡터의 한 2차원 좌표쌍을 $q$라 하고 대응하는 키의 좌표쌍을 $k$라 하겠습니다. 위치 $m$에 놓인 쿼리에는 $\tilde q_m=R(m\theta)q$를, 위치 $n$에 놓인 키에는 $\tilde k_n=R(n\theta)k$를 적용합니다. 여기서 $\theta$는 이 좌표쌍에 고정된 하나의 각도이고 $R(\phi)=\begin{pmatrix}\cos\phi&-\sin\phi\\\sin\phi&\cos\phi\end{pmatrix}$는 각도 $\phi$만큼 회전시키는 행렬입니다. 지금 보이려는 것은 회전된 쿼리와 키의 내적 $\tilde q_m^\top\tilde k_n$이 $m$과 $n$ 각각의 값이 아니라 오직 차이 $n-m$에만 의존한다는 사실입니다.`, blanks: [] },
       { id: "s2", text: String.raw`회전행렬에는 두 가지 성질이 필요합니다. 첫째는 전치와 역행렬의 관계입니다. 회전행렬은 직교행렬이므로 전치가 곧 역행렬입니다. 각도 $\phi$만큼 돌린 회전을 되돌리는 역회전은 정확히 $-\phi$만큼 돌리는 것이므로 $R(\phi)^{-1}=R(-\phi)$입니다. 그러니 $R(\phi)^\top = $[[blank:가]] 입니다.`, blanks: [{ id: "가", latex: String.raw`R(-\phi)`, why: String.raw`직교행렬은 전치가 역행렬과 같다는 성질을 가집니다. 각도 $\phi$만큼 돌린 회전의 역회전은 $-\phi$만큼 돌리는 것이므로 $R(\phi)^{-1}=R(-\phi)$이고 결국 $R(\phi)^\top=R(-\phi)$가 됩니다.` }] },
@@ -11478,6 +13143,27 @@ $$O'=1\times2.1353+0.3679\times3\approx2.1353+1.1036=3.2389$$
 <p>최종 출력은 $O'/\ell'\approx3.2389/1.5530\approx2.0856$입니다.</p>
 <p>검산 삼아 네 점수를 한 번에 모아 직접 계산해봅니다. 최댓값은 $3$이고 $\exp(1-3),\exp(3-3),\exp(2-3),\exp(0-3)$은 각각 $0.1353,1,0.3679,0.0498$이라 합은 $1.5530$입니다. 가중합은 $0.1353\times1+1\times2+0.3679\times3+0.0498\times0\approx3.2390$이고 $3.2390/1.5530\approx2.0856$으로 나눈 값도 똑같습니다.</p>
 <p>아래 증명은 이 일치가 이 숫자들만의 우연이 아니라 임의의 점수와 임의의 타일 나누기에서 항상 성립하는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="130" height="90" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="40" y="24" font-size="11" class="dg-dim">HBM (큰 저장소, 느림)</text>
+<text x="45" y="55" font-size="10">Q, K, V 전체</text>
+<text x="45" y="75" font-size="10">(n×d, 메모리에 상주)</text>
+<line x1="160" y1="75" x2="220" y2="75" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="220,75 208,69 208,81" class="dg-stroke-accent"/>
+<text x="165" y="65" font-size="9" class="dg-dim">블록 단위 로드</text>
+<rect x="230" y="30" width="130" height="90" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="240" y="24" font-size="11" class="dg-dim">SRAM (작은 캐시, 빠름)</text>
+<text x="245" y="55" font-size="10">K,V 타일 1개</text>
+<text x="245" y="75" font-size="10">m, ℓ, O 누적값 갱신</text>
+<line x1="200" y1="120" x2="200" y2="150" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="80" y="150" font-size="10">타일마다 SRAM에서 최댓값·지수합·가중합을 갱신</text>
+<text x="80" y="170" font-size="10">n×n 점수행렬 전체를 HBM에 올리지 않음 → O(n) 메모리</text>
+<rect x="60" y="185" width="24" height="24" class="dg-accent"/>
+<rect x="90" y="185" width="24" height="24" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<rect x="120" y="185" width="24" height="24" class="dg-stroke-accent" fill="none" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="150" y="202" font-size="9" class="dg-dim">타일 순서대로 처리되는 점수행렬 블록</text>
+</svg>`,
+    diagramCaption: String.raw`전체 점수행렬을 한 번에 올리지 않고 SRAM과 HBM 사이를 타일 단위로 오가며 계산한다.`,
     sections: [
       { id: "s1", text: String.raw`표준 어텐션은 한 쿼리의 점수 $n$개를 모두 모아 $n\times n$ 크기의 점수 행렬을 만든 다음에야 소프트맥스를 씌웁니다. 시퀀스 길이 $n$이 커지면 이 행렬을 저장하는 메모리가 $O(n^2)$로 불어납니다. 목표는 점수를 한 번에 다 모으지 않고 블록 단위로 순서대로 훑으면서도 전체를 한 번에 모아 계산한 소프트맥스와 정확히 같은 값을 얻는 것입니다. 이를 가능하게 하는 것은 소프트맥스가 모든 점수에서 똑같은 상수를 빼도 값이 바뀌지 않는다는 성질입니다. 임의의 상수 $c$에 대해 $\mathrm{softmax}(s)_j = e^{s_j}/\sum_k e^{s_k} = e^{s_j-c}/\sum_k e^{s_k-c}$가 성립합니다.`, blanks: [] },
       { id: "s2", text: String.raw`블록을 순서대로 처리하면서 세 가지 값만 계속 들고 다닙니다. 지금까지 처리한 인덱스 집합을 $S$라 하면 그 안에서 본 점수 중 최댓값은 $m$이고 그 최댓값을 기준으로 지수를 취해 더한 합은 $\ell=\sum_{j\in S} e^{s_j-m}$이며 같은 기준으로 값을 가중합한 누적값은 $O=\sum_{j\in S} e^{s_j-m}v_j$입니다. 새로 들어오는 블록의 인덱스 집합을 $B$라 하면 그 블록만의 국소 최댓값은 $\hat m=\max_{k\in B}s_k$이고 국소 지수합은 $\hat\ell=\sum_{k\in B} e^{s_k-\hat m}$이며 국소 가중합은 $\hat O=\sum_{k\in B} e^{s_k-\hat m}v_k$입니다. 두 최댓값을 합친 새 전역 최댓값은 $m'=\max(m,\hat m)$입니다.`, blanks: [] },
@@ -11503,6 +13189,37 @@ $$z[n]=x_1[n]-x_1[n-2]$$
 <p>계산하면 $z=(0,1,2,2,-2,-3,0)$입니다. 예를 들어 $z[3]=x_1[3]-x_1[1]=3-1=2$이고 $z[4]=x_1[4]-x_1[2]=0-2=-2$입니다.</p>
 <p>이제 원래 결과 $y$를 그대로 한 칸 이동시킨 $S_1y$와 비교합니다. $S_1y[n]=y[n-1]$이므로 $S_1y=(0,1,2,2,-2,-3,0)$입니다. $z$와 성분마다 정확히 일치합니다.</p>
 <p>먼저 이동한 뒤 합성곱한 결과와 먼저 합성곱한 뒤 이동한 결과가 완전히 같았습니다. 아래 증명은 이 일치가 이 특정 신호와 $k=1$만의 우연이 아니라 임의의 신호와 임의의 이동량 $k$에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<text x="115" y="18" font-size="12" text-anchor="middle">입력 x → 이동 → 합성곱</text>
+<rect x="30" y="30" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="55" y="30" width="20" height="20" class="dg-accent"/>
+<rect x="80" y="30" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="105" y="30" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="130" y1="40" x2="170" y2="40" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<polygon points="170,40 158,34 158,46" class="dg-stroke-accent"/>
+<rect x="180" y="30" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="205" y="30" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="230" y="30" width="20" height="20" class="dg-accent"/>
+<rect x="255" y="30" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="30" y="65" font-size="9" class="dg-dim">S_k x (k=1칸 이동)</text>
+<line x1="145" y1="80" x2="145" y2="105" class="dg-line" stroke-width="1.5"/>
+<polygon points="145,105 139,93 151,93" class="dg-stroke-ink"/>
+<text x="150" y="95" font-size="9" class="dg-dim">필터 f 합성곱</text>
+<rect x="30" y="115" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="55" y="115" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="80" y="115" width="20" height="20" class="dg-accent"/>
+<rect x="105" y="115" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="30" y="150" font-size="9" class="dg-dim">f*(S_k x)</text>
+<line x1="145" y1="160" x2="200" y2="160" class="dg-stroke-accent" stroke-width="2"/>
+<text x="150" y="150" font-size="9">= S_k(f*x)</text>
+<rect x="215" y="115" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="240" y="115" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="265" y="115" width="20" height="20" class="dg-accent"/>
+<rect x="290" y="115" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="215" y="150" font-size="9" class="dg-dim">f*x를 그대로 k만큼 이동</text>
+<text x="30" y="195" font-size="11">두 경로의 결과가 정확히 일치 (근사 아님, 모든 k에서 등식)</text>
+</svg>`,
+    diagramCaption: String.raw`이동한 뒤 합성곱한 결과와 합성곱한 뒤 이동한 결과가 정확히 같다는 것이 등변성이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 다루는 두 연산을 다시 정리한다. 이동연산자는 $(S_kx)[n]=x[n-k]$로 신호를 오른쪽으로 $k$칸 미루는 연산이다. 합성곱은 $(f*x)[n]=\sum_mf[m]x[n-m]$로 필터 $f$를 신호 위에서 미끄러뜨리며 각 위치의 값을 계산하는 연산이다. 목표는 신호를 먼저 이동시키고 합성곱을 한 결과와 먼저 합성곱을 하고 그 결과를 이동시킨 결과가 정말로 항상 같은지 인덱스를 직접 대입해서 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`왼쪽 경우부터 본다. 이동된 신호 $S_kx$에 합성곱을 적용한 식을 정의대로 그대로 풀어쓴다. $(S_kx)[n-m]$은 이동연산자의 정의에서 $n$ 자리에 $n-m$을 넣은 것이므로 $x[(n-m)-k]$가 된다. 따라서 $(f*(S_kx))[n] = \sum_mf[m]\,$[[blank:가]]이다.`, blanks: [{ id: "가", latex: String.raw`x[n-m-k]`, why: String.raw`이동연산자의 정의 $(S_kx)[i]=x[i-k]$에서 $i$ 자리에 $n-m$을 그대로 대입한 결과다. $(n-m)-k$를 풀어 쓰면 $n-m-k$가 되고 이것이 합 안에서 $x$의 인자로 남는다.` }] },
@@ -11526,6 +13243,30 @@ $$g_i(x)=\frac{\exp(z_i)}{\sum_j\exp(z_j)}$$
 <p>전문가 1과 2의 출력이 각각 $f_1(x)=(1,0)$, $f_2(x)=(0,1)$이라 하면 최종 출력은 다음과 같습니다.</p>
 $$y=g_1'f_1(x)+g_2'f_2(x)=(0.7311,\,0.2689)$$
 <p>전문가 3과 4는 이번 입력에 대해서는 아예 평가되지 않았습니다. 연산량 관점에서 보면 전문가 하나를 평가하는 비용을 $c=1$단위라 할 때 밀집 앙상블은 4개를 전부 평가해 비용이 $4$지만 top-2 MoE는 비용이 $2$로 절반입니다. 만약 전문가 수를 $E=100$으로 늘려도 top-2를 유지한다면 밀집 앙상블의 비용은 $100$까지 늘어나지만 MoE의 비용은 여전히 $2$에 가깝습니다. 아래 증명은 이 절약이 우연이 아니라 $k$를 고정해두는 한 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="90" width="60" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="50" y="114" font-size="11" text-anchor="middle">입력 x</text>
+<line x1="80" y1="110" x2="150" y2="110" class="dg-line" stroke-width="1.5" />
+<rect x="150" y="90" width="70" height="40" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="185" y="114" font-size="11" text-anchor="middle">라우터</text>
+<line x1="220" y1="100" x2="300" y2="30" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="220" y1="105" x2="300" y2="80" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="220" y1="115" x2="300" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="220" y1="120" x2="300" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<rect x="300" y="12" width="80" height="36" class="dg-accent" />
+<text x="340" y="34" font-size="11" text-anchor="middle">전문가1 g=0.73</text>
+<rect x="300" y="62" width="80" height="36" class="dg-accent" />
+<text x="340" y="84" font-size="11" text-anchor="middle">전문가2 g=0.27</text>
+<rect x="300" y="122" width="80" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<text x="340" y="144" font-size="11" text-anchor="middle" class="dg-dim">전문가3 (미활성)</text>
+<rect x="300" y="172" width="80" height="36" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="3,3" />
+<text x="340" y="194" font-size="11" text-anchor="middle" class="dg-dim">전문가4 (미활성)</text>
+<line x1="380" y1="30" x2="430" y2="60" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="380" y1="80" x2="430" y2="60" class="dg-stroke-accent" stroke-width="2.5" />
+<circle cx="440" cy="60" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="440" y="90" font-size="11" text-anchor="middle">y</text>
+</svg>`,
+    diagramCaption: String.raw`E=4개 중 top-k=2(굵은 실선)만 활성화, 나머지(점선)는 이번 입력에서 계산되지 않는다.`,
     sections: [
       { id: "s1", text: String.raw`라우터 $g(x)$는 입력 $x$를 보고 $E$개 전문가 각각에 점수를 매긴다. 이 중 점수가 가장 높은 $k$개, 즉 top-$k$ 집합만 골라 실제로 전문가를 계산에 참여시키고 $y=\sum_{i\in\mathrm{TopK}}g_i(x)f_i(x)$로 결합한다. 목표는 이렇게 일부만 평가하는 방식이 전문가 수 $E$가 아무리 커져도 한 번의 순전파에 드는 연산량을 거의 늘리지 않는 이유를 직접 비용을 세어서 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 전문가 하나를 평가하는 데 드는 연산량을 $c$라 하고 전문가 하나가 담고 있는 파라미터 수를 $p$라 하자. 전문가가 $E$개 있다면 모델 전체가 담는 파라미터 수, 즉 모델의 표현 용량은 각 전문가의 파라미터를 모두 합친 것이다. $P(E) = $[[blank:가]]이다.`, blanks: [{ id: "가", latex: String.raw`Ep`, why: String.raw`전문가 $E$개 각각이 독립적으로 $p$개의 파라미터를 갖고 이들을 모두 저장해야 하므로 총 파라미터 수는 $E$와 $p$의 곱이다. 전문가 수를 늘릴수록 이 용량은 아무 제약 없이 계속 커질 수 있다.` }] },
@@ -11595,6 +13336,35 @@ $$p_x(0) = p_z(f(0))\,|f'(0)| \approx 0.241971\times2 = 0.483941$$
 <p>이 값이 맞는지 다른 방식으로 검산합니다. $z=2x+1$이고 $z\sim N(0,1)$이면 $x=(z-1)/2$는 $z$의 아핀변환이라 $x$도 정규분포를 따르고 평균은 $-0.5$ 분산은 $0.25$입니다. 이 정규분포의 밀도를 $x=0$에서 직접 계산합니다.</p>
 $$\frac{1}{\sqrt{2\pi\times0.25}}\exp\!\left(-\frac{(0-(-0.5))^2}{2\times0.25}\right) = \frac{1}{\sqrt{0.5\pi}}\exp(-0.5) \approx 0.797885\times0.606531 \approx 0.483941$$
 <p>두 계산이 소수점 여섯 자리까지 정확히 일치합니다. 아래 증명은 이 일치가 이 특정 아핀변환뿐 아니라 가역이고 미분 가능한 임의의 $f$에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="30" width="180" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="76" y1="30" x2="76" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="112" y1="30" x2="112" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="148" y1="30" x2="148" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="184" y1="30" x2="184" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="70" x2="220" y2="70" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="110" x2="220" y2="110" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="150" x2="220" y2="150" class="dg-line" stroke-width="1"/>
+<rect x="112" y="70" width="36" height="40" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="40" y="20" font-size="12">x 공간: 균일한 격자</text>
+<line x1="232" y1="110" x2="300" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M292,102 L302,110 L292,118" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="228" y="95" font-size="12">z = f(x), 가역·미분가능</text>
+<path d="M470,30 Q460,110 470,190" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M660,30 Q670,110 660,190" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="470" y1="30" x2="660" y2="30" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="470" y1="190" x2="660" y2="190" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M500,30 Q495,110 500,190" fill="none" class="dg-line" stroke-width="1"/>
+<path d="M525,30 Q520,110 525,190" fill="none" class="dg-line" stroke-width="1"/>
+<path d="M565,30 Q572,110 565,190" fill="none" class="dg-line" stroke-width="1"/>
+<path d="M615,30 Q628,110 615,190" fill="none" class="dg-line" stroke-width="1"/>
+<line x1="470" y1="82" x2="660" y2="76" class="dg-line" stroke-width="1"/>
+<line x1="470" y1="138" x2="660" y2="144" class="dg-line" stroke-width="1"/>
+<path d="M525,82 L565,76 L565,138 L525,144 Z" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="470" y="20" font-size="12">z 공간: 뒤틀린 격자</text>
+<text x="470" y="208" font-size="11" class="dg-dim">칸 면적 변화 비율 = |det df/dx(x)|</text>
+</svg>`,
+    diagramCaption: String.raw`같은 격자 칸이 f를 지나며 늘어나거나 좁아진 만큼 확률밀도가 반대로 줄거나 늘어난다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 가역이고 미분 가능한 변환 $z=f(x)$가 있을 때 $x$의 밀도 $p_x(x)$를 $z$의 밀도 $p_z$로 표현하는 것이다. 출발점은 확률질량이 변환 전후로 보존된다는 사실이다. $x$ 근처의 아주 작은 구간이 $f$를 통해 $z$ 근처의 작은 구간으로 옮겨질 때 그 구간에 담긴 확률질량은 그대로 유지된다. $p_x(x)\,|dx| = p_z(z)\,|dz|$ 이다.`, blanks: [] },
       { id: "s2", text: String.raw`이 식을 풀려면 먼저 $dz$가 $dx$와 어떤 관계인지부터 알아야 한다. $f$를 $x$ 근처에서 국소적으로 선형근사하면 미분의 정의에 따라 아주 작은 변화 $dx$가 만들어내는 $dz$는 도함수를 곱한 값이다. $dz = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`f'(x)\,dx`, why: String.raw`미분의 정의 $f'(x)=\lim_{dx\to0}(f(x+dx)-f(x))/dx$에서 분모를 이항하면 $f(x+dx)-f(x)\approx f'(x)dx$를 얻는다. 이 좌변이 바로 $z$의 변화량 $dz$다.` }] },
@@ -11621,6 +13391,32 @@ $$\frac{dy}{dx}=\begin{pmatrix}1&0&0\\0.622140&1.221403&0\\0.597808&0&0.670320\e
 <p>오른쪽 위 두 성분이 정확히 0이라 아래쪽 삼각형 모양입니다. 행렬식은 대각성분만 곱하면 됩니다.</p>
 $$\det\frac{dy}{dx}=1\times1.221403\times0.670320\approx0.818731$$
 <p>이 값은 $\exp(s_1(x_1)+s_2(x_1))=\exp(0.2-0.4)=\exp(-0.2)\approx0.818731$과 정확히 같습니다. 아래 증명은 이 삼각구조와 행렬식 공식이 이 숫자쌍에서만 맞는 것이 아니라 $s,t$가 어떤 신경망이든 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="20" y="45" font-size="13">x_a</text>
+<line x1="45" y1="40" x2="150" y2="40" class="dg-line" stroke-width="2"/>
+<polygon points="150,40 140,35 140,45" class="dg-stroke-ink"/>
+<text x="160" y="45" font-size="13">y_a = x_a (그대로)</text>
+<text x="20" y="120" font-size="13">x_b</text>
+<rect x="45" y="100" width="150" height="34" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="52" y="122" font-size="11">⊙exp(s(x_a))+t(x_a)</text>
+<line x1="195" y1="117" x2="290" y2="117" class="dg-line" stroke-width="2"/>
+<polygon points="290,117 280,112 280,122" class="dg-stroke-ink"/>
+<text x="300" y="122" font-size="13">y_b</text>
+<line x1="65" y1="60" x2="100" y2="100" class="dg-dim" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="65" y="80" font-size="10" class="dg-dim">s,t는 x_a로 결정됨</text>
+<text x="420" y="30" font-size="12">야코비안 dy/dx (블록삼각)</text>
+<rect x="400" y="45" width="90" height="70" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="445" y1="45" x2="445" y2="115" class="dg-line" stroke-width="1.5"/>
+<line x1="400" y1="80" x2="490" y2="80" class="dg-line" stroke-width="1.5"/>
+<text x="415" y="68" font-size="13">I</text>
+<text x="460" y="68" font-size="13" class="dg-dim">0</text>
+<rect x="400" y="80" width="45" height="35" class="dg-accent"/>
+<text x="408" y="102" font-size="10">복잡, 0 아님</text>
+<rect x="445" y="80" width="45" height="35" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="450" y="102" font-size="9">diag(exp(s))</text>
+<text x="400" y="145" font-size="12" class="dg-dim">오른쪽 위가 항상 0 → det = 1 × det(diag(exp(s)))</text>
+</svg>`,
+    diagramCaption: String.raw`xa는 그대로, xb만 xa에 의존해 변환되어 야코비안이 블록삼각행렬이 된다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 이 변환이 항상 역변환을 가지는지 그리고 그 야코비안이 왜 값싸게 계산되는지 확인하는 것이다. 입력을 $x=(x_a,x_b)$ 두 덩어리로 나누고 앞쪽 $x_a$는 그대로 통과시키며 뒤쪽 $x_b$만 원소별 아핀변환으로 바꾼다. $y_a=x_a$, $y_b=x_b\odot\exp(s(x_a))+t(x_a)$ 이고 $s,t$는 $x_a$만 입력으로 받는 임의의 함수다. $s,t$가 뒤집을 수 없는 함수여도 상관없다는 점이 핵심이다.`, blanks: [] },
       { id: "s2", text: String.raw`역변환을 구하려면 출력 $y=(y_a,y_b)$만 가지고 입력 $x=(x_a,x_b)$를 되찾아야 한다. 첫 번째 절반은 변환에서 아무 것도 하지 않았으므로 정의를 그대로 뒤집으면 곧바로 답이 나온다. $x_a = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`y_a`, why: String.raw`$y_a=x_a$라는 정의 자체가 이미 항등변환이다. 그러니 $y_a$를 관찰하는 순간 $x_a$가 무엇인지 별도의 계산 없이 바로 알 수 있다.` }] },
@@ -11644,6 +13440,22 @@ $$\nabla_x\log p(x) + w\left(\nabla_x\log p(x|y)-\nabla_x\log p(x)\right) = -1+3
 <p>이제 실제 디퓨전 샘플링에서 쓰는 잡음예측 값으로도 같은 외삽식을 확인해봅니다. 무조건부 예측이 $\epsilon(x)=0.5$, 조건부 예측이 $\epsilon(x,y)=1.2$, guidance 강도가 $w=3$이라 하면 다음과 같습니다.</p>
 $$\epsilon_w(x,y)=\epsilon(x)+w(\epsilon(x,y)-\epsilon(x))=0.5+3\times(1.2-0.5)=0.5+2.1=2.6$$
 <p>$w=1$이면 그냥 조건부 예측 $\epsilon(x,y)=1.2$ 그대로이고 $w=3$으로 키우자 예측이 $2.6$까지 밀려나 조건부 방향으로 원래보다 더 강하게 밀어붙입니다. 아래 증명은 이 외삽식이 왜 거듭제곱으로 뾰족해진 분포 $p_w(x|y)$에서 샘플링하는 것과 정확히 같은지 일반적으로 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="180" r="4" class="dg-accent"/>
+<text x="55" y="200" font-size="12">x</text>
+<line x1="80" y1="180" x2="80" y2="70" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<path d="M80,180 L210,130" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,4"/>
+<polygon points="210,130 198,133 202,122" class="dg-stroke-ink"/>
+<text x="215" y="132" font-size="12" class="dg-dim">ε(x) 무조건부</text>
+<path d="M80,180 L270,100" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="270,100 256,105 261,92" class="dg-stroke-ink"/>
+<text x="278" y="102" font-size="12">ε(x,y) 조건부 (w=1)</text>
+<path d="M80,180 L460,20" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="460,20 442,28 448,12" class="dg-stroke-accent"/>
+<text x="330" y="45" font-size="12">외삽 ε_w(x,y), w=3</text>
+<text x="330" y="60" font-size="11" class="dg-dim">= ε(x)+w(ε(x,y)-ε(x))</text>
+</svg>`,
+    diagramCaption: String.raw`무조건부와 조건부 예측의 차이 방향으로 w배 더 길게 외삽하면 조건부 쪽으로 더 뾰족한 분포에서 샘플링하는 것과 같다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 guidance 강도 $w>1$로 외삽한 잡음예측 $\epsilon(x)+w(\epsilon(x,y)-\epsilon(x))$이 실제로 어떤 분포에서 샘플링하는 것과 같은지 밝히는 것이다. 조건부 분포를 원래보다 더 뾰족하게 만든 거듭제곱 분포를 정의해서 시작한다. $p_w(x|y) := \dfrac{p(x|y)^w\,p(x)^{1-w}}{Z(y)}$ 이고 $Z(y)=\int p(x|y)^w p(x)^{1-w}dx$는 적분값이 1이 되도록 맞춰주는 정규화상수다. $w>1$이면 조건부 항의 지수가 커져서 $p(x|y)$가 높은 영역이 더욱 두드러지고 그만큼 분포가 날카로워진다.`, blanks: [] },
       { id: "s2", text: String.raw`이 정규화된 분포에 로그를 씌우면 곱은 합으로 나눗셈은 뺄셈으로 바뀐다. $\log p_w(x|y) = w\log p(x|y) + (1-w)\log p(x) - $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`\log Z(y)`, why: String.raw`정의의 분모 $Z(y)$에 로그를 씌우면 부호가 반대로 붙어 빼는 항이 된다. 분자의 두 거듭제곱은 로그를 통해 각각 계수 $w$와 $1-w$가 곱해진 덧셈으로 풀린다.` }] },
@@ -11750,6 +13562,27 @@ $$y(1)\approx\left(\frac{0.663}{1.733},\ \frac{0.996}{1.733},\ \frac{0.074}{1.73
 $$y(0.1)\approx\left(\frac{0.0164}{0.9772},\ \frac{0.9608}{0.9772},\ \frac{0.0000}{0.9772}\right)\approx(0.017,\ 0.983,\ 0.000)$$
 <p>온도를 낮추자 두 번째 성분의 비중이 $0.575$에서 $0.983$으로 크게 올라가 원핫 벡터 $(0,1,0)$에 훨씬 가까워졌습니다. 이 원핫 벡터는 정확히 Gumbel-max로 뽑았던 표본 $i^*=2$와 일치합니다.</p>
 <p>아래 증명은 이 수렴이 이 특정 숫자에서만 벌어지는 우연이 아니라 $\tau\to0$인 극한에서 항상 정확히 성립하는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<polygon points="150,40 90,160 210,160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="143" y="30" font-size="12">e1</text>
+<text x="62" y="175" font-size="12">e2</text>
+<text x="205" y="175" font-size="12">e3</text>
+<circle cx="118" cy="114" r="6" class="dg-dim"/>
+<text x="128" y="105" font-size="11" class="dg-dim">y(τ=1)</text>
+<text x="95" y="195" font-size="12">τ = 1 (완만한 분포)</text>
+<line x1="228" y1="108" x2="288" y2="108" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M280,101 L290,108 L280,115" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="222" y="96" font-size="11">τ 하강</text>
+<polygon points="410,40 350,160 470,160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="403" y="30" font-size="12">e1</text>
+<text x="322" y="175" font-size="12">e2</text>
+<text x="465" y="175" font-size="12">e3</text>
+<circle cx="351" cy="158" r="4" class="dg-accent"/>
+<circle cx="351" cy="158" r="9" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="360" y="145" font-size="11">y(τ=0.1)</text>
+<text x="355" y="195" font-size="12">τ = 0.1 (원핫에 근접)</text>
+</svg>`,
+    diagramCaption: String.raw`온도 τ가 낮아질수록 심플렉스 내부의 소프트맥스 출력점이 원-핫 꼭짓점(e2)으로 모인다.`,
     sections: [
       { id: "s1", text: String.raw`reparameterization-trick에서 다룬 가우시안 잠재변수는 $z=\mu_\phi+\sigma_\phi\odot\varepsilon$처럼 무작위성 $\varepsilon$과 파라미터 $\phi$가 곱과 덧셈만으로 매끄럽게 얽혀 있어 어디서나 미분이 가능했다. 이산 범주변수에서는 사정이 다르다. 확률 $\pi_1,\dots,\pi_K$을 갖는 카테고리 변수를 정확히 표집하는 Gumbel-max 트릭은 $g_i\stackrel{iid}{\sim}\mathrm{Gumbel}(0,1)$을 뽑은 뒤 $c=\arg\max_i(\log\pi_i+g_i)$로 표본을 만든다. 이 $c$는 정확히 $\mathrm{Categorical}(\pi)$를 따르는 표본이지만, $\arg\max$는 입력이 아주 조금만 바뀌어도 결과가 계단처럼 툭 튀는 함수라 파라미터 $\pi$에 대해 미분할 수 없다. 목표는 이 $\arg\max$를 매끄러운 소프트맥스로 바꾼 완화가 온도 $\tau\to0$의 극한에서 정확히 원래의 $\arg\max$ 표본으로 돌아온다는 것을 보이는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$z_i=\log\pi_i+g_i$라 쓰고 유일한 최댓값 인덱스를 $i^*=\arg\max_i z_i$라 하자(연속분포에서 뽑은 잡음이라 두 인덱스가 정확히 같은 값을 가질 확률은 0이므로 유일성은 항상 보장된다). Gumbel-softmax 완화는 $y_i(\tau)=\dfrac{e^{z_i/\tau}}{\sum_j e^{z_j/\tau}}$로 정의된다. 소프트맥스는 모든 지수에 같은 상수를 빼도 값이 변하지 않는다는 성질이 있으므로, 분자 분모를 공통으로 $e^{z_{i^*}/\tau}$로 나누어도 $y_i(\tau)$의 값은 그대로다. 이렇게 나누면 $y_i(\tau) = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`\dfrac{e^{(z_i-z_{i^*})/\tau}}{\sum_j e^{(z_j-z_{i^*})/\tau}}`, why: String.raw`분자와 분모를 공통 인자 $e^{z_{i^*}/\tau}$로 나누면 지수 부분이 $z_i/\tau-z_{i^*}/\tau=(z_i-z_{i^*})/\tau$로 바뀐다. 소프트맥스는 이런 이동에 불변이므로 값은 원래와 정확히 같다.` }] },
@@ -11780,6 +13613,33 @@ $$\lambda\times0.36+(1-\lambda)\times1.21=0.7\times0.36+0.3\times1.21=0.252+0.36
 $$(f(x')-y')^2=(0.61-0.7)^2=0.0081$$
 <p>실제 mixup 손실 $0.0081$은 두 끝점 손실의 볼록결합 $0.615$보다 훨씬 작습니다. 두 끝점에서의 오차 $f(x_i)-y_i=-0.6$과 $f(x_j)-y_j=1.1$이 부호가 반대라 섞인 지점에서 서로 상쇄되었기 때문입니다.</p>
 <p>아래 증명은 이 부등식이 이 숫자들만의 우연이 아니라 선형모델이라면 언제나 성립하는 사실임을 보이고, 이 사실이 선형이 아닌 모델에서는 왜 추가적인 정칙화 압력으로 작동하는지도 살펴봅니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="18" font-size="12">ERM: 관측점에서만 손실 정의</text>
+<circle cx="70" cy="70" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="100" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="130" cy="60" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="195" y="140" width="10" height="10" class="dg-accent"/>
+<rect x="225" y="115" width="10" height="10" class="dg-accent"/>
+<rect x="255" y="160" width="10" height="10" class="dg-accent"/>
+<polyline points="40,120 110,115 150,105 180,135 300,150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="40" y="200" font-size="11" class="dg-dim">각진 결정경계, 점 사이 공간은 손실에 반영되지 않음</text>
+<line x1="330" y1="20" x2="330" y2="205" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="360" y="18" font-size="12">Mixup: 직선 사이 가상 표본 추가</text>
+<circle cx="390" cy="70" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="420" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="450" cy="60" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="515" y="140" width="10" height="10" class="dg-accent"/>
+<rect x="545" y="115" width="10" height="10" class="dg-accent"/>
+<rect x="575" y="160" width="10" height="10" class="dg-accent"/>
+<line x1="420" y1="100" x2="545" y2="115" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="450" y1="60" x2="515" y2="140" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<circle cx="482" cy="107" r="3" class="dg-dim"/>
+<circle cx="482" cy="100" r="3" class="dg-dim"/>
+<circle cx="470" cy="88" r="3" class="dg-dim"/>
+<path d="M360,140 Q450,105 620,150" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="360" y="200" font-size="11" class="dg-dim">보간점(λ)이 채워져 경계가 부드러워짐</text>
+</svg>`,
+    diagramCaption: String.raw`두 표본 사이 직선 위 가상 표본이 손실에 반영되면서 각진 결정경계가 완만해진다.`,
     sections: [
       { id: "s1", text: String.raw`보통의 경험위험최소화는 관측된 $n$개 데이터 점에서만 손실을 재는 경험분포 $P_{emp}(x,y)=\frac1n\sum_i\delta(x-x_i)\delta(y-y_i)$ 위에서 이루어진다. 이 분포는 실제로 관측된 좌표 바로 그 자리에만 확률질량을 두므로, 두 데이터 점을 잇는 공간 사이에서 모델이 어떤 값을 내놓든 손실에는 전혀 반영되지 않는다. Mixup은 이 사이 공간에도 가상의 훈련 표본을 채워 넣어 새로운 분포, 즉 비시널 분포 위에서 위험을 최소화한다. 목표는 이 비시널 분포가 실제로 어떻게 정의되는지 밝히고, 그 위에서 손실을 최소화하는 것이 왜 모델을 두 표본 사이에서 선형적으로 보간하도록 유도하는지 선형모델을 통해 구체적으로 확인하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`Mixup이 정의하는 비시널 분포는 다음과 같은 절차로 표본을 만든다. 훈련집합에서 두 인덱스 $i,j$를 균등하게 고르고 $\lambda\sim\mathrm{Beta}(\alpha,\alpha)$를 뽑은 뒤, 두 입력과 두 라벨을 각각 같은 비율로 섞는다. 즉 가상 표본은 $(x',y') = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`(\lambda x_i+(1-\lambda)x_j,\ \lambda y_i+(1-\lambda)y_j)`, why: String.raw`mixup의 정의 그 자체다. 입력과 라벨 모두 같은 계수 $\lambda,1-\lambda$로 볼록결합해 하나의 가상 표본을 만든다.` }] },
@@ -11804,6 +13664,26 @@ $$(1-\varepsilon)^T=0.9^5=0.9\times0.9\times0.9\times0.9\times0.9$$
 <p>차례로 계산하면 $0.9^2=0.81$, $0.9^3=0.729$, $0.9^4=0.6561$, $0.9^5=0.59049$입니다.</p>
 <p>시점당 정확도는 $90\%$로 높아 보이지만 다섯 토큰짜리 시퀀스 전체가 완전히 맞을 확률은 약 $59\%$로 뚝 떨어집니다. 교사강요 손실이 보고하는 지표는 시점당 정확도 $0.9$ 하나뿐이고, 이 $0.59$라는 전체 성공률은 애초에 교사강요가 평가한 적이 없는 양입니다. 시퀀스가 더 길어지면 이 격차는 지수적으로 더 벌어집니다.</p>
 <p>아래 증명은 이 $(1-\varepsilon)^T$라는 곱셈 구조가 왜 나오는지, 그리고 이 값이 교사강요 손실이 실제로 재는 양과 어떻게 다른지 확인합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="150" x2="560" y2="150" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="100" cy="150" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="200" cy="150" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="150" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="400" cy="150" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="500" cy="150" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="138" font-size="12">교사강요(학습): 매 시점 정답 조건으로 복귀</text>
+<path d="M100,150 C160,148 240,130 300,118 C360,106 440,70 500,55" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<circle cx="200" cy="140" r="4" class="dg-accent"/>
+<circle cx="300" cy="118" r="4" class="dg-accent"/>
+<circle cx="400" cy="90" r="4" class="dg-accent"/>
+<circle cx="500" cy="55" r="4" class="dg-accent"/>
+<line x1="300" y1="150" x2="300" y2="118" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="400" y1="150" x2="400" y2="90" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="500" y1="150" x2="500" y2="55" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="330" y="45" font-size="12">생성(추론): 자기 예측으로 조건화, 오차 누적</text>
+<text x="60" y="200" font-size="11" class="dg-dim">t=1에서 t=5로 갈수록 두 경로가 점점 벌어짐</text>
+</svg>`,
+    diagramCaption: String.raw`학습은 매번 정답으로 되돌아가지만, 생성은 자기 오류를 물려받아 궤적이 점점 벌어진다.`,
     sections: [
       { id: "s1", text: String.raw`rnn-hidden-state에서는 은닉상태가 $h_t=f(h_{t-1},x_t)$로 과거를 압축해간다는 것을, autoregressive-chain-rule에서는 전체 시퀀스의 확률이 근사 없이 정확히 $p(x_1,\dots,x_T)=\prod_t p(x_t|x_{<t})$로 분해된다는 것을 확인했다. 교사강요는 이 연쇄법칙의 각 항을 훈련 데이터의 참값 $x_{<t}^{true}$를 조건으로 걸어 계산하고, 그 로그우도의 합을 손실 $L_{TF}=-\sum_t\log p_\theta(x_t^{true}\mid x_{<t}^{true})$로 최소화한다. 문제는 생성 시점에는 참값 $x_{<t}^{true}$를 아예 알 수 없어서 모델 자신이 만든 $x_{<t}^{gen}$을 대신 조건으로 써야 한다는 점이다. 목표는 이 조건의 차이가 시퀀스 전체의 성공확률에 어떤 영향을 주는지 단순화된 오류확률 $\varepsilon$으로 정량화하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 시점당 오류확률을 정의한다. 문맥 $x_{<t}$가 정확히 참값 $x_{<t}^{true}$와 같을 때 모델이 다음 토큰을 틀리게 고를 조건부확률을 $\varepsilon$이라 쓴다. 교사강요는 학습 중 항상 참 문맥만을 모델에 넣어주므로, 교사강요 손실이 각 시점마다 실제로 재고 있는 오류율이 바로 이 $\varepsilon$이다. 즉 $\varepsilon = $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`P\bigl(\hat x_t\ne x_t \mid x_{<t}=x_{<t}^{true}\bigr)`, why: String.raw`정의 그대로다. 조건이 참 문맥과 정확히 같을 때 모델의 예측 $\hat x_t$가 정답 $x_t$와 다를 확률이 $\varepsilon$이다. 교사강요는 훈련 내내 이 조건, 즉 참 문맥만을 모델에 넣으므로 손실이 재는 오류율은 정확히 이 $\varepsilon$이다.` }] },
@@ -11873,6 +13753,30 @@ $$\mathbb{E}[\max_aX_a] = \frac{1+1+1-1}{4} = 0.5$$
 <p>이제 선택과 평가를 분리합니다. 선택에는 그대로 $X_{a_1},X_{a_2}$를 쓰고, 평가에는 독립인 두번째 추정치 $Z_{a_1},Z_{a_2}$를 씁니다. $Z_{a_i}$도 각각 독립으로 $+1$ 또는 $-1$을 확률 $0.5$씩 가지며 $\mathbb{E}[Z_{a_i}]=0$입니다. 동률일 때는 $a_1$을 고른다는 규칙으로 $a^\dagger=\arg\max_aX_a$를 계산하면 $(1,1),(1,-1),(-1,-1)$일 때 $a^\dagger=a_1$이고 $(-1,1)$일 때만 $a^\dagger=a_2$입니다. 각각 확률 $3/4$, $1/4$입니다.</p>
 $$\mathbb{E}[Z_{a^\dagger}] = \frac34\mathbb{E}[Z_{a_1}]+\frac14\mathbb{E}[Z_{a_2}] = \frac34\times0+\frac14\times0 = 0$$
 <p>$Z$가 $X$와 독립이라서 어떤 행동이 뽑혔든 그 조건부 기댓값이 항상 $0$이고, 결국 전체 기댓값도 참값의 최댓값인 $0$과 정확히 일치합니다. 표준 방식의 $0.5$라는 양의 편향이 두 추정치를 분리하자 사라졌습니다. 아래 증명은 이 두 방향의 부등식이 이 숫자들만의 우연이 아니라 항상 성립하는 사실임을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="20" x2="60" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="210" x2="500" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="120" x2="500" y2="120" class="dg-stroke-ink" stroke-width="2"/>
+<text x="360" y="115" font-size="12">참값의 최댓값 max Q*(a) = 0</text>
+<line x1="60" y1="108" x2="500" y2="108" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="360" y="101" font-size="12">추정치 최댓값의 기댓값 ≈ 0.5 (과대추정)</text>
+<text x="110" y="230" font-size="12">a1</text>
+<line x1="110" y1="100" x2="110" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="110" cy="100" r="4" class="dg-dim"/>
+<circle cx="110" cy="140" r="4" class="dg-dim"/>
+<line x1="90" y1="120" x2="130" y2="120" class="dg-stroke-ink" stroke-width="2"/>
+<text x="245" y="230" font-size="12">a2</text>
+<line x1="250" y1="100" x2="250" y2="140" class="dg-line" stroke-width="1.5"/>
+<circle cx="250" cy="100" r="4" class="dg-dim"/>
+<circle cx="250" cy="140" r="4" class="dg-dim"/>
+<line x1="230" y1="120" x2="270" y2="120" class="dg-stroke-ink" stroke-width="2"/>
+<text x="380" y="230" font-size="12">a3</text>
+<circle cx="390" cy="200" r="4" class="dg-dim"/>
+<line x1="370" y1="200" x2="410" y2="200" class="dg-stroke-ink" stroke-width="2"/>
+<text x="410" y="205" font-size="11" class="dg-dim">Q*(a3) = -5, 잡음 없음</text>
+<text x="60" y="14" font-size="12">잡음 섞인 추정치의 최댓값이 참값의 최댓값보다 위로 치우침</text>
+</svg>`,
+    diagramCaption: String.raw`행동 선택과 가치 평가를 같은 추정치로 하면 잡음의 최댓값이 참값의 최댓값 위로 편향된다.`,
     sections: [
       { id: "s1", text: String.raw`각 행동 $a$마다 $X_a$를 현재 네트워크가 내놓는 잡음 섞인 값 추정치라 하자. 함수근사 오차나 유한한 표본에서 오는 잡음 때문에 매 순간의 $X_a$는 참값과 다르지만, 평균적으로는 참값을 맞춘다고 가정한다. $\mathbb{E}[X_a]=Q^*(a)$이다. 표준 Q-러닝 스타일의 부트스트래핑은 $\max_aX_a$를 마치 $\max_aQ^*(a)$인 것처럼 그대로 읽어들인다. 지금 목표는 $\mathbb{E}[\max_aX_a]$가 $\max_aQ^*(a)$와 어떤 관계인지 밝히는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`참값 기준으로 최댓값을 주는 행동을 $a^*$라 하자. 즉 $Q^*(a^*)=\max_aQ^*(a)$이다. 잡음이 어떻게 나오든 상관없이, 특정 실현값 하나하나에서 $X_{a^*}$는 전체 최댓값 $\max_{a'}X_{a'}$을 절대 넘을 수 없다. 이 부등식은 잡음의 모든 실현값에서 항상 성립하므로 양변에 기댓값을 씌워도 부등호 방향이 그대로 유지된다. $\mathbb{E}[X_{a^*}] \le $[[blank:가]] 입니다.`, blanks: [{ id: "가", latex: String.raw`\mathbb{E}[\max_{a'}X_{a'}]`, why: String.raw`어떤 실현값에서도 $X_{a^*}\le\max_{a'}X_{a'}$이 성립합니다. 기댓값은 이런 점별 부등식의 방향을 뒤집지 않으므로, 양변에 기댓값을 씌워도 부등호가 그대로 유지됩니다.` }] },
@@ -11919,6 +13823,20 @@ $$=0.5\times0.93+0.0575=0.465+0.0575=0.5225$$
 <p>이 중 노름 $a^2+b^2$이 가장 작은 해를 라그랑주 승수법으로 구하면 $a=b=0.5$가 되어 최소노름은 $0.5^2+0.5^2=0.5$입니다. 반면 $a=2,\ b=-1$도 $2+(-1)=1$이라 훈련오차는 똑같이 0이지만 노름은 $2^2+(-1)^2=5$로 훨씬 큽니다.</p>
 <p>참 함수가 $y=x$라서 $x=2$에서 참값이 $2$라 하겠습니다. 최소노름 해의 예측은 $0.5\times2+0.5\times4=1+2=3$이라 오차가 $|3-2|=1$입니다. 반면 노름이 큰 해의 예측은 $2\times2+(-1)\times4=4-4=0$이라 오차가 $|0-2|=2$로 더 큽니다.</p>
 <p>이 작은 예는 증명이 아니라 관찰입니다. 하지만 훈련오차가 0인 해들 중에서도 노름이 작은 해가 이번 경우에는 더 나은 예측을 준 이 경향은, 경사하강법이 작은 초기값에서 출발했을 때 왜 노름이 작은 해 쪽으로 끌리는 경향을 보이는지에 대한 직관을 줍니다. 아래 절들은 이 직관을 좀 더 체계적으로 따라가 보되, 이중강하의 두 번째 하강 구간에 대한 설명이 여전히 정성적인 수준에 머문다는 점을 분명히 밝힙니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="20" x2="50" y2="210" class="dg-line" stroke-width="1"/>
+<line x1="50" y1="210" x2="590" y2="210" class="dg-line" stroke-width="1"/>
+<text x="480" y="228" font-size="12">파라미터 수 p</text>
+<text x="55" y="16" font-size="12">테스트 오차</text>
+<path d="M290,25 C330,10 420,8 560,6" fill="none" class="dg-dim" stroke-width="2" stroke-dasharray="5,4"/>
+<text x="380" y="20" font-size="11" class="dg-dim">고전적 예상: 계속 과적합</text>
+<path d="M60,150 C120,80 160,90 200,110 C230,130 250,15 290,25 C320,40 340,90 380,105 C440,120 500,105 560,95" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="290" y1="15" x2="290" y2="210" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="296" y="30" font-size="12">보간임계점 p = n</text>
+<text x="65" y="170" font-size="11">고전적 U자</text>
+<text x="420" y="130" font-size="11">이중강하: 다시 감소</text>
+</svg>`,
+    diagramCaption: String.raw`보간임계점 p=n 부근에서 테스트 오차가 튀어 오른 뒤, 실제 곡선(굵은 실선)은 다시 감소한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 편향-분산 트레이드오프의 U자 그림이 어디까지 다루고 있는지 정확히 짚고, 그 그림 밖의 영역에서 무슨 일이 일어나는지 확인하는 것이다. bias-variance-tradeoff 항목에서 본 분해 $E[(y-\hat f)^2]=\mathrm{Bias}^2+\mathrm{Var}+\sigma^2$은 파라미터 수 $p$가 얼마이든 성립하는 항등식 자체는 그대로 유지된다. 달라지는 것은 $p$가 커질 때 편향과 분산 각각이 어떻게 움직이는지에 대한 이야기다. 고전적인 그림은 암묵적으로 $p \ll n$인 구간, 즉 모델이 훈련 데이터를 정확히 다 맞출 수조차 없는 구간만 다룬다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 훈련오차가 정확히 0이 될 수 있는 최소한의 파라미터 수를 짚어내는 것이다. 훈련 데이터가 $n$개이고 각 데이터가 모델의 파라미터에 대해 하나의 선형 제약을 준다고 생각하면, $n$개의 점을 모두 정확히 지나는 함수를 찾는 문제는 미지수가 $p$개, 방정식이 $n$개인 연립방정식을 푸는 것과 같다. 미지수 수가 방정식 수보다 적으면 일반적으로 모든 방정식을 동시에 만족시킬 수 없어 훈련오차가 0보다 크게 남는다.<br><br>미지수 수가 방정식 수를 처음 따라잡는 지점을 보간임계점이라 부르고, 이 지점은 $p=$[[blank:가]] 에서 나타난다.`, blanks: [{ id: "가", latex: String.raw`n`, why: String.raw`방정식 수가 곧 훈련 표본 수 $n$이므로, 미지수인 파라미터 수 $p$가 $n$과 같아지는 순간이 정확히 해가 존재할 자유도와 제약의 개수가 균형을 이루는 경계다. 이 경계를 보간임계점이라 부른다.` }] },
@@ -12016,6 +13934,42 @@ $$G_t^{(3)} = r_t+\gamma r_{t+1}+\gamma^2r_{t+2}+\gamma^3V(s_{t+3}) = 2+0.9+2.43
 <p>전체 리턴, 즉 $n=\infty$에 해당하는 몬테카를로 리턴은 부트스트랩 없이 실제로 관측된 보상 다섯 개를 전부 더합니다.</p>
 $$G_t^{(\infty)} = r_t+\gamma r_{t+1}+\gamma^2r_{t+2}+\gamma^3r_{t+3}+\gamma^4r_{t+4} = 2+0.9+2.43+0+2.6244 = 7.9544$$
 <p>세 값 $7.4,\ 8.975,\ 7.9544$가 서로 다릅니다. $G_t^{(1)}$은 $V(s_{t+1})=6$ 하나에 크게 의존하는데, $s_{t+1}$ 이후 실제로 이어진 보상들이 만들어낸 값은 $1+0.9\times3+0.9^2\times0+0.9^3\times4=6.616$으로 $6$보다 커서, $V(s_{t+1})$이 실제보다 낮게 잡혀 있었던 셈이고 그래서 결과가 실제보다 작게 나왔습니다. $G_t^{(3)}$은 $V(s_{t+3})=5$에 의존하는데, $s_{t+3}$ 이후 실제로 이어진 보상들이 만들어낸 값은 $0+0.9\times4=3.6$으로 $5$보다 작아서, 이번엔 반대로 $V(s_{t+3})$이 실제보다 높게 잡혀 있었던 셈이고 그래서 결과가 오히려 더 크게 튀었습니다. $G_t^{(\infty)}$은 어떤 $V$에도 의존하지 않고 오직 실제로 일어난 보상들에만 의존합니다. 다만 이 값은 그 궤적 단 한 번의 결과일 뿐이라, 같은 상태에서 다시 에피소드를 굴리면 보상들이 달라져 전혀 다른 숫자가 나올 수 있습니다. 아래 증명은 $n$이 커질수록 $V$의 부정확함이 기여하는 정도가 정확히 $\gamma^n$의 비율로 줄어든다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<text x="55" y="20" font-size="12">1-step TD</text>
+<circle cx="110" cy="30" r="7" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="110" y1="37" x2="110" y2="90" class="dg-line" stroke-width="1.5"/>
+<text x="118" y="68" font-size="11">r_t</text>
+<rect x="102" y="90" width="16" height="16" class="dg-accent"/>
+<text x="55" y="130" font-size="11" class="dg-dim">V(s_t+1)로</text>
+<text x="55" y="145" font-size="11" class="dg-dim">부트스트랩</text>
+<text x="300" y="20" font-size="12">n-step 리턴</text>
+<circle cx="340" cy="30" r="7" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="340" y1="37" x2="340" y2="70" class="dg-line" stroke-width="1.5"/>
+<circle cx="340" cy="70" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="340" y1="76" x2="340" y2="110" class="dg-line" stroke-width="1.5"/>
+<circle cx="340" cy="110" r="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="340" y1="116" x2="340" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="348" y="55" font-size="11">r_t</text>
+<text x="348" y="95" font-size="11">r_t+1</text>
+<text x="348" y="135" font-size="11">⋮</text>
+<rect x="332" y="150" width="16" height="16" class="dg-accent"/>
+<text x="300" y="180" font-size="11" class="dg-dim">V(s_t+n)로 부트스트랩</text>
+<text x="545" y="20" font-size="12">몬테카를로</text>
+<circle cx="590" cy="30" r="7" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="590" y1="37" x2="590" y2="65" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="65" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="70" x2="590" y2="98" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="98" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="103" x2="590" y2="131" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="131" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="136" x2="590" y2="164" class="dg-line" stroke-width="1.5"/>
+<circle cx="590" cy="164" r="5" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="590" y1="169" x2="590" y2="197" class="dg-line" stroke-width="1.5"/>
+<rect x="580" y="197" width="20" height="20" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="598" y="60" font-size="10">r</text>
+<text x="530" y="222" font-size="11" class="dg-dim">에피소드 종료, 부트스트랩 없음</text>
+</svg>`,
+    diagramCaption: String.raw`1-step은 즉시 부트스트랩, 몬테카를로는 끝까지 실제 보상만 사용, n-step은 그 사이의 다이얼이다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 벨만 기대방정식의 1스텝 전개를 $n$번 반복해서, TD 목표와 몬테카를로 리턴을 잇는 하나의 식을 만드는 것이다. markov-mdp 항목에서는 무한합으로 정의된 리턴에서 맨 앞의 한 항만 떼어내 $V^\pi(s)=E_\pi[r_t+\gamma V^\pi(s_{t+1})|s_t=s]$라는 재귀식을 얻었다. 이번에는 앞의 한 항이 아니라 앞의 $n$개 항을 실제 보상으로 그대로 두고, $n$번째 스텝 이후는 현재 가진 가치함수 추정치 $V$로 미리 잘라버린 목표 $G_t^{(n)}=r_t+\gamma r_{t+1}+\cdots+\gamma^{n-1}r_{t+n-1}+\gamma^nV(s_{t+n})$를 정의한다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 실제 보상 $n$개를 더한 부분합의 기댓값이 무엇과 같은지 구하는 것이다. markov-mdp 항목의 한 스텝 전개를 $n$번 반복하면, 참 가치함수 $V^\pi(s)$에서 $n$스텝 뒤 상태의 참 가치를 할인해서 뺀 나머지가 정확히 그 사이 $n$개의 실제 보상의 기댓값과 같다는 관계를 얻는다. 이는 $k=0$부터 $k=n-1$까지 순서대로 한 항씩 떼어내는 것을 $n$번 반복한 결과다.<br><br>이 관계를 식으로 쓰면 $E_\pi\!\left[\sum_{k=0}^{n-1}\gamma^kr_{t+k}\,\middle|\,s_t=s\right] = V^\pi(s) - $[[blank:가]] 이다.`, blanks: [{ id: "가", latex: String.raw`\gamma^n\,E_\pi[V^\pi(s_{t+n})\mid s_t=s]`, why: String.raw`참 가치함수의 정의를 $n$번째 스텝까지의 실제 보상 부분과 그 뒤에 남는 꼬리 부분으로 나눈 것이다. 꼬리 부분은 $n$스텝 뒤 상태에서 시작하는 리턴의 기댓값, 즉 $V^\pi(s_{t+n})$이고 여기에 $\gamma^n$이 곱해져 있다. 이 꼬리를 원래 식에서 빼면 남는 것이 실제 보상 $n$개의 기댓값이다.` }] },
@@ -13730,6 +15684,27 @@ $$\tilde A = M^{-1/2}AM^{-1/2}=\begin{pmatrix}1&\frac{1}{10\sqrt2}\\\frac{1}{10\
 <p>먼저 $A^TA$를 계산합니다.</p>
 $$A^TA=\begin{pmatrix}2&-1\\2&1\end{pmatrix}\begin{pmatrix}2&2\\-1&1\end{pmatrix}=\begin{pmatrix}5&3\\3&5\end{pmatrix}$$
 <p>이 대칭행렬의 고유값은 8과 2이고, 각각의 고유벡터는 $v_1=(1,1)/\sqrt2$, $v_2=(1,-1)/\sqrt2$입니다. 따라서 특이값은 $\sigma_1=\sqrt8=2\sqrt2$, $\sigma_2=\sqrt2$입니다. $u_i=Av_i/\sigma_i$로 계산하면 $u_1=(1,0)$, $u_2=(0,-1)$을 얻고, 실제로 $$U\Sigma V^T=\begin{pmatrix}1&0\\0&-1\end{pmatrix}\begin{pmatrix}2\sqrt2&0\\0&\sqrt2\end{pmatrix}\begin{pmatrix}1/\sqrt2&1/\sqrt2\\1/\sqrt2&-1/\sqrt2\end{pmatrix}=\begin{pmatrix}2&2\\-1&1\end{pmatrix}=A$$가 성립함을 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="90" cy="110" r="45" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="90" y1="65" x2="90" y2="155" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="45" y1="110" x2="135" y2="110" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="60" y="185" font-size="12" text-anchor="middle">단위원</text>
+<line x1="150" y1="110" x2="200" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="200,110 190,105 190,115" class="dg-stroke-ink"/>
+<text x="150" y="95" font-size="11">V^T (회전)</text>
+<ellipse cx="330" cy="110" rx="45" ry="20" fill="none" class="dg-stroke-ink" stroke-width="2" transform="rotate(0 330 110)"/>
+<line x1="285" y1="110" x2="375" y2="110" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="330" y1="90" x2="330" y2="130" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="330" y="185" font-size="12" text-anchor="middle">Σ (축방향 스케일링)</text>
+<line x1="390" y1="110" x2="440" y2="110" class="dg-line" stroke-width="1.5"/>
+<polygon points="440,110 430,105 430,115" class="dg-stroke-ink"/>
+<text x="390" y="95" font-size="11">U (회전)</text>
+<g transform="rotate(-25 570 110)">
+<ellipse cx="570" cy="110" rx="45" ry="20" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+</g>
+<text x="570" y="185" font-size="12" text-anchor="middle">최종 상 (=A×단위원)</text>
+</svg>`,
+    diagramCaption: String.raw`임의의 행렬 A는 회전(V^T) → 축방향 스케일링(Σ) → 다시 회전(U) 세 단계로 분해된다.`,
     sections: [
       { id: "s1", text: String.raw`$A$가 정사각행렬이 아니거나 대칭이 아니면 $A$ 자신을 고유대각화할 수 없다. 하지만 $A^TA\in\mathbb{R}^{n\times n}$는 어떤 $A$에 대해서도 항상 대칭이고 준양정치(positive semidefinite)이다. 실제로 임의의 $x$에 대해 $x^T(A^TA)x=\|Ax\|^2\ge0$이므로 고유값이 모두 0 이상이다.`, blanks: [] },
       { id: "s2", text: String.raw`스펙트럴 정리에 의해 $A^TA$는 정규직교 고유벡터 기저 $v_1,\dots,v_n$과 고유값 $\lambda_1\ge\cdots\ge\lambda_n\ge0$을 가진다. 특이값을 $\sigma_i=$[[blank:가]] 로 정의한다.`,
@@ -13757,6 +15732,22 @@ $$A^TA=\begin{pmatrix}2&-1\\2&1\end{pmatrix}\begin{pmatrix}2&2\\-1&1\end{pmatrix
 $$A=\begin{pmatrix}1&2\\2&4\end{pmatrix},\qquad b=\begin{pmatrix}5\\10\end{pmatrix}$$
 <p>$A$의 두 행은 서로 배수 관계라 랭크가 1이고, $Ax=b$를 만족하는 $x$는 무수히 많습니다. 이를테면 $x=(1,2)^T$도 $x=(7,-1)^T$도 모두 $Ax=b$를 만족합니다(직접 대입하면 $A(1,2)^T=(5,10)^T$, $A(7,-1)^T=(5,10)^T$).</p>
 <p>이 행렬은 $A=vv^T$ ($v=(1,2)^T$) 꼴이라 특이값분해가 $\sigma_1=5$, $\sigma_2=0$, $u_1=v_1=v/\|v\|=(1,2)/\sqrt5$로 아주 간단합니다. 유사역행렬은 $$A^+=\frac{1}{\sigma_1}v_1u_1^T=\begin{pmatrix}0.04&0.08\\0.08&0.16\end{pmatrix}$$이고, $x^*=A^+b=(1,2)^T$입니다. 실제로 $\|(1,2)^T\|=\sqrt5\approx2.24$인데 반해 다른 해 $(7,-1)^T$의 노름은 $\sqrt{50}\approx7.07$로 훨씬 크므로, $A^+b$가 더 작은 노름의 해임을 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="110" x2="390" y2="110" class="dg-dim" stroke-width="1"/>
+<line x1="210" y1="20" x2="210" y2="200" class="dg-dim" stroke-width="1"/>
+<line x1="60" y1="190" x2="360" y2="40" class="dg-stroke-ink" stroke-width="2"/>
+<text x="330" y="55" font-size="12">해집합 {x0+z : z∈ker A}</text>
+<circle cx="210" cy="110" r="3" class="dg-stroke-ink"/>
+<text x="200" y="128" font-size="11" class="dg-dim">원점</text>
+<circle cx="255" cy="88" r="6" class="dg-accent"/>
+<text x="262" y="80" font-size="12">x* = A⁺b (최소노름해)</text>
+<line x1="210" y1="110" x2="255" y2="88" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="255" y1="88" x2="300" y2="66" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<circle cx="300" cy="66" r="4" class="dg-stroke-ink"/>
+<text x="300" y="55" font-size="10" class="dg-dim">다른 해 (노름 더 큼)</text>
+<path d="M 240,105 L 250,105 L 250,95" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+</svg>`,
+    diagramCaption: String.raw`해가 무한한 아핀 직선 위에서 원점에 가장 가까운 점이 최소노름해 x*=A⁺b이다.`,
     sections: [
       { id: "s1", text: String.raw`$Ax=b$가 해를 가진다고 하자(즉 $b\in\operatorname{Im}(A)$). $x_0$가 하나의 해라면, 임의의 $z\in\ker(A)$에 대해 $x_0+z$ 역시 해가 된다(왜냐하면 $A(x_0+z)=Ax_0+Az=b+0=b$). 따라서 랭크가 부족하거나 $n>r$이면 해집합은 $\{x_0+z:z\in\ker A\}$로 무한히 많다.`, blanks: [] },
       { id: "s2", text: String.raw`SVD $A=U\Sigma V^T$에서 $\ker(A)$는 특이값이 0인 방향들, 즉 $v_{r+1},\dots,v_n$이 생성하는 부분공간과 같다(이 방향들은 $A$가 완전히 눌러버리는 방향이다). 한편 $A^+b=V\Sigma^+U^Tb=\sum_{i=1}^r\dfrac{u_i^Tb}{\sigma_i}v_i$로 쓸 수 있는데, 이 식은 $v_1,\dots,v_r$만의 선형결합이므로 $A^+b\in$[[blank:가]] 이다.`,
@@ -13783,6 +15774,26 @@ $$A_1=\sigma_1u_1v_1^T=2\sqrt2\begin{pmatrix}1\\0\end{pmatrix}\begin{pmatrix}1/\
 <p>이고, 오차는</p>
 $$A-A_1=\begin{pmatrix}0&0\\-1&1\end{pmatrix},\qquad\|A-A_1\|_F=\sqrt{0^2+0^2+(-1)^2+1^2}=\sqrt2=\sigma_2$$
 <p>입니다. 정리대로 오차가 정확히 버려진 특이값 $\sigma_2=\sqrt2$와 일치합니다. 다른 어떤 랭크-1 행렬로 $A$를 근사해도 이보다 프로베니우스 노름을 더 줄일 수 없습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="180" x2="440" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="50" y1="180" x2="50" y2="30" class="dg-line" stroke-width="1.5"/>
+<rect x="70" y="50" width="30" height="130" class="dg-accent"/>
+<rect x="115" y="90" width="30" height="90" class="dg-accent"/>
+<rect x="160" y="120" width="30" height="60" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="205" y="150" width="30" height="30" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="250" y="165" width="30" height="15" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<line x1="150" y1="35" x2="150" y2="185" class="dg-stroke-ink" stroke-width="2"/>
+<text x="100" y="30" font-size="12" text-anchor="middle">σ1,σ2 유지 (k=2)</text>
+<text x="255" y="30" font-size="11" class="dg-dim" text-anchor="middle">σ3,σ4,... 절단 (점선)</text>
+<text x="60" y="200" font-size="11">σ1</text>
+<text x="105" y="200" font-size="11">σ2</text>
+<text x="150" y="200" font-size="11">σ3</text>
+<text x="195" y="200" font-size="11">σ4</text>
+<text x="240" y="200" font-size="11">σ5</text>
+<text x="330" y="80" font-size="13">A ≈ A_k</text>
+<text x="330" y="100" font-size="12" class="dg-dim">‖A-A_k‖_F = √(Σ_{i&gt;k} σ_i²)</text>
+</svg>`,
+    diagramCaption: String.raw`상위 k개 특이값만 남기고 절단선 오른쪽(점선 막대)을 버리는 것이 최적의 저랭크 근사다.`,
     sections: [
       { id: "s1", text: String.raw`랭크가 $k$ 이하인 행렬 $B$는 특이값을 많아야 $k$개만 가질 수 있다(0이 아닌 특이값의 개수가 곧 랭크이기 때문이다). 즉 $\sigma_i(B)=0$ ($i>k$)이다. 목표는 이 조건 아래 $\|A-B\|_F$를 최소로 만드는 $B$를 찾는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`프로베니우스 노름을 내적으로 전개하면 $\|A-B\|_F^2=\|A\|_F^2-2\operatorname{tr}(A^TB)+\|B\|_F^2$이다. 여기서 $\|A\|_F^2=\sum_{i=1}^r\sigma_i(A)^2$이고 $\|B\|_F^2=\sum_{i=1}^k\sigma_i(B)^2$이다.`, blanks: [] },
@@ -13855,6 +15866,25 @@ $$A^{-1}-A^{-1}U(1)^{-1}VA^{-1}=I-uv^T=\begin{pmatrix}1&0\\0&1\end{pmatrix}-\beg
     explanation: String.raw`선형사상은 정의역의 정보를 일부는 완전히 없애버리고(핵, kernel) 나머지는 상(image)으로 보존합니다. 놀랍게도 '없앤 차원'과 '보존한 차원'을 더하면 언제나 원래 정의역의 차원과 정확히 같습니다.<br><br><strong>명제.</strong> $V,W$가 유한차원 벡터공간이고 $\Phi:V\to W$가 선형사상이라 하자. 그러면 $\dim(\ker\Phi)+\dim(\operatorname{Im}\Phi)=\dim V$이다.`,
     example: String.raw`<p>$\Phi:\mathbb{R}^3\to\mathbb{R}^2$을 $\Phi(x,y,z)=(x+y,\,y+z)$로 정의합니다(행렬로는 $\begin{pmatrix}1&1&0\\0&1&1\end{pmatrix}$).</p>
 <p>핵을 구하려면 $x+y=0$, $y+z=0$을 풀어야 하는데, $y=-x$, $z=-y=x$이므로 핵은 $(1,-1,1)$ 방향 하나로 생성되는 1차원 부분공간입니다(실제로 $\Phi(1,-1,1)=(1-1,-1+1)=(0,0)$). 두 행 $(1,1,0)$과 $(0,1,1)$은 서로 배수가 아니므로 상은 $\mathbb{R}^2$ 전체, 즉 2차원입니다. 따라서 $\dim(\ker\Phi)+\dim(\operatorname{Im}\Phi)=1+2=3=\dim\mathbb{R}^3$으로 명제가 확인됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="30" width="180" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="120" y="20" font-size="12" text-anchor="middle">정의역 V</text>
+<rect x="45" y="45" width="150" height="55" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="120" y="76" font-size="12" text-anchor="middle">ker Φ (핵)</text>
+<rect x="45" y="115" width="150" height="60" class="dg-accent"/>
+<text x="120" y="148" font-size="12" text-anchor="middle">여집합 (n-k차원)</text>
+<line x1="215" y1="145" x2="330" y2="145" class="dg-line" stroke-width="2"/>
+<polygon points="330,145 320,140 320,150" class="dg-stroke-ink"/>
+<text x="235" y="130" font-size="11">Φ</text>
+<line x1="215" y1="70" x2="260" y2="70" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,3"/>
+<polygon points="260,70 253,66 253,74" class="dg-dim"/>
+<text x="220" y="60" font-size="10" class="dg-dim">Φ(ker)=0</text>
+<rect x="340" y="30" width="180" height="160" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="430" y="20" font-size="12" text-anchor="middle">공역 W</text>
+<rect x="355" y="115" width="150" height="60" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="430" y="148" font-size="12" text-anchor="middle">Im Φ (상, k'차원)</text>
+</svg>`,
+    diagramCaption: String.raw`정의역이 핵과 여집합으로 나뉘고, 여집합만 사상되어 상을 이룬다.`,
     sections: [
       { id: "s1", text: String.raw`$k:=\dim(\ker\Phi)$라 하고 $\ker\Phi$의 기저를 $v_1,\dots,v_k$라 하자(만약 $k=0$이면 이 목록은 비어있다).`, blanks: [] },
       { id: "s2", text: String.raw`기저확장정리(임의의 부분공간의 기저는 전체 공간의 기저로 확장할 수 있다)에 의해 $v_1,\dots,v_k$를 $V$ 전체의 기저 $v_1,\dots,v_k,v_{k+1},\dots,v_n$ ($n=\dim V$)으로 확장할 수 있다. 목표는 $\{\Phi(v_{k+1}),\dots,\Phi(v_n)\}$이 $\operatorname{Im}\Phi$의 기저임을 보여 $\dim(\operatorname{Im}\Phi)=$[[blank:가]] 임을 얻는 것이다.`,
@@ -13878,6 +15908,31 @@ $$D^{(2)}=\begin{pmatrix}0&9&16\\9&0&25\\16&25&0\end{pmatrix}$$
 <p>중심화행렬 $J=I-\frac13\mathbf1\mathbf1^T$로 이중중심화를 하면</p>
 $$B=-\frac12JD^{(2)}J\approx\begin{pmatrix}2.778&-0.222&-2.556\\-0.222&5.778&-5.556\\-2.556&-5.556&8.111\end{pmatrix}$$
 <p>를 얻습니다. 이 행렬을 고유분해하면 고유값은 약 $12.96,\ 3.70,\ 0$입니다(세 번째가 정확히 0인 것은 $J$의 랭크가 $n-1=2$라 세 점이 항상 2차원 평면 안에 놓일 수 있음을 보여줍니다). 상위 두 고유벡터로 좌표를 복원하면 원래 삼각형과 회전·반사 관계에 있을 뿐, 점들 사이의 거리는 원래의 $D^{(2)}$와 정확히 일치합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<text x="130" y="25" font-size="12" text-anchor="middle">거리만 주어짐</text>
+<circle cx="70" cy="150" r="4" class="dg-stroke-ink"/>
+<circle cx="190" cy="150" r="4" class="dg-stroke-ink"/>
+<circle cx="130" cy="60" r="4" class="dg-stroke-ink"/>
+<line x1="70" y1="150" x2="190" y2="150" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="115" y="168" font-size="10" class="dg-dim">3</text>
+<line x1="70" y1="150" x2="130" y2="60" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="85" y="105" font-size="10" class="dg-dim">4</text>
+<line x1="190" y1="150" x2="130" y2="60" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<text x="165" y="105" font-size="10" class="dg-dim">5</text>
+<text x="130" y="195" font-size="11" class="dg-dim">좌표는 미지수</text>
+<line x1="260" y1="120" x2="320" y2="120" class="dg-line" stroke-width="2"/>
+<polygon points="320,120 310,115 310,125" class="dg-stroke-ink"/>
+<text x="265" y="105" font-size="10">이중중심화 B=-½JD²J → 고유분해</text>
+<text x="440" y="25" font-size="12" text-anchor="middle">복원된 2D 좌표</text>
+<circle cx="380" cy="150" r="4" class="dg-stroke-accent"/>
+<circle cx="500" cy="150" r="4" class="dg-stroke-accent"/>
+<circle cx="440" cy="60" r="4" class="dg-stroke-accent"/>
+<line x1="380" y1="150" x2="500" y2="150" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="380" y1="150" x2="440" y2="60" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="500" y1="150" x2="440" y2="60" class="dg-stroke-accent" stroke-width="2"/>
+<text x="440" y="195" font-size="11">같은 거리(3,4,5)를 갖는 실제 좌표</text>
+</svg>`,
+    diagramCaption: String.raw`점 사이 거리만으로 이중중심화를 거치면 실제 2D 좌표가 복원된다.`,
     sections: [
       { id: "s1", text: String.raw`$B:=XX^T$를 미지의 그람행렬이라 하면 $b_{ij}=x_i^Tx_j$이고, 제곱거리는 $\|x_i-x_j\|^2=\|x_i\|^2+\|x_j\|^2-2x_i^Tx_j=b_{ii}+b_{jj}-2b_{ij}$로 쓸 수 있다. $\mathbf b$를 $B$의 대각성분을 모은 벡터라 하면 행렬 전체로는 $D^{(2)}=$[[blank:가]] 이다.`,
         blanks: [{ id: "가", latex: String.raw`\mathbf b\mathbf1^T + \mathbf1\mathbf b^T - 2B`, why: String.raw`$(\mathbf b\mathbf1^T)_{ij}=b_{ii}$, $(\mathbf1\mathbf b^T)_{ij}=b_{jj}$이므로 이 세 항의 조합이 $b_{ii}+b_{jj}-2b_{ij}$와 정확히 일치합니다.` }] },
@@ -13904,6 +15959,16 @@ $$B=-\frac12JD^{(2)}J\approx\begin{pmatrix}2.778&-0.222&-2.556\\-0.222&5.778&-5.
     example: String.raw`<p>$m_0=0$, $P_0=4$인 사전분포에 측정값 $z=3$, 측정잡음분산 $R=1$이 들어왔다고 합시다.</p>
 <p>정밀도융합 형태로 계산하면 $P_1^{-1}=\frac14+1=\frac54$이므로 $P_1=0.8$이고, $m_1=P_1\big(\frac{0}{4}+\frac31\big)=0.8\times3=2.4$입니다.</p>
 <p>칼만이득 형태로 계산하면 $K=\dfrac{P_0}{P_0+R}=\dfrac{4}{5}=0.8$이고, $m_1=0+0.8\times(3-0)=2.4$, $P_1=(1-0.8)\times4=0.8$로 정확히 같은 값을 얻습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="160" x2="450" y2="160" class="dg-dim" stroke-width="1"/>
+<path d="M 60,160 Q 150,10 240,160" fill="none" class="dg-stroke-ink" stroke-width="1.8" stroke-dasharray="6,3"/>
+<text x="100" y="45" font-size="11">사전 N(m0,P0)</text>
+<path d="M 190,160 Q 280,60 370,160" fill="none" class="dg-line" stroke-width="1.8" stroke-dasharray="1,3"/>
+<text x="300" y="90" font-size="11">측정 N(z,R)</text>
+<path d="M 210,160 Q 275,25 340,160" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="245" y="20" font-size="12">사후 N(m1,P1) — 더 좁음</text>
+</svg>`,
+    diagramCaption: String.raw`사전분포와 측정분포를 곱하면 더 뾰족한(분산이 작은) 사후 가우시안이 된다.`,
     sections: [
       { id: "s1", text: String.raw`사후분포는 베이즈 규칙에 의해 사전과 우도의 곱에 비례한다: $p(x\mid z)\propto\exp\big(-\frac12(x-m_0)^TP_0^{-1}(x-m_0)\big)\exp\big(-\frac12(z-Hx)^TR^{-1}(z-Hx)\big)$. 두 지수를 더한 뒤 $x$에 대한 이차식으로 정리하는 것이 목표다.`, blanks: [] },
       { id: "s2", text: String.raw`$x$에 대한 이차항 계수만 모으면 사후분포의 정밀도(공분산의 역)가 나오는데, 이는 $P_1^{-1}=$[[blank:가]] 이다(사전 정밀도와 측정이 주는 정밀도를 단순히 더한 것이라 '정밀도 융합'이라 부른다).`,
@@ -13931,6 +15996,21 @@ $$B=-\frac12JD^{(2)}J\approx\begin{pmatrix}2.778&-0.222&-2.556\\-0.222&5.778&-5.
 <p>$\mathbb{R}^3$에서 $U=\mathrm{span}\{(1,1,0)\}$ 이라 하면 정규직교기저는 $e_1=\frac{1}{\sqrt2}(1,1,0)$ 입니다. $x=(2,0,3)$ 을 분해해봅니다.</p>
 $$u = \langle x,e_1\rangle e_1 = \frac{2}{\sqrt2}\cdot\frac{1}{\sqrt2}(1,1,0) = (1,1,0)$$
 <p>그러면 $w:=x-u=(1,-1,3)$ 인데, 실제로 $\langle w,e_1\rangle = \frac{1}{\sqrt2}(1-1+0)=0$ 이므로 $w\in U^\perp$ 이고 $x=u+w=(1,1,0)+(1,-1,3)$ 로 정확히 복원됩니다. $\dim U=1$, $\dim U^\perp=2$ 이고 합이 전체 차원 $3$과 같습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="380" y2="180" class="dg-stroke-ink" stroke-width="2"/>
+<text x="385" y="184" font-size="12">U</text>
+<line x1="70" y1="200" x2="70" y2="20" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="55" y="18" font-size="12">U⊥</text>
+<line x1="70" y1="180" x2="260" y2="60" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="270" y="55" font-size="12">x</text>
+<line x1="260" y1="60" x2="220" y2="180" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line x1="70" y1="180" x2="220" y2="180" class="dg-line" stroke-width="2"/>
+<text x="130" y="197" font-size="11">u (U-성분)</text>
+<line x1="220" y1="180" x2="260" y2="60" class="dg-line" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="255" y="130" font-size="11">w (U⊥-성분)</text>
+<path d="M 220,168 L 232,168 L 232,180" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+</svg>`,
+    diagramCaption: String.raw`벡터 x는 U 위 성분 u와 U에 수직인 성분 w로 유일하게 분해된다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 임의의 $x\in V$를 $x=u+w$, $u\in U$, $w\in U^\perp$ 형태로 유일하게 쪼개는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$U$의 정규직교기저를 $\{e_1,\dots,e_k\}$ 라 하자 ($k=\dim U$, Gram-Schmidt로 항상 구성 가능하다). $x$의 $U$-성분을 $u := $[[blank:가]] 로 정의한다.`,
@@ -13957,6 +16037,19 @@ $$u = \langle x,e_1\rangle e_1 = \frac{2}{\sqrt2}\cdot\frac{1}{\sqrt2}(1,1,0) = 
 <p>$x=(1,2)$, $y=(3,1)$ 이라 하면 $\|x\|=\sqrt5$, $\|y\|=\sqrt{10}$ 이고 $\langle x,y\rangle=1\cdot3+2\cdot1=5$ 입니다.</p>
 <p>코시-슈바르츠 부등식을 확인하면 $|\langle x,y\rangle|=5 \le \|x\|\|y\|=\sqrt{50}=5\sqrt2\approx7.07$ 로 성립합니다.</p>
 <p>이제 $x+y=(4,3)$ 이므로 $\|x+y\|=\sqrt{16+9}=5$ 이고, $\|x\|+\|y\|=\sqrt5+\sqrt{10}\approx2.236+3.162=5.398$ 입니다. 실제로 $5\le5.398$ 로 삼각부등식이 성립함을 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="170" x2="180" y2="60" class="dg-stroke-ink" stroke-width="2.5"/>
+<polygon points="180,60 168,70 175,78" class="dg-stroke-ink"/>
+<text x="90" y="105" font-size="13">x</text>
+<line x1="180" y1="60" x2="300" y2="100" class="dg-line" stroke-width="1.8" stroke-dasharray="5,3"/>
+<polygon points="300,100 288,95 290,108" class="dg-line"/>
+<text x="245" y="72" font-size="13">y</text>
+<line x1="40" y1="170" x2="300" y2="100" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="300,100 286,102 290,112" class="dg-stroke-accent"/>
+<text x="160" y="155" font-size="13">x+y</text>
+<text x="40" y="190" font-size="11" class="dg-dim">‖x+y‖ ≤ ‖x‖+‖y‖ (삼각형 한 변 ≤ 나머지 두 변의 합)</text>
+</svg>`,
+    diagramCaption: String.raw`x, y, x+y가 이루는 삼각형에서 한 변의 길이는 나머지 두 변의 합을 넘지 않는다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 $\|x+y\|\le\|x\|+\|y\|$ 를 보이는 것인데, 양변이 음이 아니므로 제곱해서 비교해도 부등식의 방향이 바뀌지 않는다. 따라서 $\|x+y\|^2\le(\|x\|+\|y\|)^2$ 를 보이면 충분하다.`, blanks: [] },
       { id: "s2", text: String.raw`좌변을 내적으로 전개하면 $\|x+y\|^2 = \langle x+y,x+y\rangle = \|x\|^2 + 2\langle x,y\rangle + $[[blank:가]] 이다.`,
@@ -13981,6 +16074,19 @@ $$u = \langle x,e_1\rangle e_1 = \frac{2}{\sqrt2}\cdot\frac{1}{\sqrt2}(1,1,0) = 
     example: String.raw`<p>$A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ 는 고유값이 $1,3$ 으로 모두 양수라 대칭 양의정부호입니다.</p>
 <p>$x=(1,2)$, $y=(3,-1)$ 에 대해 $\langle x,y\rangle_A = x^TAy = 7$ 이고, 실제로 $\langle y,x\rangle_A=y^TAx=7$ 로 대칭성이 확인됩니다. 또한 $\langle x,x\rangle_A=x^TAx=14>0$ 입니다.</p>
 <p>이제 $\Sigma=\begin{pmatrix}4&1\\1&3\end{pmatrix}$ 이고 $A=\Sigma^{-1}$ 라 하면, $d_M(x,y)^2=(x-y)^T\Sigma^{-1}(x-y)$ 에서 $x-y=(-2,3)$ 이므로 $$d_M(x,y)^2 = 5.4545\ldots,\qquad d_M(x,y)\approx2.335$$ 로 계산되어, 공분산의 상관구조를 반영한 거리값을 얻습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="100" r="20" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="110" cy="100" r="40" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="110" cy="100" r="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="110" y="185" font-size="12" text-anchor="middle">유클리드: 원형 등고선</text>
+<g transform="rotate(35 310 100)">
+<ellipse cx="310" cy="100" rx="65" ry="22" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<ellipse cx="310" cy="100" rx="45" ry="15" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<ellipse cx="310" cy="100" rx="25" ry="8" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+</g>
+<text x="310" y="185" font-size="12" text-anchor="middle">마할라노비스: 기울어진 타원 등고선</text>
+</svg>`,
+    diagramCaption: String.raw`유클리드 거리는 원형 등고선을, 마할라노비스 거리는 공분산 방향으로 기울어진 타원 등고선을 만든다.`,
     sections: [
       { id: "s1", text: String.raw`내적이 되려면 대칭성, 쌍선형성, 양정치성이라는 세 공리를 만족해야 한다는 것을 상기하고, 이 세 가지를 차례로 확인한다.`, blanks: [] },
       { id: "s2", text: String.raw`대칭성: $A^T=A$ 이므로 $\langle y,x\rangle_A = y^TAx = (y^TAx)^T = x^TA^Ty = $[[blank:가]]$ = \langle x,y\rangle_A$ 이다. (스칼라는 자신의 전치와 같다는 사실을 이용했다.)`,
@@ -14007,6 +16113,15 @@ $$u = \langle x,e_1\rangle e_1 = \frac{2}{\sqrt2}\cdot\frac{1}{\sqrt2}(1,1,0) = 
     example: String.raw`<p>추상적 증명 전에 두 구체적 함수의 내적을 직접 계산해서 정의가 어떻게 작동하는지 봅니다.</p>
 <p>$[a,b]=[0,1]$ 위에서 $f(x)=x$, $g(x)=x^2$ 이라 하면 $$\langle f,g\rangle=\int_0^1 x\cdot x^2\,dx=\int_0^1 x^3\,dx=\left.\frac{x^4}{4}\right|_0^1=\frac14$$ 입니다.</p>
 <p>양정치성도 확인해봅니다. 항등적으로 0이 아닌 함수 $h(x)=x-\tfrac12$ 에 대해 $$\langle h,h\rangle=\int_0^1\left(x-\frac12\right)^2dx=\frac1{12}\approx0.083>0$$ 로, 실제로 0이 아닌 연속함수의 자기 내적은 양수임을 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="100" x2="400" y2="100" class="dg-dim" stroke-width="1"/>
+<path d="M 30,100 Q 100,30 165,100 Q 230,170 300,100 Q 365,30 400,60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="55" y="45" font-size="12">f(x)</text>
+<path d="M 30,100 Q 100,170 165,100 Q 230,30 300,100 Q 365,170 400,140" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="55" y="160" font-size="12">g(x)</text>
+<text x="140" y="195" font-size="11" class="dg-dim">양(+) 넓이와 음(-) 넓이가 서로 상쇄되어 ∫f·g dx = 0</text>
+</svg>`,
+    diagramCaption: String.raw`두 함수의 곱을 구간에서 적분하면 양의 넓이와 음의 넓이가 상쇄되어 내적이 0(직교)이 될 수 있다.`,
     sections: [
       { id: "s1", text: String.raw`내적이 되려면 대칭성, 쌍선형성, 양정치성을 만족해야 한다. 실수의 곱셈은 교환법칙이 성립하므로 대칭성은 $\langle f,g\rangle = \int_a^b f(x)g(x)\,dx = \int_a^b g(x)f(x)\,dx = \langle g,f\rangle$ 로 즉시 확인된다.`, blanks: [] },
       { id: "s2", text: String.raw`쌍선형성(첫 인자에 대한 선형성): 적분의 선형성에 의해 $\langle cf+f',g\rangle = \int_a^b (cf(x)+f'(x))g(x)\,dx = c\int_a^b f(x)g(x)dx + \int_a^b f'(x)g(x)dx = $[[blank:가]] 이고, 대칭성과 결합하면 두 번째 인자에 대해서도 선형이다.`,
@@ -14032,6 +16147,19 @@ $$u = \langle x,e_1\rangle e_1 = \frac{2}{\sqrt2}\cdot\frac{1}{\sqrt2}(1,1,0) = 
     example: String.raw`<p>$B=\begin{pmatrix}1&0\\1&1\\0&1\end{pmatrix}$ (즉 $U=\mathrm{col}(B)\subset\mathbb{R}^3$), $x=(1,2,3)$ 이라 합니다.</p>
 <p>계산하면 사영행렬 $P=B(B^TB)^{-1}B^T$ 이고, $$\pi_U(x)=Px=\left(\tfrac13,\tfrac83,\tfrac73\right),\qquad x-\pi_U(x)=\left(\tfrac23,-\tfrac23,\tfrac23\right)$$ 입니다. 실제로 $B^T(x-\pi_U(x))\approx(0,0)$ 로 오차가 $U$에 수직임이 확인됩니다.</p>
 <p>최소성도 확인해봅니다. $\|x-\pi_U(x)\|=\sqrt{4/3}\approx1.155$ 인데, $U$의 다른 점 $B(c^*+(0.1,0))$ 과 $x$의 거리는 $\approx1.163$ 으로 더 커서, $\pi_U(x)$가 실제로 더 가까운 점임을 알 수 있습니다. 또한 직접 계산하면 $P^T=P$, $P^2=P$ 도 성립합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="160" x2="360" y2="160" class="dg-stroke-ink" stroke-width="2"/>
+<text x="365" y="164" font-size="12">U</text>
+<line x1="60" y1="160" x2="150" y2="30" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="140" y="25" font-size="12">x</text>
+<line x1="150" y1="30" x2="220" y2="160" class="dg-line" stroke-width="1.8" stroke-dasharray="5,3"/>
+<line x1="60" y1="160" x2="220" y2="160" class="dg-line" stroke-width="2"/>
+<text x="140" y="178" font-size="12">π_U(x)</text>
+<text x="230" y="105" font-size="11">오차 x-π_U(x)</text>
+<path d="M 210,160 L 210,148 L 220,148" fill="none" class="dg-stroke-ink" stroke-width="1.3"/>
+<text x="225" y="148" font-size="10" class="dg-dim">직각</text>
+</svg>`,
+    diagramCaption: String.raw`U 위 최근접점에서는 오차 벡터가 항상 U에 수직이다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 $u^*\in U$가 $\|x-u\|$를 최소화하는 것과 오차 $x-u^*$가 $U$에 수직인 것이 동치임을 보이는 것이다. $U=\mathrm{col}(B)$이므로 $u=Bc$ ($c\in\mathbb{R}^k$)로 쓸 수 있고, $\varphi(c):=\|x-Bc\|^2$의 최소화 문제로 바꿔 생각한다.`, blanks: [] },
       { id: "s2", text: String.raw`$\varphi(c) = \|x-Bc\|^2 = x^Tx - 2c^TB^Tx + c^TB^TBc$ 이므로 $\varphi$는 $c$에 대한 이차함수이고, 헤시안은 $\nabla^2\varphi(c) = 2B^TB$ 이다. $B^TB$가 (가정에 의해) 가역인 대칭행렬이고 양의정부호이므로 $\varphi$는 강볼록(strictly convex)하다 — 따라서 임계점이 있다면 그것이 유일한 전역 최소점이다.`, blanks: [] },
@@ -14058,6 +16186,25 @@ $$u = \langle x,e_1\rangle e_1 = \frac{2}{\sqrt2}\cdot\frac{1}{\sqrt2}(1,1,0) = 
     explanation: String.raw`커널트릭은 "명시적으로 특징벡터 $\phi(x)$를 계산하지 않고도 고차원 특징공간에서의 내적 $\phi(x)\cdot\phi(y)$를 흉내낼 수 있다"는 아이디어예요. 그런데 아무 함수나 이렇게 쓸 수 있는 건 아니고, 머서 정리가 그 조건 — 그람행렬이 양의준정부호(PSD)이면 된다 — 을 정확히 알려줍니다.<br><br><strong>명제.</strong> 대칭함수 $k:X\times X\to\mathbb{R}$가 임의의 유한한 점들 $x_1,\dots,x_m\in X$에 대해 그람행렬 $K_{ij}:=k(x_i,x_j)$가 양의준정부호(PSD, 모든 벡터 $z$에 대해 $z^TKz\ge0$)이면, 어떤 특징사상 $\psi:\{x_1,\dots,x_m\}\to\mathbb{R}^m$이 존재해 $k(x_i,x_j)=\langle\psi(x_i),\psi(x_j)\rangle$ 로 쓸 수 있다 (유한 표본에서의 머서 정리).`,
     example: String.raw`<p>그람행렬이 $K=\begin{pmatrix}2&1\\1&2\end{pmatrix}$ 라 합시다. 고유값은 $1$과 $3$으로 모두 음이 아니라 PSD입니다.</p>
 <p>고유값분해로 $\psi(x_1)\approx(-0.707,\ 1.225)$, $\psi(x_2)\approx(0.707,\ 1.225)$ 를 얻으면, 실제로 $$\langle\psi(x_1),\psi(x_2)\rangle=(-0.707)(0.707)+(1.225)(1.225)\approx-0.5+1.5=1=K_{12}$$ $$\langle\psi(x_1),\psi(x_1)\rangle\approx0.5+1.5=2=K_{11}$$ 로 그람행렬의 값을 특징벡터의 내적으로 정확히 복원함을 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="100" x2="200" y2="100" class="dg-dim" stroke-width="1.5"/>
+<circle cx="55" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="95" cy="100" r="5" class="dg-accent"/>
+<circle cx="130" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="170" cy="100" r="5" class="dg-accent"/>
+<text x="110" y="130" font-size="11" class="dg-dim">저차원: 직선으로 분리 불가</text>
+<line x1="220" y1="100" x2="270" y2="100" class="dg-line" stroke-width="2"/>
+<polygon points="270,100 260,95 260,105" class="dg-stroke-ink"/>
+<text x="222" y="85" font-size="11">φ(x)</text>
+<circle cx="330" cy="150" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="370" cy="160" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="350" cy="50" r="5" class="dg-accent"/>
+<circle cx="410" cy="60" r="5" class="dg-accent"/>
+<line x1="290" y1="105" x2="450" y2="95" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="300" y="90" font-size="11">분리 초평면</text>
+<text x="380" y="190" font-size="11" class="dg-dim">고차원 특징공간</text>
+</svg>`,
+    diagramCaption: String.raw`저차원에서 분리 불가능한 두 클래스가 특징사상 φ를 거치면 초평면으로 분리된다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 PSD인 그람행렬 $K$로부터 실제로 $\psi(x_i)$들을 구성해 보이는 것이다. $K$는 대칭행렬이므로 스펙트럴 정리(고유값분해)를 쓸 수 있다: $K = V\Lambda V^T$, 여기서 $V$는 직교행렬($V^TV=I$)이고 $\Lambda=\mathrm{diag}(\lambda_1,\dots,\lambda_m)$은 고유값을 담은 대각행렬이다.`, blanks: [] },
       { id: "s2", text: String.raw`$K$가 PSD라는 가정으로부터 모든 고유값 $\lambda_l\ge0$ 이다: 만약 어떤 $\lambda_l<0$ 이라면, 그에 대응하는 고유벡터 $z_l$을 그람행렬의 이차형식에 대입해 $z_l^TKz_l = $[[blank:가]]$ < 0$ 이 되어 PSD 가정($z^TKz\ge0,\ \forall z$)에 모순되기 때문이다.`,
@@ -14107,6 +16254,24 @@ $$\mathrm{PMI}(w,c)=\log\frac{\#(w,c)|D|}{\#(w)\#(c)}=\log\frac{20\times1000}{50
     explanation: String.raw`데이터를 몇 개의 "기본 패턴"(사전, dictionary)의 조합으로 표현하되 그 조합이 최대한 희소(sparse)하길 바란다면 어떻게 학습해야 할까요. 사전과 계수를 동시에 최적화하는 문제는 까다롭지만, 하나를 고정하면 나머지는 볼록문제가 되는 성질(biconvexity)을 이용해 번갈아 최적화하면 됩니다.<br><br><strong>명제.</strong> 데이터 $\{x_i\}_{i=1}^n\subset\mathbb{R}^d$, 사전 $D\in\mathbb{R}^{d\times p}$ (열 $d_j$가 기저원소), 계수 $a_i\in\mathbb{R}^p$에 대해 희소코딩의 목적함수를 $$J(D,\{a_i\}) = \sum_{i=1}^n \left(\|x_i-Da_i\|_2^2 + \lambda\|a_i\|_1\right),\quad \text{단 } \|d_j\|_2\le1\ \forall j$$ 라 하면, (i) 열 노름 제약이 없으면 $\inf J=0$으로 문제가 퇴화하고, (ii) $D$를 고정하면 각 $a_i$에 대한 부분문제는 볼록(Lasso)이고 $\{a_i\}$를 고정하면 $D$에 대한 부분문제도 (제약집합이 볼록이므로) 볼록이다 — 따라서 교대최소화(alternating minimization)가 매 단계 $J$를 비증가시킨다.`,
     example: String.raw`<p>$D_0=I_2$ (2×2 항등행렬), $a_0=(2,3)$, $x=D_0a_0=(2,3)$, $\lambda=0.5$ 라 하면 원래 목적함수 값은 $$J = \|x-D_0a_0\|^2+\lambda\|a_0\|_1 = 0+0.5(2+3)=2.5$$ 입니다.</p>
 <p>이제 $c=10$으로 $D_c=10D_0$, $a_c=a_0/10=(0.2,0.3)$ 로 바꾸면 재구성은 여전히 완벽합니다($D_ca_c=D_0a_0=x$ 이므로 오차항은 0). 하지만 벌점항은 $$\lambda\|a_c\|_1=0.5(0.2+0.3)=0.25$$ 로 줄어들어 전체 $J=0.25$ 가 되고, $c=100$이면 $J=0.025$ 로 더 줄어듭니다. 열 노름 제약이 없다면 $c\to\infty$에서 $J\to0$으로 무의미하게 퇴화함을 수치로 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="30" font-size="12">사전 D의 원자들</text>
+<line x1="40" y1="150" x2="80" y2="60" class="dg-dim" stroke-width="1.2" stroke-dasharray="3,3"/>
+<line x1="40" y1="150" x2="110" y2="90" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="40" y1="150" x2="60" y2="55" class="dg-dim" stroke-width="1.2" stroke-dasharray="3,3"/>
+<line x1="40" y1="150" x2="130" y2="120" class="dg-dim" stroke-width="1.2" stroke-dasharray="3,3"/>
+<line x1="40" y1="150" x2="95" y2="170" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="40" y1="150" x2="20" y2="80" class="dg-dim" stroke-width="1.2" stroke-dasharray="3,3"/>
+<text x="105" y="82" font-size="10">d_i (사용됨)</text>
+<text x="95" y="185" font-size="10">d_j (사용됨)</text>
+<text x="30" y="45" font-size="10" class="dg-dim">나머지 원자는 계수 0</text>
+<line x1="220" y1="150" x2="270" y2="150" class="dg-line" stroke-width="2"/>
+<polygon points="270,150 260,145 260,155" class="dg-stroke-ink"/>
+<text x="225" y="135" font-size="11">= a_i d_i + a_j d_j</text>
+<line x1="290" y1="150" x2="380" y2="80" class="dg-stroke-ink" stroke-width="3"/>
+<text x="385" y="80" font-size="12">x (데이터)</text>
+</svg>`,
+    diagramCaption: String.raw`데이터 벡터 x는 사전 원자 중 소수(굵은 화살표)만의 가중합으로 희소하게 표현된다.`,
     sections: [
       { id: "s1", text: String.raw`만약 열 노름 제약 $\|d_j\|\le1$이 없다면 어떤 일이 생기는지 먼저 본다. 임의의 $c>1$에 대해 $D':=cD$, $a_i':=a_i/c$ 로 바꾸면 재구성항은 $\|x_i-D'a_i'\|^2 = \|x_i-D(c\cdot\frac1c)a_i\|^2 = \|x_i-Da_i\|^2$ 로 그대로지만, 희소 벌점항은 $\lambda\|a_i'\|_1 = $[[blank:가]] 로 바뀐다.`,
         blanks: [{ id: "가", latex: String.raw`\frac{\lambda}{c}\|a_i\|_1`, why: String.raw`a_i'=a_i/c이므로 L1 노름은 절댓값의 합인데 스칼라를 곱하면 그 절댓값만큼 노름도 스케일돼서 ‖a_i/c‖_1 = (1/c)‖a_i‖_1이 되고, 앞의 λ와 곱하면 (λ/c)·‖a_i‖_1이 돼요.` }] },
@@ -14135,6 +16300,18 @@ $$\mathrm{PMI}(w,c)=\log\frac{\#(w,c)|D|}{\#(w)\#(c)}=\log\frac{20\times1000}{50
 <p>두 클래스의 평균이 $\mu_1=(3,1)$, $\mu_2=(1,2)$이고 공통 공분산이 $\Sigma=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, 사전확률이 같다고 합시다($\pi_1=\pi_2$).</p>
 $$\Sigma^{-1}=\frac{1}{3}\begin{pmatrix}2&-1\\-1&2\end{pmatrix}$$
 <p>따라서 $w=\Sigma^{-1}(\mu_1-\mu_2)=\Sigma^{-1}(2,-1)^T=(5/3,\,-4/3)$이고, $\mu_1^T\Sigma^{-1}\mu_1=14/3$, $\mu_2^T\Sigma^{-1}\mu_2=2$이므로 $b=-\frac12(14/3-2)=-4/3$입니다. 양변에 3을 곱하면 결정경계는 $5x_1-4x_2-4=0$, 즉 $x$에 대한 선형방정식임을 직접 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="120" cy="90" rx="55" ry="28" fill="none" class="dg-stroke-ink" stroke-width="2" transform="rotate(-20 120 90)"/>
+<text x="90" y="60" font-size="12">클래스 1</text>
+<ellipse cx="260" cy="150" rx="55" ry="28" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3" transform="rotate(-20 260 150)"/>
+<text x="255" y="185" font-size="12">클래스 2</text>
+<line x1="60" y1="180" x2="330" y2="60" class="dg-line" stroke-width="1.8" stroke-dasharray="5,3"/>
+<text x="290" y="55" font-size="11">결정경계 wᵀx+b=0</text>
+<line x1="140" y1="185" x2="255" y2="55" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="255,55 245,60 250,68" class="dg-stroke-ink"/>
+<text x="245" y="100" font-size="11">투영방향 w</text>
+</svg>`,
+    diagramCaption: String.raw`w 방향으로 사영하면 클래스 간 분산은 최대, 클래스 내 분산은 최소가 되어 결정경계가 정해진다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 $P(y=1\mid x)=P(y=2\mid x)$인 경계를 구하는 것이다. 베이즈 정리에 의해 $\dfrac{P(y=1\mid x)}{P(y=2\mid x)}=\dfrac{\pi_1 p(x\mid y=1)}{\pi_2p(x\mid y=2)}$이므로, 로그를 취한 판별함수 $\delta(x)=\log\dfrac{\pi_1}{\pi_2}+\log\dfrac{p(x\mid \mu_1,\Sigma)}{p(x\mid\mu_2,\Sigma)}$의 부호가 결정경계를 결정한다.`, blanks: [] },
       { id: "s2", text: String.raw`가우시안 로그밀도는 $\log p(x\mid \mu_k,\Sigma)=-\frac12(x-\mu_k)^T\Sigma^{-1}(x-\mu_k)+C$ (상수 $C$는 $\mu_k$에 무관)이므로 $\delta(x)=\log\frac{\pi_1}{\pi_2}-\frac12$[[blank:가]] 이다.`,
@@ -14158,6 +16335,19 @@ $$\Sigma^{-1}=\frac{1}{3}\begin{pmatrix}2&-1\\-1&2\end{pmatrix}$$
     example: String.raw`<p>먼저 숫자로 확인합니다. $X=\begin{pmatrix}2&0\\0&1\\0&0\end{pmatrix}$라 하면 열이 이미 서로 직교하므로 특이값분해는 $D=\mathrm{diag}(2,1)$, $U$의 첫 두 열이 $(1,0,0)^T,(0,1,0)^T$, $V=I_2$입니다.</p>
 <p>$\lambda=3$, $y=(1,1,1)^T$라 하면 $X^Ty=(2,1)^T$이고 $X^TX+\lambda I=\mathrm{diag}(7,4)$이므로 $\hat\beta_{ridge}=(2/7,\,1/4)^T$, 즉 $X\hat\beta_{ridge}=(4/7,\,1/4,\,0)^T$입니다.</p>
 <p>이를 수축 공식으로 다시 확인하면 $u_1^Ty=1$, $u_2^Ty=1$이고 수축계수는 $d_1^2/(d_1^2+\lambda)=4/7\approx0.571$, $d_2^2/(d_2^2+\lambda)=1/4=0.25$이므로 $X\hat\beta_{ridge}=\frac47u_1+\frac14u_2=(4/7,1/4,0)^T$로 정확히 일치합니다. 특이값이 작은 두 번째 방향($d_2=1$)이 첫 번째 방향($d_1=2$)보다 훨씬 강하게(0.25 대 0.571) 수축되었습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="140" cy="100" rx="90" ry="35" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="140" y="20" font-size="12" text-anchor="middle">원본 (OLS, λ=0)</text>
+<line x1="50" y1="100" x2="230" y2="100" class="dg-dim" stroke-width="1"/>
+<line x1="140" y1="65" x2="140" y2="135" class="dg-dim" stroke-width="1"/>
+<line x1="240" y1="100" x2="290" y2="100" class="dg-line" stroke-width="2"/>
+<polygon points="290,100 280,95 280,105" class="dg-stroke-ink"/>
+<text x="235" y="85" font-size="10">릿지 수축</text>
+<ellipse cx="360" cy="100" rx="55" ry="12" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="360" y="20" font-size="11" text-anchor="middle">릿지 후 (λ&gt;0)</text>
+<text x="360" y="135" font-size="9" class="dg-dim" text-anchor="middle">긴 축은 조금, 짧은 축은 많이 수축</text>
+</svg>`,
+    diagramCaption: String.raw`특이값이 큰 방향(긴 축)은 조금만, 작은 방향(짧은 축)은 훨씬 강하게 수축된다.`,
     sections: [
       { id: "s1", text: String.raw`릿지회귀의 해는 $\hat\beta_{ridge}=(X^TX+\lambda I)^{-1}X^Ty$이다. $X=UDV^T$ (여기서 $U^TU=I$, $V^TV=I$)를 대입하기 위해 먼저 $X^TX=VD^2V^T$임을 이용한다.`, blanks: [] },
       { id: "s2", text: String.raw`$X^TX+\lambda I = VD^2V^T+\lambda VV^T = V(D^2+\lambda I)V^T$이므로 역행렬은 $(X^TX+\lambda I)^{-1}=$[[blank:가]] 이다.`,
@@ -14178,6 +16368,21 @@ $$\Sigma^{-1}=\frac{1}{3}\begin{pmatrix}2&-1\\-1&2\end{pmatrix}$$
     explanation: String.raw`은닉층 차원이 입력보다 작은 오토인코더는 정보를 압축했다가 복원하도록 학습됩니다. 만약 인코더와 디코더가 모두 선형함수이고 손실이 평균제곱오차라면, 이 압축은 결국 우리가 이미 알고 있는 PCA와 똑같은 부분공간을 찾아냅니다.<br><br><strong>명제.</strong> 중심화된 데이터 $x\in\mathbb{R}^d$ (공분산 $\Sigma$, 고유값 $\lambda_1\ge\cdots\ge\lambda_d$)에 대해 인코더 $z=W_ex$($W_e\in\mathbb{R}^{k\times d}$, $k<d$)와 디코더 $\hat x=W_dz$($W_d\in\mathbb{R}^{d\times k}$)로 이루어진 선형 오토인코더가 $E\|x-W_dW_ex\|^2$를 최소화한다고 하자. 이때 최적해에서 $\mathrm{range}(W_d)$는 $\Sigma$의 상위 $k$개 고유벡터가 장(span)하는 부분공간과 같고, 최소 손실값은 $\sum_{i=k+1}^d\lambda_i$이다.`,
     example: String.raw`<p>PCA 예제에서 다뤘던 $\Sigma=\begin{pmatrix}3&1\\1&3\end{pmatrix}$를 그대로 씁니다. 고유값은 4와 2, 최대 고유값의 고유벡터는 $(1,1)/\sqrt2$입니다.</p>
 <p>은닉층을 1차원($k=1$)으로 둔 선형 오토인코더를 학습시키면, 최적의 $W_dW_e$는 정확히 $(1,1)/\sqrt2$ 방향으로의 직교사영이고, 이때 남는 복원오차의 기댓값은 두 번째(작은) 고유값 $\lambda_2=2$와 같습니다. 실제로 $\mathrm{tr}(\Sigma)-\lambda_1=6-4=2$로 정확히 일치합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="90" cy="150" r="3" class="dg-stroke-ink"/>
+<circle cx="130" cy="120" r="3" class="dg-stroke-ink"/>
+<circle cx="160" cy="140" r="3" class="dg-stroke-ink"/>
+<circle cx="200" cy="90" r="3" class="dg-stroke-ink"/>
+<circle cx="230" cy="105" r="3" class="dg-stroke-ink"/>
+<circle cx="270" cy="60" r="3" class="dg-stroke-ink"/>
+<circle cx="300" cy="75" r="3" class="dg-stroke-ink"/>
+<line x1="60" y1="175" x2="330" y2="45" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="250" y="40" font-size="12">오토인코더 부분공간 = PCA 주성분 축</text>
+<line x1="130" y1="120" x2="140" y2="132" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="200" y1="90" x2="210" y2="102" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="90" y="192" font-size="10" class="dg-dim">두 축이 정확히 일치</text>
+</svg>`,
+    diagramCaption: String.raw`은닉차원 k인 선형 오토인코더가 학습한 부분공간은 PCA 상위 k개 주성분 축과 정확히 일치한다.`,
     sections: [
       { id: "s1", text: String.raw`인코더-디코더의 합성 $C=W_dW_e$는 랭크가 최대 $k$인 $d\times d$ 행렬이다. 데이터가 중심화되어 있으므로 손실은 $E\|x-Cx\|^2=E[(x-Cx)^T(x-Cx)]=\mathrm{tr}\big((I-C)\Sigma(I-C)^T\big)$로 쓸 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`$\mathrm{range}(C)$가 정확히 $k$차원 부분공간 $S$와 같다고 고정하고, $S$의 정규직교기저를 열로 갖는 행렬을 $U_S$($U_S^TU_S=I_k$)라 하면 $C=U_SA$ ($A\in\mathbb{R}^{k\times d}$)로 쓸 수 있다. 이때 손실은 $f(A)=E\|x-U_SAx\|^2=\mathrm{tr}(\Sigma)-2\,\mathrm{tr}(A\Sigma U_S)+\mathrm{tr}(A\Sigma A^T)$이다.`, blanks: [] },
@@ -14198,6 +16403,18 @@ $$\Sigma^{-1}=\frac{1}{3}\begin{pmatrix}2&-1\\-1&2\end{pmatrix}$$
     explanation: String.raw`오토인코더가 노이즈에 강건한 표현을 배우게 하려면 어떻게 손실을 설계해야 할까요. 입력에 아주 작은 무작위 섭동을 주고 인코더 출력이 얼마나 흔들리는지를 직접 재는 대신, 그 흔들림을 1차 근사로 계산해서 벌점으로 쓸 수 있습니다. 그 결과가 바로 수축 오토인코더(Contractive Autoencoder, CAE)의 야코비안 노름 벌점입니다.<br><br><strong>명제.</strong> 인코더 $h=f(x)$의 야코비안을 $J_f(x)=\partial h/\partial x$라 하자. 등방 가우시안 섭동 $\epsilon\sim N(0,\sigma^2I)$에 대해 $E_\epsilon\|f(x+\epsilon)-f(x)\|^2$를 1차 테일러근사로 전개하면 $\sigma^2\|J_f(x)\|_F^2$가 되며, 여기서 $\|J_f(x)\|_F^2=\sum_{ij}\left(\dfrac{\partial h_i}{\partial x_j}\right)^2$이다. 따라서 CAE의 손실 $L=\|x-g(f(x))\|^2+\lambda\|J_f(x)\|_F^2$에서 두 번째 항은 무한소 등방 입력잡음에 대한 인코더 출력의 기대 민감도를 벌점화한 것과 같다.`,
     example: String.raw`<p>은닉유닛이 1개, 입력이 2차원인 시그모이드 인코더 $h=\sigma(w^Tx)$, $w=(1,-1)$를 생각합니다. $x_0=(0,0)$에서 사전활성값은 $w^Tx_0=0$이므로 $h=\sigma(0)=0.5$이고 $h(1-h)=0.25$입니다.</p>
 <p>야코비안은 $J_f(x_0)=h(1-h)\,w^T=0.25\,(1,-1)=(0.25,-0.25)$이고 $\|J_f(x_0)\|_F^2=0.25^2+0.25^2=0.125$입니다. 등방잡음의 분산이 $\sigma^2=0.01$이라면 $E_\epsilon\|f(x_0+\epsilon)-f(x_0)\|^2\approx0.01\times0.125=0.00125$로 근사됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg">
+<text x="90" y="30" font-size="12" text-anchor="middle">입력공간</text>
+<circle cx="90" cy="110" r="55" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="90" y="180" font-size="11" text-anchor="middle">섭동 원 (반경 σ)</text>
+<line x1="160" y1="110" x2="230" y2="110" class="dg-line" stroke-width="2"/>
+<polygon points="230,110 220,105 220,115" class="dg-stroke-ink"/>
+<text x="165" y="95" font-size="11">인코더 f</text>
+<text x="330" y="30" font-size="12" text-anchor="middle">잠재공간</text>
+<circle cx="330" cy="110" r="18" class="dg-accent"/>
+<text x="330" y="150" font-size="11" text-anchor="middle">더 작은 공 (수축됨)</text>
+</svg>`,
+    diagramCaption: String.raw`입력공간의 작은 섭동 원이 인코더를 통과하며 잠재공간에서 더 작은 공으로 수축된다.`,
     sections: [
       { id: "s1", text: String.raw`인코더 $h=f(x)$, 디코더 $\hat x=g(h)$인 오토인코더에서 수축 오토인코더는 재구성오차에 인코더 야코비안 $J_f(x)=\partial h/\partial x\in\mathbb{R}^{k\times d}$의 프로베니우스 노름 제곱을 더한 $L=\|x-g(f(x))\|^2+\lambda\|J_f(x)\|_F^2$를 최소화한다.`, blanks: [] },
       { id: "s2", text: String.raw`이 벌점이 어떤 의미인지 보이기 위해 작은 섭동 $\epsilon$에 대해 $f(x+\epsilon)$을 1차 테일러근사하면 $f(x+\epsilon)\approx f(x)+$[[blank:가]] 이다.`,
@@ -14217,6 +16434,17 @@ $$\Sigma^{-1}=\frac{1}{3}\begin{pmatrix}2&-1\\-1&2\end{pmatrix}$$
     explanation: String.raw`센서로 들어오는 원시 신호는 빠르게 요동치지만, 그 신호가 나타내는 "의미"(예: 물체의 위치)는 보통 천천히 변합니다. Slow Feature Analysis(SFA)는 원시 신호로부터 가장 느리게 변하는 성분을 뽑아내는 방법입니다. 목적함수만 보면 새로워 보이지만, 이 문제도 결국 일반화 고유값문제로 환원됩니다.<br><br><strong>명제.</strong> 시계열 $x(t)\in\mathbb{R}^d$가 평균 0이라 하고 $C=\langle x(t)x(t)^T\rangle_t$, $\dot C=\langle \dot x(t)\dot x(t)^T\rangle_t$ (여기서 $\dot x(t)=x(t+1)-x(t)$)라 하자. 선형특징 $y(t)=w^Tx(t)$에 대해 단위분산 제약 $w^TCw=1$ 하에서 시간적 변화율의 분산 $\langle \dot y(t)^2\rangle_t=w^T\dot Cw$를 최소화하는 $w$는 일반화 고유값문제 $\dot Cw=\lambda Cw$의 최소 고유값에 대응하는 고유벡터이며, 서로 다른 고유값에 대응하는 고유벡터들은 $w_i^TCw_j=0$을 만족해 자동으로 비상관 제약도 충족한다.`,
     example: String.raw`<p>$C=\begin{pmatrix}2&0\\0&1\end{pmatrix}$, $\dot C=\begin{pmatrix}1&0\\0&4\end{pmatrix}$인 경우를 봅니다. 두 좌표가 이미 비상관이라 가정한 것입니다.</p>
 <p>일반화 고유값문제 $\dot Cw=\lambda Cw$는 대각행렬끼리라 좌표축 방향이 그대로 고유벡터입니다. $w=(1,0)$ 방향은 $\lambda=\dot C_{11}/C_{11}=1/2$, $w=(0,1)$ 방향은 $\lambda=\dot C_{22}/C_{22}=4$입니다. 단위분산 제약을 맞추기 위해 $w_1=(1,0)/\sqrt2$로 정규화하면 $w_1^TCw_1=1$이고 실제 느림 값 $w_1^T\dot Cw_1=1/2$로 고유값과 일치합니다. 두 번째 좌표는 분산이 더 작은데도($1<2$) 변화율은 더 커서($4>1$) 상대적으로 훨씬 빠른 성분이며, 실제로 SFA는 이 좌표를 제쳐두고 첫 번째 좌표를 가장 느린 특징으로 선택합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="55" x2="450" y2="55" class="dg-dim" stroke-width="1"/>
+<path d="M 30,55 Q 45,25 60,55 Q 75,85 90,55 Q 105,25 120,55 Q 135,85 150,55 Q 165,25 180,55 Q 195,85 210,55 Q 225,25 240,55 Q 255,85 270,55 Q 285,25 300,55 Q 315,85 330,55 Q 345,25 360,55 Q 375,85 390,55 Q 405,25 420,55 Q 435,85 450,55" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<text x="35" y="30" font-size="12">원신호 x(t): 빠르게 진동</text>
+<line x1="30" y1="150" x2="450" y2="150" class="dg-dim" stroke-width="1"/>
+<path d="M 30,150 Q 130,110 240,150 Q 350,190 450,150" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="35" y="180" font-size="12">추출된 특징 y(t): 천천히 변화</text>
+<line x1="240" y1="20" x2="240" y2="185" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="245" y="15" font-size="10" class="dg-dim">시간 t →</text>
+</svg>`,
+    diagramCaption: String.raw`빠르게 진동하는 원신호와 그로부터 추출된 천천히 변하는 특징을 같은 시간축 위에서 비교한다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 $w^TCw=1$(단위분산), $w_i^TCw_j=0\,(i\ne j)$(비상관)이라는 제약 아래 $\langle\dot y^2\rangle_t=w^T\dot Cw$를 최소화하는 것이다. 우선 단일 방향 $w$에 대해 단위분산 제약만 걸고 최소화 문제를 라그랑주 승수법으로 푼다.`, blanks: [] },
       { id: "s2", text: String.raw`라그랑지안은 $L(w,\lambda)=w^T\dot Cw-\lambda(w^TCw-1)$이다. $w$에 대해 미분하여 0으로 놓으면 $2\dot Cw-2\lambda Cw=$[[blank:가]] 이다.`,
@@ -14269,6 +16497,19 @@ $$d=2:\ 0.1^{1/2}\approx 0.316,\qquad d=10:\ 0.1^{1/10}\approx 0.794,\qquad d=10
 <p>이번엔 (b)를 확인해봅니다. $X_i\sim\mathrm{Uniform}(0,1)$이면 $E[X_i^2]=1/3$, $\mathrm{Var}(X_i^2)=1/5-(1/3)^2=4/45$입니다. 제곱거리 $D_d=\sum X_i^2$의 상대표준편차는</p>
 $$\frac{\sqrt{\mathrm{Var}(D_d)}}{E[D_d]} = \frac{\sqrt{d\cdot 4/45}}{d/3} = \frac{6}{\sqrt{45d}} \approx \frac{0.894}{\sqrt d}$$
 <p>이므로 $d=10$일 때 상대표준편차는 약 28.3%이지만 $d=1000$일 때는 약 2.8%로 줄어듭니다. 차원이 커질수록 모든 점의 원점으로부터의 거리가 $d/3$ 근처로 몰려서, 가장 가까운 점과 가장 먼 점의 거리 차이가 상대적으로 사라져 갑니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="115" y="20" font-size="12" text-anchor="middle">d=2: 부피 10%를 담는 정사각형 (e≈0.32)</text>
+<rect x="45" y="35" width="140" height="140" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="90" y="80" width="50" height="50" class="dg-accent"/>
+<text x="60" y="200" font-size="10" class="dg-dim">국소 이웃이 실제로 작다</text>
+<line x1="230" y1="10" x2="230" y2="210" class="dg-line" stroke-width="1"/>
+<text x="460" y="20" font-size="12" text-anchor="middle">d=100: 같은 10%를 담으려면 e≈0.977</text>
+<rect x="290" y="35" width="340" height="140" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="295" y="40" width="330" height="130" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="330" y="110" font-size="11" class="dg-dim">"국소" 영역이 거의 전체를 덮음</text>
+<text x="290" y="200" font-size="11">d↑ ⇒ 최근접/최원점 거리비 → 1 (거리 집중)</text>
+</svg>`,
+    diagramCaption: String.raw`차원이 커질수록 같은 부피 비율을 담는 국소 영역이 전체 공간을 거의 다 덮어 "가까움"이 무의미해진다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 (a)를 증명한다. 데이터가 $[0,1]^d$ 위에 균등하게 퍼져 있다고 하자. 중심을 공유하고 한 변의 길이가 $e\in(0,1]$인 작은 초입방체(각 좌표축 방향으로 폭 $e$)가 차지하는 부피는 각 축의 기여가 곱해져 $e^d$이다(직육면체의 부피는 변 길이의 곱이므로).`, blanks: [] },
       { id: "s2", text: String.raw`이 초입방체가 전체 부피의 $p$만큼을 담기를 원한다고 하자: $e_d(p)^d = p$. 양변에 $1/d$ 제곱을 취하면 $e_d(p) = $[[blank:가]] 이다.`,
@@ -14321,6 +16562,30 @@ $$n:\ -2,-1,0,1,2,3,4,5 \qquad z[n]:\ 0,1,1,3,9,2,1,0$$
 <p>이동량 $k=1$ (여유 이내): $z'[n]=z[n-1]$이므로 $z'[0]=z[-1]=1,\ z'[1]=z[0]=1,\ z'[2]=z[1]=3,\ z'[3]=z[2]=9$. 창 $W$ 위 최댓값은 여전히 $9$ — 불변입니다.</p>
 <p>이동량 $k=2$ (여유 초과): $z'[0]=z[-2]=0,\ z'[1]=z[-1]=1,\ z'[2]=z[0]=1,\ z'[3]=z[1]=3$. 창 위 최댓값은 이제 $3$으로 바뀝니다 — 근사적 불변성이 깨집니다.</p>
 <p>반면 풀링 이전의 특징맵 자체는 등변성에 의해 어떤 $k$에 대해서도 그냥 $z$가 통째로 $k$만큼 이동한 것($z'[n]=z[n-k]$)일 뿐, 값 자체가 임의로 "바뀌는" 것이 아닙니다 — 이 차이가 등변성과 근사적 불변성을 구분하는 핵심입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="120" y="18" font-size="12" text-anchor="middle">합성곱: 정확한 등변성 (모든 k)</text>
+<rect x="30" y="40" width="180" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="35" y="60" font-size="9">특징맵 z: 0 1 1 3 9 2 1 0</text>
+<line x1="120" y1="80" x2="120" y2="105" class="dg-line" stroke-width="1.5"/>
+<polygon points="120,105 114,93 126,93" class="dg-stroke-ink"/>
+<text x="130" y="95" font-size="9" class="dg-dim">이동 k=1,2,...</text>
+<rect x="30" y="115" width="180" height="30" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="35" y="135" font-size="9" class="dg-dim">z' = z를 그대로 k만큼 이동</text>
+<text x="30" y="170" font-size="10">항상 정확히 같은 모양이 옮겨갈 뿐 (근사 없음)</text>
+<line x1="240" y1="10" x2="240" y2="210" class="dg-line" stroke-width="1"/>
+<text x="470" y="18" font-size="12" text-anchor="middle">풀링: 근사적/국소적 불변성 (여유 안에서만)</text>
+<rect x="260" y="40" width="180" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<rect x="330" y="40" width="30" height="30" class="dg-accent"/>
+<text x="265" y="60" font-size="9">창 W: [1,3,9,2], 최댓값 M=9 (n*=2)</text>
+<text x="470" y="60" font-size="10" class="dg-dim">여유 min(L,R)=1</text>
+<line x1="350" y1="80" x2="350" y2="105" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<text x="355" y="95" font-size="9" class="dg-dim">k=1: 최댓값 그대로 9</text>
+<rect x="260" y="115" width="180" height="30" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<rect x="290" y="115" width="30" height="30" class="dg-stroke-accent" fill="none" stroke-width="2"/>
+<text x="265" y="135" font-size="9" class="dg-dim">k=2: 최댓값 3으로 바뀜</text>
+<text x="260" y="170" font-size="10">여유(min(L,R))를 넘으면 불변성이 깨짐</text>
+</svg>`,
+    diagramCaption: String.raw`합성곱은 모든 이동에 대해 정확히 등변이지만, 풀링은 여유 안의 작은 이동에서만 근사적으로 불변이다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 등변성을 증명한다. $z[n]=(x*w)[n]=\sum_m w[m]x[n-m]$이고 $x'[n]=x[n-k]$라 하자. 정의를 그대로 적용하면 $z'[n] := (x'*w)[n] = \sum_m w[m]x'[n-m] = \sum_m w[m]x[n-m-k]$이다.`, blanks: [] },
       { id: "s2", text: String.raw`한편 원래 정의에서 $n$ 대신 $n-k$를 대입하면 $z[n-k] = \sum_m w[m]x[(n-k)-m] = \sum_m w[m]x[n-m-k]$인데, 이는 s1에서 구한 $z'[n]$의 식과 정확히 같은 합이다. 따라서 $z'[n] = $[[blank:가]] 이다 — 모든 정수 $k$와 모든 $n$에 대해 근사 없이 정확히 성립한다.`,
@@ -14375,6 +16640,26 @@ $k=10$: $f(x_{10})=0.0608 \le 1.000$</p>
 <p>$v=3,\ \lambda=2$: $|v|=3>\lambda$이므로 $x^*=3-2=1$. 정류점 조건 $(x-v)+\lambda\,\mathrm{sign}(x)=0$에 $x=1$을 넣으면 $(1-3)+2(1)=0$으로 확인됩니다.</p>
 <p>$v=1,\ \lambda=2$: $|v|=1\le\lambda$이므로 $x^*=0$. $x=0$에서 부분미분 조건 $0\in(0-v)+\lambda[-1,1]=[-1-2,-1+2]=[-3,1]$을 확인하면 $0$이 이 구간 안에 있으므로 최적성이 성립합니다.</p>
 <p>$v=-4,\ \lambda=1$: $|v|=4>\lambda$이므로 $x^*=\mathrm{sign}(-4)\cdot(4-1)=-3$. 확인: $(-3-(-4))+1\cdot(-1)=1-1=0$.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="110" x2="320" y2="110" class="dg-line" stroke-width="1"/>
+<line x1="180" y1="20" x2="180" y2="200" class="dg-line" stroke-width="1"/>
+<path d="M50,180 L150,110 L210,110 L310,40" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<line x1="150" y1="30" x2="150" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="210" y1="30" x2="210" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="50" y1="180" x2="310" y2="40" class="dg-dim" stroke-width="1" stroke-dasharray="1,3"/>
+<text x="45" y="18" font-size="12">L1 연화임계값 $S_\lambda(v)$</text>
+<text x="145" y="205" font-size="11" text-anchor="middle" class="dg-dim">-λ</text>
+<text x="215" y="205" font-size="11" text-anchor="middle" class="dg-dim">λ</text>
+<text x="150" y="105" font-size="11" text-anchor="middle" class="dg-dim">0 근처 평평</text>
+<line x1="420" y1="110" x2="660" y2="110" class="dg-line" stroke-width="1"/>
+<line x1="540" y1="20" x2="540" y2="200" class="dg-line" stroke-width="1"/>
+<path d="M430,170 L650,50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="430" y1="170" x2="650" y2="50" class="dg-dim" stroke-width="1" stroke-dasharray="1,3"/>
+<circle cx="540" cy="110" r="3" class="dg-accent"/>
+<text x="425" y="18" font-size="12">L2 선형 수축</text>
+<text x="540" y="125" font-size="11" text-anchor="middle" class="dg-dim">v=0에서만 정확히 0</text>
+</svg>`,
+    diagramCaption: String.raw`L1 근접연산자는 |v|≤λ 구간 전체를 0으로 보내지만(왼쪽), L2는 원점 하나만 0이 된다(오른쪽).`,
     sections: [
       { id: "s1", text: String.raw`목적함수 $g(x)=\frac12(x-v)^2+\lambda|x|$ 는 $x\ne 0$에서 매끄럽지만 $x=0$에서 꺾여 있다. $x\ne0$에서 $|x|$의 미분은 $\mathrm{sign}(x)$이고, $x=0$에서는 미분 대신 부분미분 집합 $\partial|0|=[-1,1]$을 쓴다. 최적성 조건은 $0\in\partial g(x^*)$이다.`, blanks: [] },
       { id: "s2", text: String.raw`$x>0$인 구간에서는 $g'(x)=(x-v)+\lambda$ 이고 이를 $0$으로 놓으면 $x=$[[blank:가]] 를 얻는다. 이 해가 실제로 $x>0$ 가정과 모순되지 않으려면 $v>\lambda$ 이어야 한다.`,
@@ -14402,6 +16687,21 @@ $k=10$: $f(x_{10})=0.0608 \le 1.000$</p>
 <p>좌변(로그 안에서 먼저 평균): $\log\big(0.5\times0.3+0.5\times0.7\big)=\log(1)=0$.</p>
 <p>우변(평균 안에서 먼저 로그): $0.5\log(0.6)+0.5\log(1.4)\approx 0.5(-0.5108)+0.5(0.3365)\approx -0.0872$.</p>
 <p>실제로 $0\ge -0.0872$이므로 옌센 부등식이 성립하는 것이 확인됩니다. 로그가 오목함수이기 때문에 "평균의 로그"가 "로그의 평균"보다 항상 크거나 같은 것이죠.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="200" x2="600" y2="200" class="dg-line" stroke-width="1.5"/>
+<path d="M60,190 Q220,50 600,35" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M120,190 Q210,90 320,140" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<path d="M270,150 Q380,55 480,95" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<line x1="210" y1="200" x2="210" y2="90" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="380" y1="200" x2="380" y2="55" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<circle cx="210" cy="90" r="4" class="dg-accent"/>
+<circle cx="380" cy="55" r="4" class="dg-accent"/>
+<text x="60" y="25" font-size="12">로그가능도 log p(x|θ)</text>
+<text x="180" y="215" font-size="12" text-anchor="middle">θ(t)</text>
+<text x="380" y="215" font-size="12" text-anchor="middle">θ(t+1)</text>
+<text x="330" y="130" font-size="11" class="dg-dim">ELBO 하한 (E-step에서 접함)</text>
+</svg>`,
+    diagramCaption: String.raw`현재 θ에서 접하는 ELBO 하한을 최대화하면 로그가능도 자체도 단조 상승한다.`,
     sections: [
       { id: "s1", text: String.raw`관측 로그우도를 잠재변수에 대한 합으로 쓰고, 임의의 $q(z)>0$로 분자분모를 동시에 나누는 트릭을 쓰면 $\log p(x\mid\theta)=\log\sum_z p(x,z\mid\theta)=\log\sum_z q(z)\dfrac{p(x,z\mid\theta)}{q(z)}$ 로 쓸 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`로그는 오목함수이므로 옌센 부등식(오목함수에서는 "평균의 함숫값 $\ge$ 함숫값의 평균")을 $q(z)$를 가중치로 하는 기댓값에 적용하면 $\log\sum_z q(z)\dfrac{p(x,z\mid\theta)}{q(z)}\ \ge\ $[[blank:가]] $=\mathrm{ELBO}(q,\theta)$ 를 얻는다.`,
@@ -14453,6 +16753,28 @@ $k=10$: $f(x_{10})=0.0608 \le 1.000$</p>
     example: String.raw`<p>두 개의 대조적인 2차함수로 판정 기준을 직접 확인해봅시다.</p>
 <p>$f(x,y)=x^2+y^2$: 임계점 $(0,0)$에서 헤시안은 $H=\begin{pmatrix}2&0\\0&2\end{pmatrix}$, 고유값은 $2,2$로 모두 양수입니다. 실제로 원점 주변 어느 방향으로 움직여도 $f$가 증가하므로 국소(사실은 전역)최소점입니다.</p>
 <p>$g(x,y)=x^2-y^2$: 임계점 $(0,0)$에서 헤시안은 $H=\begin{pmatrix}2&0\\0&-2\end{pmatrix}$, 고유값은 $2,-2$로 부호가 섞여 있습니다. 실제로 $x$축을 따라가면 $g(t,0)=t^2>0$로 증가하고, $y$축을 따라가면 $g(0,t)=-t^2<0$로 감소합니다. 같은 점 근방에서 늘기도 하고 줄기도 하니 안장점입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 780 240" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="130" cy="120" rx="90" ry="62" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+<ellipse cx="130" cy="120" rx="63" ry="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="130" cy="120" rx="38" ry="26" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="130" cy="120" r="4" class="dg-accent"/>
+<text x="130" y="200" font-size="12" text-anchor="middle">양의정부호 (그릇형)</text>
+<text x="130" y="216" font-size="11" text-anchor="middle" class="dg-dim">국소최소</text>
+<ellipse cx="390" cy="120" rx="90" ry="62" fill="none" class="dg-stroke-ink" stroke-width="1.2" stroke-dasharray="5,4"/>
+<ellipse cx="390" cy="120" rx="63" ry="44" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,4"/>
+<ellipse cx="390" cy="120" rx="38" ry="26" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,4"/>
+<rect x="386" y="116" width="8" height="8" class="dg-accent"/>
+<text x="390" y="200" font-size="12" text-anchor="middle">음의정부호 (돔형)</text>
+<text x="390" y="216" font-size="11" text-anchor="middle" class="dg-dim">국소최대</text>
+<path d="M580,60 Q650,120 720,60" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M580,180 Q650,120 720,180" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<path d="M620,45 Q650,120 620,195" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<path d="M680,45 Q650,120 680,195" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="650" cy="120" r="4" class="dg-accent"/>
+<text x="650" y="200" font-size="12" text-anchor="middle">부정부호</text>
+<text x="650" y="216" font-size="11" text-anchor="middle" class="dg-dim">안장점</text>
+</svg>`,
+    diagramCaption: String.raw`헤시안 고유값의 부호 패턴이 임계점을 최소·최대·안장점으로 나눈다.`,
     sections: [
       { id: "s1", text: String.raw`임계점 $x^*$ 주변에서 2차 테일러 전개를 하면 $f(x^*+h)=f(x^*)+\nabla f(x^*)^Th+\frac12h^TH(x^*)h+o(\|h\|^2)$ 인데 $\nabla f(x^*)=0$이므로 1차항이 사라져 $f(x^*+h)-f(x^*)=\frac12h^TH(x^*)h+o(\|h\|^2)$ 만 남는다. 즉 극값 판정은 순전히 이차형식 $h^THh$의 부호에 달려 있다.`, blanks: [] },
       { id: "s2", text: String.raw`$H=H(x^*)\succ0$이라 하자. 대칭행렬의 스펙트럼분해로 $H=Q\Lambda Q^T$($\Lambda$는 고유값 대각행렬)이고, 단위벡터 $u=h/\|h\|$에 대해 $h^THh=\|h\|^2\,u^THu\ge $[[blank:가]]$\ \|h\|^2$ 이 성립한다(가장 작은 고유값으로 아래에서 누른다).`,
@@ -14477,6 +16799,22 @@ $k=10$: $f(x_{10})=0.0608 \le 1.000$</p>
     example: String.raw`<p>가장 단순한 1차원 예로 등호가 정확히 성립하는 경계 사례를 확인해봅시다.</p>
 <p>$f(x)=x^2+2$는 $f''(x)=2$이므로 모든 $x$에서 $H(x)=2\ge m=2$, 즉 $m=2$로 강볼록입니다. 최소점은 $x^*=0$, $f^*=2$입니다.</p>
 <p>강볼록 부등식 $f(y)\ge f(x)+f'(x)(y-x)+\frac{m}{2}(y-x)^2$ 을 $x=0,y=1$에 대입하면 우변은 $2+0\cdot1+\frac{2}{2}(1)^2=3$이고, 좌변 $f(1)=1+2=3$과 정확히 같습니다. $f$가 딱 이차함수라서 $m$과 실제 곡률이 일치하는 경계 사례이기 때문에 등호가 나오는 것이며, 일반적인 강볼록함수에서는 부등식이 엄격할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="180" x2="320" y2="180" class="dg-line" stroke-width="1"/>
+<path d="M40,150 C120,60 220,60 300,150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="120" y1="80" x2="220" y2="80" class="dg-stroke-accent" stroke-width="3" stroke-dasharray="5,3"/>
+<circle cx="120" cy="80" r="3" class="dg-accent"/>
+<circle cx="220" cy="80" r="3" class="dg-accent"/>
+<text x="170" y="65" font-size="11" text-anchor="middle">최소 후보 구간</text>
+<text x="70" y="18" font-size="12">완만한 볼록함수</text>
+<line x1="420" y1="180" x2="680" y2="180" class="dg-line" stroke-width="1"/>
+<path d="M400,170 Q540,40 660,170" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<line x1="540" y1="40" x2="540" y2="180" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<circle cx="540" cy="40" r="4" class="dg-accent"/>
+<text x="540" y="30" font-size="11" text-anchor="middle">유일한 최소점</text>
+<text x="440" y="18" font-size="12">강볼록함수 (곡률 ≥ m)</text>
+</svg>`,
+    diagramCaption: String.raw`완만한 볼록함수는 최소 후보가 넓게 퍼질 수 있지만, 강볼록함수는 뾰족한 유일 최소점을 갖는다.`,
     sections: [
       { id: "s1", text: String.raw`강볼록성의 정의는 모든 $x$와 모든 벡터 $u$에 대해 $u^TH(x)u\ge m\|u\|^2$ 라는 뜻이다. 이는 어느 방향으로 봐도 $f$의 곡률이 최소 $m$만큼은 있다는 것을 의미한다.`, blanks: [] },
       { id: "s2", text: String.raw`임의의 $x,y$에 대해 라그랑주 나머지항이 있는 테일러 정리를 쓰면 어떤 $\xi$(선분 $[x,y]$ 위의 점)에 대해 $f(y)=f(x)+\nabla f(x)^T(y-x)+\frac12(y-x)^TH(\xi)(y-x)$ 이고, $H(\xi)\succeq mI$이므로 이차항은 $(y-x)^TH(\xi)(y-x)\ge$[[blank:가]] 를 만족한다.`,
@@ -14559,6 +16897,30 @@ $$\beta_1=\frac12\ln\frac{1-1/3}{1/3}=\frac12\ln 2\approx 0.3466$$
 <p>가 나옵니다. 이 $\beta_1$으로 가중치를 갱신하면(맞힌 데이터는 $e^{-\beta_1}=2^{-1/2}\approx0.7071$배, 틀린 데이터는 $e^{\beta_1}=2^{1/2}\approx1.4142$배 하고 정규화)</p>
 $$w^{(2)}=(0.25,\ 0.5,\ 0.25)$$
 <p>가 됩니다. 틀렸던 2번 데이터의 가중치가 $1/3\to0.5$로 커지고 맞힌 데이터들의 가중치는 $1/3\to0.25$로 줄어, 다음 약한 분류기가 틀렸던 데이터에 더 집중하도록 유도됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="75" width="90" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="85" y="105" font-size="13" text-anchor="middle">F0</text>
+<path d="M130,100 L220,100" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="220,100 208,94 208,106" class="dg-stroke-accent"/>
+<text x="175" y="88" font-size="11" text-anchor="middle">+β1h1</text>
+<path d="M150,130 Q175,155 200,130" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<rect x="230" y="75" width="90" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="275" y="105" font-size="13" text-anchor="middle">F1</text>
+<path d="M320,100 L410,100" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="410,100 398,94 398,106" class="dg-stroke-accent"/>
+<text x="365" y="88" font-size="11" text-anchor="middle">+β2h2</text>
+<path d="M340,130 Q365,155 390,130" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<rect x="420" y="75" width="90" height="50" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="465" y="105" font-size="13" text-anchor="middle">F2</text>
+<path d="M510,100 L600,100" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="600,100 588,94 588,106" class="dg-stroke-accent"/>
+<text x="555" y="88" font-size="11" text-anchor="middle">+β3h3</text>
+<path d="M530,130 Q555,155 580,130" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<rect x="610" y="75" width="110" height="50" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<text x="665" y="105" font-size="13" text-anchor="middle">F3=Σβkhk</text>
+<text x="180" y="185" font-size="11" class="dg-dim" text-anchor="middle">잔차/음의 그래디언트에 순차 적합</text>
+</svg>`,
+    diagramCaption: String.raw`매 단계 약한 학습기가 이전 잔차(음의 그래디언트)를 적합해 누적 모델에 더해진다.`,
     sections: [
       { id: "s1", text: String.raw`전방향 단계적 가법모델링에서는 이전 단계까지의 $F_{m-1}$을 고정한 채, 새로 추가할 $(\beta,h)$만을 골라 $J(\beta,h)=\sum_{i=1}^n L\big(y_i,\ F_{m-1}(x_i)+\beta h(x_i)\big)$ 를 최소화한다. 지수손실 $L(y,F)=\exp(-yF)$를 대입하면 $J(\beta,h)=\sum_i \exp\big(-y_iF_{m-1}(x_i)\big)\exp\big(-y_i\beta h(x_i)\big)$ 이다. 여기서 이전 단계까지 누적된 값 $w_i^{(m)} := \exp(-y_iF_{m-1}(x_i))$ 를 관측치 $i$의 가중치로 정의하면 $J(\beta,h)=\sum_i w_i^{(m)}\exp(-y_i\beta h(x_i))$ 로 간결해진다.`, blanks: [] },
       { id: "s2", text: String.raw`$h(x_i)\in\{-1,1\}$, $y_i\in\{-1,1\}$이므로 $-y_i\beta h(x_i)$는 맞힌 경우($y_i=h(x_i)$) $-\beta$, 틀린 경우($y_i\neq h(x_i)$) $+\beta$ 값을 갖는다. 따라서 $\beta>0$일 때 $J(\beta,h)=$[[blank:가]] 로 두 그룹의 합으로 쪼개 쓸 수 있다. 여기서 $\mathrm{err}(h)=\sum_i w_i^{(m)}\mathbf{1}[y_i\neq h(x_i)]$, $W=\sum_i w_i^{(m)}$ 이다.`,
@@ -14583,6 +16945,21 @@ $$\theta'=0-0.1(0-3)=0.3$$
 <p>메타(테스트) 손실은 다른 목표값 5를 쓰는 $L_{\text{test}}(\theta')=\frac12(\theta'-5)^2$ 라 하자. 명제의 공식대로 계산하면, 내부 손실의 헤시안은 상수 $H=L_T''(\theta)=1$ 이고 적응 지점에서의 그래디언트는 $\theta'-5=0.3-5=-4.7$ 이므로</p>
 $$\nabla_\theta J = (1-\alpha H)(\theta'-5) = (1-0.1)(-4.7) = -4.23$$
 <p>이제 직접 $J(\theta)=\frac12(0.9\theta+0.3-5)^2$ (여기서 $\theta'(\theta)=\theta-0.1(\theta-3)=0.9\theta+0.3$)를 $\theta=0$에서 미분해도 $\frac{dJ}{d\theta}=(0.9\theta+0.3-5)\cdot 0.9\big|_{\theta=0}=(-4.7)(0.9)=-4.23$ 으로 정확히 일치합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<circle cx="280" cy="140" r="90" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,3"/>
+<circle cx="280" cy="140" r="6" class="dg-accent"/>
+<text x="280" y="160" font-size="12" text-anchor="middle">θ (메타 초기점)</text>
+<path d="M280,140 L150,55" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="150,55 158,68 165,58" class="dg-stroke-accent"/>
+<text x="115" y="45" font-size="11" text-anchor="middle">θ'_1 (과제 1)</text>
+<path d="M280,140 L440,55" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="440,55 428,58 435,68" class="dg-stroke-accent"/>
+<text x="475" y="45" font-size="11" text-anchor="middle">θ'_2 (과제 2)</text>
+<path d="M280,140 L230,235" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="230,235 234,222 244,228" class="dg-stroke-accent"/>
+<text x="210" y="252" font-size="11" text-anchor="middle">θ'_3 (과제 3)</text>
+</svg>`,
+    diagramCaption: String.raw`메타 초기점에서 각 과제로 몇 스텝 적응한 지점들로 향하는 메타그래디언트 방향.`,
     sections: [
       { id: "s1", text: String.raw`내부 루프에서 한 스텝 경사하강으로 얻는 적응된 파라미터를 $\theta'(\theta)=\theta-\alpha\nabla_\theta L_T(\theta)$ 로 정의한다. 메타목적함수는 이 적응된 파라미터에서 평가한 손실 $J(\theta)=L_T(\theta'(\theta))$ 이다. $\theta'(\theta)$는 $\theta$에 대한 함수(벡터를 벡터로 보내는 사상)이므로, $J(\theta)$를 $\theta$로 미분하려면 합성함수의 연쇄법칙을 써야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`다변수 연쇄법칙에 따라 $\nabla_\theta J(\theta) = \left[\dfrac{\partial \theta'(\theta)}{\partial \theta}\right]^{\!\top} \nabla_{\theta'} L_T(\theta')\Big|_{\theta'=\theta'(\theta)}$ 이다. 여기서 $\dfrac{\partial \theta'(\theta)}{\partial \theta}$는 $\theta'$의 각 성분을 $\theta$의 각 성분으로 편미분한 야코비 행렬이다. 즉 [[blank:가]] 형태로 쓸 수 있다.`,
@@ -14604,6 +16981,20 @@ $$\nabla_\theta J = (1-\alpha H)(\theta'-5) = (1-0.1)(-4.7) = -4.23$$
     example: String.raw`<p>두 균등분포의 합이 삼각분포가 된다는 잘 알려진 사실을 콘볼루션 공식으로 직접 확인해봅니다.</p>
 <p>$X,Y\sim\mathrm{Uniform}(0,1)$ 이 서로 독립이라 하고 $Z=X+Y$ 라 하자. 공식에 대입하면 $f_Z(z)=\int_0^1 f_Y(z-x)\,dx$ 인데, $f_Y(z-x)=1$이 되려면 $0\le z-x\le1$, 즉 $z-1\le x\le z$ 이어야 한다.</p>
 <p>$0\le z\le 1$ 일 때 적분 구간은 $x\in[0,z]$ 로 겹치므로 $f_Z(z)=z$. $1\le z\le2$ 일 때는 $x\in[z-1,1]$ 로 겹치므로 $f_Z(z)=1-(z-1)=2-z$. 이는 정확히 삼각분포의 밀도함수이며, 실제로 수치적분으로 $z=0.3,1.0,1.5$에서 각각 $0.3,\,1.0,\,0.5$가 나와 공식과 정확히 일치함을 확인했습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="150" x2="600" y2="150" class="dg-line" stroke-width="1"/>
+<path d="M60,150 Q150,60 240,150" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="90" y="45" font-size="12">f_X(x)</text>
+<path d="M120,150 Q210,90 300,150" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="260" y="80" font-size="12" class="dg-dim">f_Y(z-x) (슬라이딩)</text>
+<path d="M300,40 L340,40" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="340,40 328,35 328,45" class="dg-stroke-accent"/>
+<line x1="40" y1="210" x2="600" y2="210" class="dg-line" stroke-width="1"/>
+<path d="M50,205 Q270,110 500,205" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<text x="380" y="120" font-size="12">f_Z(z) = (f_X * f_Y)(z)</text>
+<line x1="180" y1="150" x2="270" y2="150" class="dg-line" stroke-width="1" stroke-dasharray="1,3"/>
+</svg>`,
+    diagramCaption: String.raw`두 밀도함수가 슬라이딩하며 곱해져 적분되면 합의 밀도(합성곱)가 만들어진다.`,
     sections: [
       { id: "s1", text: String.raw`$X,Y$가 독립이므로 결합밀도함수는 곱으로 분해된다: $f_{X,Y}(x,y)=f_X(x)f_Y(y)$. 목표는 $Z=X+Y$의 밀도함수를 구하는 것이므로, 먼저 $Z$의 누적분포함수(CDF) $F_Z(z)=P(X+Y\le z)$ 를 계산한다.`, blanks: [] },
       { id: "s2", text: String.raw`$F_Z(z)=P(X+Y\le z)$는 $xy$-평면에서 $x+y\le z$인 영역에 결합밀도를 적분한 것이다. $$F_Z(z)=\iint_{x+y\le z} f_X(x)f_Y(y)\,dx\,dy$$ 이 이중적분을 $x$에 대해 먼저 바깥, $y$에 대해 안쪽으로 순서를 정해 반복적분(Fubini)으로 바꾸면, $y\le z-x$ 조건 아래 $y$를 적분하게 된다.`, blanks: [] },
@@ -14626,6 +17017,18 @@ $$\nabla_\theta J = (1-\alpha H)(\theta'-5) = (1-0.1)(-4.7) = -4.23$$
 <p>공식에 대입하면</p>
 $$\mathrm{EI}(x) = (0-1)(0.15866) + (1)(0.24197) \approx 0.0833$$
 <p>즉 이 후보점을 평가하면 평균적으로 약 $0.0833$만큼 현재 최적값보다 개선될 것으로 기대됩니다(직접 수치검산 결과와 소수 넷째 자리까지 일치).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="150" x2="600" y2="150" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="45" y="145" font-size="11" class="dg-dim">현재 최적값 f_min</text>
+<polygon points="40,90 140,50 220,150 320,80 400,40 480,100 560,60 560,150 480,190 400,150 320,140 220,200 140,150 40,150" class="dg-dim" opacity="0.35"/>
+<path d="M40,120 C140,60 220,190 320,110 C400,60 480,140 560,90" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="320" cy="175" r="4" class="dg-accent"/>
+<line x1="320" y1="175" x2="320" y2="110" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="320,110 315,122 325,122" class="dg-stroke-accent"/>
+<text x="330" y="185" font-size="12">EI 최대 후보점</text>
+<text x="45" y="30" font-size="12">GP 사후평균과 신뢰구간</text>
+</svg>`,
+    diagramCaption: String.raw`사후 신뢰구간이 현재 최적값 아래로 크게 벌어진 후보점에서 기대개선(EI)이 커진다.`,
     sections: [
       { id: "s1", text: String.raw`$f(x)$가 정규분포 $\mathcal N(\mu,\sigma^2)$(이하 $\mu=\mu(x)$, $\sigma=\sigma(x)$로 표기)를 따르므로, 기대개선은 개선량의 기댓값을 밀도함수로 직접 적분한 것이다: $$\mathrm{EI}(x)=\mathbb E[\max(f_{\min}-f(x),0)] = \int_{-\infty}^{f_{\min}} (f_{\min}-t)\,\frac{1}{\sigma}\phi\!\left(\frac{t-\mu}{\sigma}\right)dt$$ ($t>f_{\min}$인 영역은 $\max(\cdot,0)=0$이 되어 적분에 기여하지 않는다.)`, blanks: [] },
       { id: "s2", text: String.raw`이 적분을 표준정규분포에 대한 적분으로 바꾸기 위해 $u=(t-\mu)/\sigma$로 치환한다. $t=\mu+\sigma u$, $dt=\sigma\,du$ 이고, 적분 상한 $t=f_{\min}$은 $u=Z$ 에 대응한다(단 $Z=(f_{\min}-\mu)/\sigma$). 그러면 $$\mathrm{EI}(x)=\int_{-\infty}^{Z} \big(f_{\min}-\mu-\sigma u\big)\,\phi(u)\,du$$ 이 되고, 이는 [[blank:가]] 두 항으로 나뉜다.`,
@@ -14648,6 +17051,26 @@ $$\mathrm{EI}(x) = (0-1)(0.15866) + (1)(0.24197) \approx 0.0833$$
 <p>재작성된 목적함수에 대입하면 $\mathbb E[x^2]=1$이므로</p>
 $$J(\theta) = \mathbb E\left[\frac12\theta^2x^2 - \theta\right] + \text{const} = \frac{\theta^2}{2} - \theta + \text{const}$$
 <p>이를 $\theta$로 미분해 0으로 두면 $\theta-1=0$, 즉 $\theta=1$에서 최소가 됩니다. 이는 데이터를 생성한 참값 $\theta^*=1$과 정확히 일치하며, 스코어매칭이 정규화상수를 몰라도 올바른 파라미터를 찾아낸다는 것을 확인해줍니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="240" cy="140" rx="55" ry="35" class="dg-accent" opacity="0.3"/>
+<ellipse cx="240" cy="140" rx="55" ry="35" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M240,60 L240,95" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="240,95 235,84 245,84" class="dg-stroke-accent"/>
+<path d="M240,220 L240,185" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="240,185 235,196 245,196" class="dg-stroke-accent"/>
+<path d="M110,140 L165,140" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="165,140 154,135 154,145" class="dg-stroke-accent"/>
+<path d="M370,140 L315,140" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="315,140 326,135 326,145" class="dg-stroke-accent"/>
+<path d="M155,65 L195,105" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="195,105 184,101 191,92" class="dg-stroke-accent"/>
+<path d="M325,215 L285,175" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="285,175 289,186 296,179" class="dg-stroke-accent"/>
+<text x="240" y="145" font-size="11" text-anchor="middle">p_data</text>
+<text x="240" y="248" font-size="12" text-anchor="middle">∇log p(x)는 밀도가 높은 쪽을 향한다</text>
+<text x="240" y="264" font-size="11" text-anchor="middle" class="dg-dim">정규화상수 Z 없이도 계산 가능</text>
+</svg>`,
+    diagramCaption: String.raw`스코어 벡터장은 정규화상수 없이도 각 점을 데이터 밀도가 높은 쪽으로 이끈다.`,
     sections: [
       { id: "s1", text: String.raw`목적함수를 완전제곱식으로 펼친다: $$J(\theta)=\frac12\mathbb E_{p_{\text{data}}}[s_\theta(x)^2] - \mathbb E_{p_{\text{data}}}[s_\theta(x)s_{\text{data}}(x)] + \frac12\mathbb E_{p_{\text{data}}}[s_{\text{data}}(x)^2]$$ 세 번째 항 $\frac12\mathbb E[s_{\text{data}}(x)^2]$은 $\theta$를 전혀 포함하지 않으므로 최적화 관점에서 상수(const)로 취급한다. 남은 두 항만 살펴보면 된다.`, blanks: [] },
       { id: "s2", text: String.raw`가운데 교차항 $\mathbb E_{p_{\text{data}}}[s_\theta(x)s_{\text{data}}(x)]=\int p_{\text{data}}(x)\,s_\theta(x)\,s_{\text{data}}(x)\,dx$ 을 다룬다. 스코어의 정의 $s_{\text{data}}(x)=\dfrac{p_{\text{data}}'(x)}{p_{\text{data}}(x)}$ 를 쓰면 $p_{\text{data}}(x)s_{\text{data}}(x)=$[[blank:가]] 로 정리되어, 교차항은 $\int p_{\text{data}}'(x)\,s_\theta(x)\,dx$ 가 된다.`,
@@ -14690,6 +17113,22 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     example: String.raw`<p>고유방향 하나만 떼어 놓고 두 수축비율이 실제로 비슷해지는지 숫자로 확인해봅니다.</p>
 <p>어떤 고유방향의 곡률이 $\lambda_i=0.001$ (작은 곡률 방향), 목표로 하는 L2 계수가 $\lambda=0.01$, 학습률 $\epsilon=0.1$ 이라 하자. 대응 관계 $\lambda=1/(\epsilon T)$ 로부터 $$T = \frac{1}{\epsilon\lambda} = \frac{1}{0.1\times0.01}=1000$$</p>
 <p>이 방향의 조기종료 수축비율은 $\rho_{\text{ES}}=1-(1-\epsilon\lambda_i)^T=1-(0.9999)^{1000}\approx0.0952$ 이고, L2 정칙화의 수축비율은 $\rho_{L2}=\dfrac{\lambda_i}{\lambda_i+\lambda}=\dfrac{0.001}{0.011}\approx0.0909$ 입니다. 두 값이 $0.0952$와 $0.0909$로 근사적으로 일치하여, $\lambda_i\ll\lambda$인 영역에서 $T=1/(\epsilon\lambda)$ 대응이 실제로 성립함을 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="300" cy="150" rx="150" ry="70" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+<ellipse cx="300" cy="150" rx="105" ry="49" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="300" cy="150" rx="60" ry="28" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="300" cy="150" r="3" class="dg-accent"/>
+<text x="300" y="130" font-size="11" text-anchor="middle" class="dg-dim">θ*</text>
+<path d="M60,270 Q120,220 170,215 Q200,212 220,190" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<polygon points="220,190 208,192 213,180" class="dg-stroke-accent"/>
+<circle cx="60" cy="270" r="3" class="dg-dim"/>
+<text x="60" y="288" font-size="11" class="dg-dim">θ(0)=0</text>
+<circle cx="220" cy="190" r="6" class="dg-accent"/>
+<text x="150" y="255" font-size="12">θ^(T) 조기종료</text>
+<rect x="214" y="184" width="12" height="12" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="2,2"/>
+<text x="230" y="215" font-size="11" class="dg-dim">θ_L2 (릿지 해, 같은 지점)</text>
+</svg>`,
+    diagramCaption: String.raw`T번의 경사하강 경로가 멈춘 지점이 릿지회귀의 축소된 최적해와 등고선 위에서 일치한다.`,
     sections: [
       { id: "s1", text: String.raw`이차근사 하에서 경사하강법의 갱신 $\theta^{(\tau)}=\theta^{(\tau-1)}-\epsilon\nabla J(\theta^{(\tau-1)})=\theta^{(\tau-1)}-\epsilon H(\theta^{(\tau-1)}-\theta^*)$ 를 살펴본다. 양변에서 $\theta^*$를 빼면 $\theta^{(\tau)}-\theta^* = (I-\epsilon H)(\theta^{(\tau-1)}-\theta^*)$ 라는 선형 점화식을 얻는다.`, blanks: [] },
       { id: "s2", text: String.raw`이 점화식을 $\tau=T$까지 풀면 $\theta^{(T)}-\theta^*=(I-\epsilon H)^T(\theta^{(0)}-\theta^*)$ 이다. $\theta^{(0)}=0$ 을 대입하면 $\theta^{(T)}-\theta^*=(I-\epsilon H)^T(-\theta^*)$, 즉 $$\theta^{(T)} = \theta^* - (I-\epsilon H)^T\theta^* = \big[I-(I-\epsilon H)^T\big]\theta^*$$ 를 얻는다.`, blanks: [] },
@@ -14712,6 +17151,21 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
 <p>그래디언트가 $g=\nabla_xL=(2,-3,1)$, 섭동 예산 $\varepsilon=0.1$ 이라 하자. 공식대로 $\delta^*=\varepsilon\,\mathrm{sign}(g)=(0.1,-0.1,0.1)$ 이다.</p>
 <p>이때 선형근사 증가량은 $\delta^{*\top}g = 0.1(2)+(-0.1)(-3)+0.1(1) = 0.2+0.3+0.1=0.6$ 이고, 이는 $\varepsilon\|g\|_1=0.1\times(2+3+1)=0.6$ 과 정확히 같습니다.</p>
 <p>비교를 위해 부호를 하나 틀리게 잡은 $\delta'=(0.1,0.1,0.1)$을 시도하면 $\delta'^\top g=0.2-0.3+0.1=0.0$ 으로 $\delta^*$보다 훨씬 작습니다. 이는 부호를 그래디언트에 맞추지 않으면 손실 증가량이 줄어든다는 것을 직접 보여줍니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="230" cy="150" rx="140" ry="90" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+<ellipse cx="230" cy="150" rx="95" ry="60" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="230" cy="150" rx="50" ry="30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<rect x="170" y="90" width="120" height="120" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<circle cx="230" cy="150" r="4" class="dg-accent"/>
+<text x="230" y="170" font-size="11" text-anchor="middle">x</text>
+<path d="M230,150 L285,100" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="285,100 272,102 279,111" class="dg-stroke-accent"/>
+<circle cx="290" cy="90" r="4" class="dg-accent"/>
+<text x="300" y="85" font-size="12">x+δ* = x+ε·sign(∇L)</text>
+<text x="170" y="80" font-size="11" class="dg-dim">‖δ‖∞ ≤ ε 제약 상자</text>
+<text x="230" y="225" font-size="11" class="dg-dim" text-anchor="middle">손실 등고선</text>
+</svg>`,
+    diagramCaption: String.raw`L∞ 제약 상자 안에서 그래디언트 부호 방향으로 이동하면 상자의 모서리에 도달해 손실 증가가 최대화된다.`,
     sections: [
       { id: "s1", text: String.raw`손실 $L(\theta,x+\delta,y)$를 $\delta=0$ 주변에서 1차까지 테일러 전개하면 $$L(\theta,x+\delta,y) \approx L(\theta,x,y) + \delta^\top\nabla_xL(\theta,x,y)$$ 이다. 이하 $g:=\nabla_xL(\theta,x,y)$ 로 쓴다. 적대적 섭동의 목표는 모델을 속이기 위해 손실을 최대한 키우는 것이므로, 우리가 풀 문제는 $\delta$에 대한 이 선형근사의 증가분 $\delta^\top g$를 최대화하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`따라서 풀어야 할 제약 최적화 문제는 $$\max_{\delta}\ \delta^\top g \quad\text{subject to}\quad \|\delta\|_\infty \le \varepsilon$$ 이다. $\ell_\infty$ 제약은 각 좌표별로 독립적인 제약 $|\delta_i|\le\varepsilon$ ($i=1,\dots,d$) 으로 분해된다는 점이 핵심이다.`, blanks: [] },
@@ -14734,6 +17188,19 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     example: String.raw`<p>추상적인 적분 논증에 들어가기 전에, 데이터가 $x=-1$과 $x=1$에 확률 $0.5$씩 몰려 있는 (두 점) 분포이고 $\sigma^2=1$인 경우로 명제를 직접 확인해봅니다.</p>
 <p>오염관측 $\tilde x=0.5$에서 사후 가중치를 계산하면 $p_\sigma(0.5)\approx 0.240791$이고, 조건부 평균은 $\mathbb E[x\mid\tilde x=0.5]\approx 0.462117$입니다. 따라서 $g^*(0.5)-0.5\approx -0.037883$입니다.</p>
 <p>한편 $p_\sigma(\tilde x)=0.5\,\mathcal N(\tilde x;-1,1)+0.5\,\mathcal N(\tilde x;1,1)$의 로그를 $\tilde x=0.5$에서 수치미분하면 $\nabla_{\tilde x}\log p_\sigma(0.5)\approx -0.037883$으로 정확히 같은 값이 나옵니다(직접 재계산해 확인). $\sigma^2=1$이므로 $\sigma^2\nabla_{\tilde x}\log p_\sigma(0.5)=g^*(0.5)-0.5$가 그대로 성립합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+<path d="M40,150 C150,80 350,200 460,100" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<text x="60" y="65" font-size="12">데이터 매니폴드</text>
+<circle cx="200" cy="115" r="4" class="dg-accent"/>
+<circle cx="250" cy="55" r="4" class="dg-dim"/>
+<line x1="250" y1="55" x2="200" y2="115" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<path d="M250,55 L212,102" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="212,102 218,90 226,98" class="dg-stroke-accent"/>
+<text x="260" y="48" font-size="12">노이즈 낀 관측 x̃</text>
+<text x="150" y="140" font-size="11" class="dg-dim">복원값 g*(x̃) ≈ 매니폴드 위 점</text>
+<text x="270" y="90" font-size="11">스코어 방향 ∇log p_σ</text>
+</svg>`,
+    diagramCaption: String.raw`디노이징 오토인코더의 복원 방향은 오염분포의 스코어 방향과 정확히 같다.`,
     sections: [
       { id: "s1", text: String.raw`데이터 $x$가 알려지지 않은 분포 $p(x)$를 따른다고 하자. 여기에 등방 가우시안 노이즈를 더해 오염시킨 관측 $\tilde x=x+\varepsilon$, $\varepsilon\sim\mathcal N(0,\sigma^2I)$를 만든다. 디노이징 오토인코더는 오염된 입력 $\tilde x$만 보고 원본 $x$를 복원하는 함수 $g$를 다음 제곱오차를 최소화하도록 학습한다: $$L(g)=\mathbb E_{x\sim p,\,\varepsilon}\big[\|g(\tilde x)-x\|^2\big].$$ 목표는 이 손실을 최소화하는 $g^*$가 실제로 무엇을 계산하고 있는지 밝히는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$\tilde x$를 고정하고 조건부 기댓값으로 손실을 분해하면 $\mathbb E_{x|\tilde x}\big[\|g(\tilde x)-x\|^2\big]=\|g(\tilde x)-\mathbb E[x|\tilde x]\|^2+\mathrm{Var}(x|\tilde x)$ 로 쓸 수 있다. 우변의 둘째 항은 $g$와 무관하므로, 각 $\tilde x$에서 손실을 최소화하는 최적해는 $g^*(\tilde x) = $[[blank:가]] 이다.`,
@@ -14757,6 +17224,20 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     example: String.raw`<p>추상적인 지수족 적분 논증에 들어가기 전에, 가장 단순한 에너지함수 $E_\theta(x)=\theta x^2/2$ ($\theta>0$)로 명제를 확인해봅니다. 이때 $p_\theta(x)\propto\exp(-\theta x^2/2)$는 평균 0, 분산 $1/\theta$인 가우시안이고, 정규화상수는 가우시안 적분 공식으로 $Z(\theta)=\int\exp(-\theta x^2/2)dx=\sqrt{2\pi/\theta}$입니다.</p>
 <p>$\theta=2$에서 직접 계산해봅니다. $\log Z(\theta) = \frac12\log(2\pi)-\frac12\log\theta$ 이므로 $\nabla_\theta\log Z(\theta)=-\frac{1}{2\theta}$, 즉 $\theta=2$에서 $-0.25$입니다.</p>
 <p>한편 음성위상 쪽에서 직접 계산하면 $\nabla_\theta E_\theta(x')=x'^2/2$이고 $x'\sim\mathcal N(0,1/\theta)$이므로 $\mathbb E_{p_\theta}[\nabla_\theta E_\theta(x')]=\mathbb E[x'^2]/2=\mathrm{Var}(x')/2=\frac{1}{2\theta}$, $\theta=2$에서 $0.25$입니다. 정확히 $\nabla_\theta\log Z(\theta)=-\mathbb E_{p_\theta}[\nabla_\theta E_\theta(x')]$가 수치로 확인되며($-0.25=-0.25$), 이는 명제의 핵심 등식과 정확히 일치합니다(직접 재계산해 확인).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<path d="M40,150 C150,60 250,180 350,90 C420,50 480,140 520,100" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<circle cx="250" cy="180" r="4" class="dg-accent"/>
+<path d="M250,180 L250,145" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="250,145 244,156 256,156" class="dg-stroke-accent"/>
+<text x="250" y="205" font-size="11" text-anchor="middle">데이터 x</text>
+<text x="255" y="130" font-size="11">양성위상: 에너지 낮추기</text>
+<circle cx="420" cy="50" r="4" class="dg-dim"/>
+<path d="M420,50 L420,85" class="dg-stroke-ink" stroke-width="3" stroke-dasharray="5,3"/>
+<polygon points="420,85 414,74 426,74" class="dg-stroke-ink" transform="rotate(180 420 85)"/>
+<text x="420" y="40" font-size="11" text-anchor="middle" class="dg-dim">모델 샘플 x'</text>
+<text x="380" y="105" font-size="11" class="dg-dim">음성위상: 에너지 높이기</text>
+</svg>`,
+    diagramCaption: String.raw`양성위상은 데이터 지점의 에너지를 낮추고, 음성위상은 모델이 만든 샘플의 에너지를 높인다.`,
     sections: [
       { id: "s1", text: String.raw`정의로부터 $-\log p_\theta(x) = E_\theta(x) + \log Z(\theta)$ 이다. 양변에 $\theta$에 대한 그래디언트를 취하면 $\nabla_\theta(-\log p_\theta(x)) = \nabla_\theta E_\theta(x) + \nabla_\theta \log Z(\theta)$ 를 얻는다. 이제 둘째 항 $\nabla_\theta\log Z(\theta)$가 무엇인지가 핵심이다.`, blanks: [] },
       { id: "s2", text: String.raw`로그의 미분 공식으로 $\nabla_\theta \log Z(\theta) = $[[blank:가]] 이다.`,
@@ -14827,6 +17308,34 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
 <p><strong>베타-이항.</strong> 사전분포 $\theta\sim\mathrm{Beta}(2,2)$ 에서 $n=10$번 시행 중 $x=7$번 성공했다면, 공식대로 사후분포는 $\mathrm{Beta}(2+7,\,2+10-7)=\mathrm{Beta}(9,5)$ 이다.</p>
 <p><strong>디리클레-다항.</strong> $K=3$개 범주에 사전분포 $\pi\sim\mathrm{Dir}(1,1,1)$, 관측이 $n=6$번 시행에서 $(x_1,x_2,x_3)=(3,2,1)$이었다면 사후분포는 $\mathrm{Dir}(1+3,\,1+2,\,1+1)=\mathrm{Dir}(4,3,2)$ 이다.</p>
 <p><strong>가우시안-가우시안.</strong> 사전분포 $\mu\sim N(0,1)$, 관측분산 $\sigma^2=4$, $n=4$개 관측의 평균이 $\bar x=2$라면 $\tau_n^2=1/(1/1+4/4)=1/2$, $\mu_n=\tfrac12\left(0/1+4\cdot2/4\right)=\tfrac12\cdot2=1$ 이므로 사후분포는 $N(1,\,0.5)$ 이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="20" font-size="13">베타-이항</text>
+<line x1="30" y1="200" x2="250" y2="200" class="dg-line" stroke-width="1"/>
+<path d="M40,200 Q140,60 240,200" fill="none" class="dg-dim" stroke-width="2" stroke-dasharray="6,4"/>
+<path d="M60,200 Q172,32 232,200" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="70" y="80" font-size="11" class="dg-dim">사전 Beta(2,2)</text>
+<text x="150" y="45" font-size="11">사후 Beta(9,5)</text>
+<text x="320" y="20" font-size="13">디리클레-다항</text>
+<line x1="320" y1="200" x2="600" y2="200" class="dg-line" stroke-width="1"/>
+<rect x="335" y="150" width="18" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="358" y="127" width="18" height="73" class="dg-accent"/>
+<rect x="405" y="150" width="18" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="428" y="145" width="18" height="55" class="dg-accent"/>
+<rect x="475" y="150" width="18" height="50" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+<rect x="498" y="163" width="18" height="37" class="dg-accent"/>
+<text x="330" y="220" font-size="11">범주1</text>
+<text x="400" y="220" font-size="11">범주2</text>
+<text x="470" y="220" font-size="11">범주3</text>
+<text x="320" y="120" font-size="11" class="dg-dim">점선=사전 Dir(1,1,1)</text>
+<text x="320" y="135" font-size="11">채움=사후 Dir(4,3,2)</text>
+<text x="640" y="20" font-size="13">가우시안-가우시안</text>
+<line x1="630" y1="200" x2="880" y2="200" class="dg-line" stroke-width="1"/>
+<path d="M640,200 Q715,55 790,200" fill="none" class="dg-dim" stroke-width="2" stroke-dasharray="6,4"/>
+<path d="M735,200 Q800,35 855,200" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="640" y="80" font-size="11" class="dg-dim">사전 N(0,1)</text>
+<text x="770" y="45" font-size="11">사후 N(1,0.5)</text>
+</svg>`,
+    diagramCaption: String.raw`세 켤레쌍 모두 사전분포(점선)에 관측을 반영하면 사후분포(굵은선/채움)가 좁아지고 이동한다.`,
     sections: [
       { id: "s1", text: String.raw`베타-이항, 디리클레-다항, 가우시안-가우시안 세 쌍은 모두 베이즈 정리 $p(\theta\mid x)\propto p(x\mid\theta)p(\theta)$ 에서 우도와 사전분포의 함수형이 곱해졌을 때 사전분포와 같은 분포족의 커널이 나온다는 공통 구조를 갖는다. 이를 세 경우 각각에서 직접 확인한다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 베타-이항이다. $x\mid\theta\sim\mathrm{Binomial}(n,\theta)$, 사전분포 $\theta\sim\mathrm{Beta}(\alpha,\beta)\propto\theta^{\alpha-1}(1-\theta)^{\beta-1}$. 우도 $p(x\mid\theta)\propto\theta^x(1-\theta)^{n-x}$ 를 곱하면 $p(\theta\mid x)\propto\theta^{x+\alpha-1}(1-\theta)^{n-x+\beta-1}$ 이다.`, blanks: [] },
@@ -14854,6 +17363,22 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     example: String.raw`<p>Schur complement 공식을 2차원 숫자 예제로 확인한다. $\Sigma=\begin{pmatrix}2&1\\1&2\end{pmatrix}$, $\mu=(0,0)$ 이라 하자(첫 성분이 $x$, 둘째가 $y$).</p>
 <p>공식대로 조건부분산은 $\Sigma_{xx}-\Sigma_{xy}\Sigma_{yy}^{-1}\Sigma_{yx} = 2 - 1\cdot\tfrac12\cdot1 = 1.5$ 이고, $y=4$로 관측되었다면 조건부평균은 $\mu_x+\Sigma_{xy}\Sigma_{yy}^{-1}(y-\mu_y)=0+1\cdot\tfrac12\cdot(4-0)=2$ 이다. 즉 $x\mid y=4 \sim N(2,\,1.5)$.</p>
 <p>이 값은 이변량정규분포의 상관계수 공식으로도 검산된다: $\rho=\mathrm{Cov}(x,y)/\sqrt{\mathrm{Var}(x)\mathrm{Var}(y)}=1/2$이고 조건부분산 공식 $\sigma_x^2(1-\rho^2)=2(1-0.25)=1.5$로 정확히 일치한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="150" cy="120" rx="90" ry="50" fill="none" class="dg-stroke-ink" stroke-width="2" transform="rotate(35 150 120)"/>
+<ellipse cx="150" cy="120" rx="60" ry="33" fill="none" class="dg-stroke-ink" stroke-width="1.5" transform="rotate(35 150 120)"/>
+<line x1="20" y1="152" x2="280" y2="152" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="20" y="145" font-size="12">y = y0 단면</text>
+<line x1="310" y1="130" x2="360" y2="130" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M352,123 L362,130 L352,137" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="305" y="118" font-size="11">Schur complement</text>
+<path d="M380,220 Q470,60 560,220" fill="none" class="dg-dim" stroke-width="2" stroke-dasharray="6,4"/>
+<path d="M430,220 Q480,90 545,220" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="380" y1="220" x2="600" y2="220" class="dg-line" stroke-width="1"/>
+<text x="385" y="90" font-size="11" class="dg-dim">주변분포 p(x)</text>
+<text x="450" y="70" font-size="11">조건부 p(x|y=y0)</text>
+<text x="400" y="240" font-size="11" class="dg-dim">분산이 좁아지고 평균이 이동함</text>
+</svg>`,
+    diagramCaption: String.raw`가우시안을 y=y0에서 자른 단면은 다시 가우시안이며, 평균이 이동하고 분산은 좁아진다.`,
     sections: [
       { id: "s1", text: String.raw`다변량 정규분포 $(x,y)\sim N(\mu,\Sigma)$, $\mu=\begin{pmatrix}\mu_x\\\mu_y\end{pmatrix}$, $\Sigma=\begin{pmatrix}\Sigma_{xx}&\Sigma_{xy}\\\Sigma_{yx}&\Sigma_{yy}\end{pmatrix}$ 라 하자. 목표는 $y=y_0$로 고정했을 때 $x$의 조건부분포가 가우시안이고 그 평균과 공분산이 $\Sigma_{yy}$를 소거한 Schur complement로 주어짐을 보이는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`직접 조건부 밀도를 적분하는 대신, 보조변수 $z = x - \Sigma_{xy}\Sigma_{yy}^{-1}y$ 를 도입한다. $z$는 $(x,y)$의 선형결합이므로 $(z,y)$도 결합적으로 가우시안이다.`, blanks: [] },
@@ -14880,6 +17405,23 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     explanation: String.raw`결합분포에서 일부 변수를 '적분해서 지워버리면' 남는 변수들의 분포를 주변분포라 부릅니다. 일반적인 분포에서는 이 적분이 매우 어렵지만, 가우시안은 특별해서 아무리 많은 변수를 지워도 남는 분포가 다시 가우시안입니다.<br><br><strong>명제.</strong> $(x,y)\sim N(\mu,\Sigma)$, $\mu=(\mu_x;\mu_y)$, $\Sigma=\begin{pmatrix}\Sigma_{xx}&\Sigma_{xy}\\\Sigma_{yx}&\Sigma_{yy}\end{pmatrix}$ 이면 $x\sim N(\mu_x,\Sigma_{xx})$ 이다. 즉 결합공분산행렬에서 해당 블록만 남기면 그것이 곧 주변분포의 공분산이다.`,
     example: String.raw`<p>먼저 가장 단순한 2차원 경우로 감을 잡는다. $(x,y)\sim N\left((0,0),\begin{pmatrix}2&1\\1&2\end{pmatrix}\right)$ 라면, 잘 알려진 이변량정규분포의 주변분포 성질에 의해 $x\sim N(0,2)$ 이다 — 이는 공분산행렬의 좌상단 원소를 그대로 읽은 것과 같다.</p>
 <p>블록이 여러 성분일 때도 같은 원리가 성립함을 3차원에서 확인한다. $\mu=(1,2,3)$, $\Sigma=\begin{pmatrix}4&2&0\\2&3&1\\0&1&2\end{pmatrix}$ 인 3차원 가우시안에서 앞의 두 성분 $(x_1,x_2)$의 주변분포를 구하면, 나머지 성분($x_3$)의 평균·공분산 정보는 모두 사라지고 대응하는 블록만 남아 $$(x_1,x_2)\sim N\left((1,2),\ \begin{pmatrix}4&2\\2&3\end{pmatrix}\right)$$ 이 된다(공분산행렬 $\Sigma$의 좌상단 $2\times2$ 블록을 그대로 취한 것).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="180" cy="90" rx="110" ry="55" fill="none" class="dg-stroke-ink" stroke-width="2" transform="rotate(20 180 90)"/>
+<ellipse cx="180" cy="90" rx="75" ry="37" fill="none" class="dg-stroke-ink" stroke-width="1.5" transform="rotate(20 180 90)"/>
+<line x1="95" y1="190" x2="95" y2="150" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="130" y1="190" x2="130" y2="135" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="180" y1="190" x2="180" y2="122" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="230" y1="190" x2="230" y2="135" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="265" y1="190" x2="265" y2="150" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="60" y1="190" x2="300" y2="190" class="dg-line" stroke-width="1.5"/>
+<text x="60" y="215" font-size="11" class="dg-dim">y를 적분해 없앰 (주변화)</text>
+<line x1="320" y1="150" x2="370" y2="150" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M362,143 L372,150 L362,157" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<path d="M390,220 Q470,60 550,220" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<line x1="390" y1="220" x2="550" y2="220" class="dg-line" stroke-width="1"/>
+<text x="395" y="240" font-size="11">x의 주변분포 N(μx, Σxx)</text>
+</svg>`,
+    diagramCaption: String.raw`2D 가우시안을 y축 방향으로 적분한 그림자(주변분포)는 다시 1차원 가우시안이 된다.`,
     sections: [
       { id: "s1", text: String.raw`다변량 정규분포 $(x,y)\sim N(\mu,\Sigma)$ 를 앞서와 같이 블록으로 분할하자. 목표는 $x$만의 주변분포가 다시 가우시안 $N(\mu_x,\Sigma_{xx})$ 임을 보이는 것이다. 직접 조건부확률 적분보다 특성함수를 쓰면 계산이 짧아진다. 다변량 정규분포의 특성함수는 $\varphi_{(x,y)}(t) = E[e^{it^T(x,y)}] = \exp\left(it^T\mu - \frac12 t^T\Sigma t\right)$ 이다(여기서 $t=(t_x;t_y)$).`, blanks: [] },
       { id: "s2", text: String.raw`$x$만의 주변 특성함수는 결합 특성함수에서 $y$에 대응하는 인자를 $t_y=0$으로 두면 얻어진다: $\varphi_x(t_x) = E[e^{it_x^Tx}] = \varphi_{(x,y)}(t_x, 0)$. 즉 $t=(t_x;0)$을 대입하기만 하면 된다.`, blanks: [] },
@@ -14904,6 +17446,22 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     example: String.raw`<p>$d=2,\,k=1$인 가장 단순한 PPCA로 극한 수렴을 직접 확인한다. $W=(2,0)^T$, $\mu=(0,0)$, 관측 $x=(3,4)$ 라 하자.</p>
 <p>$\sigma^2=1$일 때 $M=W^TW+\sigma^2=4+1=5$이므로 $E[z\mid x]=M^{-1}W^T(x-\mu) = (2\cdot3+0\cdot4)/5=6/5=1.2$, 재구성값은 $W\cdot1.2=(2.4,0)$이다.</p>
 <p>$\sigma^2$을 $0.1,\,0.01$로 줄이면 재구성값은 각각 $(2.927,0),\,(2.993,0)$으로 점점 가까워지고, $\sigma^2\to0$의 극한에서는 정확히 $(3,0)$이 된다. 이는 $x=(3,4)$를 $W$의 열공간(=$x$축)으로 직교사영한 값 $Px=(3,0)$과 정확히 일치한다(여기서 $P=W(W^TW)^{-1}W^T=\mathrm{diag}(1,0)$).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="190" x2="480" y2="60" class="dg-stroke-ink" stroke-width="2"/>
+<text x="340" y="50" font-size="12">잠재직선 (W의 열공간)</text>
+<circle cx="160" cy="110" r="5" class="dg-dim"/>
+<line x1="160" y1="110" x2="188" y2="138" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="190" cy="140" r="3" class="dg-accent"/>
+<circle cx="300" cy="150" r="5" class="dg-dim"/>
+<line x1="300" y1="150" x2="322" y2="122" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="320" cy="120" r="3" class="dg-accent"/>
+<circle cx="400" cy="130" r="5" class="dg-dim"/>
+<line x1="400" y1="130" x2="392" y2="97" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="390" cy="95" r="3" class="dg-accent"/>
+<text x="60" y="215" font-size="11" class="dg-dim">관측 x = Wz + μ + ε (잡음 σ² 있음)</text>
+<text x="260" y="230" font-size="11">σ² → 0: 사후평균이 직교사영 Px로 수렴</text>
+</svg>`,
+    diagramCaption: String.raw`관측잡음 σ²이 줄어들수록 재구성값이 잠재직선 위 직교사영점으로 수렴한다.`,
     sections: [
       { id: "s1", text: String.raw`PPCA는 결정론적 PCA에 확률적 생성모델을 씌운 것이다. 잠재변수 $z\in\mathbb{R}^k\sim N(0,I_k)$ 이고, 관측 $x\in\mathbb{R}^d$ 는 $x = Wz+\mu+\varepsilon$, $\varepsilon\sim N(0,\sigma^2I_d)$ 이며 $z\perp\varepsilon$ 이다. (1) $x$의 주변분포가 $N(\mu, WW^T+\sigma^2I)$ 임을 보이고, (2) $\sigma^2\to0$ 극한에서 이 모델의 잠재변수 사후평균이 결정론적 PCA의 사영으로 수렴함을 보인다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 주변분포다. $x$는 독립인 가우시안 $z,\varepsilon$의 아핀결합이므로 $x$ 자체도 가우시안이다. 평균은 $E[x]=WE[z]+\mu+E[\varepsilon]=\mu$ 이고, 공분산은 $z\perp\varepsilon$이므로 $\mathrm{Cov}(x)=W\,\mathrm{Cov}(z)\,W^T+\mathrm{Cov}(\varepsilon) = $[[blank:가]]`,
@@ -14930,6 +17488,20 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     explanation: String.raw`여러 신호가 섞인 관측에서 원래 독립적인 소스 신호들을 복원하는 것이 ICA입니다. 그런데 소스가 가우시안이면 아무리 좋은 알고리즘을 써도 원리적으로 복원이 불가능하고, 반대로 소스가 비가우시안이면(가우시안 성분이 최대 1개까지만) 유일하게 복원할 수 있습니다. 이 차이는 가우시안분포만이 갖는 회전 대칭성 때문에 생깁니다.<br><br><strong>명제.</strong> $x=As$, $s$의 성분이 서로 독립이고 $A$가 정칙이라 하자. 모든 $s_i$가 가우시안이면 임의의 직교행렬 $R$에 대해 $A'=AR^T$, $s'=Rs$도 같은 관측분포 $x$를 내므로 $A$는 회전만큼 비식별이다. 반대로 $s_i$ 중 최대 하나만 가우시안이면 $A$는 순열과 스케일을 제외하고 유일하게 식별된다(Darmois–Skitovich 정리).`,
     example: String.raw`<p>회전 비식별성을 2차원에서 확인한다. $A=I$(항등행렬), 회전각 $90°$의 직교행렬 $R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ 을 생각하자. $A'=AR^T=R^T=\begin{pmatrix}0&1\\-1&0\end{pmatrix}$ 인데, $A'A'^T=R^TR=I=AA^T$ 이므로 $s\sim N(0,I)$ 이든 $s'=Rs\sim N(0,I)$ 이든 $x=As=A's'$의 분포는 완전히 같다 — 가우시안 소스는 이 회전을 관측만으로 구별할 방법이 없다.</p>
 <p>반대로 소스가 비가우시안이면 이 모호함이 깨진다. $s_1,s_2$가 $\mathrm{Uniform}(-\sqrt3,\sqrt3)$(분산 1)로 독립이라 하자. 균등분포의 초과첨도(excess kurtosis)는 이론값 $-1.2$인데(수치실험 $-1.2002$), 두 성분을 45° 방향으로 섞은 $y=(s_1+s_2)/\sqrt2$의 초과첨도는 이론상 원래 값의 절반인 $-0.6$이 된다(수치실험 $-0.597$). 즉 회전으로 섞은 결과는 원래 성분보다 더 가우시안에 가까워져(중심극한정리적 현상) 통계적으로 구별되며, 이 혼합이 진짜 독립성분이 아님이 드러난다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+<text x="55" y="20" font-size="13">가우시안 소스: 회전에 불변 (비식별)</text>
+<circle cx="170" cy="130" r="80" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="90" y1="130" x2="250" y2="130" class="dg-line" stroke-width="1.5"/>
+<line x1="170" y1="50" x2="170" y2="210" class="dg-line" stroke-width="1.5"/>
+<line x1="113" y1="73" x2="227" y2="187" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="113" y1="187" x2="227" y2="73" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="70" y="228" font-size="11" class="dg-dim">실선 축 = 점선(회전) 축: 등고선이 원이라 구별 불가</text>
+<text x="410" y="20" font-size="13">비가우시안(균등) 소스: 회전하면 모양이 달라짐</text>
+<rect x="410" y="70" width="120" height="120" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="470,50 550,130 470,210 390,130" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="400" y="228" font-size="11" class="dg-dim">정사각형(실선) ≠ 45° 회전 모양(점선): 식별 가능</text>
+</svg>`,
+    diagramCaption: String.raw`가우시안 소스는 회전해도 등고선이 원이라 구별 불가능하지만, 비가우시안 소스는 회전하면 모양이 달라져 식별된다.`,
     sections: [
       { id: "s1", text: String.raw`혼합모델 $x = As$ 를 생각하자. $s=(s_1,\dots,s_n)$은 평균 0, 분산 1로 정규화되고 서로 독립인 성분들이고, $A$는 정칙(invertible) 정방행렬이다. 목표는 관측 $x$의 분포만으로 $A$(따라서 $s=A^{-1}x$)를 복원할 수 있는지를 소스 $s_i$들의 분포 특성에 따라 밝히는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 모든 $s_i$가 표준정규분포인 경우를 본다. 임의의 직교행렬 $R$($RR^T=R^TR=I$)에 대해 $s' := Rs$ 를 정의하면 $s'$의 공분산은 $\mathrm{Cov}(s')=R\,\mathrm{Cov}(s)\,R^T = RIR^T = $[[blank:가]]`,
@@ -14954,6 +17526,39 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     explanation: String.raw`문서 하나가 여러 주제를 섞어 쓴 것이라는 직관을 확률모델로 만든 것이 LDA 토픽모델입니다. 사전분포로 디리클레를, 관측단계에서 다항(범주형)을 쓰기 때문에 앞서 다룬 디리클레-다항 켤레성이 그대로 학습 알고리즘의 핵심이 됩니다.<br><br><strong>명제.</strong> 판(plate) 표기로 정의된 LDA 생성모델에서 $\theta_d$(문서-토픽 비율), $\phi_k$(토픽-단어 분포)를 디리클레-다항 켤레성으로 적분해 없애면, 단어-토픽 배정의 전체조건부는 $$p(z_{d,n}=k\mid z_{-(d,n)},w)\propto (n_{d,k}^{\neg dn}+\alpha_k)\cdot\frac{n_{k,w_{d,n}}^{\neg dn}+\beta_{w_{d,n}}}{n_k^{\neg dn}+\sum_v\beta_v}$$ 로 닫힌형이며, 이것이 collapsed Gibbs sampling의 업데이트 규칙이다.`,
     example: String.raw`<p>토픽 $K=2$, 어휘 $V=3$(단어 A,B,C), $\alpha=(0.1,0.1)$, $\beta=0.01$(모든 단어 동일)이라 하자. 지금 다시 뽑을 단어(A)의 토큰을 제외하면 그 문서의 토픽별 카운트는 $n_d=(3,1)$(토픽1에 3개, 토픽2에 1개), 전체 말뭉치에서 토픽1은 단어A를 5번(총 10개 단어), 토픽2는 단어A를 1번(총 7개 단어) 배정했다고 하자.</p>
 <p>공식에 대입하면 토픽1의 비정규화 확률은 $(3+0.1)\cdot(5+0.01)/(10+3\cdot0.01)=3.1\cdot5.01/10.03\approx1.548$, 토픽2는 $(1+0.1)\cdot(1+0.01)/(7+3\cdot0.01)=1.1\cdot1.01/7.03\approx0.158$ 이다. 정규화하면 $p(z=1)\approx0.907$, $p(z=2)\approx0.093$으로, 이 토큰은 압도적으로 토픽1에 재배정될 확률이 높다 — 문서가 이미 토픽1을 선호하고(3 vs 1) 토픽1이 단어 A를 많이 써왔기(5 vs 1) 때문이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="70" y="40" width="380" height="190" rx="6" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="430" y="222" font-size="12">D</text>
+<rect x="150" y="100" width="180" height="90" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="313" y="182" font-size="12">N</text>
+<rect x="385" y="60" width="110" height="110" rx="4" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="475" y="162" font-size="12">K</text>
+<circle cx="40" cy="150" r="11" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="35" y="154" font-size="12">α</text>
+<circle cx="110" cy="150" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="97" y="155" font-size="10">θd</text>
+<circle cx="195" cy="145" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="190" y="149" font-size="11">z</text>
+<circle cx="280" cy="145" r="14" class="dg-accent"/>
+<text x="273" y="149" font-size="11">w</text>
+<circle cx="440" cy="115" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="428" y="119" font-size="10">φk</text>
+<circle cx="440" cy="35" r="10" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="434" y="39" font-size="12">β</text>
+<line x1="51" y1="150" x2="90" y2="150" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M85,146 L94,150 L85,154" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="126" y1="149" x2="177" y2="146" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M170,141 L180,146 L170,151" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="209" y1="145" x2="262" y2="145" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M255,140 L265,145 L255,150" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="440" y1="45" x2="440" y2="97" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M435,90 L440,100 L445,90" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="424" y1="122" x2="298" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<path d="M304,133 L296,140 L306,144" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="70" y="28" font-size="11">문서마다 θd~Dir(α), 토픽마다 φk~Dir(β), 단어마다 z~Cat(θd), w~Cat(φz)</text>
+<text x="70" y="252" font-size="10" class="dg-dim">채운 원 w = 관측된 단어, 빈 원 = 잠재변수</text>
+</svg>`,
+    diagramCaption: String.raw`문서 판(D) 안 단어 판(N)에서 θd, z, w가 반복되고, 토픽 판(K)의 φk가 관측단어 w를 함께 생성한다.`,
     sections: [
       { id: "s1", text: String.raw`LDA는 문서가 여러 토픽의 혼합이고 각 토픽은 단어들의 확률분포라는 가정을 판(plate) 표기로 나타낸 생성모델이다. 토픽 수 $K$, 어휘 크기 $V$일 때: (i) 각 토픽 $k=1,\dots,K$에 대해 단어분포 $\phi_k\sim\mathrm{Dir}(\beta)$ 를 뽑는다(토픽 판, $K$번 반복). (ii) 각 문서 $d=1,\dots,D$에 대해 토픽비율 $\theta_d\sim\mathrm{Dir}(\alpha)$ 를 뽑는다(문서 판). (iii) 문서 $d$의 각 단어 위치 $n=1,\dots,N_d$ 에서 토픽 $z_{d,n}\sim\mathrm{Categorical}(\theta_d)$, 단어 $w_{d,n}\sim\mathrm{Categorical}(\phi_{z_{d,n}})$ 를 뽑는다(단어 판, 문서 판 안에 중첩). 목표는 $\theta,\phi$를 적분해 없앤 뒤 collapsed Gibbs sampling의 전체조건부 $p(z_{d,n}=k\mid z_{-(d,n)},w)$ 를 닫힌형으로 구하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 문서 $d$에서 $\theta_d$를 적분해 없앤다. $z_{d,1:N_d}\mid\theta_d$는 각 위치가 독립인 범주형이므로 토픽별 등장횟수 벡터 $n_d=(n_{d,1},\dots,n_{d,K})$ 관점에서 디리클레-다항 켤레성이 그대로 적용된다. 디리클레 사전분포와 다항 우도를 곱해 정규화하면 나오는 주변우도는 $p(z_{d,:}\mid\alpha) = $[[blank:가]]`,
@@ -14979,6 +17584,26 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
     explanation: String.raw`베이지안 선형회귀는 파라미터 $w$ 위에 사전분포를 둡니다. 가우시안 프로세스는 한 걸음 더 나아가 함수 $f$ 자체 위에(무한차원) 사전분포를 두는데, 신기하게도 유한개의 관측점에서는 여전히 유한차원 가우시안 조건화 공식을 그대로 쓸 수 있습니다.<br><br><strong>명제.</strong> $f\sim GP(0,k)$, $y_i=f(x_i)+\varepsilon_i$($\varepsilon_i\overset{iid}\sim N(0,\sigma^2)$)일 때, $K=K(X,X)$, $k_*=K(X,x_*)$, $k_{**}=k(x_*,x_*)$ 라 하면 $$f_*\mid X,y,x_*\sim N\big(k_*^T(K+\sigma^2I)^{-1}y,\ k_{**}-k_*^T(K+\sigma^2I)^{-1}k_*\big)$$ 로 닫힌형 사후예측분포를 얻는다.`,
     example: String.raw`<p>RBF 커널 $k(x,x')=\exp(-(x-x')^2/2)$, 관측잡음 $\sigma^2=0.1$을 쓰고, 학습점 하나 $x_1=0,\,y_1=1$만 있다고 하자. 테스트점 $x_*=1$에서 $K=k(0,0)=1$, $k_*=k(0,1)=e^{-0.5}\approx0.6065$, $k_{**}=k(1,1)=1$이다.</p>
 <p>공식에 대입하면 사후평균은 $k_*(K+\sigma^2)^{-1}y_1 = 0.6065/1.1\approx0.551$이고, 사후분산은 $k_{**}-k_*^2/(K+\sigma^2)=1-0.6065^2/1.1\approx0.666$이다. 즉 $f_*\mid y \sim N(0.551,\,0.666)$으로, 학습점에서 멀어질수록(=관측과의 커널유사도가 낮아질수록) 사후평균은 사전평균 0 쪽으로, 사후분산은 사전분산 $k_{**}=1$ 쪽으로 되돌아간다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="600" y2="190" class="dg-line" stroke-width="1"/>
+<polyline points="60,72 120,92 190,75 260,112 340,77 420,97 500,75 545,70" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polyline points="60,145 120,108 190,145 260,128 340,147 420,113 500,145 545,150" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="60" y1="72" x2="76" y2="87" class="dg-dim" stroke-width="1"/>
+<line x1="90" y1="79" x2="106" y2="94" class="dg-dim" stroke-width="1"/>
+<line x1="150" y1="82" x2="166" y2="97" class="dg-dim" stroke-width="1"/>
+<line x1="220" y1="90" x2="236" y2="105" class="dg-dim" stroke-width="1"/>
+<line x1="290" y1="97" x2="306" y2="112" class="dg-dim" stroke-width="1"/>
+<line x1="360" y1="90" x2="376" y2="105" class="dg-dim" stroke-width="1"/>
+<line x1="440" y1="103" x2="456" y2="118" class="dg-dim" stroke-width="1"/>
+<line x1="510" y1="85" x2="526" y2="100" class="dg-dim" stroke-width="1"/>
+<path d="M40,110 Q80,105 120,100 Q190,90 260,120 Q340,140 420,105 Q500,95 580,110" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<circle cx="120" cy="100" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="260" cy="120" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="420" cy="105" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="40" y="20" font-size="12">평균함수(굵은 선)와 신뢰구간(해칭 밴드)</text>
+<text x="440" y="20" font-size="11" class="dg-dim">관측점 근처는 좁고 먼 곳은 넓음</text>
+</svg>`,
+    diagramCaption: String.raw`관측점(원)을 지나는 평균함수 주변으로 신뢰구간이 관측점 근처에서는 좁고 멀어질수록 넓어진다.`,
     sections: [
       { id: "s1", text: String.raw`가우시안 프로세스(GP)는 함수 $f$ 위의 확률분포로, 임의의 유한한 점 집합 $x_1,\dots,x_n$을 고를 때마다 $(f(x_1),\dots,f(x_n))$이 평균함수 $m(\cdot)$과 커널(공분산함수) $k(\cdot,\cdot)$로 정해지는 다변량 가우시안이 되는 것으로 정의한다(일관성 조건). 여기서는 $m\equiv0$으로 두고, 관측이 잡음을 포함한 $y_i=f(x_i)+\varepsilon_i$, $\varepsilon_i\overset{iid}\sim N(0,\sigma^2)$ 인 회귀 문제를 본다. 목표는 학습점들의 관측값 $y=(y_1,\dots,y_n)$이 주어졌을 때 새 점 $x_*$에서의 함수값 $f_*=f(x_*)$의 사후분포를, 앞서 유도한 유한차원 가우시안 조건화(Schur complement) 결과를 그대로 적용해 구하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`GP의 정의에 따라 $f(x_1),\dots,f(x_n), f_*$ 는 유한 개의 점이므로 함께 다변량 가우시안이다. 잡음 $\varepsilon_i$가 서로 독립이고 $f$와도 독립이므로 관측 $y=f(X)+\varepsilon$ 을 포함해도 $(y,f_*)$는 여전히 결합가우시안이다. 커널행렬을 $K:=K(X,X)$(원소 $K_{ij}=k(x_i,x_j)$), $k_*:=K(X,x_*)$(원소 $k(x_i,x_*)$인 열벡터), $k_{**}:=k(x_*,x_*)$ 라 하면, $$\begin{pmatrix}y\\f_*\end{pmatrix}\sim N\left(0,\ \begin{pmatrix}K+\sigma^2I & k_*\\ k_*^T & k_{**}\end{pmatrix}\right)$$ 이다(관측잡음 $\sigma^2I$는 $y$ 블록에만 더해진다).`, blanks: [] },
@@ -15005,6 +17630,28 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
 <p>파라미터공간 공식으로 계산하면 $S_N^{-1}=S_0^{-1}+\sigma^{-2}X^TX = 1+(1^2+2^2)=6$, $S_N=1/6$, $m_N=S_N\cdot\sigma^{-2}X^Ty=\tfrac16(1\cdot1+2\cdot2)=\tfrac16\cdot5=5/6\approx0.833$ 이다.</p>
 <p>같은 결과를 데이터공간(Schur complement) 공식으로도 검산할 수 있다: $\Sigma_{yy}=XS_0X^T+\sigma^2I=\begin{pmatrix}2&2\\2&5\end{pmatrix}$, $\Sigma_{xy}=S_0X^T=(1,2)$이고, $\Sigma_{xy}\Sigma_{yy}^{-1}y = 5/6$, $S_0-\Sigma_{xy}\Sigma_{yy}^{-1}\Sigma_{yx}=1/6$로 정확히 일치한다.</p>
 <p>새 입력 $x_*=4$에서의 예측분포는 평균 $x_*m_N=4\cdot5/6=10/3\approx3.33$, 분산 $x_*^2S_N+\sigma^2=16/6+1\approx3.67$이다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+<text x="40" y="18" font-size="12">사전분포에서 뽑은 회귀직선들</text>
+<line x1="40" y1="190" x2="40" y2="30" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="190" x2="300" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="180" x2="280" y2="40" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="40" y1="60" x2="280" y2="170" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="40" y1="120" x2="280" y2="30" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="40" y1="150" x2="280" y2="190" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<line x1="40" y1="90" x2="280" y2="100" class="dg-dim" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="40" y="210" font-size="11" class="dg-dim">데이터 반영 전: 기울기·절편이 넓게 퍼짐</text>
+<text x="400" y="18" font-size="12">사후분포에서 뽑은 회귀직선들</text>
+<line x1="380" y1="190" x2="380" y2="30" class="dg-line" stroke-width="1"/>
+<line x1="380" y1="190" x2="650" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="390" y1="155" x2="650" y2="55" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="390" y1="150" x2="650" y2="50" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="390" y1="160" x2="650" y2="60" class="dg-stroke-accent" stroke-width="1.5"/>
+<line x1="390" y1="148" x2="650" y2="52" class="dg-stroke-accent" stroke-width="1.5"/>
+<circle cx="420" cy="140" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="480" cy="110" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="380" y="210" font-size="11">관측점 근처로 수렴, 퍼짐이 크게 줄어듦</text>
+</svg>`,
+    diagramCaption: String.raw`사전분포에서 뽑은 직선(왼쪽, 넓게 퍼짐)과 달리 사후분포의 직선(오른쪽)은 관측점 근처로 수렴한다.`,
     sections: [
       { id: "s1", text: String.raw`사전분포 $w\sim N(m_0,S_0)$(보통 $m_0=0$, $S_0=\alpha^{-1}I$인 능선회귀류 사전), 우도 $y\mid X,w\sim N(Xw,\sigma^2I)$ 인 베이지안 선형회귀를 생각하자(오차 $\varepsilon=y-Xw\sim N(0,\sigma^2I)$는 $w$와 독립). 목표는 관측 $y$가 주어졌을 때 $w$의 사후분포 $p(w\mid X,y)$와 새 입력 $x_*$에서의 예측분포 $p(y_*\mid x_*,X,y)$를 모두 닫힌형으로 구하는 것이며, 여기서는 직접 로그사후분포를 제곱완성하는 대신 $(w,y)$가 결합가우시안이라는 사실과 앞서 유도한 가우시안 조건부분포(Schur complement) 공식을 그대로 적용한다.`, blanks: [] },
       { id: "s2", text: String.raw`$y=Xw+\varepsilon$ 은 $w$의 아핀변환에 독립인 가우시안 잡음을 더한 것이므로 $(w,y)$는 결합가우시안이다. 교차공분산은 $\mathrm{Cov}(w,y)=\mathrm{Cov}(w,Xw+\varepsilon)=\mathrm{Cov}(w,w)X^T = $[[blank:가]]`,
@@ -15240,6 +17887,30 @@ $$\mathbb E_\varepsilon[(wx+\varepsilon x-y)^2] = (wx-y)^2 + 2x(wx-y)\mathbb E[\
 <p>예를 들어 $x=0.5$가 뽑혔다면 수락확률은 $0.5$입니다. 전체 수락확률을 직접 적분해서 확인하면</p>
 $$P(A)=\int_0^1 q(x)\cdot\frac{p(x)}{Mq(x)}\,dx=\int_0^1 \frac{2x}{2}\,dx=\int_0^1 x\,dx=\frac12$$
 <p>이고, 이는 명제가 말하는 $1/M=1/2$과 정확히 일치합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="35" y1="170" x2="500" y2="170" class="dg-line" stroke-width="1"/>
+<line x1="130" y1="122" x2="130" y2="80" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="190" y1="100" x2="190" y2="38" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="250" y1="90" x2="250" y2="20" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="310" y1="95" x2="310" y2="29" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="370" y1="113" x2="370" y2="64" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="430" y1="142" x2="430" y2="118" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="130" y1="170" x2="130" y2="122" class="dg-line" stroke-width="1.5"/>
+<line x1="190" y1="170" x2="190" y2="100" class="dg-line" stroke-width="1.5"/>
+<line x1="250" y1="170" x2="250" y2="90" class="dg-line" stroke-width="1.5"/>
+<line x1="310" y1="170" x2="310" y2="95" class="dg-line" stroke-width="1.5"/>
+<line x1="370" y1="170" x2="370" y2="113" class="dg-line" stroke-width="1.5"/>
+<line x1="430" y1="170" x2="430" y2="142" class="dg-line" stroke-width="1.5"/>
+<path d="M40,170 Q260,-130 480,170" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<path d="M40,170 Q260,10 480,170" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="52" y="32" font-size="12" class="dg-dim">Mq(x) (포락, 점선)</text>
+<text x="295" y="72" font-size="12">p(x) (목표분포, 실선)</text>
+<line x1="410" y1="180" x2="435" y2="180" class="dg-line" stroke-width="1.5"/>
+<text x="441" y="184" font-size="11" class="dg-dim">수락(실선 해칭)</text>
+<line x1="410" y1="192" x2="435" y2="192" class="dg-dim" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="441" y="196" font-size="11" class="dg-dim">기각(점선 해칭)</text>
+</svg>`,
+    diagramCaption: String.raw`제안분포 $q$에서 뽑은 점이 $p(x)$ 아래(실선 해칭)에 들어오면 수락, $p(x)$와 포락 $Mq(x)$ 사이(점선 해칭)에 들어오면 기각된다.`,
     sections: [
       { id: "s1", text: String.raw`거부샘플링의 절차는 $X\sim q$를 뽑고 독립으로 $U\sim\text{Unif}(0,1)$을 뽑은 뒤 $U\le p(X)/(Mq(X))$이면 수락하는 것이다. 목표는 수락 사건 $A$의 확률과, $A$가 일어났을 때 $X$의 조건부밀도를 구하는 것이다. $X,U$가 독립이므로 결합밀도는 $f(x,u)=q(x)\cdot 1$ ($0\le u\le1$)이다.`, blanks: [] },
       { id: "s2", text: String.raw`$x$ 근방에서 $X\in dx$이고 동시에 사건 $A$가 일어날 결합확률은 $U$에 대해 적분해서 얻는다. $U\sim\text{Unif}(0,1)$이므로 $P(U\le t)=t$ (단 $0\le t\le1$)이고, 가정 $p(x)\le Mq(x)$ 덕분에 $t=p(x)/(Mq(x))$는 항상 $[0,1]$ 안에 있다. 따라서 $P(X\in dx, A) = q(x)\cdot\dfrac{p(x)}{Mq(x)}\,dx = $[[blank:가]] 이다.`,
@@ -15299,6 +17970,22 @@ $$\hat\mu_2=\frac{6\cdot1+6\cdot1+2\cdot2}{6+6+2}=\frac{16}{14}\approx1.143$$
 <p>따라서 $P(B\mid A)=1\cdot1=1$, $P(A\mid B)=1\cdot\frac13=\frac13$입니다. 상세균형을 직접 확인하면</p>
 $$\tilde\pi(A)P(B\mid A)=1\cdot1=1,\qquad \tilde\pi(B)P(A\mid B)=3\cdot\frac13=1$$
 <p>로 정확히 일치합니다(정규화상수는 양변에 똑같이 곱해질 뿐이라 결과에 영향을 주지 않습니다).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 210" xmlns="http://www.w3.org/2000/svg">
+<circle cx="100" cy="115" r="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="320" cy="115" r="36" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="100" y="112" font-size="14" text-anchor="middle">x</text>
+<text x="100" y="130" font-size="10" text-anchor="middle" class="dg-dim">π(x)</text>
+<text x="320" y="112" font-size="14" text-anchor="middle">x'</text>
+<text x="320" y="130" font-size="10" text-anchor="middle" class="dg-dim">π(x')</text>
+<path d="M130,90 Q210,35 290,90" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="290,90 278,88 282,98" class="dg-accent"/>
+<path d="M290,142 Q210,197 130,142" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<polygon points="130,142 142,140 140,150" class="dg-line"/>
+<text x="210" y="28" font-size="12" text-anchor="middle">π(x)q(x'|x)α(x,x') (실선)</text>
+<text x="210" y="205" font-size="12" text-anchor="middle" class="dg-dim">π(x')q(x|x')α(x',x) (점선)</text>
+<text x="210" y="118" font-size="13" text-anchor="middle">=</text>
+</svg>`,
+    diagramCaption: String.raw`두 방향의 흐름량(실선·점선)이 정확히 같다는 것이 상세균형이며, 이 조건 하나로 $\pi$가 정상분포임이 보장된다.`,
     sections: [
       { id: "s1", text: String.raw`일반성을 잃지 않고 $\pi(x)q(x'\mid x)\le \pi(x')q(x\mid x')$인 경우를 본다(반대 부호는 $x,x'$ 역할을 바꾸면 같은 논증이 적용된다). 이 경우 비율 $\dfrac{\pi(x')q(x\mid x')}{\pi(x)q(x'\mid x)}\ge1$이므로 $\alpha(x,x')=\min(1,\cdot)=1$이다.`, blanks: [] },
       { id: "s2", text: String.raw`반대 방향의 수락확률은 $\alpha(x',x)=\min\Big(1,\dfrac{\pi(x)q(x'\mid x)}{\pi(x')q(x\mid x')}\Big)$인데, 가정에 의해 이 비율 자체가 $1$ 이하이므로 $\alpha(x',x) = $[[blank:가]] 이다.`,
@@ -15327,6 +18014,29 @@ $$\tilde\pi(A)P(B\mid A)=1\cdot1=1,\qquad \tilde\pi(B)P(A\mid B)=3\cdot\frac13=1
 <p>현재 상태가 $(x,y)=(1,1)$이고 깁스 단계가 완전조건부에서 $y'=2$를 제안했다고 합시다. 이를 메트로폴리스-헤이스팅스 비율로 계산하면</p>
 $$\frac{\tilde\pi(1,2)\cdot\pi(y=1\mid x=1)}{\tilde\pi(1,1)\cdot\pi(y=2\mid x=1)}=\frac{2\cdot(1/3)}{1\cdot(2/3)}=\frac{2/3}{2/3}=1$$
 <p>로 정확히 1이 나옵니다. 정규화상수 $Z=10$은 계산 어디에도 등장하지 않는다는 점도 확인할 수 있습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="280" x2="400" y2="280" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="280" x2="40" y2="30" class="dg-line" stroke-width="1"/>
+<text x="405" y="284" font-size="12" class="dg-dim">x₁</text>
+<text x="30" y="26" font-size="12" class="dg-dim">x₂</text>
+<ellipse cx="230" cy="160" rx="150" ry="90" transform="rotate(-28 230 160)" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="4,3"/>
+<ellipse cx="230" cy="160" rx="100" ry="58" transform="rotate(-28 230 160)" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="4,3"/>
+<ellipse cx="230" cy="160" rx="50" ry="28" transform="rotate(-28 230 160)" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<line x1="110" y1="255" x2="270" y2="255" class="dg-stroke-accent" stroke-width="2.5"/>
+<circle cx="110" cy="255" r="4" class="dg-accent"/>
+<circle cx="270" cy="255" r="4" class="dg-accent"/>
+<line x1="270" y1="255" x2="270" y2="175" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="270" cy="175" r="4" class="dg-accent"/>
+<line x1="270" y1="175" x2="195" y2="175" class="dg-stroke-accent" stroke-width="2.5"/>
+<circle cx="195" cy="175" r="4" class="dg-accent"/>
+<line x1="195" y1="175" x2="195" y2="128" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="195" cy="128" r="4" class="dg-accent"/>
+<line x1="195" y1="128" x2="238" y2="128" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="238,128 228,124 228,132" class="dg-accent"/>
+<text x="150" y="272" font-size="11" class="dg-dim">x₁ 갱신(실선)</text>
+<text x="278" y="220" font-size="11" class="dg-dim">x₂ 갱신(점선)</text>
+</svg>`,
+    diagramCaption: String.raw`깁스샘플링은 한 좌표(실선, 수평 이동)와 다른 좌표(점선, 수직 이동)를 번갈아 완전조건부분포에서 다시 뽑아 등고선 중심으로 접근한다.`,
     sections: [
       { id: "s1", text: String.raw`깁스 업데이트에서 $i$번째 좌표만 바뀐다: $x=(x_i,x_{-i})$에서 $x'=(x_i',x_{-i})$로. 제안분포는 완전조건부분포 그 자체다: $q(x'\mid x)=\pi(x_i'\mid x_{-i})$.`, blanks: [] },
       { id: "s2", text: String.raw`목표분포를 연쇄법칙으로 분해하면 $\pi(x')=\pi(x_i',x_{-i})=$[[blank:가]]$\cdot\pi(x_{-i})$ 이다(단 $x'_{-i}=x_{-i}$이므로 주변분포 $\pi(x_{-i})$는 원래 상태와 공유된다).`,
@@ -15353,6 +18063,26 @@ $$\frac{\tilde\pi(1,2)\cdot\pi(y=1\mid x=1)}{\tilde\pi(1,1)\cdot\pi(y=2\mid x=1)
 $$p_{1/2}=p_0-\tfrac{\varepsilon}{2}x_0=0-0.5\cdot1=-0.5,\qquad x_1=x_0+\varepsilon p_{1/2}=1+1\cdot(-0.5)=0.5$$
 $$p_1=p_{1/2}-\tfrac{\varepsilon}{2}x_1=-0.5-0.5\cdot0.5=-0.75$$
 <p>해밀토니안 값은 $H_0=\frac12x_0^2+\frac12p_0^2=0.5$이고 $H_1=\frac12x_1^2+\frac12p_1^2=0.125+0.28125=0.40625$로, 큰 스텝 크기($\varepsilon=1$)임에도 에너지 오차는 $|H_1-H_0|\approx0.094$로 작습니다. 스텝을 더 잘게 쪼갤수록($\varepsilon\to0$) 이 오차는 $O(\varepsilon^2)$로 더 작아지고, 수락확률 $\min(1,e^{-(H_1-H_0)})$은 1에 더 가까워집니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="160" x2="370" y2="160" class="dg-line" stroke-width="1"/>
+<line x1="200" y1="300" x2="200" y2="30" class="dg-line" stroke-width="1"/>
+<text x="352" y="176" font-size="12" class="dg-dim">x(위치)</text>
+<text x="206" y="42" font-size="12" class="dg-dim">p(운동량)</text>
+<circle cx="200" cy="160" r="105" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="200" y="55" font-size="11" text-anchor="middle" class="dg-dim">에너지 등고선 H=const(점선)</text>
+<polygon points="305,160 274.3,85.7 200,55 125.7,85.7 95,160 125.7,234.3 200,265 274.3,234.3" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<rect x="301" y="156" width="8" height="8" class="dg-accent"/>
+<rect x="270.3" y="81.7" width="8" height="8" class="dg-accent"/>
+<rect x="196" y="51" width="8" height="8" class="dg-accent"/>
+<rect x="121.7" y="81.7" width="8" height="8" class="dg-accent"/>
+<rect x="91" y="156" width="8" height="8" class="dg-accent"/>
+<rect x="121.7" y="230.3" width="8" height="8" class="dg-accent"/>
+<rect x="196" y="261" width="8" height="8" class="dg-accent"/>
+<rect x="270.3" y="230.3" width="8" height="8" class="dg-accent"/>
+<polygon points="274.3,85.7 262,92 268,100" class="dg-accent"/>
+<text x="205" y="300" font-size="11" class="dg-dim">립프로그 궤적(실선, 사각 = 스텝)</text>
+</svg>`,
+    diagramCaption: String.raw`립프로그 적분기는 위상공간의 에너지 등고선(점선)을 따라 사각 마커로 표시된 이산 스텝을 거쳐 부드럽게 돈다.`,
     sections: [
       { id: "s1", text: String.raw`립프로그 한 스텝은 세 개의 부분단계로 이루어진다: $p_{1/2}=p-\frac\varepsilon2\nabla U(x)$, $x^*=x+\varepsilon M^{-1}p_{1/2}$, $p^*=p_{1/2}-\frac\varepsilon2\nabla U(x^*)$. 각 부분단계는 두 변수 중 하나만, 나머지 하나의 함수로 갱신하고 다른 하나는 그대로 두는 시어(shear) 변환이다.`, blanks: [] },
       { id: "s2", text: String.raw`예컨대 첫 부분단계 $(x,p)\mapsto(x,\,p-\frac\varepsilon2\nabla U(x))$의 야코비안 행렬은 $x$가 그대로 유지되므로 대각성분이 모두 $1$인 삼각행렬이 되고, 그 행렬식은 $\det = $[[blank:가]] 이다.`,
@@ -15377,6 +18107,39 @@ $$p_1=p_{1/2}-\tfrac{\varepsilon}{2}x_1=-0.5-0.5\cdot0.5=-0.75$$
 <p>입자 하나가 $x_1=1$이고 $y_1=1$을 관측했다면 초기 가중치는 $w_1=p(y_1\mid x_1=1)=0.9$입니다. 이 입자가 전이분포에서 $x_2=1$로 이동하고 $y_2=1$을 관측했다면</p>
 $$w_2=w_1\cdot p(y_2\mid x_2=1)=0.9\times0.9=0.81$$
 <p>로 갱신됩니다. 전체 경로 $(x_1,x_2)$의 결합확률을 처음부터 다시 계산하지 않고, 이전 가중치에 새 관측 하나만 곱해서 갱신했다는 점이 재귀식의 핵심입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 820 290" xmlns="http://www.w3.org/2000/svg">
+<text x="110" y="22" font-size="12" text-anchor="middle" class="dg-dim">① 균등 가중치</text>
+<text x="410" y="22" font-size="12" text-anchor="middle" class="dg-dim">② 전파+가중치 갱신</text>
+<text x="700" y="22" font-size="12" text-anchor="middle" class="dg-dim">③ 재표본(균등 복원)</text>
+<circle cx="110" cy="60" r="9" class="dg-accent"/>
+<circle cx="110" cy="110" r="9" class="dg-accent"/>
+<circle cx="110" cy="160" r="9" class="dg-accent"/>
+<circle cx="110" cy="210" r="9" class="dg-accent"/>
+<circle cx="110" cy="260" r="9" class="dg-accent"/>
+<line x1="122" y1="60" x2="396" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="122" y1="110" x2="396" y2="110" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="122" y1="160" x2="396" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="122" y1="210" x2="396" y2="210" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<line x1="122" y1="260" x2="396" y2="260" class="dg-line" stroke-width="1" stroke-dasharray="2,3"/>
+<circle cx="410" cy="60" r="4" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<circle cx="410" cy="110" r="20" class="dg-accent"/>
+<circle cx="410" cy="160" r="6" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<circle cx="410" cy="210" r="15" class="dg-accent"/>
+<circle cx="410" cy="260" r="3" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="426" y="64" font-size="11" class="dg-dim">×(폐기)</text>
+<text x="426" y="264" font-size="11" class="dg-dim">×(폐기)</text>
+<path d="M420,102 Q560,60 690,60" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<path d="M420,110 Q560,110 690,110" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<path d="M416,160 Q560,160 690,160" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<path d="M420,210 Q560,210 690,210" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<path d="M420,218 Q560,260 690,260" fill="none" class="dg-stroke-accent" stroke-width="1.5"/>
+<circle cx="700" cy="60" r="9" class="dg-accent"/>
+<circle cx="700" cy="110" r="9" class="dg-accent"/>
+<circle cx="700" cy="160" r="9" class="dg-accent"/>
+<circle cx="700" cy="210" r="9" class="dg-accent"/>
+<circle cx="700" cy="260" r="9" class="dg-accent"/>
+</svg>`,
+    diagramCaption: String.raw`원의 크기가 입자 가중치를 나타낸다. 가중치가 큰 입자(실선 채움)는 재표본에서 여러 번 복제되고, 작은 입자(점선 윤곽)는 폐기되며 균등 가중치가 복원된다.`,
     sections: [
       { id: "s1", text: String.raw`정의에 따라 $w_t=\dfrac{\tilde p(x_{1:t},y_{1:t})}{q(x_{1:t}\mid y_{1:t})}$이다. 분자와 분모를 각각 시점 $t-1$까지의 부분과 시점 $t$의 새 부분으로 쪼갠다.`, blanks: [] },
       { id: "s2", text: String.raw`마르코프성에 의해 결합확률은 $\tilde p(x_{1:t},y_{1:t}) = \tilde p(x_{1:t-1},y_{1:t-1})\cdot p(x_t\mid x_{t-1})\cdot p(y_t\mid x_t)$로 인수분해된다. $x_t$가 $x_{t-1}$에만, $y_t$가 $x_t$에만 의존한다는 상태공간모형의 가정에서 바로 나온다. 제안분포의 분모 역시 순차분해 가정에 의해 $q(x_{1:t}\mid y_{1:t}) = q(x_{1:t-1}\mid y_{1:t-1})\cdot$[[blank:가]] 로 쪼개진다.`,
@@ -15428,6 +18191,25 @@ $$\widehat{\nabla_\theta\log p_\theta(x)} = -\frac{x^2}{2}+\frac{x'^2}{2} = -2+\
 <p>$x_0=1\sim p_0$, $x_1=0.8\sim p_1$을 뽑았다고 합시다. 가중치를 계산하면</p>
 $$w=\frac{f_1(x_0)}{f_0(x_0)}\cdot\frac{f_2(x_1)}{f_1(x_1)}=\frac{e^{-1.5}}{e^{-1}}\cdot\frac{e^{-1.6}}{e^{-1.2}}=e^{-0.5}\cdot e^{-0.4}=e^{-0.9}\approx0.407$$
 <p>단일 표본값 $0.407$은 참값 $0.5$ 근처에 있으며(표본이 하나뿐이라 정확히 일치하지는 않습니다), 여러 개의 독립적인 $w$를 평균 내면 그 기댓값이 정확히 $0.5$로 수렴한다는 것이 이어지는 증명의 내용입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 230" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="560" y2="190" class="dg-line" stroke-width="1"/>
+<path d="M40,190 Q160,120 280,190" fill="none" class="dg-dim" stroke-width="1.5" stroke-dasharray="2,3"/>
+<path d="M110,190 Q230,95 350,190" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<path d="M190,190 Q300,65 410,190" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="7,3"/>
+<path d="M260,190 Q370,35 480,190" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<text x="140" y="112" font-size="12" class="dg-dim">p₀(단순분포)</text>
+<text x="230" y="88" font-size="12" class="dg-dim">p₁</text>
+<text x="300" y="58" font-size="12">p₂</text>
+<text x="380" y="28" font-size="12">pₙ(목표분포)</text>
+<path d="M160,205 Q195,218 230,205" fill="none" class="dg-line" stroke-width="1.5"/>
+<polygon points="230,205 220,202 222,210" class="dg-line"/>
+<path d="M235,205 Q270,218 300,205" fill="none" class="dg-line" stroke-width="1.5"/>
+<polygon points="300,205 290,202 292,210" class="dg-line"/>
+<path d="M310,205 Q340,218 370,205" fill="none" class="dg-line" stroke-width="1.5"/>
+<polygon points="370,205 360,202 362,210" class="dg-line"/>
+<text x="270" y="225" font-size="11" class="dg-dim">전이커널 T₁, T₂, ... (이동 경로)</text>
+</svg>`,
+    diagramCaption: String.raw`단순분포 $p_0$에서 목표분포 $p_n$까지 중간분포열을 거치며, 각 단계의 전이커널로 조금씩만 이동해 가중치를 누적한다.`,
     sections: [
       { id: "s1", text: String.raw`핵심 아이디어는 $h_k(x_k) := \displaystyle\int p_0(x_0)\prod_{j=1}^kT_j(x_{j-1},x_j)\cdot\Big(\prod_{j=0}^{k-1}\frac{f_{j+1}(x_j)}{f_j(x_j)}\Big)\,dx_0\cdots dx_{k-1}$ 라는 양을 정의하고, 이것이 항상 $f_k(x_k)/Z_0$과 같음을 $k$에 대한 귀납법으로 보이는 것이다. $h_k(x_k)$는 $k$번째 상태의 '가중치를 실은' 주변밀도라고 볼 수 있다.`, blanks: [] },
       { id: "s2", text: String.raw`기초단계($k=0$)를 확인한다. 가중치가 곱해지는 항이 없고(공집합 곱은 $1$) 적분할 변수도 없으므로 $h_0(x_0) = p_0(x_0) = $[[blank:가]] 이다.`,
@@ -15457,6 +18239,16 @@ $$w=\frac{f_1(x_0)}{f_0(x_0)}\cdot\frac{f_2(x_1)}{f_1(x_1)}=\frac{e^{-1.5}}{e^{-
 <p>최빈값을 구하면 $\frac{d}{d\lambda}\log\pi(\lambda)=\frac{5}{\lambda}-1=0$에서 $\lambda^*=5$이고, 음의 2차미분은 $H=\frac{5}{(\lambda^*)^2}=\frac{5}{25}=0.2$입니다. 라플라스 근사식에 대입하면</p>
 $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/0.2}\approx 118.02$$
 <p>정확값 $120$과 비교하면 상대오차는 약 $1.65\%$에 불과합니다. 실제로 이 계산은 스털링 근사 $n!\approx \sqrt{2\pi n}(n/e)^n$을 라플라스 근사로 유도한 것과 정확히 같은 식이에요 — 스털링 근사 자체가 라플라스 근사의 특수한 사례입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 440 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="35" y1="180" x2="420" y2="180" class="dg-line" stroke-width="1"/>
+<line x1="220" y1="180" x2="220" y2="40" class="dg-dim" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="226" y="196" font-size="11" class="dg-dim">θ*(최빈값)</text>
+<path d="M70,180 C120,60 180,40 220,40 C260,40 340,80 400,175" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M140,178 Q220,40 300,178" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="60" y="55" font-size="12">실제 사후분포(비대칭, 실선)</text>
+<text x="255" y="100" font-size="12" class="dg-dim">라플라스 근사(대칭 가우시안, 점선)</text>
+</svg>`,
+    diagramCaption: String.raw`뾰족한 실제 사후분포(실선)를 최빈값 $\theta^*$에서 2차 테일러 전개한 대칭 가우시안(점선)으로 근사한다. 꼬리의 비대칭은 근사에서 사라진다.`,
     sections: [
       { id: "s1", text: String.raw`정규화 상수 $Z=\int\pi(\theta)\,d\theta$가 닫힌 형태로 계산되지 않는다고 하자. $\theta^*$를 $\pi(\theta)$의 최빈값(내부 정상점)이라 하면, 최댓값 조건으로부터 $\nabla\log\pi(\theta^*)=0$이다.`, blanks: [] },
       { id: "s2", text: String.raw`$\log\pi(\theta)$를 $\theta^*$ 주변에서 2차까지 테일러 전개하면 $\log\pi(\theta)\approx \log\pi(\theta^*) + \nabla\log\pi(\theta^*)^T(\theta-\theta^*) - \tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$인데, 정상점 조건에 의해 1차항은 $[[blank:가]]$이다.`,
@@ -15478,6 +18270,29 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
     example: String.raw`<p>가우시안 커널($\sigma_K^2=1$, $R(K)=\frac{1}{2\sqrt\pi}\approx0.2821$)로 표준정규분포 $p=\mathcal N(0,1)$을 $n=100$개 표본으로 추정한다고 합시다. $x=0$에서 $p(0)\approx0.3989$, $p''(0)=(0^2-1)p(0)\approx-0.3989$입니다.</p>
 <p>대역폭을 너무 작게($h=0.1$, 과소평활) 잡으면 $\mathrm{Bias}\approx-0.0020$(무시할 만큼 작음)인 반면 $\mathrm{Var}\approx0.01125$로 커서 $\mathrm{MSE}\approx0.01126$이 분산 위주로 결정됩니다. 반대로 너무 크게($h=1.0$, 과대평활) 잡으면 $\mathrm{Bias}\approx-0.1995$, $\mathrm{Bias}^2\approx0.0398$인데 $\mathrm{Var}\approx0.00113$으로 작아 $\mathrm{MSE}\approx0.0409$가 편향 위주로 결정됩니다.</p>
 <p>이 둘 사이 최적값 $h^*\approx0.371$에서는 $\mathrm{Bias}^2\approx0.00076$, $\mathrm{Var}\approx0.00303$로 $\mathrm{MSE}\approx0.00379$까지 떨어져, 양끝 대역폭보다 훨씬 낮은 오차를 냅니다. 편향과 분산이 서로 반대 방향으로 움직이다가 중간 지점에서 총오차가 최소가 되는 트레이드오프가 숫자로 확인됩니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="188" x2="510" y2="188" class="dg-line" stroke-width="1"/>
+<line x1="60" y1="192" x2="60" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="90" y1="192" x2="90" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="130" y1="192" x2="130" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="150" y1="192" x2="150" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="180" y1="192" x2="180" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="220" y1="192" x2="220" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="240" y1="192" x2="240" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="270" y1="192" x2="270" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="310" y1="192" x2="310" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="340" y1="192" x2="340" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="380" y1="192" x2="380" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="410" y1="192" x2="410" y2="184" class="dg-dim" stroke-width="1"/>
+<line x1="440" y1="192" x2="440" y2="184" class="dg-dim" stroke-width="1"/>
+<path d="M60,175 Q260,105 460,175" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="7,3"/>
+<path d="M60,182 Q160,138 220,68 Q280,38 340,78 Q400,138 460,180" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<path d="M60,183 L90,120 L110,175 L130,100 L150,178 L180,60 L200,150 L220,50 L240,140 L270,70 L300,160 L320,55 L340,150 L370,90 L410,170 L440,130 L460,182" fill="none" class="dg-dim" stroke-width="1" stroke-dasharray="2,2"/>
+<text x="55" y="30" font-size="12" class="dg-dim">h 작음(들쭉날쭉, 가는 점선)</text>
+<text x="55" y="48" font-size="12">h 적당(실선, 굵게 강조)</text>
+<text x="55" y="66" font-size="12" class="dg-dim">h 큼(과대평활, 긴 파선)</text>
+</svg>`,
+    diagramCaption: String.raw`같은 데이터(x축 눈금)에 대역폭만 달리 적용한 세 KDE 곡선. 대역폭이 작으면 분산이 커 들쭉날쭉해지고, 크면 편향이 커 봉우리가 뭉개진다.`,
     sections: [
       { id: "s1", text: String.raw`추정량의 기댓값부터 구한다. $u=\frac{x-y}{h}$로 치환하면 $E[\hat p_h(x)]=\frac1h\int K\!\big(\frac{x-y}{h}\big)p(y)\,dy=\int K(u)\,p(x-hu)\,du$이다.`, blanks: [] },
       { id: "s2", text: String.raw`$p(x-hu)$를 $h$에 대해 2차까지 테일러 전개하면 $p(x-hu)\approx p(x)-hu\,p'(x)+\frac{h^2u^2}{2}p''(x)$이다. 이를 대입해 항별로 적분하면, $\int K(u)du=1,\ \int uK(u)du=0,\ \int u^2K(u)du=\sigma_K^2$이므로 $E[\hat p_h(x)]\approx p(x)+$ $[[blank:가]]$이다.`,
@@ -15501,6 +18316,29 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
 <p>작은 결석: A는 $81/87\approx93.1\%$, B는 $234/270\approx86.7\%$ 성공 — A가 더 높음.<br>
 큰 결석: A는 $192/263\approx73.0\%$, B는 $55/80\approx68.75\%$ 성공 — 역시 A가 더 높음.</p>
 <p>그런데 전체를 합치면 A는 $\frac{81+192}{87+263}=\frac{273}{350}=78.0\%$, B는 $\frac{234+55}{270+80}=\frac{289}{350}\approx82.6\%$로, 놀랍게도 <strong>B가 더 높게</strong> 뒤바뀝니다. 이는 계산 오류가 아니라, 개복수술(A)이 큰 결석(성공률이 원래 낮은 집단)에 훨씬 많이 배정되었기 때문입니다 — A 환자의 $263/350=75\%$가 큰 결석군인 반면 B 환자는 $80/350=23\%$만 큰 결석군입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 620 240" xmlns="http://www.w3.org/2000/svg">
+<rect x="440" y="20" width="16" height="12" class="dg-accent"/>
+<text x="460" y="30" font-size="11" class="dg-dim">A(개복수술)</text>
+<rect x="540" y="20" width="16" height="12" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="560" y="30" font-size="11" class="dg-dim">B(경피적시술)</text>
+<line x1="40" y1="200" x2="580" y2="200" class="dg-line" stroke-width="1"/>
+<rect x="65" y="60" width="30" height="140" class="dg-accent"/>
+<rect x="105" y="70" width="30" height="130" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="80" y="52" font-size="11" text-anchor="middle">93%</text>
+<text x="120" y="62" font-size="11" text-anchor="middle">87%</text>
+<text x="100" y="220" font-size="12" text-anchor="middle">작은 결석: A&gt;B</text>
+<rect x="265" y="90" width="30" height="110" class="dg-accent"/>
+<rect x="305" y="97" width="30" height="103" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="280" y="82" font-size="11" text-anchor="middle">73%</text>
+<text x="320" y="89" font-size="11" text-anchor="middle">69%</text>
+<text x="300" y="220" font-size="12" text-anchor="middle">큰 결석: A&gt;B</text>
+<rect x="465" y="83" width="30" height="117" class="dg-accent"/>
+<rect x="505" y="76" width="30" height="124" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="3,2"/>
+<text x="480" y="75" font-size="11" text-anchor="middle">78%</text>
+<text x="520" y="68" font-size="11" text-anchor="middle">83%</text>
+<text x="500" y="220" font-size="12" text-anchor="middle">전체 합산: B&gt;A (역전!)</text>
+</svg>`,
+    diagramCaption: String.raw`두 부분집단 모두에서 A(채움)가 B(점선 윤곽)보다 높지만, 부분집단별 표본 비율이 달라 전체 합산에서는 순위가 뒤바뀐다.`,
     sections: [
       { id: "s1", text: String.raw`전체 합산 성공률은 부분집단 성공률의 가중평균으로 쓸 수 있다. $\alpha=\frac{b_1}{b_1+b_2}$라 하면 A의 전체 성공률은 $\frac{a_1+a_2}{b_1+b_2}=\alpha\cdot\frac{a_1}{b_1}+(1-\alpha)\cdot\frac{a_2}{b_2}$이다. 마찬가지로 $\beta=\frac{d_1}{d_1+d_2}$라 하면 B의 전체 성공률은 $[[blank:가]]$이다.`,
         blanks: [{ id: "가", latex: String.raw`\beta\cdot\frac{c_1}{d_1}+(1-\beta)\cdot\frac{c_2}{d_2}`, why: String.raw`같은 방식으로, B의 전체 성공률도 B 자신의 부분집단 표본 비율 $\beta$를 가중치로 쓴 가중평균이에요. 핵심은 A의 가중치 $\alpha$와 B의 가중치 $\beta$가 일반적으로 서로 다르다는 점입니다.` }] },
@@ -15523,6 +18361,55 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
 <p><strong>항아리 규칙으로 직접 계산:</strong> 1번째 뽑기에서 빨강 확률 $2/5$. 빨강이 나왔으니 항아리는 (빨강3,파랑3)이 되어 2번째 빨강 확률은 $3/6=1/2$. 이제 항아리는 (빨강4,파랑3)이 되어 3번째 파랑 확률은 $3/7$. 곱하면 $\frac{2}{5}\cdot\frac12\cdot\frac37=\frac{3}{35}\approx0.0857$.</p>
 <p><strong>베타-베르누이 혼합적분으로 계산:</strong> $s=2$(빨강 2개)이므로 $\int_0^1\theta^2(1-\theta)^1\cdot\frac{\theta^{1}(1-\theta)^{2}}{B(2,3)}d\theta=\frac{B(4,4)}{B(2,3)}$. $B(4,4)=\frac{3!\cdot3!}{7!}=\frac{36}{5040}=\frac{1}{140}$, $B(2,3)=\frac{1!\cdot2!}{4!}=\frac{2}{24}=\frac{1}{12}$이므로 $\frac{1/140}{1/12}=\frac{12}{140}=\frac{3}{35}$.</p>
 <p>두 계산이 정확히 $3/35$로 일치합니다 — 순차적으로 얽혀 있는 항아리 과정이 "베타 사전분포에서 $\theta$ 하나를 뽑아 독립 베르누이를 생성"하는 것과 완전히 같은 결합분포를 낸다는 것을 숫자로 확인한 것입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg">
+<circle cx="65" cy="20" r="6" class="dg-accent"/>
+<text x="78" y="24" font-size="11" class="dg-dim">빨강 공</text>
+<circle cx="145" cy="20" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<text x="158" y="24" font-size="11" class="dg-dim">파랑 공</text>
+<path d="M70,110 L70,180 Q70,200 90,200 L190,200 Q210,200 210,180 L210,110" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="95" cy="135" r="6" class="dg-accent"/>
+<circle cx="125" cy="135" r="6" class="dg-accent"/>
+<circle cx="155" cy="135" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="110" cy="170" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="170" cy="170" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="140" y1="110" x2="140" y2="72" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="140,72 135,82 145,82" class="dg-accent"/>
+<circle cx="140" cy="60" r="8" class="dg-accent"/>
+<text x="150" y="64" font-size="12">X₁=1(빨강)</text>
+<text x="140" y="222" font-size="12" text-anchor="middle" class="dg-dim">t=1: 빨강2,파랑3</text>
+<path d="M215,145 L385,145" fill="none" class="dg-line" stroke-width="1.5"/>
+<polygon points="385,145 375,140 375,150" class="dg-line"/>
+<text x="300" y="163" font-size="11" text-anchor="middle" class="dg-dim">기록 후 같은 색 공 추가</text>
+<path d="M390,110 L390,180 Q390,200 410,200 L510,200 Q530,200 530,180 L530,110" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="410" cy="135" r="6" class="dg-accent"/>
+<circle cx="440" cy="135" r="6" class="dg-accent"/>
+<circle cx="470" cy="135" r="6" class="dg-accent"/>
+<circle cx="500" cy="135" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="420" cy="170" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="480" cy="170" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="460" y1="110" x2="460" y2="72" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="460,72 455,82 465,82" class="dg-accent"/>
+<circle cx="460" cy="60" r="8" class="dg-accent"/>
+<text x="470" y="64" font-size="12">X₂=1(빨강)</text>
+<text x="460" y="222" font-size="12" text-anchor="middle" class="dg-dim">t=2: 빨강3,파랑3</text>
+<path d="M535,145 L705,145" fill="none" class="dg-line" stroke-width="1.5"/>
+<polygon points="705,145 695,140 695,150" class="dg-line"/>
+<text x="620" y="163" font-size="11" text-anchor="middle" class="dg-dim">기록 후 같은 색 공 추가</text>
+<path d="M710,110 L710,180 Q710,200 730,200 L830,200 Q850,200 850,180 L850,110" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="730" cy="130" r="6" class="dg-accent"/>
+<circle cx="758" cy="130" r="6" class="dg-accent"/>
+<circle cx="786" cy="130" r="6" class="dg-accent"/>
+<circle cx="814" cy="130" r="6" class="dg-accent"/>
+<circle cx="742" cy="165" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="772" cy="165" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<circle cx="802" cy="165" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="780" y1="110" x2="780" y2="72" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="4,2"/>
+<polygon points="780,72 775,82 785,82" class="dg-line"/>
+<circle cx="780" cy="60" r="8" fill="none" class="dg-line" stroke-width="2"/>
+<text x="790" y="64" font-size="12">X₃=0(파랑)</text>
+<text x="780" y="222" font-size="12" text-anchor="middle" class="dg-dim">t=3: 빨강4,파랑3</text>
+</svg>`,
+    diagramCaption: String.raw`공 하나를 뽑아 색을 기록하고 같은 색 공을 하나 더 넣어 돌려주는 폴리아 항아리 과정. 순서에 의존하는 것처럼 보이지만 결합분포는 교환가능하다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 항아리 과정이 교환가능함을 보인다. $i$번째 뽑기 전까지 빨강이 $s_{i-1}$개 나왔다면 항아리엔 빨강 $a+s_{i-1}$개, 전체 $a+b+(i-1)$개가 있으므로 $P(X_i=1\mid X_1,\dots,X_{i-1})=\frac{a+s_{i-1}}{a+b+i-1}$이다.`, blanks: [] },
       { id: "s2", text: String.raw`연쇄법칙으로 $(x_1,\dots,x_N)$의 결합확률을 전부 곱하면, $s=\sum x_i$라 할 때 분자에는 빨강이 나올 때마다 $a,a+1,a+2,\dots$가, 파랑이 나올 때마다 $b,b+1,b+2,\dots$가 순서대로 곱해지고 분모에는 매 단계 $a+b,a+b+1,\dots,a+b+N-1$이 곱해진다. 상승계승 $x^{(k)}=x(x+1)\cdots(x+k-1)$ 표기를 쓰면 $P(x_1,\dots,x_N)=$ $[[blank:가]]$이다.`,
@@ -15593,6 +18480,34 @@ $$\hat\theta_1 = 0.2\times50 + 0.8\times60 = 10+48 = 58$$
 <p>학교 2의 수축계수는 $B_2=\dfrac{V_2}{V_2+\tau^2}=\dfrac{9}{9+4}\approx0.6923$이므로,</p>
 $$\hat\theta_2 = 0.6923\times50 + 0.3077\times42 \approx 34.615+12.923 = 47.538$$
 <p>학교 1은 데이터가 믿을 만해서(분산이 작아서) 원래 관측값 60에서 58로 살짝만 당겨졌습니다. 학교 2는 데이터가 불확실해서(분산이 커서) 원래 관측값 42에서 47.5로 훨씬 크게 전체평균 쪽으로 당겨졌습니다. 데이터가 부족한 그룹일수록 더 많이 수축된다는 부분풀링의 핵심을 숫자로 확인할 수 있습니다. 아래 증명은 이 사후평균이 정말로 두 극단(완전분리추정, 완전풀링추정) 사이의 가중평균으로 정확히 유도된다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="216" y1="35" x2="216" y2="200" class="dg-dim" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="222" y="30" font-size="12" class="dg-dim">μ(전체평균)=50</text>
+<circle cx="16" cy="60" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<text x="28" y="64" font-size="11" class="dg-dim">개별 추정치</text>
+<circle cx="130" cy="60" r="6" class="dg-accent"/>
+<text x="142" y="64" font-size="11" class="dg-dim">부분풀링 사후평균</text>
+<text x="10" y="55" font-size="12">학교1(표본 많음)</text>
+<circle cx="304" cy="65" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="298" y1="65" x2="292" y2="65" class="dg-stroke-accent" stroke-width="2"/>
+<line x1="304" y1="65" x2="286.4" y2="65" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="286.4,65 296,61 296,69" class="dg-accent"/>
+<circle cx="286.4" cy="65" r="6" class="dg-accent"/>
+<text x="304" y="55" font-size="11" class="dg-dim">60→58 (짧은 화살표)</text>
+<text x="10" y="125" font-size="12">학교2(표본 적음)</text>
+<circle cx="145.6" cy="130" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="145.6" y1="130" x2="194" y2="130" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="194,130 184,126 184,134" class="dg-accent"/>
+<circle cx="194" cy="130" r="6" class="dg-accent"/>
+<text x="145.6" y="120" font-size="11" class="dg-dim">42→47.5 (긴 화살표)</text>
+<text x="10" y="195" font-size="12">학교3(표본 최소, 예시)</text>
+<circle cx="374.4" cy="185" r="6" fill="none" class="dg-line" stroke-width="1.5"/>
+<line x1="374.4" y1="185" x2="242.4" y2="185" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="242.4,185 252.4,181 252.4,189" class="dg-accent"/>
+<circle cx="242.4" cy="185" r="6" class="dg-accent"/>
+<text x="374.4" y="205" font-size="11" class="dg-dim">68→53 (가장 긴 화살표)</text>
+</svg>`,
+    diagramCaption: String.raw`열린 원(개별 추정치)에서 채운 원(부분풀링 사후평균)까지의 화살표 길이가 수축의 크기다. 표본이 적은 그룹일수록 전체평균 쪽으로 더 크게 끌려간다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 그룹마다 따로 추정한 값 $\bar y_j$와 전체를 하나로 합친 값 $\mu$ 사이에서, 계층적 베이즈모델이 실제로 어떤 절충안을 사후평균으로 내놓는지 확인하는 것이다. 그룹 $j=1,\dots,J$ 에 대해 데이터모형 $\bar y_j|\theta_j \sim N(\theta_j,V_j)$ ($V_j$는 이미 알려진 분산)를 두고, 그룹평균 $\theta_j$에는 공통사전분포 $\theta_j\sim N(\mu,\tau^2)$ (그룹마다 서로 독립)을 준다.<br><br>목표는 이 정규-정규 켤레 구조에서 사후분포 $p(\theta_j|\bar y_j)$를 구하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`베이즈 정리에 따라 사후밀도는 우도와 사전밀도의 곱에 비례한다. $p(\theta_j|\bar y_j) \propto \exp\!\left(-\dfrac{(\bar y_j-\theta_j)^2}{2V_j}\right)\exp\!\left(-\dfrac{(\theta_j-\mu)^2}{2\tau^2}\right)$ 이다. 두 지수를 더한 뒤 $\theta_j$에 대한 이차식으로 펼치면 $\theta_j^2$의 계수는 $-\dfrac{1}{2V_j}-\dfrac{1}{2\tau^2}$ 이다. 이 계수의 절댓값의 두 배, 즉 $\theta_j$에 대한 사후분포의 정밀도(분산의 역수)는 $\dfrac1{V_j}+\dfrac1{\tau^2}$ 로, 데이터가 주는 정밀도와 사전분포가 주는 정밀도를 단순히 더한 값이다.<br><br>즉 사후분산은 $\mathrm{Var}(\theta_j|\bar y_j) = $[[blank:가]] 이다.`,
@@ -15616,6 +18531,31 @@ $$\hat\theta_2 = 0.6923\times50 + 0.3077\times42 \approx 34.615+12.923 = 47.538$
 <p>그런데 공분산을 직접 계산해보면 다른 그림이 나옵니다. $E[X]=0$이고 $E[X^3]=0$(표준정규분포는 원점 대칭이라 홀수차 모멘트가 모두 0)이므로,</p>
 $$\mathrm{Cov}(X,Y)=E[XY]-E[X]E[Y]=E[X^3]-0\times E[X^2]=0-0=0$$
 <p>공분산은 정확히 $0$입니다. 대칭성 때문에 $X$가 양수일 때 생기는 양의 기여와 음수일 때 생기는 음의 기여가 정확히 상쇄되기 때문입니다. 아래 증명은 이 상쇄가 우연이 아니라, $X,Y$가 무상관이면서도 독립은 아니라는 사실을 더 강한 함수쌍으로 직접 확인하는 과정을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="260" x2="390" y2="260" class="dg-line" stroke-width="1"/>
+<line x1="210" y1="270" x2="210" y2="30" class="dg-line" stroke-width="1"/>
+<text x="395" y="264" font-size="12" class="dg-dim">X</text>
+<text x="216" y="34" font-size="12" class="dg-dim">Y=X²</text>
+<line x1="210" y1="30" x2="210" y2="260" class="dg-dim" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="216" y="46" font-size="10" class="dg-dim">대칭축(x=0)</text>
+<path d="M90,80 C130,180 170,240 210,260 C250,240 290,180 330,80" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<circle cx="330" cy="80" r="5" class="dg-accent"/>
+<circle cx="290" cy="180" r="5" class="dg-accent"/>
+<circle cx="250" cy="240" r="5" class="dg-accent"/>
+<circle cx="210" cy="260" r="5" class="dg-accent"/>
+<circle cx="170" cy="240" r="5" class="dg-accent"/>
+<circle cx="130" cy="180" r="5" class="dg-accent"/>
+<circle cx="90" cy="80" r="5" class="dg-accent"/>
+<line x1="290" y1="180" x2="310" y2="150" class="dg-stroke-accent" stroke-width="1.5"/>
+<polygon points="310,150 300,152 306,160" class="dg-accent"/>
+<text x="312" y="146" font-size="11">+x³ 기여</text>
+<line x1="130" y1="180" x2="110" y2="150" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,2"/>
+<polygon points="110,150 112,160 120,156" class="dg-line"/>
+<text x="30" y="146" font-size="11" class="dg-dim">−x³ 기여</text>
+<text x="90" y="285" font-size="12" text-anchor="middle">Cov(X,Y)=0 (상쇄)</text>
+<text x="330" y="285" font-size="12" text-anchor="middle" class="dg-dim">그러나 Y는 X로 완전히 결정(강한 의존)</text>
+</svg>`,
+    diagramCaption: String.raw`$Y=X^2$는 좌우대칭이라 $+x$와 $-x$의 기여가 정확히 상쇄되어 공분산은 0이 되지만, $X$값이 정해지면 $Y$가 완전히 결정되는 강한 의존관계는 그대로 남는다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 무상관과 독립 사이의 정확한 논리적 관계를 짚는 것이다. 두 확률변수가 독립이라는 것은 임의의 보렐가측함수 $f,g$에 대해 $E[f(X)g(Y)]=E[f(X)]E[g(Y)]$가 성립한다는 뜻이다. 공분산이 쓰는 조건 $\mathrm{Cov}(X,Y)=E[XY]-E[X]E[Y]=0$은 이 정의에서 $f(x)=x,\,g(y)=y$로 고른 아주 특수한 한 경우일 뿐이다.<br><br>따라서 독립이면 이 특수한 경우도 당연히 성립하므로 무상관이 뒤따르지만, 그 역을 반박하려면 $f(x)=x,\,g(y)=y$가 아닌 다른 함수쌍에서 등식이 깨지는 예를 하나 찾으면 충분하다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 $X$와 $Y$가 정말로 무상관인지, 즉 $\mathrm{Cov}(X,Y)=0$인지를 직접 계산으로 확인하는 것이다. 이를 위해 먼저 $X\sim N(0,1)$의 홀수차 모멘트를 살펴본다. 표준정규분포의 밀도함수 $\phi(x)=\frac{1}{\sqrt{2\pi}}e^{-x^2/2}$는 원점에 대해 대칭인 우함수이고, $x^3$은 원점에 대해 반대칭인 기함수다. 기함수와 우함수를 곱한 함수를 대칭구간 전체에서 적분하면 좌우가 정확히 상쇄되어 0이 된다.<br><br>따라서 $E[X^3] = \displaystyle\int_{-\infty}^{\infty}x^3\phi(x)\,dx = $[[blank:가]] 이다.`,
@@ -15674,6 +18614,17 @@ $$q_j^*(z_j) \propto \exp\big(E_{i\neq j}[\log p(x,z)]\big)$$
 <p>목표분포가 평균 $0$, 공분산행렬 $\begin{pmatrix}1&\rho\\\rho&1\end{pmatrix}$ 인 이변량 정규분포 $p(z_1,z_2)$ 이고 $\rho=0.8$이라 하겠습니다. 이 결합분포의 조건부분포는 $p(z_1|z_2)=N(\rho z_2,\,1-\rho^2)=N(0.8z_2,\,0.36)$ 로 잘 알려져 있습니다.</p>
 <p>평균장 근사 $q(z_1,z_2)=q_1(z_1)q_2(z_2)$에 아래 증명에서 유도할 좌표상승 갱신식을 적용하면, $q_1$의 최적형태는 $q_2$의 평균만 그대로 넘겨받아 $q_1^*(z_1)=N(0.8\,E_{q_2}[z_2],\,0.36)$ 이 됩니다. 대칭성 때문에 반복 갱신의 고정점에서는 $E_{q_1}[z_1]=E_{q_2}[z_2]=0$이 되어 최종적으로 $q_1^*=q_2^*=N(0,\,0.36)$을 얻습니다.</p>
 <p>평균은 참값(각 주변분포의 평균 $0$)과 정확히 일치합니다. 그런데 분산은 $0.36$으로, 실제 $z_1$의 주변분포가 갖는 분산 $1$보다 훨씬 작습니다. 인자들을 독립이라 가정해버리면 변수들이 서로 정보를 나눠 가지며 만들어내는 불확실성의 일부를 근사분포가 놓친다는, 평균장 변분추론의 잘 알려진 한계가 이 숫자에서 그대로 드러납니다. 아래 증명은 이 $q_1^*$의 형태가 우연이 아니라 좌표상승 공식을 그대로 대입한 결과임을 일반적으로 유도합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="120" x2="370" y2="120" class="dg-line" stroke-width="1"/>
+<line x1="200" y1="15" x2="200" y2="225" class="dg-line" stroke-width="1"/>
+<text x="374" y="124" font-size="12" class="dg-dim">z₁</text>
+<text x="206" y="26" font-size="12" class="dg-dim">z₂</text>
+<ellipse cx="200" cy="120" rx="140" ry="45" transform="rotate(-38 200 120)" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<ellipse cx="200" cy="120" rx="65" ry="65" fill="none" class="dg-stroke-accent" stroke-width="2.5" stroke-dasharray="6,3"/>
+<text x="285" y="55" font-size="12">실제 결합분포(ρ=0.8, 기울어진 타원, 실선)</text>
+<text x="212" y="190" font-size="12" class="dg-dim">평균장 근사(축정렬 원, 점선, 분산 과소추정)</text>
+</svg>`,
+    diagramCaption: String.raw`상관이 있는 결합분포는 기울어진 타원 등고선을 갖지만, 완전분해를 가정한 평균장 근사는 축에 정렬된 원으로만 표현되어 상관구조와 전체 불확실성을 과소추정한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 완전분해 근사 $q(z)=\prod_i q_i(z_i)$ 아래에서, 나머지 인자를 모두 고정하고 인자 하나 $q_j$만 바꿔가며 ELBO $\mathcal{L}(q)=E_q[\log p(x,z)]-E_q[\log q(z)]$를 최대화하는 좌표상승의 한 단계를 세우는 것이다.<br><br>다음 단계부터는 ELBO를 $q_j$만의 함수로 분리하고, 정규화 제약 아래에서 이 함수를 최대화하는 $q_j$의 형태를 구한다.`, blanks: [] },
       { id: "s2", text: String.raw`지금 목표는 ELBO를 $q_j$만의 함수로 분리하는 것이다. $E_q[\log p(x,z)]=\int q_j(z_j)\,\tilde E_{i\neq j}[\log p(x,z)]\,dz_j$ 로 쓸 수 있는데, 여기서 $\tilde E_{i\neq j}[\log p(x,z)]$는 $\prod_{i\neq j}q_i(z_i)$에 대해 평균 낸, $z_j$만의 함수다. 마찬가지로 엔트로피 항 $E_q[\log q(z)]=\sum_i\int q_i\log q_i\,dz_i$ 중에서도 $q_j$에 의존하는 항은 $j$번째 항 하나뿐이고, 나머지는 상수로 흡수된다.<br><br>이를 ELBO 정의에 대입하면, $q_j$만의 함수로 본 ELBO는 $\mathcal{L}[q_j] = \int q_j(z_j)\tilde E_{i\neq j}[\log p(x,z)]\,dz_j - $[[blank:가]]$ + \text{const}$ 이다.`,
@@ -15704,6 +18655,18 @@ $$E_{\hat p}[X] = 0.5(-2)+0.5(2) = 0,\qquad E_{\hat p}[X^2] = 0.5(1+4)+0.5(1+4) 
 <p>가우시안은 지수족이고 충분통계량이 $T(x)=(x,x^2)$이므로, 순방향 KL $D_{KL}(\hat p\|q)$를 최소화하는 가우시안 $q$는 모멘트를 그대로 맞춘 $q_{EP}=N(0,5)$가 됩니다. 표준편차가 약 $2.236$인, 두 봉우리를 넉넉히 감싸안는 폭넓은 종모양입니다.</p>
 <p>반대로 변분추론처럼 역방향 KL $D_{KL}(q\|\hat p)$를 최소화한다면, $q$가 봉우리 하나에 좁게 몰리는 근사가 되는 경향이 잘 알려져 있습니다. $q$가 $\hat p$가 거의 0인 곳에서도 확률을 크게 배정하면 이 역방향 KL이 급격히 커지기 때문에, 최적의 $q$는 두 봉우리를 억지로 다 덮기보다 한쪽 봉우리(예를 들어 $N(2,1)$ 근방)에만 자리잡아 손해를 줄이려는 쪽으로 기울어집니다. 이 경우 $q$는 왼쪽 봉우리의 확률질량 절반을 사실상 통째로 무시하게 됩니다.</p>
 <p>같은 목표분포 하나를 놓고도 어느 방향의 KL을 쓰느냐에 따라 완전히 다른 근사가 나온다는 뜻입니다. 아래 증명은 EP가 택하는 순방향 KL 최소화가 정확히 모멘트매칭과 같다는 것을 지수족의 성질로부터 직접 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="350" y1="20" x2="350" y2="220" class="dg-dim" stroke-width="1" stroke-dasharray="3,2"/>
+<path d="M20,195 Q90,60 160,150 Q230,60 300,195" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M180,195 Q230,90 280,195" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="3,3"/>
+<text x="160" y="30" font-size="12" text-anchor="middle">역방향 KL: 한 봉우리만 감싸는 근사</text>
+<text x="160" y="215" font-size="11" text-anchor="middle" class="dg-dim">(mode-seeking, 점선이 오른쪽 봉우리에만 몰림)</text>
+<path d="M370,195 Q440,60 510,150 Q580,60 650,195" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<path d="M380,195 Q510,70 640,195" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="8,3"/>
+<text x="510" y="30" font-size="12" text-anchor="middle">순방향 KL(EP): 모든 봉우리를 감싸는 근사</text>
+<text x="510" y="215" font-size="11" text-anchor="middle" class="dg-dim">(mode-covering, 점선이 두 봉우리를 모두 포함)</text>
+</svg>`,
+    diagramCaption: String.raw`같은 다봉분포(실선)를 놓고, 역방향 KL은 한 봉우리에만 몰리는 좁은 근사(왼쪽 점선)를, 순방향 KL(EP의 모멘트매칭)은 모든 봉우리를 넓게 감싸는 근사(오른쪽 점선)를 만든다.`,
     sections: [
       { id: "s1", text: String.raw`지금 목표는 EP의 한 단계에서 목표분포(tilted distribution) $\hat p(x)$를 정해두고, 지수족 $q_\eta(x)=h(x)\exp(\eta^TT(x)-A(\eta))$ 안에서 순방향 KL $D_{KL}(\hat p\|q_\eta)$를 $\eta$에 대해 최소화하는 문제를 세우는 것이다. 변분추론이 최소화하는 역방향 KL $D_{KL}(q\|p)$와는 KL의 두 인자 순서가 정확히 뒤바뀌어 있다는 점이 핵심이다.<br><br>다음 단계부터는 이 목적함수를 지수족의 형태를 이용해 직접 전개한다.`, blanks: [] },
       { id: "s2", text: String.raw`KL의 정의 $D_{KL}(\hat p\|q_\eta)=E_{\hat p}[\log\hat p(x)]-E_{\hat p}[\log q_\eta(x)]$ 에서 지수족의 로그밀도 $\log q_\eta(x)=\log h(x)+\eta^TT(x)-A(\eta)$ 를 대입한다. $\eta$와 무관한 항 $E_{\hat p}[\log\hat p(x)]-E_{\hat p}[\log h(x)]$ 는 상수로 묶어둔다.<br><br>정리하면 $D_{KL}(\hat p\|q_\eta) = \text{const} - \eta^TE_{\hat p}[T(x)] + $[[blank:가]] 이다.`,
@@ -15754,6 +18717,27 @@ $$E_{\hat p}[X] = 0.5(-2)+0.5(2) = 0,\qquad E_{\hat p}[X^2] = 0.5(1+4)+0.5(1+4) 
 <p>$A=\{1,2\}$, $\bar A=\{3,4\}$로 자르면 $\mathrm{cut}(A,\bar A)=w_{23}=1$, $\mathrm{vol}(A)=5$, $\mathrm{vol}(\bar A)=5$이므로 $\mathrm{Ncut}=1/5+1/5=0.4$입니다.</p>
 <p>지시벡터 $f_i=\sqrt{\mathrm{vol}(\bar A)/\mathrm{vol}(A)}$($i\in A$), $f_i=-\sqrt{\mathrm{vol}(A)/\mathrm{vol}(\bar A)}$($i\in\bar A$)를 만들면 $\mathrm{vol}(A)=\mathrm{vol}(\bar A)=5$이므로 $f=(1,1,-1,-1)$입니다.</p>
 <p>직접 계산하면 $f^TD\mathbf1=2(1)+3(1)+3(-1)+2(-1)=0$이고, $f^TDf=2+3+3+2=10=\mathrm{vol}(V)$입니다. 라플라시안 이차형식 $f^TLf=\sum_{i<j}w_{ij}(f_i-f_j)^2$을 계산하면, $(1,2)$간선은 $f_1-f_2=0$, $(3,4)$간선도 $f_3-f_4=0$이라 기여가 없고, $(2,3)$간선만 $w_{23}(f_2-f_3)^2=1\cdot(1-(-1))^2=4$를 기여하여 $f^TLf=4$입니다. 그런데 $\mathrm{vol}(V)\cdot\mathrm{Ncut}=10\times0.4=4$로 정확히 일치합니다 — 이것이 아래 증명에서 쓸 핵심 항등식입니다.</p>`,
+  diagram: String.raw`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="100" x2="160" y2="100" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="160" y1="100" x2="280" y2="100" class="dg-line" stroke-width="1.2" stroke-dasharray="4,3" />
+<line x1="280" y1="100" x2="380" y2="100" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="220" y1="30" x2="220" y2="170" class="dg-line" stroke-width="1.2" stroke-dasharray="2,4" />
+<circle cx="60" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="160" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="280" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="380" cy="100" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="56" y="105" font-size="12">1</text>
+<text x="156" y="105" font-size="12">2</text>
+<text x="276" y="105" font-size="12">3</text>
+<text x="376" y="105" font-size="12">4</text>
+<text x="105" y="90" font-size="11">w=2</text>
+<text x="205" y="90" font-size="11" class="dg-dim">w=1 (cut)</text>
+<text x="325" y="90" font-size="11">w=2</text>
+<text x="110" y="20" font-size="12" text-anchor="middle">A={1,2}</text>
+<text x="330" y="20" font-size="12" text-anchor="middle">Ā={3,4}</text>
+<text x="20" y="185" font-size="11" class="dg-dim">점선 수직선 = 절단선, 점선 간선 = 잘리는 edge(Ncut=0.4)</text>
+</svg>`,
+  diagramCaption: String.raw`{1,2}와 {3,4} 사이 가중치 1짜리 간선만 잘라 volume 균형 있는 두 조각으로 나눈다.`,
   sections: [
     { id: "s1", text: String.raw`$A,\bar A$를 분할, $\mathrm{vol}(A)=a_V$, $\mathrm{vol}(\bar A)=b_V$, $\mathrm{vol}(V)=a_V+b_V$라 쓰자. 지시벡터를 $f_i=\sqrt{b_V/a_V}$($i\in A$), $f_i=-\sqrt{a_V/b_V}$($i\in\bar A$)로 정의한다. 목표는 이 $f$가 세 가지 항등식 $f^TD\mathbf1=0$, $f^TDf=\mathrm{vol}(V)$, $f^TLf=\mathrm{vol}(V)\cdot\mathrm{Ncut}(A,\bar A)$를 만족함을 보이고, 이를 통해 $\mathrm{Ncut}$ 최소화를 레일리 몫(Rayleigh quotient) 최소화로 바꾸는 것이다.`, blanks: [] },
     { id: "s2", text: String.raw`먼저 $f^TD\mathbf1=\sum_{i\in A}d_i\sqrt{b_V/a_V} - \sum_{i\in\bar A}d_i\sqrt{a_V/b_V} = a_V\sqrt{b_V/a_V} - b_V\sqrt{a_V/b_V}$이다. 첫 항은 $a_V\sqrt{b_V/a_V}=\sqrt{a_V^2\cdot b_V/a_V}=\sqrt{a_Vb_V}$로 정리되고, 둘째 항 $b_V\sqrt{a_V/b_V}=$[[blank:가]] 이므로, 두 항이 서로 같아 $f^TD\mathbf1=0$이 성립한다.`,
@@ -15778,6 +18762,23 @@ $$E_{\hat p}[X] = 0.5(-2)+0.5(2) = 0,\qquad E_{\hat p}[X^2] = 0.5(1+4)+0.5(1+4) 
   example: String.raw`<p>사슬 그래프 $X_1-X_2-X_3$(간선은 $\{1,2\},\{2,3\}$뿐, 1과 3은 직접 연결 없음)로 확인해봅니다. 극대 클리크는 $\{1,2\}$와 $\{2,3\}$이고, $\psi_{12}(x_1,x_2)=e^{x_1x_2}$, $\psi_{23}(x_2,x_3)=e^{x_2x_3}$로 두면 $p(x_1,x_2,x_3)=\frac1Z e^{x_1x_2}e^{x_2x_3}$입니다($x_i\in\{0,1\}$).</p>
 <p>$X_2=1$로 고정하면 $p(x_1,x_3\mid x_2{=}1)\propto e^{x_1}e^{x_3}$인데, 네 조합의 값은 $(0,0){:}1,\ (0,1){:}e,\ (1,0){:}e,\ (1,1){:}e^2$입니다. 교차비 $\dfrac{p(0,0)p(1,1)}{p(0,1)p(1,0)}=\dfrac{1\cdot e^2}{e\cdot e}=1$인데, $2\times2$ 표에서 교차비가 정확히 1이라는 것은 $X_1$과 $X_3$이 (조건 $X_2=1$ 하에서) 독립이라는 것과 동치입니다. $X_2=0$일 때는 $e^{x_1\cdot0}=e^{x_3\cdot0}=1$이라 네 조합이 모두 같은 값(균등분포)이라 자명하게 독립입니다.</p>
 <p>클리크 $\{1,2\},\{2,3\}$만으로 인수분해했을 뿐인데, 그래프에서 2가 1과 3을 분리한다는 사실과 정확히 대응하는 조건부독립 $X_1\perp X_3\mid X_2$가 저절로 튀어나온 것입니다.</p>`,
+  diagram: String.raw`<svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg">
+<rect x="55" y="65" width="140" height="70" rx="10" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3" />
+<rect x="255" y="65" width="140" height="70" rx="10" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3" />
+<line x1="90" y1="100" x2="220" y2="100" class="dg-line" stroke-width="1.5" />
+<line x1="220" y1="100" x2="360" y2="100" class="dg-line" stroke-width="1.5" />
+<circle cx="90" cy="100" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="220" cy="100" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="360" cy="100" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="90" y="105" font-size="12" text-anchor="middle">X₁</text>
+<text x="220" y="105" font-size="12" text-anchor="middle">X₂</text>
+<text x="360" y="105" font-size="12" text-anchor="middle">X₃</text>
+<text x="125" y="60" font-size="11" text-anchor="middle">ψ₁₂</text>
+<text x="325" y="60" font-size="11" text-anchor="middle">ψ₂₃</text>
+<path d="M 90 82 Q 220 20 360 82" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="2,4" />
+<text x="220" y="30" font-size="11" class="dg-dim">직접 간선 없음 → X₁⊥X₃ | X₂</text>
+</svg>`,
+  diagramCaption: String.raw`극대 클리크 {X₁,X₂}, {X₂,X₃}의 곱으로 인수분해 = X₂가 X₁,X₃를 분리하는 마르코프성과 동치.`,
   sections: [
     { id: "s1", text: String.raw`그래프 $G=(V,E)$에서 이웃집합을 $N(i)=\{j:(i,j)\in E\}$라 하자. 전역 마르코프 성질은: $V$의 서로소인 부분집합 $A,B,S$에서 $S$가 $G$상에서 $A$와 $B$를 분리하면($S$를 지우면 $A$와 $B$ 사이 모든 경로가 끊어지면) $X_A\perp X_B\mid X_S$라는 것이다. 깁스 인수분해는 극대 클리크 집합 $\mathcal C$에 대해 $p(x)=\frac1Z\prod_{c\in\mathcal C}\psi_c(x_c)$로 쓰이는 것을 말한다. 두 방향을 각각 보인다.`, blanks: [] },
     { id: "s2", text: String.raw`먼저 일반적인 보조정리: 결합확률이 $p(a,b,s)=g(a,s)h(b,s)$ 꼴로 인수분해되면 $A\perp B\mid S$이다. $p(s)=\sum_{a,b}g(a,s)h(b,s)=G(s)H(s)$(단 $G(s)=\sum_ag(a,s)$, $H(s)=\sum_bh(b,s)$)이므로, $p(a\mid s)=\sum_b p(a,b,s)/p(s)=g(a,s)H(s)/(G(s)H(s))=g(a,s)/G(s)$이고 마찬가지로 $p(b\mid s)=h(b,s)/H(s)$이다. 따라서 $p(a,b\mid s)=g(a,s)h(b,s)/(G(s)H(s))=$[[blank:가]] 로, 정확히 조건부독립의 정의다.`,
@@ -15801,6 +18802,36 @@ $$E_{\hat p}[X] = 0.5(-2)+0.5(2) = 0,\qquad E_{\hat p}[X^2] = 0.5(1+4)+0.5(1+4) 
   example: String.raw`<p>은닉상태 $\{1,2\}$, 관측기호 $\{a,b\}$인 작은 HMM으로 확인합니다. $\pi=(0.6,0.4)$, 전이 $a_{11}=0.7,a_{12}=0.3,a_{21}=0.4,a_{22}=0.6$, 방출 $p(a\mid1)=0.9,p(b\mid1)=0.1,p(a\mid2)=0.2,p(b\mid2)=0.8$이고 관측열은 $(a,a,b)$입니다.</p>
 <p>재귀를 손으로 돌리면: $\delta_1(1)=0.6\times0.9=0.54$, $\delta_1(2)=0.4\times0.2=0.08$. $\delta_2(1)=\max(0.54\times0.7,\,0.08\times0.4)\times0.9=0.378\times0.9=0.3402$(역추적: 이전상태 1). $\delta_2(2)=\max(0.54\times0.3,\,0.08\times0.6)\times0.2=0.162\times0.2=0.0324$(역추적: 이전상태 1). $\delta_3(1)=\max(0.3402\times0.7,\,0.0324\times0.4)\times0.1=0.23814\times0.1=0.023814$. $\delta_3(2)=\max(0.3402\times0.3,\,0.0324\times0.6)\times0.8=0.10206\times0.8=0.081648$.</p>
 <p>$\max_k\delta_3(k)=0.081648$(상태 2에서), 역추적하면 경로 $(1,1,2)$가 나옵니다. 실제로 $2^3=8$가지 상태열 전부에 대해 결합확률을 직접 계산해보면 $(1,1,2)$가 0.081648로 최댓값이고, 나머지 7개는 각각 $0.023814,\ 0.001296,\ 0.015552,\ 0.002016,\ 0.006912,\ 0.000384,\ 0.004608$로 이보다 작습니다. 비터비가 준 답이 전수조사한 최댓값과 정확히 일치합니다.</p>`,
+  diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="100" y1="60" x2="280" y2="60" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="100" y1="60" x2="280" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="100" y1="160" x2="280" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="100" y1="160" x2="280" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="280" y1="60" x2="380" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="280" y1="60" x2="380" y2="160" class="dg-stroke-accent" stroke-width="2.5" />
+<line x1="280" y1="160" x2="380" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<line x1="280" y1="160" x2="380" y2="160" class="dg-line" stroke-width="1" stroke-dasharray="3,3" />
+<circle cx="100" cy="60" r="15" class="dg-accent" />
+<circle cx="100" cy="160" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="280" cy="60" r="15" class="dg-accent" />
+<circle cx="280" cy="160" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="380" cy="60" r="15" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="380" cy="160" r="15" class="dg-accent" />
+<text x="100" y="65" font-size="11" text-anchor="middle">1</text>
+<text x="100" y="165" font-size="11" text-anchor="middle">2</text>
+<text x="280" y="65" font-size="11" text-anchor="middle">1</text>
+<text x="280" y="165" font-size="11" text-anchor="middle">2</text>
+<text x="380" y="65" font-size="11" text-anchor="middle">1</text>
+<text x="380" y="165" font-size="11" text-anchor="middle">2</text>
+<text x="100" y="30" font-size="11" text-anchor="middle">t=1</text>
+<text x="280" y="30" font-size="11" text-anchor="middle">t=2</text>
+<text x="380" y="30" font-size="11" text-anchor="middle">t=3</text>
+<text x="60" y="60" font-size="10" text-anchor="end">δ₁(1)=0.54</text>
+<text x="60" y="160" font-size="10" text-anchor="end" class="dg-dim">δ₁(2)=0.08</text>
+<text x="285" y="195" font-size="10">δ₂(1)=0.3402</text>
+<text x="380" y="195" font-size="10">δ₃(2)=0.081648</text>
+</svg>`,
+  diagramCaption: String.raw`굵은 경로 (1,1,2)가 δ 재귀를 통해 얻은 최적 은닉상태열이다.`,
   sections: [
     { id: "s1", text: String.raw`목표는 $\arg\max_{z_{1:T}}p(z_{1:T}\mid x_{1:T})$를 구하는 것인데, $x_{1:T}$가 고정돼 있으므로 이는 $\arg\max_{z_{1:T}}p(z_{1:T},x_{1:T})$와 같다. 결합확률은 사슬 구조 때문에 $p(z_{1:T},x_{1:T})=\pi_{z_1}p(x_1\mid z_1)\prod_{t=2}^Ta_{z_{t-1}z_t}p(x_t\mid z_t)$로 인수분해된다.`, blanks: [] },
     { id: "s2", text: String.raw`$\delta_t(k)=\max_{z_{1:t-1}}p(z_{1:t-1},z_t{=}k,x_{1:t})$로 정의한다. $t=1$일 때는 $z_{1:0}$이 공집합이므로 $\delta_1(k)=$[[blank:가]] 이다.`,
@@ -15824,6 +18855,29 @@ $$E_{\hat p}[X] = 0.5(-2)+0.5(2) = 0,\qquad E_{\hat p}[X^2] = 0.5(1+4)+0.5(1+4) 
   example: String.raw`<p>가시유닛 2개, 은닉유닛 2개인 작은 RBM으로 확인합니다. $W=\begin{pmatrix}1&-1\\2&0.5\end{pmatrix}$(행이 $v_i$, 열이 $h_j$), $a=(0,0)$, $b=(0.5,-0.5)$이고 $v=(1,0)$을 관측했다고 하죠.</p>
 <p>$(v^TW)_1=1\times1+0\times2=1$, $(v^TW)_2=1\times(-1)+0\times0.5=-1$이므로, 이론값은 $p(h_1{=}1\mid v)=\sigma(0.5+1)=\sigma(1.5)\approx0.8176$, $p(h_2{=}1\mid v)=\sigma(-0.5-1)=\sigma(-1.5)\approx0.1824$입니다.</p>
 <p>직접 확인을 위해, $v$가 주어졌을 때 $h$에 대한 비정규화 확률 $\propto\exp\big((b_1{+}1)h_1+(b_2{-}1)h_2\big)=\exp(1.5h_1)\exp(-1.5h_2)$를 네 조합에 대해 계산하면 $(0,0){:}1,\ (0,1){:}e^{-1.5}\approx0.2231,\ (1,0){:}e^{1.5}\approx4.4817,\ (1,1){:}e^0=1$이고 합은 $\approx6.7048$입니다. 정규화하면 $p(1,0)\approx0.6684$, $p(1,1)\approx0.1491$이므로 $p(h_1{=}1)=p(1,0)+p(1,1)\approx0.8176$로 이론값과 일치합니다. 또한 $p(h_1{=}1)p(h_2{=}1)\approx0.8176\times0.1824\approx0.1491=p(1,1)$로 정확히 맞아떨어져, $h_1,h_2$가 $v$ 조건부로 독립임이 수치로도 확인됩니다.</p>`,
+  diagram: String.raw`<svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="90" y1="70" x2="290" y2="70" class="dg-stroke-accent" stroke-width="2" />
+<line x1="90" y1="70" x2="290" y2="150" class="dg-stroke-accent" stroke-width="2" />
+<line x1="90" y1="150" x2="290" y2="70" class="dg-stroke-accent" stroke-width="2" />
+<line x1="90" y1="150" x2="290" y2="150" class="dg-stroke-accent" stroke-width="2" />
+<circle cx="90" cy="70" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="90" cy="150" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="290" cy="70" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<circle cx="290" cy="150" r="16" fill="none" class="dg-stroke-ink" stroke-width="1.5" />
+<text x="90" y="75" font-size="12" text-anchor="middle">v₁</text>
+<text x="90" y="155" font-size="12" text-anchor="middle">v₂</text>
+<text x="290" y="75" font-size="12" text-anchor="middle">h₁</text>
+<text x="290" y="155" font-size="12" text-anchor="middle">h₂</text>
+<path d="M 60 55 Q 30 110 60 165" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="2,3" />
+<text x="15" y="112" font-size="10" class="dg-dim">간선 없음</text>
+<path d="M 320 55 Q 350 110 320 165" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="2,3" />
+<text x="335" y="112" font-size="10" class="dg-dim">간선 없음</text>
+<text x="90" y="30" font-size="11" text-anchor="middle">가시층 v</text>
+<text x="290" y="30" font-size="11" text-anchor="middle">은닉층 h</text>
+<text x="190" y="60" font-size="10" text-anchor="middle">W₁₁=1</text>
+<text x="190" y="185" font-size="10" text-anchor="middle">W₂₂=0.5</text>
+</svg>`,
+  diagramCaption: String.raw`v-h 완전이분 연결, v-v·h-h 간선은 없음 → v가 주어지면 h₁,h₂는 조건부독립.`,
   sections: [
     { id: "s1", text: String.raw`RBM의 에너지 $E(v,h)=-a^Tv-b^Th-v^TWh=-a^Tv-b^Th-\sum_{i,j}v_iW_{ij}h_j$를 보면, $h_j$와 $h_k$($j\ne k$)를 동시에 곱하는 항이 전혀 없다(이분그래프이므로 은닉-은닉 간선이 없기 때문). 이 사실이 조건부독립을 만드는 핵심이다.`, blanks: [] },
     { id: "s2", text: String.raw`$v$를 고정하면 $p(h\mid v)\propto\exp(-E(v,h))=\exp\Big(b^Th+v^TWh\Big)=\exp\Big(\sum_{j=1}^F\big[b_j+\textstyle\sum_iv_iW_{ij}\big]h_j\Big) = $[[blank:가]] 로, 지수 안이 $j$에 대한 합으로 완전히 분리된다.`,
@@ -15979,6 +19033,30 @@ $$H_b(0.2)+0.2\log_2 3 = 0.7219+0.2\times 1.585=1.039\text{ bits}$$
     example: String.raw`<p>왜 "특성커널"이라는 조건이 꼭 필요한지 반례로 확인해봅니다. $P$는 $\{-1,+1\}$에서 각각 확률 $0.5$, $Q$는 $\{-2,+2\}$에서 각각 확률 $0.5$인 분포라 하자. 둘 다 평균은 $0$이지만 분산은 각각 $1$과 $4$로 서로 다르다.</p>
 <p>선형커널 $k(x,y)=xy$를 쓰면 특징사상은 $\varphi(x)=x$이므로 평균임베딩은 그냥 기댓값이다: $\mu_P=\mathbb E_P[X]=0=\mathbb E_Q[X]=\mu_Q$. 즉 $\mathrm{MMD}=0$인데도 $P\neq Q$이다 — 선형커널은 평균만 보고 분산 차이를 전혀 못 본다(특성커널이 아니다).</p>
 <p>반면 가우시안(RBF) 커널 $k(x,y)=\exp(-0.5(x-y)^2)$을 쓰면 직접 계산했을 때 $\mathrm{MMD}^2(P,Q)\approx0.450>0$으로 두 분포의 차이를 정확히 잡아낸다(반면 $\mathrm{MMD}^2(P,P)=0$이다).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<text x="90" y="20" font-size="12" class="dg-dim">입력공간</text>
+<ellipse cx="90" cy="90" rx="55" ry="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="65" cy="80" r="3" class="dg-stroke-ink"/>
+<circle cx="100" cy="95" r="3" class="dg-stroke-ink"/>
+<circle cx="80" cy="105" r="3" class="dg-stroke-ink"/>
+<text x="55" y="135" font-size="11">P</text>
+<ellipse cx="90" cy="170" rx="60" ry="32" fill="none" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="4,3"/>
+<circle cx="60" cy="160" r="3" class="dg-accent"/>
+<circle cx="110" cy="180" r="3" class="dg-accent"/>
+<circle cx="75" cy="190" r="3" class="dg-accent"/>
+<text x="55" y="215" font-size="11" class="dg-dim">Q</text>
+<line x1="170" y1="120" x2="260" y2="120" class="dg-line" stroke-width="1.5"/>
+<polygon points="260,120 248,114 248,126" class="dg-stroke-ink"/>
+<text x="185" y="108" font-size="11">φ (커널 특징사상)</text>
+<text x="330" y="20" font-size="12" class="dg-dim">RKHS (특징공간)</text>
+<circle cx="330" cy="80" r="5" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="340" y="75" font-size="11">μ_P</text>
+<circle cx="430" cy="150" r="5" class="dg-accent"/>
+<text x="440" y="150" font-size="11" class="dg-dim">μ_Q</text>
+<line x1="330" y1="80" x2="430" y2="150" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="3,3"/>
+<text x="345" y="120" font-size="11">‖μ_P−μ_Q‖ = MMD(P,Q)</text>
+</svg>`,
+    diagramCaption: String.raw`특징공간으로 옮긴 두 평균임베딩 사이의 거리가 MMD이며, 특성커널일 때만 이 거리가 분포의 동일성과 정확히 대응한다.`,
     sections: [
       { id: "s1", text: String.raw`RKHS의 재생성질(reproducing property) $\langle\varphi(x),\varphi(y)\rangle_{\mathcal H}=k(x,y)$을 쓰면, $\mathrm{MMD}^2(P,Q)=\|\mu_P-\mu_Q\|_{\mathcal H}^2$를 내적으로 완전히 풀어 쓸 수 있다. 목표는 이 식을 커널값의 기댓값만으로 표현하는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`제곱노름을 전개하면 $\|\mu_P-\mu_Q\|_{\mathcal H}^2=\langle\mu_P,\mu_P\rangle-2\langle\mu_P,\mu_Q\rangle+\langle\mu_Q,\mu_Q\rangle$ 이고, 각 내적에 재생성질을 적용하면 $\mathrm{MMD}^2(P,Q)=\mathbb E_{X,X'\sim P}[k(X,X')]-2\,\mathbb E_{X\sim P,Y\sim Q}[k(X,Y)]+$[[blank:가]] 이다.`,
@@ -15999,6 +19077,21 @@ $$H_b(0.2)+0.2\log_2 3 = 0.7219+0.2\times 1.585=1.039\text{ bits}$$
     example: String.raw`<p>두 특수 사례를 실제 숫자로 확인해봅니다.</p>
 <p><strong>유클리드 사례.</strong> $x=(3,1)$, $y=(1,2)$, $\varphi(v)=\|v\|^2$이면 $\nabla\varphi(y)=2y=(2,4)$이고 $$D_\varphi(x,y)=\|x\|^2-\|y\|^2-\nabla\varphi(y)^\top(x-y)=10-5-(2\times2+4\times(-1))=5$$ 이고 실제로 $\|x-y\|^2=\|(2,-1)\|^2=4+1=5$로 정확히 일치한다.</p>
 <p><strong>KL 사례.</strong> $p=(0.5,0.3,0.2)$, $q=(0.2,0.5,0.3)$, $\varphi(v)=\sum v_i\log v_i$이면 직접 계산했을 때 $D_\varphi(p,q)\approx0.2238$이고, $\mathrm{KL}(p\|q)=\sum p_i\log(p_i/q_i)\approx0.2238$로 소수점 자리까지 일치한다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="190" x2="400" y2="190" class="dg-line" stroke-width="1"/>
+<path d="M50,180 Q220,10 380,140" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="230" cy="70" r="4" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="238" y="60" font-size="11">y, φ(y)</text>
+<line x1="130" y1="140" x2="330" y2="20" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="290" y="15" font-size="10" class="dg-dim">접선(1차근사)</text>
+<circle cx="330" cy="105" r="4" class="dg-accent"/>
+<text x="336" y="100" font-size="11">x, φ(x)</text>
+<line x1="330" y1="55" x2="330" y2="105" class="dg-stroke-accent" stroke-width="2"/>
+<text x="342" y="85" font-size="11">D_φ(x,y)</text>
+<circle cx="330" cy="55" r="3" class="dg-stroke-accent" fill="none" stroke-width="1.5"/>
+<text x="60" y="30" font-size="11" class="dg-dim">φ: 볼록함수</text>
+</svg>`,
+    diagramCaption: String.raw`곡선과 y에서 그은 접선 사이의 수직 간격이 Bregman 발산이며, 유클리드거리와 KL발산은 이 틀의 특수한 경우다.`,
     sections: [
       { id: "s1", text: String.raw`강볼록함수 $\varphi$의 그래프는 어느 점에서 그은 접선 위에 있다(단, 접점 제외). 즉 모든 $x,y$에 대해 $\varphi(x)\ge\varphi(y)+\nabla\varphi(y)^\top(x-y)$이고, $x\neq y$이면 부등호가 엄격하다. $D_\varphi(x,y)$는 바로 이 부등식의 좌변에서 우변을 뺀 나머지 값이다.`, blanks: [] },
       { id: "s2", text: String.raw`위 접선 부등식을 그대로 옮기면 $D_\varphi(x,y)=\varphi(x)-\varphi(y)-\nabla\varphi(y)^\top(x-y)\ge$[[blank:가]] 이고, 강볼록성에 의해 등호는 $x=y$일 때만 성립한다.`,
@@ -16019,6 +19112,21 @@ $$H_b(0.2)+0.2\log_2 3 = 0.7219+0.2\times 1.585=1.039\text{ bits}$$
     example: String.raw`<p>$p=\mathrm{Bernoulli}(0.2)$이면 $H(X)=-0.2\log_2 0.2-0.8\log_2 0.8\approx0.7219$비트이다. $\varepsilon=0.05$로 놓고 $n$을 늘려가며 실제로 $\Pr(A_\varepsilon^{(n)})$을 시뮬레이션(각 $n$당 10만 회 시행)하면</p>
 <p>$n=20$: $0.218$, $n=100$: $0.466$, $n=500$: $0.837$, $n=2000$: $0.995$</p>
 <p>로 $1$에 수렴해간다. 또한 $n=20$에서 전형집합의 정확한 크기를 조합으로 세어보면 $|A_{0.05}^{(20)}|=4845$인데, 상한 $2^{20(0.7219+0.05)}\approx44409$는 실제로 만족되는 것을 확인할 수 있다($4845\le44409$).</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 220" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="20" width="440" height="180" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="40" y="40" font-size="11" class="dg-dim">전체 결과공간 X ⁿ: 2ⁿ 가지</text>
+<circle cx="230" cy="130" r="70" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="185" y="125" font-size="12">전형집합 Aₑ⁽ⁿ⁾</text>
+<text x="185" y="142" font-size="10" class="dg-dim">크기 ≈ 2^(nH(X))</text>
+<circle cx="90" cy="60" r="2.5" class="dg-line"/>
+<circle cx="130" cy="45" r="2.5" class="dg-line"/>
+<circle cx="400" cy="55" r="2.5" class="dg-line"/>
+<circle cx="420" cy="170" r="2.5" class="dg-line"/>
+<circle cx="70" cy="160" r="2.5" class="dg-line"/>
+<text x="330" y="30" font-size="10" class="dg-dim">비전형 결과: 확률질량 ≈0</text>
+<text x="200" y="195" font-size="11">확률질량 대부분(1−ε 이상)이 전형집합 안에 몰려 있다</text>
+</svg>`,
+    diagramCaption: String.raw`가능한 결과는 지수적으로 많지만 확률질량은 크기 2ⁿᴴ의 작은 전형집합에 집중된다.`,
     sections: [
       { id: "s1", text: String.raw`$Y_i:=-\log p(X_i)$라 정의하면, $X_i$가 독립동일분포이므로 $Y_i$들도 독립동일분포이고 그 기댓값은 엔트로피의 정의 그대로 $\mathbb E[Y_i]=-\sum_x p(x)\log p(x)=H(X)$이다. 알파벳이 유한하므로 분산도 유한하다.`, blanks: [] },
       { id: "s2", text: String.raw`대수의 법칙(WLLN)을 $Y_i$들의 평균에 적용하면, 표본평균 $-\tfrac1n\log p(X^n)=\tfrac1n\sum_{i=1}^n Y_i$은 $n\to\infty$일 때 확률수렴으로 $-\tfrac1n\log p(X^n)\ \xrightarrow{p}\ $[[blank:가]] 로 수렴한다.`,
@@ -16085,6 +19193,17 @@ $$f(0)=0,\quad L(0)=2\times0-1=-1\qquad(0\ge-1)$$
 $$f(-2)=4,\quad L(-2)=2\times(-2)-1=-5\qquad(4\ge-5)$$
 <p>어느 $y$를 넣어도 $f(y)\ge L(y)$가 성립합니다. 접선이 곡선을 절대 뚫고 올라가지 못하고 항상 그 아래에 머무는 것입니다.</p>
 <p>이번엔 $x^*=0$처럼 그래디언트가 정확히 $0$인 점을 봅니다. $f'(0)=0$이므로 접선은 수평선 $L(y)=0$이 되고, 방금 확인한 부등식은 곧 $f(y)\ge0=f(0)$을 뜻합니다. 실제로 $f(y)=y^2$은 어떤 $y$를 넣어도 $0$보다 작아지지 않으므로 $x^*=0$은 정말로 전역최소점입니다. 아래 증명은 이 두 관찰, 즉 접선이 항상 아래에 있다는 사실과 그래디언트가 0인 점이 전역최소가 된다는 사실이 $x^2$ 하나만의 특수한 성질이 아니라 모든 미분가능한 볼록함수에서 항상 성립한다는 것을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+<path d="M60,180 Q250,20 440,180" fill="none" class="dg-stroke-ink" stroke-width="2.5"/>
+<line x1="60" y1="140" x2="300" y2="60" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="150" cy="97" r="4" class="dg-accent"/>
+<text x="150" y="115" font-size="11" text-anchor="middle">임의의 점 x</text>
+<text x="300" y="52" font-size="11" class="dg-dim">접선은 항상 그래프 아래</text>
+<line x1="100" y1="20" x2="400" y2="20" class="dg-stroke-accent" stroke-width="3" stroke-dasharray="6,3"/>
+<circle cx="250" cy="20" r="5" class="dg-accent"/>
+<text x="250" y="14" font-size="12" text-anchor="middle">∇f(x*)=0 → 수평접선 → 전역최소</text>
+</svg>`,
+    diagramCaption: String.raw`볼록함수의 접선은 항상 그래프 아래에 있으며, 그래디언트가 0인 점의 수평접선은 전역최소를 뜻한다.`,
     sections: [
       { id: "s1", text: String.raw`지금 보이려는 것은 두 가지 서로 다른 볼록성의 정의, 즉 두 점 사이의 부등식으로 쓰는 정의와 그래디언트로 쓰는 정의가 사실은 같은 것이라는 사실이다. 먼저 익숙한 정의부터 다시 적어본다. $f$가 볼록하다는 것은 임의의 $x,y$와 $t\in[0,1]$에 대해 $f(tx+(1-t)y)\le tf(x)+(1-t)f(y)$가 성립한다는 뜻이다. 이 정의를 그래디언트 부등식과 잇는 다리로, 두 점 $x,y$를 잇는 선분 위의 점 $z_t=x+t(y-x)=(1-t)x+ty$를 쓴다.`, blanks: [] },
       { id: "s2", text: String.raw`먼저 (⟹) 방향을 본다. $f$가 볼록하다고 가정하고 방금 쓴 정의를 점 $x,y$와 $z_t=(1-t)x+ty$에 그대로 적용하면 $f(z_t)\le (1-t)f(x)+tf(y)$이다. 양변에서 $f(x)$를 빼고 $t\in(0,1]$로 나누면 $\dfrac{f(z_t)-f(x)}{t}\le f(y)-f(x)$를 얻는다. $t\to0^+$인 극한을 취하면 좌변은 방향미분의 정의에 의해 $\nabla f(x)^T(y-x)$로 수렴한다($f$가 미분가능하므로 방향미분이 그래디언트와 방향벡터의 내적과 정확히 일치한다). 따라서 $\nabla f(x)^T(y-x) \le $[[blank:가]] 이다.`,
@@ -16115,6 +19234,29 @@ $$f(-2)=4,\quad L(-2)=2\times(-2)-1=-5\qquad(4\ge-5)$$
 $$\nabla f(1,1)=(2(1-2),2(1-2))=(-2,-2),\qquad \nabla g_1(1,1)=(1,1),\qquad \nabla g_2(1,1)=(1,0)$$
 <p>정류조건 $\nabla f+\mu_1\nabla g_1+\mu_2\nabla g_2=0$을 성분별로 풀어봅니다. $y$성분에서 $-2+\mu_1=0$이므로 $\mu_1=2$이고, $x$성분에서 $-2+\mu_1+\mu_2=0$에 $\mu_1=2$를 넣으면 $\mu_2=0$이 나옵니다.</p>
 <p>네 조건을 하나씩 확인합니다. 원시실현가능성: $g_1(1,1)=0\le0$, $g_2(1,1)=-2\le0$. 쌍대실현가능성: $\mu_1=2\ge0$, $\mu_2=0\ge0$. 상보슬랙성: $\mu_1g_1(1,1)=2\times0=0$, $\mu_2g_2(1,1)=0\times(-2)=0$. 경계에 딱 붙은 $g_1$은 양의 승수를 받고, 여유가 있는 $g_2$는 승수가 정확히 $0$으로 꺼집니다. 아래 증명은 이 패턴, 즉 활성 제약과 비활성 제약이 항상 이렇게 다른 방식으로 조건을 만족한다는 사실이 우연이 아니라 임의의 문제에서 일반적으로 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="400" cy="70" rx="130" ry="80" fill="none" class="dg-stroke-ink" stroke-width="1.2"/>
+<ellipse cx="400" cy="70" rx="90" ry="55" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="400" cy="70" rx="50" ry="30" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="400" y="55" font-size="11" text-anchor="middle" class="dg-dim">목적함수 등고선</text>
+<path d="M60,300 L250,220" class="dg-stroke-accent" stroke-width="2"/>
+<text x="90" y="310" font-size="11">제약 g1=0</text>
+<path d="M250,220 L420,140" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="380" y="150" font-size="11">제약 g2=0</text>
+<circle cx="250" cy="220" r="5" class="dg-accent"/>
+<text x="255" y="240" font-size="12">x* (활성 제약의 꼭짓점)</text>
+<path d="M250,220 L330,150" class="dg-stroke-ink" stroke-width="2.5"/>
+<polygon points="330,150 316,155 322,164" class="dg-stroke-ink"/>
+<text x="335" y="145" font-size="11">∇f(x*)</text>
+<path d="M250,220 L190,280" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="190,280 200,270 205,280" class="dg-stroke-ink"/>
+<text x="150" y="295" font-size="10" class="dg-dim">-∇g1</text>
+<path d="M250,220 L330,270" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="330,270 318,266 322,277" class="dg-stroke-ink"/>
+<text x="335" y="285" font-size="10" class="dg-dim">-∇g2</text>
+<path d="M190,280 A100,100 0 0,1 330,270 L250,220 Z" class="dg-dim" opacity="0.25"/>
+</svg>`,
+    diagramCaption: String.raw`활성 제약들이 만나는 꼭짓점에서 목적함수 그래디언트는 활성 제약 그래디언트들이 만드는 콘 안에 놓인다.`,
     sections: [
       { id: "s1", text: String.raw`지금 풀려는 문제는 $g_i(x)\le0$ ($i=1,\dots,m$)을 만족하는 $x$ 중에서 $f(x)$를 최소화하는 것이다. 최적해를 $x^*$라 하고, 이 지점에서 등호로 딱 맞아떨어지는 제약들의 집합을 활성집합(active set) $A=\{i : g_i(x^*)=0\}$이라 부른다. 지금 목표는 어떤 $\mu^*_i\ge0$이 존재해서 정류성·원시실현가능성·쌍대실현가능성·상보슬랙성이라는 네 조건이 동시에 성립함을 보이는 것이다. 핵심 아이디어는, $x^*$가 최적해라면 그 지점에서 목적함수를 더 줄이면서 동시에 제약을 어기지 않는 방향은 존재할 수 없다는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`실현가능한 하강방향이 있다는 것은 어떤 $d$가 있어서 $\nabla f(x^*)^Td<0$이면서 동시에 활성 제약들에 대해 $\nabla g_i(x^*)^Td\le0$ ($i\in A$)이 성립한다는 뜻이다. 만약 이런 $d$가 하나라도 존재한다면, 그 방향으로 충분히 작게 $t>0$만큼 움직인 $x^*+td$는 목적함수값이 줄어들면서도(1차 근사에서) 모든 제약을 계속 만족한다(비활성 제약은 애초에 여유가 있어 작은 이동으로는 어길 수 없다). 이는 $x^*$가 최적해라는 가정과 모순이다. 그러므로 $x^*$가 최적해라면 다음 부등식 시스템 $\nabla f(x^*)^Td<0,\ \nabla g_i(x^*)^Td\le0\ (i\in A)$ 은 해 $d$를 [[blank:가]] 이다.`,
@@ -16145,6 +19287,18 @@ $$J[x\mapsto x]=\int_0^1\sqrt{1+1^2}\,dx=\sqrt2\approx1.4142$$
 <p>이번엔 양 끝점은 그대로 고정한 채 살짝 흔들어본 곡선 $y(x)=x+0.1\sin(\pi x)$를 씁니다. $\sin(0)=\sin(\pi)=0$이라 끝점 조건은 그대로 지켜집니다. 이 곡선의 길이를 심프슨 공식으로 근사하면 다음과 같습니다.</p>
 $$J[x\mapsto x+0.1\sin(\pi x)]\approx1.4230$$
 <p>직선보다 살짝 구불거리게 만들었을 뿐인데 길이가 $\sqrt2\approx1.4142$보다 커졌습니다. 아래 증명은 이 직선이 우연히 짧은 게 아니라, $F(x,y,y')=\sqrt{1+y'^2}$를 오일러-라그랑주 방정식에 넣으면 정확히 직선만이 해가 된다는 사실을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="190" r="4" class="dg-accent"/>
+<circle cx="420" cy="50" r="4" class="dg-accent"/>
+<text x="60" y="210" font-size="11" text-anchor="middle">고정 끝점 a</text>
+<text x="420" y="35" font-size="11" text-anchor="middle">고정 끝점 b</text>
+<path d="M60,190 Q200,60 420,50" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="4,3"/>
+<path d="M60,190 Q280,160 420,50" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="4,3"/>
+<path d="M60,190 Q240,100 420,50" fill="none" class="dg-stroke-accent" stroke-width="3"/>
+<text x="150" y="90" font-size="12">최적곡선 y*(x)</text>
+<text x="150" y="150" font-size="11" class="dg-dim">섭동곡선 y*+εη (같은 끝점)</text>
+</svg>`,
+    diagramCaption: String.raw`같은 끝점을 지나는 이웃 곡선들을 겹쳐 그리면, 최적곡선에서 범함수 값이 국소적으로 정류됨을 볼 수 있다.`,
     sections: [
       { id: "s1", text: String.raw`$y^*(x)$가 양 끝점 조건 $y(a)=y_a,\,y(b)=y_b$를 만족하는 함수들 중에서 $J[y]=\int_a^b F(x,y,y')\,dx$를 실제로 최소화하는 함수라고 하자. 지금 목표는 $y^*$가 만족해야 하는 미분방정식을 찾는 것이다. 핵심 아이디어는, 유한차원에서 극값의 조건이 '어느 방향으로 조금 움직여도 함숫값이 늘지 않는다'는 것이었듯이, 함수공간에서도 $y^*$를 임의의 방향으로 살짝 흔들었을 때 범함수값이 늘지 않아야 한다는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`이 '흔드는 방향'을 구체적으로 만들기 위해, 양 끝점에서 $0$이 되는 임의의 매끄러운 함수 $\eta(x)$($\eta(a)=\eta(b)=0$)와 작은 실수 $\varepsilon$을 써서 $y(x,\varepsilon)=y^*(x)+\varepsilon\eta(x)$ 라는 섭동을 만든다. $\eta(a)=\eta(b)=0$이므로 이 섭동도 여전히 같은 끝점 조건을 만족한다. 이 섭동을 넣은 범함수값을 $\varphi(\varepsilon)=J[y^*+\varepsilon\eta]$ 라 하면, $\varphi$는 이제 $\varepsilon$ 하나짜리 보통의 실함수다. $y^*$가 $J$를 최소화하므로 $\varphi(\varepsilon)$는 $\varepsilon=0$에서 최솟값을 갖고, 따라서 $\varphi'(0) = $[[blank:가]] 이다.`,
@@ -16202,6 +19356,23 @@ $$J[x\mapsto x+0.1\sin(\pi x)]\approx1.0494$$
 <p>이진대칭채널(BSC)에서 비트가 뒤집힐 확률이 $p=0.1$이라고 합시다. 이 채널의 용량은 $C = 1 - H_b(0.1)$이고, $H_b(0.1) = -0.1\log_2 0.1 - 0.9\log_2 0.9 \approx 0.469$ 비트이므로 $C\approx 0.531$ 비트/사용입니다.</p>
 $$C = 1 - H_b(0.1) \approx 1 - 0.469 = 0.531 \text{ bits}$$
 <p>이 말은, 전송률을 $R=0.5$ 비트/사용으로 잡으면 오류확률을 원하는 만큼 $0$에 가깝게 만드는 부호가 존재하지만, $R=0.6$처럼 $C$를 넘겨버리면 부호를 아무리 정교하게 짜도 오류확률이 어떤 양수 아래로는 절대 내려가지 않는다는 뜻입니다. 아래 증명은 후자, 즉 $R>C$가 왜 불가능한지(역정리)를 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="70" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="70" y="105" font-size="14" text-anchor="middle">X</text>
+<line x1="100" y1="100" x2="200" y2="100" class="dg-line" stroke-width="1.5"/>
+<polygon points="200,100 188,94 188,106" class="dg-stroke-ink"/>
+<rect x="210" y="65" width="140" height="70" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<text x="280" y="95" font-size="11" text-anchor="middle">잡음채널</text>
+<text x="280" y="112" font-size="11" text-anchor="middle">p(y|x)</text>
+<line x1="350" y1="100" x2="450" y2="100" class="dg-line" stroke-width="1.5"/>
+<polygon points="450,100 438,94 438,106" class="dg-stroke-ink"/>
+<circle cx="490" cy="100" r="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="490" y="105" font-size="14" text-anchor="middle">Y</text>
+<text x="140" y="80" font-size="10" class="dg-dim">전송률 R</text>
+<text x="180" y="30" font-size="12">R ≤ C = max_p(x) I(X;Y)</text>
+<text x="180" y="175" font-size="11" class="dg-dim">R &gt; C: 오류확률이 0으로 갈 수 없음</text>
+</svg>`,
+    diagramCaption: String.raw`잡음 채널을 지나는 정보의 최대 전송률이 상호정보량의 최댓값, 즉 채널용량이다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 문제를 세팅한다. 메시지 $W$는 $\{1,\dots,2^{nR}\}$ 위에서 균등분포를 따르고, 부호기는 이를 $X^n(W)$로 사상하며, 채널은 무기억적으로 $Y^n$을 만들어낸다. 복호기는 $\hat W = g(Y^n)$으로 추정한다. 목표는 오류확률 $P_e^{(n)} = \Pr(\hat W \ne W)$가 $n\to\infty$에서 $0$으로 수렴하면 $R\le C$임을 보이는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`$W$가 $2^{nR}$개 값 위에서 균등분포이므로 $H(W) = nR$이다. 엔트로피와 상호정보량의 관계로 $nR = H(W) = H(W|Y^n) + ($[[blank:가]]$)$ 로 쓸 수 있다.`,
@@ -16226,6 +19397,24 @@ $$C = 1 - H_b(0.1) \approx 1 - 0.469 = 0.531 \text{ bits}$$
 <p>왜곡 한계를 $D_1=0.1$, $D_2=0.3$으로 잡으면 $R(0.1)=1-H_b(0.1)\approx 0.531$, $R(0.3)=1-H_b(0.3)\approx 0.119$ 비트입니다. 그 중간인 $D=0.2$에서는 $R(0.2)=1-H_b(0.2)\approx 0.278$ 비트입니다.</p>
 $$\frac{R(0.1)+R(0.3)}{2} \approx 0.325 \;\ge\; R(0.2) \approx 0.278$$
 <p>직선으로 이은 값($0.325$)이 실제 곡선 값($0.278$)보다 크죠. 곡선이 현(chord) 아래에 있다는 것, 이게 바로 볼록성입니다. 아래 증명은 이 성질이 임의의 소스와 왜곡함수에서 항상 성립함을 보입니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="190" x2="430" y2="190" class="dg-line" stroke-width="1"/>
+<line x1="50" y1="190" x2="50" y2="20" class="dg-line" stroke-width="1"/>
+<text x="430" y="205" font-size="11" text-anchor="end">D</text>
+<text x="30" y="20" font-size="11">R(D)</text>
+<path d="M90,50 Q230,110 380,160" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<circle cx="110" cy="63" r="4" class="dg-accent"/>
+<text x="95" y="50" font-size="10">R(D₁)=0.531</text>
+<circle cx="330" cy="150" r="4" class="dg-accent"/>
+<text x="300" y="170" font-size="10">R(D₂)=0.119</text>
+<line x1="110" y1="63" x2="330" y2="150" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="220" cy="106" r="3.5" class="dg-stroke-accent" fill="none" stroke-width="1.5"/>
+<text x="228" y="100" font-size="10" class="dg-dim">현의 값 0.325</text>
+<circle cx="220" cy="128" r="3.5" class="dg-stroke-ink" fill="none" stroke-width="1.5"/>
+<text x="228" y="140" font-size="10">R(D)=0.278</text>
+<line x1="220" y1="106" x2="220" y2="128" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>`,
+    diagramCaption: String.raw`곡선이 현보다 아래에 있어 R(D)가 볼록함수임을 보인다.`,
     sections: [
       { id: "s1", text: String.raw`레이트-왜곡함수는 왜곡 한계 $D$마다 그 한계를 만족하는 조건분포 $p(\hat x|x)$ 중 상호정보량 $I(X;\hat X)$을 최소로 만드는 값으로 정의된다. 전략은 $D_1, D_2$ 각각에서 최적을 이루는 조건분포 $p_1(\hat x|x), p_2(\hat x|x)$를 잡고, 이 둘을 섞어서 $D_\lambda = \lambda D_1+(1-\lambda)D_2$에서도 성립하는 후보를 직접 만들어보는 것이다.`, blanks: [] },
       { id: "s2", text: String.raw`두 조건분포를 같은 비율로 섞은 $p_\lambda(\hat x|x) := \lambda\, p_1(\hat x|x) + (1-\lambda)\, p_2(\hat x|x)$ 를 정의한다. 각 $x$에 대해 $p_\lambda(\cdot|x)$는 두 확률분포의 볼록결합이므로 그 자체로 유효한 확률분포다.`, blanks: [] },
@@ -16249,6 +19438,22 @@ $$\frac{R(0.1)+R(0.3)}{2} \approx 0.325 \;\ge\; R(0.2) \approx 0.278$$
 <p>평균만 다른 두 정규분포 사이의 KL 발산은 잘 알려진 닫힌 형태를 갖습니다.</p>
 $$KL\big(\mathcal N(\theta,1)\,\|\,\mathcal N(\theta+d\theta,1)\big) = \frac{(d\theta)^2}{2}$$
 <p>예를 들어 $d\theta=0.1$이면 $KL=0.005$입니다. 이 분포족의 피셔정보는 $I(\theta)=1$로 상수입니다(평균 하나짜리 등분산 정규분포이기 때문입니다). 명제가 말하는 근사값은 $\frac12 (d\theta)^2 \cdot 1 = \frac{(d\theta)^2}{2}$로, 정규분포의 경우에는 근사가 아니라 정확히 일치합니다. 고차항이 전부 사라지는 특수한 경우인 셈이에요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="230" y1="20" x2="230" y2="200" class="dg-line" stroke-width="1"/>
+<line x1="40" y1="110" x2="420" y2="110" class="dg-line" stroke-width="1"/>
+<text x="235" y="30" font-size="10" class="dg-dim">θ₂</text>
+<text x="405" y="105" font-size="10" class="dg-dim">θ₁</text>
+<ellipse cx="230" cy="110" rx="150" ry="45" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="230" cy="110" rx="100" ry="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<ellipse cx="230" cy="110" rx="50" ry="15" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="4,3"/>
+<circle cx="230" cy="110" r="3.5" class="dg-accent"/>
+<text x="238" y="105" font-size="10">θ</text>
+<line x1="230" y1="110" x2="280" y2="95" class="dg-stroke-accent" stroke-width="2"/>
+<text x="285" y="90" font-size="10">dθ</text>
+<text x="60" y="30" font-size="11" class="dg-dim">등고선: KL(pθ‖pθ+dθ) = 상수</text>
+<text x="50" y="200" font-size="11">타원의 곡률이 피셔정보행렬 I(θ)를 나타냄</text>
+</svg>`,
+    diagramCaption: String.raw`KL 발산의 등고선은 파라미터공간에 타원을 그리며, 그 곡률이 피셔정보행렬이다.`,
     sections: [
       { id: "s1", text: String.raw`목표는 $f(d\theta) := KL\big(p_\theta \,\|\, p_{\theta+d\theta}\big)$ 를 $d\theta=0$ 근방에서 $2$차까지 테일러 전개하는 것이다. 정의를 풀어 쓰면 $f(d\theta) = \int p_\theta(x) \log\dfrac{p_\theta(x)}{p_{\theta+d\theta}(x)}\,dx$ 이다.`, blanks: [] },
       { id: "s2", text: String.raw`$d\theta=0$이면 $f(0) = \int p_\theta(x)\log 1\,dx = 0$이다. 즉 테일러 전개의 $0$차항은 사라진다. 이제 $1$차항과 $2$차항을 차례로 구한다.`, blanks: [] },
@@ -16296,6 +19501,27 @@ $$\sqrt{\frac{KL(Q\|P)+\log(1/\delta)}{2n}} = \sqrt{\frac{5 + \log(20)}{2000}} =
 <p>$z=f(y)=y_1^2+y_2^2$ 이라 두면 $\dfrac{\partial z}{\partial y}=(2y_1,\,2y_2)^T=(6,14)^T$입니다.</p>
 <p>이제 $z$를 아예 $x$만의 함수로 풀어써서 직접 미분해봅니다. $y_1=x_1+2x_2$, $y_2=3x_1+4x_2$이므로 $z=(x_1+2x_2)^2+(3x_1+4x_2)^2$이고, 이를 그대로 미분하면 $\dfrac{\partial z}{\partial x_1}=2y_1+6y_2=2(3)+6(7)=48$, $\dfrac{\partial z}{\partial x_2}=4y_1+8y_2=4(3)+8(7)=68$입니다.</p>
 <p>명제가 말하는 $W^T\dfrac{\partial z}{\partial y}$도 계산해봅니다. $W^T=\begin{pmatrix}1&3\\2&4\end{pmatrix}$이므로 $W^T(6,14)^T=(1\times6+3\times14,\ 2\times6+4\times14)^T=(48,68)^T$입니다. 직접 미분한 결과와 정확히 일치합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="60" cy="60" r="22" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="60" y="65" font-size="13" text-anchor="middle">x</text>
+<circle cx="230" cy="60" r="22" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="230" y="65" font-size="13" text-anchor="middle">y</text>
+<circle cx="400" cy="60" r="22" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="400" y="65" font-size="13" text-anchor="middle">z</text>
+<line x1="82" y1="55" x2="205" y2="55" class="dg-stroke-ink" stroke-width="2.2"/>
+<polygon points="205,55 195,50 195,60" class="dg-stroke-ink"/>
+<text x="120" y="42" font-size="11">W (순전파)</text>
+<line x1="252" y1="55" x2="375" y2="55" class="dg-stroke-ink" stroke-width="2.2"/>
+<polygon points="375,55 365,50 365,60" class="dg-stroke-ink"/>
+<text x="290" y="42" font-size="11">f</text>
+<line x1="375" y1="120" x2="252" y2="120" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="7,3"/>
+<polygon points="252,120 262,115 262,125" class="dg-stroke-accent"/>
+<text x="290" y="140" font-size="11">∂z/∂y</text>
+<line x1="205" y1="120" x2="82" y2="120" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="7,3"/>
+<polygon points="82,120 92,115 92,125" class="dg-stroke-accent"/>
+<text x="110" y="140" font-size="11">Wᵀ·(∂z/∂y) = ∂z/∂x</text>
+</svg>`,
+    diagramCaption: String.raw`순전파는 W 방향(실선), 역전파는 반대 방향으로 Wᵀ가 곱해지며 그래디언트를 실어 나른다(점선).`,
     sections: [
       { id: "s1", text: String.raw`목표는 $z$를 $x$의 각 성분 $x_j$로 미분한 값을 구하는 것이다. $x_j$가 $z$에 직접 영향을 주는 게 아니라, 먼저 $y=Wx$를 거쳐서 $y_1,\ldots,y_m$ 전부에 영향을 준 다음, 그 $y_1,\ldots,y_m$을 통해서만 $z=f(y)$에 영향을 준다는 구조를 그대로 수식에 반영해야 한다.`, blanks: [] },
       { id: "s2", text: String.raw`$z$가 $y_1,\ldots,y_m$이라는 $m$개의 경로를 거쳐 $x_j$에 의존하므로, 다변수 함수의 연쇄법칙에 따르면 $z$를 $x_j$ 하나로 미분한 값은 각 경로의 기여를 모두 더한 것과 같다: $\dfrac{\partial z}{\partial x_j} = $[[blank:가]] 이다.`,
@@ -16347,6 +19573,21 @@ $$B^T\otimes A=\begin{pmatrix}5A&7A\\6A&8A\end{pmatrix}=\begin{pmatrix}5&10&7&14
 $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix}$$
 <p>오차는 $A-A_1=\begin{pmatrix}0.5&-0.5\\-0.5&0.5\end{pmatrix}$이고 $\|A-A_1\|_F=\sqrt{4\times0.25}=1$입니다. 명제가 예측하는 값 $\sqrt{\sigma_2^2}=\sqrt1=1$과 정확히 같습니다.</p>
 <p>이제 랭크가 같은 $1$인 다른 행렬과 비교해봅니다. $B=\begin{pmatrix}2&0\\0&0\end{pmatrix}$ (랭크 $1$)을 고르면 $A-B=\begin{pmatrix}0&1\\1&2\end{pmatrix}$이고 $\|A-B\|_F=\sqrt{0+1+1+4}=\sqrt6\approx2.449$로, $A_1$일 때의 오차 $1$보다 훨씬 큽니다. 절단된 SVD가 임의로 고른 저랭크 행렬보다 실제로 더 낫습니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="50" y1="180" x2="300" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="50" y1="180" x2="50" y2="30" class="dg-line" stroke-width="1.5"/>
+<rect x="70" y="50" width="30" height="130" class="dg-accent"/>
+<rect x="115" y="90" width="30" height="90" class="dg-accent"/>
+<rect x="160" y="120" width="30" height="60" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="205" y="150" width="30" height="30" fill="none" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<line x1="150" y1="35" x2="150" y2="185" class="dg-stroke-ink" stroke-width="2"/>
+<text x="95" y="30" font-size="11" text-anchor="middle">σ1..σk 유지</text>
+<text x="215" y="30" font-size="10" class="dg-dim" text-anchor="middle">이후 절단(점선)</text>
+<text x="370" y="60" font-size="13">‖A-B‖_F² ≥ ‖A-A_k‖_F² = Σ_{i&gt;k} σ_i²</text>
+<text x="370" y="90" font-size="11" class="dg-dim">랭크 ≤ k인 임의의 B보다</text>
+<text x="370" y="110" font-size="11" class="dg-dim">절단된 SVD A_k가 항상 더 가깝다</text>
+</svg>`,
+    diagramCaption: String.raw`특이값 막대에서 상위 k개만 남기고 절단하면 프로베니우스 노름 관점에서 최적의 저랭크 근사가 된다.`,
     sections: [
       { id: "s1", text: String.raw`증명은 두 단계로 나눈다. 먼저 $A_k$ 자체의 오차 $\|A-A_k\|_F$를 직접 계산한다. 그다음 랭크가 $k$ 이하인 어떤 $B$를 골라도 이보다 오차를 더 줄일 수 없음을 보인다. 두 단계를 합치면 $A_k$가 최적임이 확정된다.`, blanks: [] },
       { id: "s2", text: String.raw`$A-A_k=\sum_{i=k+1}^r\sigma_iu_iv_i^T$이다. 서로 다른 $i\neq j$에 대해 $\langle u_iv_i^T,\,u_jv_j^T\rangle_F=\mathrm{tr}(v_iu_i^Tu_jv_j^T)=(u_i^Tu_j)(v_i^Tv_j)=0$ 이므로(정규직교성), 이 랭크-$1$ 조각들은 프로베니우스 내적 기준으로 서로 수직이다. 따라서 프로베니우스 노름의 제곱은 각 조각의 노름 제곱을 그냥 더한 것과 같아 $\|A-A_k\|_F^2 = $[[blank:가]] 이다.`,
@@ -16370,6 +19611,31 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
 <p>$X=\begin{pmatrix}1&1\\1&1\end{pmatrix}$ (평균 $0$, 분산 $1$인 $\pm1$ 확률변수의 한 실현값이라 하자)이라 하면 $S=\frac12X^TX=\frac12\begin{pmatrix}2&2\\2&2\end{pmatrix}=\begin{pmatrix}1&1\\1&1\end{pmatrix}$이고, 이 행렬의 고유값은 $2$와 $0$입니다. 두 값 모두 $1$이 아닙니다.</p>
 <p>$c=p/n=1$일 때 명제가 말하는 극한분포의 지지구간은 $[(1-\sqrt1)^2,(1+\sqrt1)^2]=[0,4]$인데, 방금 얻은 고유값 $0,2$는 정확히 이 구간 안에 있습니다. 다른 부호 조합을 뽑으면 고유값이 또 달라지겠지만(예: $X=\begin{pmatrix}1&-1\\1&1\end{pmatrix}$이면 $X^TX=2I$가 되어 $S=I$, 고유값이 둘 다 $1$), 매번 $[0,4]$ 구간 안에서 요동칩니다.</p>
 <p>아래 증명은 $n,p\to\infty$로 보냈을 때 이 요동의 크기(분산)가 정확히 $c$로 수렴한다는 것을 모멘트 계산으로 확인합니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+  <rect x="62" y="130" width="28" height="40" class="dg-dim"/>
+  <rect x="92" y="50" width="28" height="120" class="dg-dim"/>
+  <rect x="122" y="35" width="28" height="135" class="dg-dim"/>
+  <rect x="152" y="42" width="28" height="128" class="dg-dim"/>
+  <rect x="182" y="60" width="28" height="110" class="dg-dim"/>
+  <rect x="212" y="80" width="28" height="90" class="dg-dim"/>
+  <rect x="242" y="100" width="28" height="70" class="dg-dim"/>
+  <rect x="272" y="115" width="28" height="55" class="dg-dim"/>
+  <rect x="302" y="128" width="28" height="42" class="dg-dim"/>
+  <rect x="332" y="138" width="28" height="32" class="dg-dim"/>
+  <rect x="362" y="146" width="28" height="24" class="dg-dim"/>
+  <rect x="392" y="153" width="28" height="17" class="dg-dim"/>
+  <rect x="422" y="160" width="28" height="10" class="dg-dim"/>
+  <path d="M60,170 C75,90 100,45 150,42 C210,40 260,80 320,120 C370,148 420,163 458,170" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+  <line x1="40" y1="170" x2="520" y2="170" class="dg-line" stroke-width="1.5"/>
+  <line x1="160" y1="170" x2="160" y2="34" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="164" y="42" class="dg-dim" font-size="11">"다 1일 것"(착각)</text>
+  <text x="150" y="28" font-size="12" text-anchor="middle">MP 밀도</text>
+  <text x="42" y="188" font-size="12">(1−√c)²</text>
+  <text x="415" y="188" font-size="12">(1+√c)²</text>
+  <text x="355" y="112" class="dg-dim" font-size="11">경험 히스토그램</text>
+  <text x="500" y="185" class="dg-dim" font-size="11">λ</text>
+</svg>`,
+    diagramCaption: String.raw`순수 잡음의 표본공분산 고유값(히스토그램)은 1로 뭉치지 않고, 마르첸코-파스투르 밀도가 예측하는 폭 c만큼 [(1−√c)²,(1+√c)²] 구간에 퍼진다.`,
     sections: [
       { id: "s1", text: String.raw`엄밀한 증명은 스틸체스 변환이나 레졸번트(resolvent) 방법으로 전체 분포의 수렴을 보이지만, 여기서는 그 핵심을 담고 있는 첫걸음인 모멘트법(method of moments)만 수행한다. 경험분포의 $k$번째 모멘트는 $m_k:=\frac1p E[\mathrm{tr}(S^k)]$로 정의되는데, $k=1,2$에 대해 이 값이 마르첸코-파스투르 분포의 모멘트($m_1=1$, $m_2=1+c$)와 정확히 일치함을 확인한다.`, blanks: [] },
       { id: "s2", text: String.raw`$S=\frac1nX^TX$의 $i$번째 대각성분은 $S_{ii}=\frac1n\sum_{k=1}^nX_{ki}^2$이다. $X$의 성분들이 평균 $0$, 분산 $1$이므로 $E[X_{ki}^2]=1$이고, 따라서 $E[S_{ii}] = \frac1n\sum_{k=1}^n E[X_{ki}^2] = $[[blank:가]] 이다. 이는 $i$에 상관없이 항상 같으므로 $m_1=\frac1pE[\mathrm{tr}(S)]$도 같은 값이다.`,
@@ -16392,6 +19658,24 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     example: String.raw`<p>타원의 표준형 $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$에 $a=4$, $b=1$을 넣어봅니다. $\frac{x^2}{16}+y^2=1$이 되고, 이 곡선 위의 점은 예를 들어 $x=0$일 때 $y=\pm1$, $x=4$일 때 $y=0$, $x=2\sqrt3\approx3.46$일 때 $\frac{12}{16}+y^2=1$이므로 $y=\pm0.5$가 나와요. $x$ 방향으로는 $-4$부터 $4$까지, $y$ 방향으로는 $-1$부터 $1$까지만 움직이는, 가로로 4배 길게 눌린 타원이 그려집니다.</p>
 <p>이제 이걸 손실함수 등고선으로 생각해봅니다. 어떤 손실함수가 파라미터 $(x,y)$ 근처에서 $L(x,y) \approx \frac{x^2}{16}+y^2$ 형태로 근사된다면, $L=1$인 등고선이 바로 위에서 그린 타원이에요. $L=4$인 등고선은 $\frac{x^2}{16}+y^2=4$, 즉 $\frac{x^2}{64}+\frac{y^2}{4}=1$로 반지름이 2배인 같은 비율의 타원이 됩니다. 등고선이 원이 아니라 타원인 이유는 $x$ 방향의 곡률(16으로 나뉨)과 $y$ 방향의 곡률(1로 나뉨)이 다르기 때문이에요.</p>
 <p>경사하강법은 매 스텝 그 지점에서의 그래디언트(등고선에 수직인 방향)를 따라 내려갑니다. 타원이 가로로 길게 눌려 있으면 $y$ 방향(곡률이 큰, 좁은 방향)으로는 그래디언트가 훨씬 가파르고 $x$ 방향(곡률이 작은, 넓은 방향)으로는 완만해요. 그 결과 한 스텝에 $y$ 방향으로는 과하게 많이 움직이고 $x$ 방향으로는 거의 못 움직이면서, 좁은 타원 통로를 왔다갔다 튕기며 조금씩만 전진하는 지그재그 경로가 나와요. 타원이 원에 가까울수록($a\approx b$일수록) 이 지그재그가 사라지고 곧장 중심으로 내려갑니다.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="200" cy="150" rx="45" ry="18" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="150" rx="75" ry="30" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="150" rx="105" ry="42" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<ellipse cx="200" cy="150" rx="135" ry="54" transform="rotate(-20 200 150)" fill="none" class="dg-line" stroke-width="1"/>
+<polyline points="330,70 90,115 300,140 130,160 250,168 170,172 203,151" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="203,151 213,146 210,157" class="dg-stroke-accent"/>
+<circle cx="330" cy="70" r="4" class="dg-accent"/>
+<circle cx="90" cy="115" r="4" class="dg-accent"/>
+<circle cx="300" cy="140" r="4" class="dg-accent"/>
+<circle cx="130" cy="160" r="4" class="dg-accent"/>
+<circle cx="250" cy="168" r="4" class="dg-accent"/>
+<circle cx="170" cy="172" r="4" class="dg-accent"/>
+<circle cx="200" cy="150" r="3" class="dg-dim"/>
+<text x="200" y="135" font-size="11" class="dg-dim" text-anchor="middle">최소점</text>
+<text x="335" y="60" font-size="12">경사하강 경로</text>
+</svg>`,
+    diagramCaption: String.raw`가늘고 긴 타원형 등고선에서는 경사하강법이 좁은 골짜기를 지그재그로 튕기며 내려간다.`,
     sections: [],
     related: [
       { label: "라그랑주 승수법과 KKT 조건", slug: "lagrange-kkt" },
@@ -16422,6 +19706,20 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     example: String.raw`<p>가장 유명한 극한 $\lim_{x\to0}\frac{\sin x}{x}$부터 숫자로 확인해봅니다. $x=0.1$이면 $\sin(0.1)\approx0.09983$이고 $\frac{\sin(0.1)}{0.1}\approx0.9983$이에요. $x=0.01$이면 $\sin(0.01)\approx0.0099998$이고 $\frac{\sin(0.01)}{0.01}\approx0.99998$이 됩니다. $x$가 $0$에 가까워질수록 이 비율이 $1$에 점점 더 가까워지는 걸 볼 수 있어요.</p>
 <p>로피탈 정리를 쓰면 이걸 대수적으로도 확인할 수 있어요. $x\to0$일 때 분자 $\sin x\to0$이고 분모 $x\to0$이라서 $\frac00$ 꼴인데, 이런 경우 분자·분모를 각각 미분한 극한 $\lim_{x\to0}\frac{\cos x}{1}=\cos0=1$과 원래 극한이 같다는 게 로피탈 정리예요. 숫자로 얻은 감과 정리가 말해주는 정확한 값이 이렇게 맞아떨어져요.</p>
 <p>이 극한이 테일러 전개와 바로 연결됩니다. $\sin x\approx x-\frac{x^3}{6}$로 근사하면 $\frac{\sin x}{x}\approx1-\frac{x^2}{6}$가 되는데, $x=0.1$을 넣으면 $1-\frac{0.01}{6}\approx0.99833$으로 앞서 계산한 $0.9983$과 거의 일치해요. 최적화 알고리즘에서 손실함수를 2차 테일러 근사로 다룰 때도 똑같은 논리예요. 근사가 실제 함수와 얼마나 가까운지, 그 오차가 $x$가 작아질수록 얼마나 빨리 줄어드는지가 전부 이런 극한 계산 위에 세워져 있어요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="200" x2="470" y2="200" class="dg-line" stroke-width="1.3"/>
+<polygon points="470,200 459,195 459,205" class="dg-line"/>
+<line x1="250" y1="230" x2="250" y2="30" class="dg-line" stroke-width="1.3"/>
+<polygon points="250,30 245,42 255,42" class="dg-line"/>
+<line x1="40" y1="60" x2="460" y2="60" class="dg-line" stroke-width="1.3" stroke-dasharray="5,3"/>
+<text x="45" y="52" font-size="12" class="dg-dim">y=1</text>
+<path d="M60,180 C150,100 200,60 250,60 C300,60 350,100 440,180" fill="none" class="dg-stroke-accent" stroke-width="2.2"/>
+<circle cx="250" cy="60" r="5" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="250" y1="200" x2="250" y2="220" class="dg-line" stroke-width="1"/>
+<text x="255" y="222" font-size="12">x=0</text>
+<text x="330" y="95" font-size="12">y = sin x / x</text>
+</svg>`,
+    diagramCaption: String.raw`x=0에서는 정의되지 않지만(구멍점), 그 근방에서 함숫값은 1로 수렴한다.`,
     sections: [],
     related: [
       { label: "뉴턴법: 2차 테일러 근사의 꼭짓점", slug: "taylor-series-newton" },
@@ -16510,6 +19808,32 @@ $$_5C_3=\frac{5\times4\times3}{3\times2\times1}=10$$
 <p>함수값이 같은 점들을 이은 선을 등고선이라고 하는데, $f(x,y)=4$인 등고선을 구하면 $x^2+y^2=4$가 되어 반지름 $2$인 원이 나와요. $f(x,y)=9$라면 반지름 $3$인 원이고요. 등고선이 원 모양으로 겹겹이 퍼진다는 게 이 함수의 특징이에요.</p>
 <p>그래디언트는 $\nabla f(x,y)=(2x,\ 2y)$예요. 점 $(1,1)$에서는 $\nabla f(1,1)=(2,2)$가 되는데, 이 벡터는 원점에서 $(1,1)$ 방향으로 뻗어나가는 화살표와 같은 방향이에요. 실제로 $(2,3)$에서 계산해도 $\nabla f(2,3)=(4,6)$으로 역시 원점에서 바깥쪽을 가리켜요.</p>
 <p>즉 이 함수의 그래디언트는 등고선(원)에 수직이면서 항상 중심에서 바깥쪽으로 뻗는 방향을 가리켜요. 변수가 $x,y$ 두 개뿐이라 화살표도 성분 두 개짜리지만, 변수가 백만 개면 그래디언트도 성분 백만 개짜리 화살표 다발이 될 뿐 아이디어는 완전히 같아요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<circle cx="200" cy="150" r="30" fill="none" class="dg-line" stroke-width="1"/>
+<circle cx="200" cy="150" r="60" fill="none" class="dg-line" stroke-width="1"/>
+<circle cx="200" cy="150" r="90" fill="none" class="dg-line" stroke-width="1"/>
+<circle cx="200" cy="150" r="120" fill="none" class="dg-line" stroke-width="1"/>
+<line x1="200" y1="150" x2="300" y2="150" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="300,150 289,145 289,155" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="270.7" y2="220.7" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="270.7,220.7 260,213 268,206" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="200" y2="250" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="200,250 195,239 205,239" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="129.3" y2="220.7" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="129.3,220.7 140,213 132,206" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="100" y2="150" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="100,150 111,145 111,155" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="129.3" y2="79.3" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="129.3,79.3 140,87 132,94" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="200" y2="50" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="200,50 195,61 205,61" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="270.7" y2="79.3" class="dg-stroke-accent" stroke-width="1.8"/>
+<polygon points="270.7,79.3 260,87 268,94" class="dg-stroke-accent"/>
+<circle cx="200" cy="150" r="3" class="dg-dim"/>
+<text x="60" y="25" font-size="12" class="dg-dim">등고선 f(x,y)=x²+y²</text>
+<text x="285" y="140" font-size="11" class="dg-dim">∇f (중심에서 바깥으로)</text>
+</svg>`,
+    diagramCaption: String.raw`f(x,y)=x²+y²의 등고선은 동심원이고, 그래디언트는 중심에서 바깥으로 뻗는 방향을 가리킨다.`,
     sections: [],
     related: [
       { label: "경사하강법의 하강 보장", slug: "gradient-descent" },
@@ -16530,6 +19854,21 @@ $$_5C_3=\frac{5\times4\times3}{3\times2\times1}=10$$
 <p>이제 $v_3$을 $u$ 방향으로 정사영해볼게요. 정사영된 길이는 $\dfrac{u\cdot v_3}{\|u\|}=\dfrac{20}{5}=4$이고, 이 길이를 $u$의 단위벡터 $u/\|u\|=(3/5,4/5)$에 곱하면 정사영 벡터가 나와요.</p>
 $$\text{proj}_u v_3 = 4\times\left(\frac35,\frac45\right) = (2.4,\ 3.2)$$
 <p>$v_3=(0,5)$ 중에서 $u$ 방향 성분만 뽑아낸 게 $(2.4,\ 3.2)$인 셈이에요. 추천시스템에서 "이 상품 벡터가 내 취향 벡터와 얼마나 같은 방향인가"를 잴 때, 어텐션에서 "이 쿼리가 이 키와 얼마나 같은 방향을 보는가"를 잴 때 하는 계산이 지금 한 것과 똑같아요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<line x1="70" y1="245" x2="335" y2="245" class="dg-stroke-ink" stroke-width="2"/>
+<polygon points="335,245 322,240 322,250" class="dg-stroke-ink"/>
+<line x1="70" y1="245" x2="216" y2="123" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="216,123 205,132 213,137" class="dg-stroke-accent"/>
+<path d="M 110 245 A 40 40 0 0 0 100.6 219.3" fill="none" class="dg-line" stroke-width="1"/>
+<text x="106" y="228" font-size="12">θ</text>
+<line x1="70" y1="253" x2="216" y2="253" class="dg-stroke-accent" stroke-width="4"/>
+<line x1="216" y1="123" x2="216" y2="245" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="340" y="250" font-size="13">u</text>
+<text x="220" y="115" font-size="13">v</text>
+<text x="80" y="272" font-size="11" class="dg-dim">proj_u v (v의 u 방향 정사영)</text>
+<text x="60" y="30" font-size="12" class="dg-dim">사잇각 θ와 정사영</text>
+</svg>`,
+    diagramCaption: String.raw`두 벡터 u, v 사이 각 θ와, v를 u 방향으로 내린 정사영(굵은 선)의 관계.`,
     sections: [],
     related: [
       { label: "코사인 유사도의 유계성과 각도 해석", slug: "cosine-similarity" },
@@ -16551,6 +19890,20 @@ $$A^{-1} = \frac{1}{1}\begin{pmatrix}1&-1\\-1&2\end{pmatrix} = \begin{pmatrix}1&
 <p>이 $A^{-1}$을 방금 옮겨진 결과 $(7,4)$에 다시 곱해서 원래 자리로 돌아오는지 확인해볼게요.</p>
 $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pmatrix} = \begin{pmatrix}1\times7-1\times4\\-1\times7+2\times4\end{pmatrix} = \begin{pmatrix}3\\1\end{pmatrix}$$
 <p>정확히 처음 벡터 $x=(3,1)$로 돌아왔어요. $A$라는 변환이 $x$를 어디로 보냈든, $A^{-1}$을 적용하면 그 정보를 잃지 않고 정확히 되짚어 갈 수 있다는 뜻이에요. 만약 $A$의 행렬식이 $0$이었다면 서로 다른 두 벡터를 같은 곳으로 겹쳐 보냈을 거고, 그러면 결과만 보고는 원래 어디서 왔는지 구별할 방법이 없어져요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="80" width="100" height="100" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="110" y="135" font-size="13" text-anchor="middle">단위</text>
+<text x="110" y="152" font-size="13" text-anchor="middle">정사각형</text>
+<polygon points="520,80 620,80 600,180 500,180" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="560" y="135" font-size="13" text-anchor="middle">평행사변형</text>
+<path d="M 170 100 Q 340 55 495 100" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<polygon points="495,100 483,95 483,105" class="dg-stroke-ink"/>
+<text x="330" y="55" font-size="13" text-anchor="middle">A</text>
+<path d="M 500 160 Q 340 210 170 160" fill="none" class="dg-line" stroke-width="1.8" stroke-dasharray="6,3"/>
+<polygon points="170,160 182,155 182,165" class="dg-line"/>
+<text x="330" y="222" font-size="13" text-anchor="middle" class="dg-dim">A⁻¹</text>
+</svg>`,
+    diagramCaption: String.raw`행렬 A는 정사각형을 평행사변형으로 보내고, 역행렬 A⁻¹은 그 변환을 되돌려 원래 자리로 돌아온다.`,
     sections: [],
     related: [
       { label: "행렬식과 가역성의 동치 (det(A)≠0 ⟺ 자명해)", slug: "determinant-invertibility" },
@@ -16569,6 +19922,24 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <p>이 평면이 실제로 어디를 지나는지 몇 개의 점으로 확인해볼게요. $x=3,y=0,z=0$을 넣으면 $2\times3+3\times0-0=6$이라 맞고, $x=0,y=2,z=0$을 넣으면 $2\times0+3\times2-0=6$이라 역시 맞아요.</p>
 <p>두 점 $(3,0,0)$과 $(0,2,0)$을 잇는 벡터는 $(0,2,0)-(3,0,0)=(-3,2,0)$인데, 이 벡터와 법선벡터의 내적을 구해보면 $2\times(-3)+3\times2+(-1)\times0=-6+6+0=0$이 나와요. 내적이 $0$이라는 건 법선벡터가 평면 위에 놓인 벡터와 항상 수직이라는 뜻이에요. 평면 위 어느 두 점을 골라도 그 사이를 잇는 벡터는 법선벡터와 내적이 $0$이 나와요.</p>
 <p>이제 평면 위에 있지 않은 점 하나, 예를 들어 원점 $(0,0,0)$을 넣어볼게요. $2\times0+3\times0-0=0$인데 평면의 우변은 $6$이니까 $0 \ne 6$이라 원점은 평면 위에 있지 않아요. 좌변 값이 우변보다 작다는 것($0<6$)으로 원점이 법선벡터 $n$이 가리키는 방향의 반대쪽에 있다는 것도 알 수 있어요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<line x1="120" y1="220" x2="365" y2="235" class="dg-line" stroke-width="1.3"/>
+<polygon points="365,235 352,231 353,240" class="dg-line"/>
+<text x="368" y="240" font-size="12">x</text>
+<line x1="120" y1="220" x2="35" y2="150" class="dg-line" stroke-width="1.3"/>
+<polygon points="35,150 46,153 42,161" class="dg-line"/>
+<text x="20" y="145" font-size="12">y</text>
+<line x1="120" y1="220" x2="120" y2="25" class="dg-line" stroke-width="1.3"/>
+<polygon points="120,25 115,37 125,37" class="dg-line"/>
+<text x="128" y="25" font-size="12">z</text>
+<polygon points="90,175 245,150 275,195 125,220" class="dg-dim"/>
+<polygon points="90,175 245,150 275,195 125,220" fill="none" class="dg-stroke-ink" stroke-width="1.5" stroke-dasharray="5,3"/>
+<text x="150" y="235" font-size="12" class="dg-dim">평면 ax+by+cz=d</text>
+<line x1="182" y1="185" x2="228" y2="95" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="228,95 216,100 222,109" class="dg-stroke-accent"/>
+<text x="232" y="90" font-size="12">법선벡터 n</text>
+</svg>`,
+    diagramCaption: String.raw`평면 ax+by+cz=d 위에 놓인 벡터들은 항상 법선벡터 n과 수직이다.`,
     sections: [],
     related: [
       { label: "기저가 주는 좌표 표현의 유일성", slug: "linear-independence-basis" },
@@ -16588,6 +19959,20 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <p>이제 회전과 스케일링이 함께 섞인 행렬 $A=\begin{pmatrix}2&1\\1&2\end{pmatrix}$에서 고유벡터를 직접 확인해볼게요. $v_1=(1,1)$을 곱하면 $Av_1 = (2\times1+1\times1,\ 1\times1+2\times1)=(3,3)=3v_1$이 나와요. 방향은 그대로고 길이만 $3$배가 됐어요.</p>
 <p>다른 방향 $v_2=(1,-1)$도 확인해볼게요. $Av_2=(2\times1+1\times(-1),\ 1\times1+2\times(-1))=(1,-1)=1\times v_2$예요. 이번엔 길이가 그대로(고유값 $1$)예요.</p>
 <p>임의의 벡터, 예를 들어 $w=(2,0)$은 $Aw=(4,2)$가 되는데, 이건 $v_1,v_2$ 방향으로 놓여 있지 않아서 방향 자체가 틀어져요. 즉 $A$가 공간을 복잡하게 늘리고 돌리는 것처럼 보여도, $v_1=(1,1)$과 $v_2=(1,-1)$ 이 두 방향만큼은 절대 방향이 안 바뀌고 길이만 $3$배, $1$배로 늘어나거나 그대로 유지돼요. 이 두 방향이 바로 $A$의 고유벡터예요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<circle cx="200" cy="150" r="70" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="4,3"/>
+<ellipse cx="200" cy="150" rx="110" ry="45" transform="rotate(-30 200 150)" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<line x1="200" y1="150" x2="260.6" y2="115" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="200" y1="150" x2="235" y2="210.6" class="dg-line" stroke-width="1" stroke-dasharray="2,2"/>
+<line x1="200" y1="150" x2="295.3" y2="95" class="dg-stroke-accent" stroke-width="3"/>
+<polygon points="295.3,95 283,98 289,107" class="dg-stroke-accent"/>
+<line x1="200" y1="150" x2="222.5" y2="189" class="dg-stroke-accent" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="222.5,189 212,184 210,194" class="dg-stroke-accent"/>
+<text x="65" y="28" font-size="12" class="dg-dim">단위원(변환 전)</text>
+<text x="300" y="72" font-size="12">v₁ (λ₁, 큰 고유값)</text>
+<text x="222" y="212" font-size="11" class="dg-dim">v₂ (λ₂, 작은 고유값)</text>
+</svg>`,
+    diagramCaption: String.raw`행렬 A는 단위원을 타원으로 보내며, 두 고유벡터 방향으로는 방향이 안 바뀌고 길이만 각각 λ₁, λ₂배로 늘어난다.`,
     sections: [],
     related: [
       { label: "대칭행렬의 직교대각화 (스펙트럴 정리)", slug: "eigen-diagonalization" },
@@ -16606,6 +19991,24 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <p>항을 하나씩 더해볼게요. $k=0$까지 더하면 $1$, $k=1$까지 더하면 $1+0.5=1.5$, $k=2$까지 더하면 $1.5+0.25=1.75$, $k=3$까지 더하면 $1.75+0.125=1.875$, $k=4$까지 더하면 $1.875+0.0625=1.9375$예요.</p>
 <p>항을 더할 때마다 늘어나는 폭이 점점 작아지면서 어떤 값에 가까워지는 게 보여요. 공식 $\sum_{k=0}^\infty r^k = \dfrac{1}{1-r}$에 $r=0.5$를 넣으면 $\dfrac{1}{1-0.5}=2$가 나와요. 방금 구한 부분합들 $1,\ 1.5,\ 1.75,\ 1.875,\ 1.9375,\dots$가 정확히 $2$를 향해 다가가고 있죠.</p>
 <p>만약 공비가 $r=1.5$처럼 $1$보다 크면 어떻게 될까요? 부분합은 $1,\ 2.5,\ 4.75,\ 8.125,\dots$처럼 항을 더할수록 오히려 점점 더 크게 벌어지고, 어떤 값으로도 좁혀지지 않아요. 이게 '발산'이에요. $|r|<1$이면 수렴하고 $|r|\ge1$이면 발산한다는 조건 하나가, 무한히 더하는 식을 봤을 때 겁먹을지 안 먹을지를 갈라줘요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="220" x2="460" y2="220" class="dg-line" stroke-width="1.3"/>
+<polygon points="460,220 449,215 449,225" class="dg-line"/>
+<line x1="40" y1="220" x2="40" y2="20" class="dg-line" stroke-width="1.3"/>
+<polygon points="40,20 35,32 45,32" class="dg-line"/>
+<line x1="40" y1="60" x2="440" y2="60" class="dg-line" stroke-width="1.3" stroke-dasharray="5,3"/>
+<text x="445" y="58" font-size="12" class="dg-dim">L=1/(1-r)</text>
+<path d="M80,140 H140 V100 H200 V80 H260 V70 H320 V65 H380 V62.5 H430" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="80" cy="140" r="4" class="dg-accent"/>
+<circle cx="140" cy="100" r="4" class="dg-accent"/>
+<circle cx="200" cy="80" r="4" class="dg-accent"/>
+<circle cx="260" cy="70" r="4" class="dg-accent"/>
+<circle cx="320" cy="65" r="4" class="dg-accent"/>
+<circle cx="380" cy="62.5" r="4" class="dg-accent"/>
+<text x="465" y="224" font-size="12">n</text>
+<text x="20" y="30" font-size="12">Sₙ</text>
+</svg>`,
+    diagramCaption: String.raw`부분합 Sₙ이 계단식으로 늘어나는 폭이 점점 줄면서 극한값 L에 가까워진다.`,
     sections: [],
     related: [
       { label: "교차엔트로피와 엔트로피·KL발산의 관계", slug: "entropy-crossentropy" },
@@ -16721,6 +20124,92 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     example: String.raw`<p>vae-encoder는 인코더가 잠재변수 하나를 딱 찍어 내놓는 대신 평균과 로그분산을 함께 내놓아서, 잠재공간을 확률분포로 다루는 이유를 보여줘요. 이 확률적 인코딩 덕분에 디코더가 매끄럽게 이어진 잠재공간에서 새로운 샘플을 만들어낼 수 있어요.</p>
 <p>gan-minimax-objective는 생성자와 판별자가 서로 겨루는 목적함수의 최적 판별자가 무엇인지 보여주는데, 이 균형점에서 생성자의 분포가 실제 데이터 분포와 같아진다는 걸 확인할 수 있어요. diffusion-forward-process는 노이즈를 씌우는 정방향 과정이 왜 닫힌 형태의 주변분포를 갖는지 보여주고, 이 성질 덕분에 학습 중 임의의 시점 노이즈를 한 번에 계산할 수 있어요.</p>
 <p>autoregressive-chain-rule은 결합확률을 조건부확률들의 곱으로 쪼개는 연쇄법칙 자체를 다루는데, 지금 LLM이 다음 토큰을 하나씩 예측하는 방식이 바로 이 연쇄법칙의 직접적인 응용이에요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 880 240" xmlns="http://www.w3.org/2000/svg">
+<line x1="220" y1="20" x2="220" y2="230" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="440" y1="20" x2="440" y2="230" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="660" y1="20" x2="660" y2="230" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="110" y="18" font-size="13" text-anchor="middle">VAE</text>
+<text x="330" y="18" font-size="13" text-anchor="middle">GAN</text>
+<text x="550" y="18" font-size="13" text-anchor="middle">Diffusion</text>
+<text x="770" y="18" font-size="13" text-anchor="middle">Autoregressive(LLM)</text>
+<circle cx="25" cy="140" r="6" class="dg-accent"/>
+<rect x="45" y="118" width="44" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="67" y="144" font-size="12" text-anchor="middle">E</text>
+<line x1="31" y1="140" x2="43" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="43,140 34,136 34,144" class="dg-stroke-ink"/>
+<circle cx="122" cy="140" r="7" class="dg-accent"/>
+<line x1="89" y1="140" x2="114" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="114,140 105,136 105,144" class="dg-stroke-ink"/>
+<rect x="145" y="118" width="44" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="167" y="144" font-size="12" text-anchor="middle">D</text>
+<line x1="130" y1="140" x2="143" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="143,140 134,136 134,144" class="dg-stroke-ink"/>
+<circle cx="207" cy="140" r="6" class="dg-accent"/>
+<line x1="189" y1="140" x2="200" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="200,140 191,136 191,144" class="dg-stroke-ink"/>
+<text x="18" y="163" font-size="11">x</text>
+<text x="122" y="122" font-size="11">z</text>
+<text x="207" y="163" font-size="11">x̂</text>
+<text x="110" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">인코더→잠재분포→디코더</text>
+<circle cx="245" cy="140" r="6" class="dg-accent"/>
+<text x="245" y="122" font-size="11">z</text>
+<rect x="265" y="118" width="44" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="287" y="144" font-size="12" text-anchor="middle">G</text>
+<line x1="251" y1="140" x2="263" y2="140" class="dg-stroke-ink" stroke-width="1.5"/>
+<polygon points="263,140 254,136 254,144" class="dg-stroke-ink"/>
+<circle cx="345" cy="105" r="5" class="dg-accent"/>
+<text x="352" y="102" font-size="10.5">가짜</text>
+<line x1="305" y1="123" x2="338" y2="109" class="dg-stroke-ink" stroke-width="1.3"/>
+<polygon points="338,109 328,109 332,117" class="dg-stroke-ink"/>
+<rect x="365" y="118" width="44" height="44" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="387" y="144" font-size="12" text-anchor="middle">D</text>
+<line x1="349" y1="108" x2="363" y2="122" class="dg-stroke-ink" stroke-width="1.3"/>
+<polygon points="363,122 359,113 351,117" class="dg-stroke-ink"/>
+<circle cx="345" cy="175" r="5" class="dg-accent"/>
+<text x="352" y="182" font-size="10.5">진짜</text>
+<line x1="349" y1="172" x2="363" y2="140" class="dg-stroke-ink" stroke-width="1.3"/>
+<polygon points="363,140 359,150 351,145" class="dg-stroke-ink"/>
+<path d="M309,113 Q337,88 365,113" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="365,113 353,110 358,120" class="dg-stroke-accent"/>
+<path d="M365,148 Q337,176 309,148" fill="none" class="dg-line" stroke-width="1.5" stroke-dasharray="5,3"/>
+<polygon points="309,148 321,145 318,155" class="dg-line"/>
+<text x="330" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">생성자 ↔ 판별자 경쟁</text>
+<circle cx="465" cy="140" r="6" class="dg-accent"/>
+<circle cx="515" cy="140" r="6" class="dg-accent"/>
+<circle cx="565" cy="140" r="6" class="dg-accent"/>
+<circle cx="615" cy="140" r="6" class="dg-accent"/>
+<path d="M471,132 Q490,118 509,132" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<polygon points="509,132 499,128 500,136" class="dg-line"/>
+<path d="M521,132 Q540,118 559,132" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<polygon points="559,132 549,128 550,136" class="dg-line"/>
+<path d="M571,132 Q590,118 609,132" fill="none" class="dg-line" stroke-width="1" stroke-dasharray="3,2"/>
+<polygon points="609,132 599,128 600,136" class="dg-line"/>
+<path d="M509,148 Q490,164 471,148" fill="none" class="dg-stroke-accent" stroke-width="1.6"/>
+<polygon points="471,148 481,145 480,153" class="dg-stroke-accent"/>
+<path d="M559,148 Q540,164 521,148" fill="none" class="dg-stroke-accent" stroke-width="1.6"/>
+<polygon points="521,148 531,145 530,153" class="dg-stroke-accent"/>
+<path d="M609,148 Q590,164 571,148" fill="none" class="dg-stroke-accent" stroke-width="1.6"/>
+<polygon points="571,148 581,145 580,153" class="dg-stroke-accent"/>
+<text x="465" y="163" font-size="10" class="dg-dim" text-anchor="middle">x₀</text>
+<text x="615" y="163" font-size="10" class="dg-dim" text-anchor="middle">x_T</text>
+<text x="550" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">점선=노이즈 추가, 실선=디노이즈</text>
+<rect x="685" y="125" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="700" y="145" font-size="11" text-anchor="middle">w₁</text>
+<rect x="730" y="125" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="745" y="145" font-size="11" text-anchor="middle">w₂</text>
+<rect x="775" y="125" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="790" y="145" font-size="11" text-anchor="middle">w₃</text>
+<rect x="820" y="125" width="30" height="30" fill="none" class="dg-stroke-ink" stroke-width="1.5"/>
+<text x="835" y="145" font-size="11" text-anchor="middle">w₄</text>
+<line x1="715" y1="140" x2="728" y2="140" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="728,140 719,136 719,144" class="dg-stroke-accent"/>
+<line x1="760" y1="140" x2="773" y2="140" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="773,140 764,136 764,144" class="dg-stroke-accent"/>
+<line x1="805" y1="140" x2="818" y2="140" class="dg-stroke-accent" stroke-width="2"/>
+<polygon points="818,140 809,136 809,144" class="dg-stroke-accent"/>
+<text x="770" y="207" font-size="10.5" class="dg-dim" text-anchor="middle">P(wₜ | w&lt;ₜ) 순차 생성</text>
+</svg>`,
+    diagramCaption: String.raw`왼쪽부터 VAE(인코더-디코더), GAN(생성자-판별자 경쟁), Diffusion(노이즈 추가·제거), Autoregressive(순차적 다음 토큰 예측) 네 갈래의 생성 흐름 비교.`,
     related: [
       { label: "VAE 인코더가 logσ²를 출력하는 이유", slug: "vae-encoder" },
       { label: "GAN 목적함수의 최적 판별자", slug: "gan-minimax-objective" },
@@ -16738,6 +20227,20 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     example: String.raw`<p>q-learning-td-update는 가치기반의 대표 예로, 벨만 최적방정식을 표본 하나로 근사해서 상태·행동 가치를 조금씩 갱신하는 시간차(TD) 업데이트를 보여줘요. 환경의 모델(전이확률)을 몰라도 경험만 쌓으면 최적 가치로 수렴한다는 게 핵심이에요.</p>
 <p>policy-gradient-theorem은 정책기반의 기본 유도로, 정책을 직접 파라미터화해서 기대 보상의 그래디언트를 구하는 REINFORCE 식을 보여줘요. actor-critic-baseline은 이 그래디언트에 가치 추정을 기준선으로 빼서 분산을 줄이는 방법을 다루는데, 이게 바로 가치기반과 정책기반을 합친 Actor-Critic이에요.</p>
 <p>mcts-uct는 모델기반 계열의 대표 예로, 환경의 규칙을 알고 있다는 전제 아래 시뮬레이션을 반복하며 어느 행동이 유망한지 탐색과 활용의 균형을 잡아 계산해요. 그리고 rlhf는 이 RL 도구들을 그대로 가져와서 사람의 선호로 학습한 보상모델을 기준으로 언어모델의 정책(다음 토큰 분포)을 PPO로 개선해요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" y="90" width="130" height="70" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="125" y="130" font-size="13" text-anchor="middle">Agent</text>
+<text x="125" y="148" font-size="11" text-anchor="middle" class="dg-dim">(정책 π)</text>
+<rect x="310" y="90" width="130" height="70" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="375" y="130" font-size="13" text-anchor="middle">Environment</text>
+<path d="M190,105 Q250,55 310,105" fill="none" class="dg-stroke-accent" stroke-width="2.5"/>
+<polygon points="310,105 298,97 296,108" class="dg-stroke-accent"/>
+<text x="250" y="55" font-size="12" text-anchor="middle">행동 aₜ</text>
+<path d="M310,150 Q250,205 190,150" fill="none" class="dg-line" stroke-width="2" stroke-dasharray="6,3"/>
+<polygon points="190,150 202,145 200,157" class="dg-line"/>
+<text x="250" y="222" font-size="12" text-anchor="middle" class="dg-dim">상태 sₜ₊₁, 보상 rₜ₊₁</text>
+</svg>`,
+    diagramCaption: String.raw`에이전트는 행동을 내보내고(실선), 환경은 그 결과로 다음 상태와 보상을 되돌려준다(점선). 이 순환이 강화학습의 기본 루프다.`,
     related: [
       { label: "Q-러닝: 시간차 업데이트", slug: "q-learning-td-update" },
       { label: "정책경사 정리(REINFORCE)의 유도", slug: "policy-gradient-theorem" },
@@ -16756,6 +20259,42 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     example: String.raw`<p>트리·앙상블 구조에서는 decision-tree-recursion이 의사결정나무 하나의 재귀적 분기가 왜 유한 번 안에 반드시 멈추는지를 보여요. 나무 구조를 다루는 첫 단추가 바로 이 정지성이에요.</p>
 <p>그래프·탐색에서는 gnn-message-passing이 그래프신경망의 메시지패싱이 왜 노드 순서를 바꿔도 결과가 그대로인지(순열 등변성)를 다루고, spectral-clustering은 그래프 라플라시안의 고유벡터로 군집을 나누는 원리를 보여줘요.</p>
 <p>알고리즘 기초에서는 shortest-path-dp가 최단경로를 구하는 다이나믹 프로그래밍이 왜 최적 부분구조 위에서 성립하는지를 다루고, 심화 매트릭스의 네트워크 흐름에서는 max-flow-min-cut이 그래프 위의 흐름을 최적화하는 정리를 보여줘요. 이 결과는 자원 배분 문제나 추천시스템의 매칭 문제로 그대로 이어져요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="350" y1="20" x2="350" y2="240" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="175" y="20" font-size="13" text-anchor="middle">트리(계층 구조)</text>
+<text x="525" y="20" font-size="13" text-anchor="middle">그래프(임의의 연결)</text>
+<line x1="175" y1="50" x2="100" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="175" y1="50" x2="250" y2="110" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="110" x2="60" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="100" y1="110" x2="140" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="250" y1="110" x2="210" y2="180" class="dg-line" stroke-width="1.5"/>
+<line x1="250" y1="110" x2="290" y2="180" class="dg-line" stroke-width="1.5"/>
+<circle cx="175" cy="50" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="100" cy="110" r="13" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="250" cy="110" r="13" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="60" cy="180" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="140" cy="180" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="210" cy="180" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="290" cy="180" r="12" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<line x1="450" y1="60" x2="550" y2="60" class="dg-line" stroke-width="1.5"/>
+<line x1="550" y1="60" x2="600" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="600" y1="150" x2="500" y2="220" class="dg-line" stroke-width="1.5"/>
+<line x1="500" y1="220" x2="420" y2="150" class="dg-line" stroke-width="1.5"/>
+<line x1="550" y1="60" x2="500" y2="220" class="dg-line" stroke-width="1.3"/>
+<line x1="420" y1="150" x2="450" y2="60" class="dg-stroke-accent" stroke-width="2" stroke-dasharray="5,3"/>
+<circle cx="450" cy="60" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="550" cy="60" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="600" cy="150" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="500" cy="220" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<circle cx="420" cy="150" r="14" fill="none" class="dg-stroke-ink" stroke-width="1.8"/>
+<text x="450" y="65" font-size="11" text-anchor="middle">A</text>
+<text x="550" y="65" font-size="11" text-anchor="middle">B</text>
+<text x="600" y="155" font-size="11" text-anchor="middle">C</text>
+<text x="500" y="225" font-size="11" text-anchor="middle">D</text>
+<text x="420" y="155" font-size="11" text-anchor="middle">E</text>
+<text x="430" y="105" font-size="10" class="dg-dim">사이클</text>
+</svg>`,
+    diagramCaption: String.raw`트리는 노드 사이 경로가 유일하지만(왼쪽), 그래프는 여러 경로와 사이클(굵은 점선)이 함께 존재할 수 있다(오른쪽).`,
     sections: [],
     related: [
       { label: "의사결정나무 재귀 분기의 정지성", slug: "decision-tree-recursion" },
@@ -16774,6 +20313,34 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     example: String.raw`<p>수치적 안정성 쪽에서는 condition-number가 조건수가 큰 시스템일수록 입력의 아주 작은 오차가 출력에서는 훨씬 크게 벌어진다는 걸 보여줘요.</p>
 <p>기하·측도 쪽에서는 manifold-hypothesis가 고차원 데이터도 실제로는 훨씬 낮은 차원의 매니폴드 위에 놓여 있다는 가정을 다뤄요.</p>
 <p>심화 매트릭스에서는 lu-decomposition이 큰 선형시스템을 직접 푸는 법을, conjugate-gradient가 같은 시스템을 반복법으로 근사하는 법을 보여주고, floating-point-error는 그 계산 과정에서 오차가 어떻게 누적되는지를 다뤄요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="345" y1="20" x2="345" y2="240" class="dg-line" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="170" y="20" font-size="13" text-anchor="middle">수렴하는 경우</text>
+<text x="515" y="20" font-size="13" text-anchor="middle">발산하는 경우</text>
+<line x1="40" y1="220" x2="300" y2="220" class="dg-line" stroke-width="1.2"/>
+<line x1="40" y1="70" x2="300" y2="70" class="dg-line" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="305" y="73" font-size="11" class="dg-dim">x*(고정점)</text>
+<path d="M60,200 H100 V150 H140 V115 H180 V90 H220 V78 H260 V72" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<circle cx="60" cy="200" r="4" class="dg-accent"/>
+<circle cx="100" cy="150" r="4" class="dg-accent"/>
+<circle cx="140" cy="115" r="4" class="dg-accent"/>
+<circle cx="180" cy="90" r="4" class="dg-accent"/>
+<circle cx="220" cy="78" r="4" class="dg-accent"/>
+<circle cx="260" cy="72" r="4" class="dg-accent"/>
+<line x1="370" y1="220" x2="660" y2="220" class="dg-line" stroke-width="1.2"/>
+<line x1="370" y1="190" x2="660" y2="190" class="dg-line" stroke-width="1" stroke-dasharray="5,3"/>
+<text x="600" y="185" font-size="11" class="dg-dim">목표값</text>
+<path d="M390,200 H430 V175 H470 V130 H510 V70 H550 V20" fill="none" class="dg-stroke-accent" stroke-width="2.3"/>
+<circle cx="390" cy="200" r="4" class="dg-accent"/>
+<circle cx="430" cy="175" r="4" class="dg-accent"/>
+<circle cx="470" cy="130" r="4" class="dg-accent"/>
+<circle cx="510" cy="70" r="4" class="dg-accent"/>
+<circle cx="550" cy="20" r="4" class="dg-accent"/>
+<line x1="550" y1="20" x2="550" y2="6" class="dg-stroke-accent" stroke-width="2.3"/>
+<polygon points="550,6 545,16 555,16" class="dg-stroke-accent"/>
+<text x="560" y="15" font-size="11" class="dg-dim">발산 → ∞</text>
+</svg>`,
+    diagramCaption: String.raw`같은 형태의 반복법이라도 왼쪽처럼 계단 폭이 줄며 고정점에 수렴하기도 하고, 오른쪽처럼 폭이 커지며 발산하기도 한다.`,
     sections: [],
     related: [
       { label: "조건수와 선형시스템의 오차 민감도", slug: "condition-number" },
