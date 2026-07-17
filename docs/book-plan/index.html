@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>책 기획안 · 수학 × AI 매트릭스 시리즈</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+  :root {
+    --bg: #f7f5f6; --ink: #1a1a1a; --dim: #6a6a6a; --faint: #9a9a9a;
+    --found: #2f7a4a; --linalg: #33569e; --calc: #b85c26; --prob: #1c7f68;
+    --info: #7d3d92; --disc: #93701f; --numeric: #a13b52; --axis: #2f6a7a; --causal: #2f7d6b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #444; font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+  }
+  .page { position: relative; width: 210mm; min-height: 297mm; margin: 16pt auto; background: var(--bg); color: var(--ink);
+    padding: 30mm 24mm; page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  @media print { body { background: none; } .page { margin: 0; page-break-after: always; } @page { size: A4; margin: 0; } }
+
+  .eyebrow { font-family: ui-monospace, Menlo, monospace; font-size: 10.5pt; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin: 0 0 8pt; }
+  h1.book-title { font-size: 30pt; font-weight: 800; margin: 0 0 6pt; letter-spacing: -0.01em; }
+  .book-sub { font-size: 12.5pt; color: var(--dim); margin: 0 0 26pt; max-width: 130mm; line-height: 1.6; }
+
+  .part { margin: 0 0 20pt; }
+  .part-title {
+    font-size: 11pt; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+    color: #fff; background: var(--accent, #888); display: inline-block; padding: 4pt 10pt; border-radius: 4pt; margin: 0 0 10pt;
+  }
+  .chapter { display: flex; gap: 12pt; padding: 7pt 0; border-bottom: 0.75pt solid #e4e2e2; align-items: baseline; }
+  .chapter:last-child { border-bottom: none; }
+  .chapter .num { font-family: ui-monospace, Menlo, monospace; font-size: 11pt; color: var(--accent, #888); font-weight: 700; width: 22pt; flex: none; }
+  .chapter .title { font-size: 12.5pt; font-weight: 700; flex: 1 1 auto; }
+  .chapter .scope { font-size: 10.5pt; color: var(--dim); flex: 1 1 auto; }
+  .chapter .count { font-family: ui-monospace, Menlo, monospace; font-size: 9.5pt; color: var(--faint); flex: none; white-space: nowrap; }
+
+  .summary-box { margin-top: 24pt; padding: 14pt 16pt; border-left: 2.5pt solid var(--accent, #888); font-size: 10.5pt; color: var(--dim); line-height: 1.65; }
+  .footer { margin-top: 20pt; padding-top: 10pt; border-top: 0.75pt solid #e4e2e2; font-size: 9pt; color: var(--faint); display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<!-- ============ 표지 ============ -->
+<div class="page" style="display:flex; flex-direction:column; justify-content:center; align-items:flex-start;">
+  <p class="eyebrow">Book Plan · 2026-07-18</p>
+  <h1 class="book-title" style="font-size:38pt;">수학 × AI 매트릭스<br/>시리즈 기획안</h1>
+  <p class="book-sub">
+    한 권이 아니라 두 권으로 나눈다. ① 예비수학(독립 도서, 대학 수학 진입 전 격차를 메우는 책)과
+    ② 수학 × AI 매트릭스 본편(선형대수부터 수치해석까지, AI가 실제로 쓰는 수학 지도). 예비수학을
+    본편의 한 챕터가 아니라 별도 상품으로 분리하는 이유: 독자층이 다르고(고교-대학 전환기 vs
+    이미 기초는 있는 학습자), 그래서 가격·마케팅·크라우드펀딩 리워드 구성도 따로 갈 수 있다.
+  </p>
+  <div class="summary-box" style="border-color:#888; margin-top:40pt;">
+    <strong style="color:var(--ink)">한눈에 보기</strong><br/>
+    Book 1 · 예비수학 · 18챕터 · 예상 13~20개 신규 확장 포함<br/>
+    Book 2 · 수학 × AI 매트릭스 · 20챕터 · 기초 6도메인 241개 개념 기반
+  </div>
+</div>
+
+<!-- ============ Book 1: 예비수학 ============ -->
+<div class="page">
+  <p class="eyebrow">Book 1 · 독립 도서</p>
+  <h1 class="book-title">예비수학</h1>
+  <p class="book-sub">
+    2019년 이후 고교 교육과정 개편(선택과목제·고교학점제)으로 세대·학교마다 편차가 커진 벡터·행렬 등
+    기초를 메우는 책. 대학 선형대수·미적분을 시작하기 전, 혹은 본편 &lt;수학 × AI 매트릭스&gt;를 펴기 전
+    가장 먼저 읽는 책이다.
+  </p>
+
+  <div class="part">
+    <span class="part-title" style="--accent:#555">0부 · 프롤로그</span>
+    <div class="chapter"><span class="num">0</span><span class="title">이 책을 왜 읽어야 하는가</span><span class="scope">교육과정 개편 배경(인용 통계는 원출처 검증 후 확정)</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--found)">1부 · 수학의 언어</span>
+    <div class="chapter"><span class="num">1</span><span class="title">집합과 명제</span><span class="scope">수학 언어의 문법</span></div>
+    <div class="chapter"><span class="num">2</span><span class="title">방정식과 부등식 다시 보기</span><span class="scope">&nbsp;</span></div>
+    <div class="chapter"><span class="num">3</span><span class="title">함수란 무엇인가</span><span class="scope">정의역·치역·그래프</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--found)">2부 · 벡터와 행렬 (가장 큰 공백)</span>
+    <div class="chapter"><span class="num">4</span><span class="title">벡터의 기하적 의미</span><span class="scope">방향·크기·내적·정사영 · 1순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">5</span><span class="title">공간좌표계와 3차원 벡터·평면</span><span class="scope">3순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">6</span><span class="title">행렬 연산과 역행렬의 직관</span><span class="scope">2순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">7</span><span class="title">선형변환의 기하적 그림</span><span class="scope">4순위</span><span class="count">기존</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--found)">3부 · 함수 심화</span>
+    <div class="chapter"><span class="num">8</span><span class="title">로그·지수함수 심화</span><span class="scope">7순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">9</span><span class="title">삼각함수 항등식과 그래프 변형</span><span class="scope">10순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">10</span><span class="title">이차곡선(타원·포물선·쌍곡선)</span><span class="scope">6순위</span><span class="count">기존</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--found)">4부 · 극한과 수열</span>
+    <div class="chapter"><span class="num">11</span><span class="title">수열의 극한과 급수(∑) 표기</span><span class="scope">5순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">12</span><span class="title">여러 함수의 극한</span><span class="scope">옛 미적분Ⅱ · 8순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">13</span><span class="title">다변수 함수에 대한 최소한의 사전 감</span><span class="scope">현 교육과정 밖 · 13순위</span><span class="count">기존</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--found)">5부 · 확률과 논리</span>
+    <div class="chapter"><span class="num">14</span><span class="title">확률변수와 분포, 기댓값·분산의 직관</span><span class="scope">9순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">15</span><span class="title">순열·조합 심화와 그래프 이론 기초 감각</span><span class="scope">12순위</span><span class="count">기존</span></div>
+    <div class="chapter"><span class="num">16</span><span class="title">수학적 귀납법과 엄밀한 증명 감각</span><span class="scope">11순위</span><span class="count">기존</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:#555">6부 · 다음 책으로</span>
+    <div class="chapter"><span class="num">17</span><span class="title">이 지식이 어디에 쓰이는가</span><span class="scope">본편 &lt;수학 × AI 매트릭스&gt; 미리보기</span></div>
+    <div class="chapter"><span class="num">18</span><span class="title">자가진단 체크리스트</span><span class="scope">나는 본편을 바로 시작해도 될까?</span></div>
+  </div>
+
+  <div class="summary-box">
+    <strong style="color:var(--ink)">현재 상태.</strong> 4~16장(13개)은 이미 웹에 있는 콘텐츠(예비수학 챕터)를 그대로 확장.
+    0, 1~3, 17~18장(6개)은 신규 작성 필요. 1~3장(집합·방정식·함수)은 지금 사이트에 전혀 없는 더
+    기초적인 내용이라, "덜 힘들게" 시작하려는 목적에 맞으려면 이 부분부터 실제로 채워야 한다.
+  </div>
+  <div class="footer"><span>Book 1 · 예비수학</span><span>18챕터</span></div>
+</div>
+
+<!-- ============ Book 2: 수학 × AI 매트릭스 ============ -->
+<div class="page">
+  <p class="eyebrow">Book 2 · 본편</p>
+  <h1 class="book-title">수학 × AI 매트릭스</h1>
+  <p class="book-sub">
+    선형대수부터 수치해석까지, AI가 실제로 쓰는 수학을 대분류-중분류-소분류로 정리한 레퍼런스.
+    기초 6도메인 241개 개념 중 essential 다이어그램이 있는 것 위주로 20챕터를 구성했다.
+  </p>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--axis)">0부 · 여는 글</span>
+    <div class="chapter"><span class="num">0</span><span class="title">매트릭스 읽는 법</span><span class="scope">이 책의 행과 열이 뭔지</span><span class="count">기존</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--linalg)">1부 · 선형대수 (51개)</span>
+    <div class="chapter"><span class="num">1</span><span class="title">벡터·행렬 연산의 언어</span><span class="scope">&nbsp;</span><span class="count">~17개</span></div>
+    <div class="chapter"><span class="num">2</span><span class="title">고유값과 분해</span><span class="scope">PCA로 보는 핵심</span><span class="count">~17개</span></div>
+    <div class="chapter"><span class="num">3</span><span class="title">노름·사영과 유사도</span><span class="scope">&nbsp;</span><span class="count">~17개</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--calc)">2부 · 미적분·최적화 (51개)</span>
+    <div class="chapter"><span class="num">4</span><span class="title">미분과 그래디언트</span><span class="scope">학습이라는 것의 정체</span><span class="count">~17개</span></div>
+    <div class="chapter"><span class="num">5</span><span class="title">경사기반 옵티마이저</span><span class="scope">&nbsp;</span><span class="count">~17개</span></div>
+    <div class="chapter"><span class="num">6</span><span class="title">제약최적화와 함수의 성질</span><span class="scope">라그랑주~KKT</span><span class="count">~17개</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--prob)">3부 · 확률·통계 (76개, 최대 도메인)</span>
+    <div class="chapter"><span class="num">7</span><span class="title">확률의 기초와 베이즈 정리</span><span class="scope">&nbsp;</span><span class="count">~19개</span></div>
+    <div class="chapter"><span class="num">8</span><span class="title">분포와 추정</span><span class="scope">&nbsp;</span><span class="count">~19개</span></div>
+    <div class="chapter"><span class="num">9</span><span class="title">마르코프·확률과정</span><span class="scope">&nbsp;</span><span class="count">~19개</span></div>
+    <div class="chapter"><span class="num">10</span><span class="title">표집과 불확실성</span><span class="scope">MCMC 등</span><span class="count">~19개</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--info)">4부 · 정보이론 (25개)</span>
+    <div class="chapter"><span class="num">11</span><span class="title">엔트로피와 손실</span><span class="scope">&nbsp;</span><span class="count">~13개</span></div>
+    <div class="chapter"><span class="num">12</span><span class="title">발산과 상호정보</span><span class="scope">&nbsp;</span><span class="count">~12개</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--disc)">5부 · 이산수학 (23개)</span>
+    <div class="chapter"><span class="num">13</span><span class="title">트리와 앙상블 구조</span><span class="scope">&nbsp;</span><span class="count">~12개</span></div>
+    <div class="chapter"><span class="num">14</span><span class="title">그래프와 탐색</span><span class="scope">이어짐의 수학</span><span class="count">~11개</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:var(--numeric)">6부 · 수치해석 (15개)</span>
+    <div class="chapter"><span class="num">15</span><span class="title">수치적 안정성</span><span class="scope">이론이 컴퓨터 안에서 버티는 법</span><span class="count">15개</span></div>
+  </div>
+
+  <div class="part">
+    <span class="part-title" style="--accent:#555">마무리</span>
+    <div class="chapter"><span class="num">16</span><span class="title">교차점 모음</span><span class="scope">PCA×Classical ML, VAE×생성모델 등 행×열이 만나는 곳</span></div>
+    <div class="chapter"><span class="num">17</span><span class="title">인과추론 살짝 보기</span><span class="scope">상관관계 너머의 질문, 심화 매트릭스 맛보기</span></div>
+    <div class="chapter"><span class="num">18</span><span class="title">실전 감각 잡기</span><span class="scope">지금까지 배운 걸로 문제 하나 끝까지 풀어보기</span></div>
+    <div class="chapter"><span class="num">19</span><span class="title">다음 단계</span><span class="scope">XAI·LLM·추천시스템 미리보기, 심화 매트릭스 안내</span></div>
+  </div>
+
+  <div class="summary-box">
+    <strong style="color:var(--ink)">현재 상태.</strong> 0장은 기존 콘텐츠(guide/). 1~15장은 기초 6도메인 241개 개념(콘텐츠 이미 존재,
+    essential 다이어그램 152개 중 174개 essential 전체가 이미 완료). 16~19장(교차점·인과추론·실전·다음단계)은
+    신규 구성 필요. 특히 16장은 guide 챕터의 "교차점" 섹션을 확장하면 된다.
+  </div>
+  <div class="footer"><span>Book 2 · 수학 × AI 매트릭스</span><span>20챕터</span></div>
+</div>
+
+</body>
+</html>
