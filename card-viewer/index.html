@@ -115,6 +115,34 @@
 
   .blank { border-bottom: 1.5pt solid var(--accent, #8a8a8a); padding: 0 4pt; }
 
+  /* ===== 재사용 컴포넌트: 참고/주의 박스, 하이라이트, 구분선 ===== */
+  .hl { background: color-mix(in srgb, var(--accent, #8a8a8a) 20%, transparent); padding: 0 2pt; border-radius: 2pt; }
+  em { font-style: italic; color: inherit; }
+
+  .note-box, .warn-box {
+    border-radius: 8pt; padding: 10pt 13pt; margin: 4pt 0 14pt; font-size: 10pt; line-height: 1.6;
+  }
+  .note-box {
+    background: color-mix(in srgb, var(--accent, #8a8a8a) 10%, var(--card-bg));
+    border-left: 2.5pt solid var(--accent, #8a8a8a);
+  }
+  .note-box::before { content: "참고"; display: block; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 8pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent, #8a8a8a); margin: 0 0 4pt; }
+  .warn-box {
+    background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--accent, #8a8a8a) 8%, var(--card-bg)) 0 6pt,
+      color-mix(in srgb, var(--accent, #8a8a8a) 14%, var(--card-bg)) 6pt 12pt);
+    border: 0.75pt solid color-mix(in srgb, var(--accent, #8a8a8a) 35%, var(--card-bg));
+  }
+  .warn-box::before { content: "주의"; display: block; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 8pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--card-ink); margin: 0 0 4pt; }
+  .key-box {
+    border-radius: 999pt; padding: 8pt 16pt; margin: 4pt 0 14pt; font-size: 10.5pt; font-weight: 700;
+    color: #fff; background: var(--accent, #8a8a8a); text-align: center;
+  }
+  .section-divider { border: none; border-top: 0.75pt dashed #d8d6d6; margin: 12pt 0; }
+
   .card-pair-label { font-size: 12px; color: var(--app-dim); text-align: center; }
 
   @media print {
@@ -199,18 +227,44 @@
     return { meta: meta, sections: sections };
   }
 
-  function mdToHtml(text) {
-    if (!text) return "";
+  var BLOCK_CLASS = { note: "note-box", warn: "warn-box", key: "key-box" };
+
+  function mdInline(t) {
+    return t
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/(^|[^*])\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "$1<em>$2</em>")
+      .replace(/::(.+?)::/g, '<span class="hl">$1</span>')
+      .replace(/==(.*?)==/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+  }
+
+  // 문단 단위 텍스트(참고/주의/핵심 박스 안쪽 포함)를 <p>들로 변환
+  function mdParagraphs(text) {
     return text
       .split(/\n\s*\n/)
       .map(function (p) {
-        var t = p.trim()
-          .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-          .replace(/==(.*?)==/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')
-          .replace(/\n/g, "<br>");
-        return t ? "<p>" + t + "</p>" : "";
+        var t = p.trim();
+        if (!t) return "";
+        if (t === "---") return '<hr class="section-divider">';
+        return "<p>" + mdInline(t).replace(/\n/g, "<br>") + "</p>";
       })
       .join("");
+  }
+
+  // :::note / :::warn / :::key ... ::: 블록을 먼저 분리해 각각 박스로 렌더링하고,
+  // 그 사이 일반 텍스트는 기존 문단 렌더링을 그대로 적용한다.
+  function mdToHtml(text) {
+    if (!text) return "";
+    var out = "";
+    var re = /:::(note|warn|key)\n([\s\S]*?)\n:::/g;
+    var last = 0, m;
+    while ((m = re.exec(text))) {
+      out += mdParagraphs(text.slice(last, m.index));
+      var cls = BLOCK_CLASS[m[1]];
+      out += '<div class="' + cls + '">' + mdParagraphs(m[2]) + "</div>";
+      last = re.lastIndex;
+    }
+    out += mdParagraphs(text.slice(last));
+    return out;
   }
 
   function esc(s) { return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
