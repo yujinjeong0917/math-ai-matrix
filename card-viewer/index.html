@@ -80,47 +80,87 @@
     letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent, #8a8a8a);
     margin: 0 0 6pt; display: flex; justify-content: space-between; gap: 8pt;
   }
-  .card-title { font-size: 21pt; font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 14pt; }
-  .back .card-title { font-size: 15pt; margin-bottom: 16pt; }
+  .card-title { font-size: calc(21pt * var(--font-scale, 1)); font-weight: 800; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 14pt; }
+  .back .card-title { font-size: calc(15pt * var(--font-scale, 1)); margin-bottom: 16pt; }
 
-  .lede { font-size: 11.5pt; line-height: 1.78; color: #4a4a4a; margin: 0 0 16pt; }
+  .lede { font-size: calc(11.5pt * var(--font-scale, 1)); line-height: 1.78; color: #4a4a4a; margin: 0 0 16pt; }
 
   .prop {
     border-left: 2.5pt solid var(--accent, #8a8a8a); padding: 2pt 0 2pt 14pt;
-    font-size: 11pt; line-height: 1.6; color: var(--card-ink); margin: 0 0 16pt;
+    font-size: calc(11pt * var(--font-scale, 1)); line-height: 1.6; color: var(--card-ink); margin: 0 0 16pt;
   }
 
   .diagram-wrap { margin: 0 0 16pt; text-align: center; }
-  .diagram-wrap svg { max-width: 100%; max-height: 108pt; }
-  .diagram-cap { font-size: 8.5pt; color: #9a9a9a; font-style: italic; margin: 5pt 0 0; }
+  .diagram-wrap svg, .diagram-wrap img { max-width: 100%; max-height: 108pt; }
+  .diagram-cap { font-size: calc(8.5pt * var(--font-scale, 1)); color: #9a9a9a; font-style: italic; margin: 5pt 0 0; }
 
   .section-label {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 8.5pt; font-weight: 700;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: calc(8.5pt * var(--font-scale, 1)); font-weight: 700;
     letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent, #8a8a8a); margin: 0 0 6pt;
   }
   .rule { border: none; border-top: 0.75pt solid #e2e0e0; margin: 4pt 0 16pt; }
 
-  .prose { font-size: 11.3pt; line-height: 1.72; color: var(--card-ink); margin: 0 0 4pt; }
+  .prose { font-size: calc(11.3pt * var(--font-scale, 1)); line-height: 1.72; color: var(--card-ink); margin: 0 0 4pt; }
   .prose p { margin: 0 0 9pt; }
   .prose p:last-child { margin-bottom: 0; }
 
   .spacer { flex: 1 1 auto; }
 
-  .footer-note { font-size: 9pt; color: #9a9a9a; margin-top: 14pt; }
+  .footer-note { font-size: calc(9pt * var(--font-scale, 1)); color: #9a9a9a; margin-top: 14pt; }
   .front .footer-note { text-align: right; }
 
-  .related-line { font-size: 9.5pt; color: #6a6a6a; margin-top: 14pt; }
+  .related-line { font-size: calc(9.5pt * var(--font-scale, 1)); color: #6a6a6a; margin-top: 14pt; }
   .related-line strong { color: var(--card-ink); font-weight: 700; }
   .related-line a, .related-line .r-item { color: var(--accent, #6a6a6a); }
 
   .blank { border-bottom: 1.5pt solid var(--accent, #8a8a8a); padding: 0 4pt; }
+
+  /* 구간별 폰트 크기 태그: {sm}...{/sm}, {lg}...{/lg} */
+  .fs-sm { font-size: 0.85em; }
+  .fs-lg { font-size: 1.2em; }
+
+  /* 정의 박스: ":::def 제목" — note와 달리 제목을 직접 지정 */
+  .def-box {
+    border-radius: 8pt; padding: 10pt 13pt; margin: 4pt 0 14pt;
+    font-size: calc(10pt * var(--font-scale, 1)); line-height: 1.6;
+    background: color-mix(in srgb, var(--accent, #8a8a8a) 6%, var(--card-bg));
+    border: 0.75pt solid color-mix(in srgb, var(--accent, #8a8a8a) 30%, var(--card-bg));
+  }
+  .def-box .def-term {
+    display: block; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 700;
+    font-size: calc(8pt * var(--font-scale, 1)); letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--accent, #8a8a8a); margin: 0 0 4pt;
+  }
+
+  /* STEP 리스트: ":::steps" 안의 각 줄이 번호 배지가 붙은 단계가 된다 */
+  .steps { margin: 4pt 0 14pt; padding: 0; list-style: none; counter-reset: step; }
+  .steps .step-item {
+    counter-increment: step; display: flex; gap: 8pt; align-items: baseline;
+    margin: 0 0 7pt; font-size: calc(10.5pt * var(--font-scale, 1)); line-height: 1.55; color: var(--card-ink);
+  }
+  .steps .step-item:last-child { margin-bottom: 0; }
+  .steps .step-item::before {
+    content: counter(step); flex: none; width: 15pt; height: 15pt; border-radius: 50%;
+    background: var(--accent, #8a8a8a); color: #fff; font-size: 8pt; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+    transform: translateY(1pt);
+  }
+
+  /* 표: 표준 마크다운 테이블 */
+  .card table { width: 100%; border-collapse: collapse; margin: 4pt 0 14pt; font-size: calc(10pt * var(--font-scale, 1)); }
+  .card th, .card td { border: 0.75pt solid #e2e0e0; padding: 5pt 8pt; text-align: center; }
+  .card th { background: color-mix(in srgb, var(--accent, #8a8a8a) 10%, var(--card-bg)); font-weight: 700; color: var(--card-ink); }
+  .card td { color: #4a4a4a; }
+
+  /* 이미지: ![캡션](경로) */
+  .diagram-wrap.img-wrap img { border-radius: 4pt; }
 
   /* ===== 재사용 컴포넌트: 참고/주의 박스, 하이라이트, 구분선 ===== */
   .hl { background: color-mix(in srgb, var(--accent, #8a8a8a) 20%, transparent); padding: 0 2pt; border-radius: 2pt; }
   em { font-style: italic; color: inherit; }
 
   .note-box, .warn-box {
-    border-radius: 8pt; padding: 10pt 13pt; margin: 4pt 0 14pt; font-size: 10pt; line-height: 1.6;
+    border-radius: 8pt; padding: 10pt 13pt; margin: 4pt 0 14pt; font-size: calc(10pt * var(--font-scale, 1)); line-height: 1.6;
   }
   .note-box {
     background: color-mix(in srgb, var(--accent, #8a8a8a) 10%, var(--card-bg));
@@ -138,7 +178,7 @@
     font-size: 8pt; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--card-ink); margin: 0 0 4pt; }
   .key-box {
-    border-radius: 999pt; padding: 8pt 16pt; margin: 4pt 0 14pt; font-size: 10.5pt; font-weight: 700;
+    border-radius: 999pt; padding: 8pt 16pt; margin: 4pt 0 14pt; font-size: calc(10.5pt * var(--font-scale, 1)); font-weight: 700;
     color: #fff; background: var(--accent, #8a8a8a); text-align: center;
   }
   .section-divider { border: none; border-top: 0.75pt dashed #d8d6d6; margin: 12pt 0; }
@@ -227,17 +267,32 @@
     return { meta: meta, sections: sections };
   }
 
-  var BLOCK_CLASS = { note: "note-box", warn: "warn-box", key: "key-box" };
+  var BLOCK_CLASS = { note: "note-box", warn: "warn-box", key: "key-box", def: "def-box" };
 
   function mdInline(t) {
     return t
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*])\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, "$1<em>$2</em>")
       .replace(/::(.+?)::/g, '<span class="hl">$1</span>')
-      .replace(/==(.*?)==/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+      .replace(/==(.*?)==/g, '<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')
+      .replace(/\{sm\}(.+?)\{\/sm\}/g, '<span class="fs-sm">$1</span>')
+      .replace(/\{lg\}(.+?)\{\/lg\}/g, '<span class="fs-lg">$1</span>');
   }
 
-  // 문단 단위 텍스트(참고/주의/핵심 박스 안쪽 포함)를 <p>들로 변환
+  // 마크다운 표(| a | b |\n|---|---|\n| 1 | 2 |)를 <table>로 변환
+  function mdTable(block) {
+    var lines = block.split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    if (lines.length < 2 || !/^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)*\|?$/.test(lines[1].replace(/\|/g, "|"))) return null;
+    function cells(line) { return line.replace(/^\||\|$/g, "").split("|").map(function (c) { return c.trim(); }); }
+    var head = cells(lines[0]);
+    var rows = lines.slice(2).map(cells);
+    var html = "<table><thead><tr>" + head.map(function (h) { return "<th>" + mdInline(esc(h)) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    rows.forEach(function (r) { html += "<tr>" + r.map(function (c) { return "<td>" + mdInline(esc(c)) + "</td>"; }).join("") + "</tr>"; });
+    html += "</tbody></table>";
+    return html;
+  }
+
+  // 문단 단위 텍스트(참고/주의/정의/핵심 박스 안쪽 포함)를 <p>/표/이미지로 변환
   function mdParagraphs(text) {
     return text
       .split(/\n\s*\n/)
@@ -245,22 +300,45 @@
         var t = p.trim();
         if (!t) return "";
         if (t === "---") return '<hr class="section-divider">';
+        var img = t.match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (img) {
+          return '<div class="diagram-wrap img-wrap"><img src="' + esc(img[2]) + '" alt="' + esc(img[1]) + '">' +
+            (img[1] ? '<p class="diagram-cap">' + esc(img[1]) + "</p>" : "") + "</div>";
+        }
+        if (t.indexOf("|") !== -1) {
+          var table = mdTable(t);
+          if (table) return table;
+        }
         return "<p>" + mdInline(t).replace(/\n/g, "<br>") + "</p>";
       })
       .join("");
   }
 
-  // :::note / :::warn / :::key ... ::: 블록을 먼저 분리해 각각 박스로 렌더링하고,
-  // 그 사이 일반 텍스트는 기존 문단 렌더링을 그대로 적용한다.
+  // :::steps ... ::: 블록의 각 줄을 번호 배지가 붙은 단계로 변환
+  function mdSteps(block) {
+    var items = block.split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    return '<ol class="steps">' + items.map(function (i) {
+      return '<li class="step-item"><span>' + mdInline(esc(i)) + "</span></li>";
+    }).join("") + "</ol>";
+  }
+
+  // :::note / :::warn / :::key / :::def[ 제목] ... ::: 블록을 먼저 분리해 렌더링하고,
+  // 그 사이 일반 텍스트는 기존 문단/표/이미지 렌더링을 그대로 적용한다.
   function mdToHtml(text) {
     if (!text) return "";
     var out = "";
-    var re = /:::(note|warn|key)\n([\s\S]*?)\n:::/g;
+    var re = /:::(note|warn|key|def|steps)([^\n]*)\n([\s\S]*?)\n:::/g;
     var last = 0, m;
     while ((m = re.exec(text))) {
       out += mdParagraphs(text.slice(last, m.index));
-      var cls = BLOCK_CLASS[m[1]];
-      out += '<div class="' + cls + '">' + mdParagraphs(m[2]) + "</div>";
+      var type = m[1], title = m[2].trim(), body = m[3];
+      if (type === "steps") {
+        out += mdSteps(body);
+      } else {
+        var cls = BLOCK_CLASS[type];
+        var titleHtml = (type === "def") ? '<span class="def-term">정의' + (title ? " · " + esc(title) : "") + "</span>" : "";
+        out += '<div class="' + cls + '">' + titleHtml + mdParagraphs(body) + "</div>";
+      }
       last = re.lastIndex;
     }
     out += mdParagraphs(text.slice(last));
@@ -309,8 +387,13 @@
     var accent = DOMAIN_ACCENT[(m.theme || "").toLowerCase()] || "#8a8a8a";
     var relatedHtml = relatedLineHtml(m.related);
 
+    var fontScale = parseFloat(m.fontScale);
+    if (!fontScale || isNaN(fontScale)) fontScale = 1;
+
     document.getElementById("cardFront").style.setProperty("--accent", accent);
     document.getElementById("cardBack").style.setProperty("--accent", accent);
+    document.getElementById("cardFront").style.setProperty("--font-scale", fontScale);
+    document.getElementById("cardBack").style.setProperty("--font-scale", fontScale);
 
     document.getElementById("cardFront").innerHTML =
       eyebrowHtml(m, category) +
@@ -433,6 +516,7 @@
 
   function fillFront(card, m, s, accent, category) {
     card.style.setProperty("--accent", accent);
+    var fs = parseFloat(m.fontScale); card.style.setProperty("--font-scale", (!fs || isNaN(fs)) ? 1 : fs);
     card.innerHTML =
       eyebrowHtml(m, category) +
       '<p class="card-title">' + esc(m.title || "") + '</p>' +
@@ -448,6 +532,7 @@
 
   function fillBack(card, m, s, accent, category, relatedHtml) {
     card.style.setProperty("--accent", accent);
+    var fs = parseFloat(m.fontScale); card.style.setProperty("--font-scale", (!fs || isNaN(fs)) ? 1 : fs);
     card.innerHTML =
       eyebrowHtml(m, category) +
       '<p class="card-title">' + esc(m.title || "") + '</p>' +
