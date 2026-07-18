@@ -15,7 +15,7 @@ related: 켤레사전분포 3종
 
 
 ## 문제
-둘째 방식은 $\phi$를 모수로 둔 모델 $f(x;\theta(\phi))$로부터 피셔정보를 직접 계산하는 것이다. 점수함수의 연쇄법칙 $\partial_\phi\log f(x;\theta(\phi))=\partial_\theta\log f(x;\theta)\cdot\dfrac{d\theta}{d\phi}$를 제곱해 기댓값을 취하면 $I(\phi)=E[(\partial_\phi\log f)^2]=\Big(\dfrac{d\theta}{d\phi}\Big)^2E[(\partial_\theta\log f)^2]=$ $==빈칸==$이다.
+둘째 방식은 $\phi$를 모수로 둔 모델 $f(x;\theta(\phi))$로부터 피셔정보를 직접 계산하는 것이다. 점수함수의 연쇄법칙 $\partial_\phi\log f(x;\theta(\phi))=\partial_\theta\log f(x;\theta)\cdot\dfrac{d\theta}{d\phi}$를 제곱해 기댓값을 취하면 $I(\phi)=E[(\partial_\phi\log f)^2]=\Big(\dfrac{d\theta}{d\phi}\Big)^2E[(\partial_\theta\log f)^2]=$ ==빈칸==이다.
 
 ## 해설
 연쇄법칙으로 점수함수가 $d\theta/d\phi$배만큼 스케일되고, 이를 제곱해 기댓값을 취하면 $(d\theta/d\phi)^2$이 상수로 앞으로 빠져나와 $I(\theta)$에 곱해져요.

@@ -14343,7 +14343,7 @@ $$\Lambda(x)=\frac{f_1(x)}{f_0(x)}=\frac{\exp(-(x-1)^2/2)}{\exp(-x^2/2)}=\exp\!\
       { id: "s3", text: String.raw`실제 절차: $\hat F_n$에서 독립적으로 $B$번 재표집해 $\hat\theta^*_1,\dots,\hat\theta^*_B$를 얻고, 이를 오름차순으로 정렬해 $\hat\theta^*_{(1)}\le\cdots\le\hat\theta^*_{(B)}$를 만든다.`, blanks: [] },
       { id: "s4", text: String.raw`백분위수법 신뢰구간은 이 정렬된 값들의 하위 $100(\alpha/2)\%$, 상위 $100(1-\alpha/2)\%$ 지점을 각각 하한과 상한으로 잡는다: $CI=[\hat\theta^*_{(\lceil B\alpha/2\rceil)},\ $[[blank:나]]$]$.`,
         blanks: [{ id: "나", latex: String.raw`\hat\theta^*_{(\lceil B(1-\alpha/2)\rceil)}`, why: String.raw`하한이 하위 $\alpha/2$ 분위수라면, 대칭적으로 상한은 상위 $\alpha/2$, 즉 하위 $1-\alpha/2$ 분위수여야 전체 구간이 가운데 $1-\alpha$의 확률을 담게 됩니다.` }] },
-      { id: "s5", text: String.raw`이 구간이 왜 타당한가: $B\to\infty$이면 대수의 법칙(재표집값들에 대한 Glivenko–Cantelli)에 의해 정렬된 재표집값들의 경험분위수는 참 재표집분포 $P^*(\cdot\mid\hat F_n)$의 $\alpha/2$, $1-\alpha/2$ 분위수로 수렴한다. 그리고 s2에서 보인 대로 $n\to\infty$이면 이 재표집분포 자체가 $\hat\theta$의 참 표집분포로 수렴한다. 두 극한을 결합하면 백분위수 구간의 커버리지확률은 $[[blank:다]]$로 근사된다.`,
+      { id: "s5", text: String.raw`이 구간이 왜 타당한가: $B\to\infty$이면 대수의 법칙(재표집값들에 대한 Glivenko–Cantelli)에 의해 정렬된 재표집값들의 경험분위수는 참 재표집분포 $P^*(\cdot\mid\hat F_n)$의 $\alpha/2$, $1-\alpha/2$ 분위수로 수렴한다. 그리고 s2에서 보인 대로 $n\to\infty$이면 이 재표집분포 자체가 $\hat\theta$의 참 표집분포로 수렴한다. 두 극한을 결합하면 백분위수 구간의 커버리지확률은 [[blank:다]]로 근사된다.`,
         blanks: [{ id: "다", latex: String.raw`1-\alpha`, why: String.raw`재표집분포의 $\alpha/2$, $1-\alpha/2$ 분위수 사이의 구간은 그 분포 자체의 확률질량을 정확히 $1-\alpha$만큼 담고 있고, 그 분포가 참 표집분포에 수렴하므로 커버리지도 $1-\alpha$로 근사됩니다.` }] },
       { id: "s6", text: String.raw`정리하면, 부트스트랩 백분위수법은 모분포나 통계량의 분포를 해석적으로 몰라도(정규성 등의 가정 없이) 컴퓨터 재표집만으로 근사 신뢰구간을 만들 수 있게 해준다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
@@ -18251,10 +18251,10 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
     diagramCaption: String.raw`뾰족한 실제 사후분포(실선)를 최빈값 $\theta^*$에서 2차 테일러 전개한 대칭 가우시안(점선)으로 근사한다. 꼬리의 비대칭은 근사에서 사라진다.`,
     sections: [
       { id: "s1", text: String.raw`정규화 상수 $Z=\int\pi(\theta)\,d\theta$가 닫힌 형태로 계산되지 않는다고 하자. $\theta^*$를 $\pi(\theta)$의 최빈값(내부 정상점)이라 하면, 최댓값 조건으로부터 $\nabla\log\pi(\theta^*)=0$이다.`, blanks: [] },
-      { id: "s2", text: String.raw`$\log\pi(\theta)$를 $\theta^*$ 주변에서 2차까지 테일러 전개하면 $\log\pi(\theta)\approx \log\pi(\theta^*) + \nabla\log\pi(\theta^*)^T(\theta-\theta^*) - \tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$인데, 정상점 조건에 의해 1차항은 $[[blank:가]]$이다.`,
+      { id: "s2", text: String.raw`$\log\pi(\theta)$를 $\theta^*$ 주변에서 2차까지 테일러 전개하면 $\log\pi(\theta)\approx \log\pi(\theta^*) + \nabla\log\pi(\theta^*)^T(\theta-\theta^*) - \tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$인데, 정상점 조건에 의해 1차항은 [[blank:가]]이다.`,
         blanks: [{ id: "가", latex: String.raw`0`, why: String.raw`$\theta^*$가 최댓값을 주는 정상점이므로 그레이디언트가 0이라서 1차항이 사라져요. 그래서 2차항(곡률)만 근사에 남습니다.` }] },
       { id: "s3", text: String.raw`남은 것은 순수한 2차식이므로 $\log\pi(\theta)\approx\log\pi(\theta^*)-\tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$이고, 양변에 지수를 취하면 $\pi(\theta)\approx \pi(\theta^*)\exp\!\big(-\tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)\big)$이다. 이 형태는 정확히 정규화 전 가우시안 커널이다.`, blanks: [] },
-      { id: "s4", text: String.raw`가우시안 적분 공식 $\int \exp(-\tfrac12 u^TAu)\,du=(2\pi)^{d/2}|A|^{-1/2}$을 $A=H$에 적용해 양변을 적분하면 $Z=\int\pi(\theta)d\theta\approx$ $[[blank:나]]$이다.`,
+      { id: "s4", text: String.raw`가우시안 적분 공식 $\int \exp(-\tfrac12 u^TAu)\,du=(2\pi)^{d/2}|A|^{-1/2}$을 $A=H$에 적용해 양변을 적분하면 $Z=\int\pi(\theta)d\theta\approx$ [[blank:나]]이다.`,
         blanks: [{ id: "나", latex: String.raw`\pi(\theta^*)(2\pi)^{d/2}|H|^{-1/2}`, why: String.raw`가우시안 커널 $\pi(\theta^*)\exp(-\tfrac12(\theta-\theta^*)^TH(\theta-\theta^*))$을 전체 공간에서 적분하면 표준 가우시안 적분 공식에 의해 이 값이 나와요.` }] },
       { id: "s5", text: String.raw`따라서 정규화된 사후분포는 $p(\theta\mid D)=\pi(\theta)/Z\approx \dfrac{\pi(\theta^*)\exp(-\tfrac12(\theta-\theta^*)^TH(\theta-\theta^*))}{\pi(\theta^*)(2\pi)^{d/2}|H|^{-1/2}}=\mathcal N(\theta;\theta^*,H^{-1})$로, 정확히 평균 $\theta^*$, 공분산 $H^{-1}$인 다변량 정규분포다.`, blanks: [] },
       { id: "s6", text: String.raw`예제에서 확인했듯 $\lambda^*=5$, $H=0.2$를 대입한 $Z\approx118.02$는 정확값 $\Gamma(6)=120$에 상대오차 $1.65\%$로 근접했고, 이는 최빈값 근방의 곡률(헤시안) 정보만으로 전체 분포의 모양을 근사할 수 있음을 수치로 확인해 준다. 따라서 명제가 성립한다.`, blanks: [] }
@@ -18295,10 +18295,10 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
     diagramCaption: String.raw`같은 데이터(x축 눈금)에 대역폭만 달리 적용한 세 KDE 곡선. 대역폭이 작으면 분산이 커 들쭉날쭉해지고, 크면 편향이 커 봉우리가 뭉개진다.`,
     sections: [
       { id: "s1", text: String.raw`추정량의 기댓값부터 구한다. $u=\frac{x-y}{h}$로 치환하면 $E[\hat p_h(x)]=\frac1h\int K\!\big(\frac{x-y}{h}\big)p(y)\,dy=\int K(u)\,p(x-hu)\,du$이다.`, blanks: [] },
-      { id: "s2", text: String.raw`$p(x-hu)$를 $h$에 대해 2차까지 테일러 전개하면 $p(x-hu)\approx p(x)-hu\,p'(x)+\frac{h^2u^2}{2}p''(x)$이다. 이를 대입해 항별로 적분하면, $\int K(u)du=1,\ \int uK(u)du=0,\ \int u^2K(u)du=\sigma_K^2$이므로 $E[\hat p_h(x)]\approx p(x)+$ $[[blank:가]]$이다.`,
+      { id: "s2", text: String.raw`$p(x-hu)$를 $h$에 대해 2차까지 테일러 전개하면 $p(x-hu)\approx p(x)-hu\,p'(x)+\frac{h^2u^2}{2}p''(x)$이다. 이를 대입해 항별로 적분하면, $\int K(u)du=1,\ \int uK(u)du=0,\ \int u^2K(u)du=\sigma_K^2$이므로 $E[\hat p_h(x)]\approx p(x)+$ [[blank:가]]이다.`,
         blanks: [{ id: "가", latex: String.raw`\frac{h^2}{2}\sigma_K^2p''(x)`, why: String.raw`1차항은 대칭커널 조건 $\int uK(u)du=0$ 때문에 사라지고, 2차항의 계수 $\int u^2K(u)du=\sigma_K^2$만 남아요. 이것이 바로 편향이에요.` }] },
       { id: "s3", text: String.raw`이 결과에서 $\mathrm{Bias}[\hat p_h(x)]=E[\hat p_h(x)]-p(x)\approx\frac{h^2}{2}\sigma_K^2p''(x)$로, $h$가 클수록(과대평활) 편향의 크기가 $h^2$에 비례해 커진다. 봉우리 근처($p''$가 큰 곳)일수록 이 효과가 두드러져 뾰족한 구조가 뭉개진다.`, blanks: [] },
-      { id: "s4", text: String.raw`분산은 $\hat p_h(x)$가 iid 항의 평균이므로 $\mathrm{Var}[\hat p_h(x)]=\frac{1}{nh^2}\mathrm{Var}\!\big[K(\frac{x-X}{h})\big]$이다. $E[K^2(\frac{x-X}{h})]=\int K(u)^2 p(x-hu)\,h\,du\approx hp(x)\!\int K(u)^2du=hp(x)R(K)$이고, $\big(E[K(\frac{x-X}{h})]\big)^2$은 $h$에 대해 더 낮은 차수이므로 지배항에서 빠진다. 따라서 $\mathrm{Var}[\hat p_h(x)]\approx$ $[[blank:나]]$이다.`,
+      { id: "s4", text: String.raw`분산은 $\hat p_h(x)$가 iid 항의 평균이므로 $\mathrm{Var}[\hat p_h(x)]=\frac{1}{nh^2}\mathrm{Var}\!\big[K(\frac{x-X}{h})\big]$이다. $E[K^2(\frac{x-X}{h})]=\int K(u)^2 p(x-hu)\,h\,du\approx hp(x)\!\int K(u)^2du=hp(x)R(K)$이고, $\big(E[K(\frac{x-X}{h})]\big)^2$은 $h$에 대해 더 낮은 차수이므로 지배항에서 빠진다. 따라서 $\mathrm{Var}[\hat p_h(x)]\approx$ [[blank:나]]이다.`,
         blanks: [{ id: "나", latex: String.raw`\frac{p(x)R(K)}{nh}`, why: String.raw`$\frac{1}{nh^2}\cdot hp(x)R(K)=\frac{p(x)R(K)}{nh}$로 정리돼요. $h$가 작을수록(과소평활) 분모가 작아져 분산이 커집니다 — 표본이 좁은 창 안에 적게 걸려서 추정이 흔들리는 거예요.` }] },
       { id: "s5", text: String.raw`두 결과를 결합하면 점별 평균제곱오차는 $\mathrm{MSE}(x)\approx \mathrm{Bias}^2+\mathrm{Var}=\frac{h^4}{4}\sigma_K^4p''(x)^2+\frac{p(x)R(K)}{nh}$로, $h$가 커지면 첫 항(편향)이 늘고 $h$가 작아지면 둘째 항(분산)이 는다 — 하나를 줄이면 다른 하나가 커지는 전형적인 트레이드오프다.`, blanks: [] },
       { id: "s6", text: String.raw`$h$에 대해 미분해 0으로 놓으면 $h^3\sigma_K^4p''(x)^2-\frac{p(x)R(K)}{nh^2}=0$에서 $h^5=\frac{p(x)R(K)}{n\sigma_K^4p''(x)^2}$를 얻고, 따라서 $\mathrm{MSE}$를 최소화하는 대역폭은 $h^*\propto n^{-1/5}$로 스케일한다 — 표본이 늘수록 대역폭을 서서히 줄여가되, 모수적 추정처럼 $n^{-1}$이 아니라 더 느린 $n^{-4/5}$ 속도로 오차가 줄어드는 것이 비모수 추정의 한계다.`, blanks: [] },
@@ -18340,10 +18340,10 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
 </svg>`,
     diagramCaption: String.raw`두 부분집단 모두에서 A(채움)가 B(점선 윤곽)보다 높지만, 부분집단별 표본 비율이 달라 전체 합산에서는 순위가 뒤바뀐다.`,
     sections: [
-      { id: "s1", text: String.raw`전체 합산 성공률은 부분집단 성공률의 가중평균으로 쓸 수 있다. $\alpha=\frac{b_1}{b_1+b_2}$라 하면 A의 전체 성공률은 $\frac{a_1+a_2}{b_1+b_2}=\alpha\cdot\frac{a_1}{b_1}+(1-\alpha)\cdot\frac{a_2}{b_2}$이다. 마찬가지로 $\beta=\frac{d_1}{d_1+d_2}$라 하면 B의 전체 성공률은 $[[blank:가]]$이다.`,
+      { id: "s1", text: String.raw`전체 합산 성공률은 부분집단 성공률의 가중평균으로 쓸 수 있다. $\alpha=\frac{b_1}{b_1+b_2}$라 하면 A의 전체 성공률은 $\frac{a_1+a_2}{b_1+b_2}=\alpha\cdot\frac{a_1}{b_1}+(1-\alpha)\cdot\frac{a_2}{b_2}$이다. 마찬가지로 $\beta=\frac{d_1}{d_1+d_2}$라 하면 B의 전체 성공률은 [[blank:가]]이다.`,
         blanks: [{ id: "가", latex: String.raw`\beta\cdot\frac{c_1}{d_1}+(1-\beta)\cdot\frac{c_2}{d_2}`, why: String.raw`같은 방식으로, B의 전체 성공률도 B 자신의 부분집단 표본 비율 $\beta$를 가중치로 쓴 가중평균이에요. 핵심은 A의 가중치 $\alpha$와 B의 가중치 $\beta$가 일반적으로 서로 다르다는 점입니다.` }] },
       { id: "s2", text: String.raw`$r_{iA}=a_i/b_i$, $r_{iB}=c_i/d_i$로 표기하면 전체 성공률 차이는 $\alpha r_{1A}+(1-\alpha)r_{2A}-\big[\beta r_{1B}+(1-\beta)r_{2B}\big]$이다. $\alpha r_{1B}$와 $(1-\alpha)r_{2B}$를 더하고 빼서 정리하면 $\alpha(r_{1A}-r_{1B})+(1-\alpha)(r_{2A}-r_{2B})+(\alpha-\beta)(r_{1B}-r_{2B})$ 라는 항등식을 얻는다.`, blanks: [] },
-      { id: "s3", text: String.raw`가정에 의해 $\Delta_1=r_{1A}-r_{1B}>0$, $\Delta_2=r_{2A}-r_{2B}>0$이므로, 이 둘의 볼록결합(가중치 합이 1인 양의 가중평균)인 앞의 두 항은 $\alpha\Delta_1+(1-\alpha)\Delta_2$ $[[blank:나]]$이다.`,
+      { id: "s3", text: String.raw`가정에 의해 $\Delta_1=r_{1A}-r_{1B}>0$, $\Delta_2=r_{2A}-r_{2B}>0$이므로, 이 둘의 볼록결합(가중치 합이 1인 양의 가중평균)인 앞의 두 항은 $\alpha\Delta_1+(1-\alpha)\Delta_2$ [[blank:나]]이다.`,
         blanks: [{ id: "나", latex: String.raw`>0`, why: String.raw`양수 두 개($\Delta_1,\Delta_2$)의 볼록결합(가중치 합이 1인 양의 가중평균)은 항상 양수예요. 두 부분집단 모두에서 A가 이긴다는 가정이 여기 쓰입니다.` }] },
       { id: "s4", text: String.raw`따라서 전체 성공률 차이의 부호를 뒤집을 수 있는 유일한 원천은 마지막 항 $(\alpha-\beta)(r_{1B}-r_{2B})$뿐이다. $\alpha=\beta$(즉 A와 B가 두 부분집단에 같은 비율로 배정)라면 이 항이 0이 되어 전체 차이는 앞의 양수 항만 남고, 역설은 일어날 수 없다. 반면 $\alpha\ne\beta$이고 그 곱이 충분히 음수이면 전체 차이의 부호가 뒤집힐 수 있다.`, blanks: [] },
       { id: "s5", text: String.raw`신장결석 자료에 대입해 확인하자. $\alpha=87/350\approx0.2486$, $\beta=270/350\approx0.7714$이고 $\Delta_1\approx0.0644$, $\Delta_2\approx0.0425$이므로 앞의 양수 항은 $\alpha\Delta_1+(1-\alpha)\Delta_2\approx0.0480$이다. 반면 마지막 항은 $(\alpha-\beta)(r_{1B}-r_{2B})\approx(-0.5229)(0.1792)\approx-0.0937$로, 두 항을 더하면 $0.0480-0.0937\approx-0.0457$이 되어 실제 전체 차이 $78.0\%-82.6\%\approx-0.0457$과 정확히 일치한다.`, blanks: [] },
@@ -18412,10 +18412,10 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
     diagramCaption: String.raw`공 하나를 뽑아 색을 기록하고 같은 색 공을 하나 더 넣어 돌려주는 폴리아 항아리 과정. 순서에 의존하는 것처럼 보이지만 결합분포는 교환가능하다.`,
     sections: [
       { id: "s1", text: String.raw`먼저 항아리 과정이 교환가능함을 보인다. $i$번째 뽑기 전까지 빨강이 $s_{i-1}$개 나왔다면 항아리엔 빨강 $a+s_{i-1}$개, 전체 $a+b+(i-1)$개가 있으므로 $P(X_i=1\mid X_1,\dots,X_{i-1})=\frac{a+s_{i-1}}{a+b+i-1}$이다.`, blanks: [] },
-      { id: "s2", text: String.raw`연쇄법칙으로 $(x_1,\dots,x_N)$의 결합확률을 전부 곱하면, $s=\sum x_i$라 할 때 분자에는 빨강이 나올 때마다 $a,a+1,a+2,\dots$가, 파랑이 나올 때마다 $b,b+1,b+2,\dots$가 순서대로 곱해지고 분모에는 매 단계 $a+b,a+b+1,\dots,a+b+N-1$이 곱해진다. 상승계승 $x^{(k)}=x(x+1)\cdots(x+k-1)$ 표기를 쓰면 $P(x_1,\dots,x_N)=$ $[[blank:가]]$이다.`,
+      { id: "s2", text: String.raw`연쇄법칙으로 $(x_1,\dots,x_N)$의 결합확률을 전부 곱하면, $s=\sum x_i$라 할 때 분자에는 빨강이 나올 때마다 $a,a+1,a+2,\dots$가, 파랑이 나올 때마다 $b,b+1,b+2,\dots$가 순서대로 곱해지고 분모에는 매 단계 $a+b,a+b+1,\dots,a+b+N-1$이 곱해진다. 상승계승 $x^{(k)}=x(x+1)\cdots(x+k-1)$ 표기를 쓰면 $P(x_1,\dots,x_N)=$ [[blank:가]]이다.`,
         blanks: [{ id: "가", latex: String.raw`\dfrac{a^{(s)}\,b^{(N-s)}}{(a+b)^{(N)}}`, why: String.raw`분자는 빨강이 나올 때마다 곱해지는 $a,a+1,\dots,a+s-1$(즉 $a^{(s)}$)와 파랑이 나올 때마다 곱해지는 $b,b+1,\dots,b+(N-s)-1$(즉 $b^{(N-s)}$)의 곱이고, 분모는 매 단계 공통으로 곱해지는 $(a+b)^{(N)}$이에요.` }] },
       { id: "s3", text: String.raw`이 식은 $x_1,\dots,x_N$의 배열 순서가 아니라 총합 $s$에만 의존한다 — 어느 위치에서 빨강이 나오든 곱해지는 인수들의 집합은 똑같기 때문이다. 따라서 순서를 뒤바꿔도 확률이 불변이므로 이 과정은 정의상 교환가능하다.`, blanks: [] },
-      { id: "s4", text: String.raw`이제 이 값이 베타-베르누이 혼합과 정확히 같음을 보인다. $\int_0^1\theta^s(1-\theta)^{N-s}\cdot\frac{\theta^{a-1}(1-\theta)^{b-1}}{B(a,b)}\,d\theta=\frac{B(a+s,\,b+N-s)}{B(a,b)}$인데, 베타함수를 감마함수로 풀면 $B(a+s,b+N-s)=\frac{\Gamma(a+s)\Gamma(b+N-s)}{\Gamma(a+b+N)}$이고 $\Gamma(a+s)/\Gamma(a)=a^{(s)}$, $\Gamma(b+N-s)/\Gamma(b)=b^{(N-s)}$, $\Gamma(a+b+N)/\Gamma(a+b)=(a+b)^{(N)}$이므로 정리하면 $[[blank:나]]$가 되어 s2의 식과 정확히 일치한다.`,
+      { id: "s4", text: String.raw`이제 이 값이 베타-베르누이 혼합과 정확히 같음을 보인다. $\int_0^1\theta^s(1-\theta)^{N-s}\cdot\frac{\theta^{a-1}(1-\theta)^{b-1}}{B(a,b)}\,d\theta=\frac{B(a+s,\,b+N-s)}{B(a,b)}$인데, 베타함수를 감마함수로 풀면 $B(a+s,b+N-s)=\frac{\Gamma(a+s)\Gamma(b+N-s)}{\Gamma(a+b+N)}$이고 $\Gamma(a+s)/\Gamma(a)=a^{(s)}$, $\Gamma(b+N-s)/\Gamma(b)=b^{(N-s)}$, $\Gamma(a+b+N)/\Gamma(a+b)=(a+b)^{(N)}$이므로 정리하면 [[blank:나]]가 되어 s2의 식과 정확히 일치한다.`,
         blanks: [{ id: "나", latex: String.raw`\dfrac{a^{(s)}b^{(N-s)}}{(a+b)^{(N)}}`, why: String.raw`감마함수 비율을 상승계승으로 바꿔 정리하면 항아리에서 직접 얻은 s2의 식과 글자 그대로 같은 표현이 나와요. 이것이 두 계산법이 일치함을 대수적으로 보이는 핵심 단계입니다.` }] },
       { id: "s5", text: String.raw`따라서 폴리아 항아리의 결합분포 $P(X_1,\dots,X_N)$은 정확히 $\Theta\sim\mathrm{Beta}(a,b)$를 뽑아 조건부로 $X_i\stackrel{iid}{\sim}\mathrm{Bernoulli}(\Theta)$를 생성한 혼합분포와 같다. 이 과정은 매 시행이 이전 결과에 의존하는(독립이 아닌) 순차적 과정임에도, 교환가능하기만 하면 "조건부로는 iid"인 잠재변수 $\Theta$가 반드시 존재함을 유한한 $N$에서 완전히 엄밀하게 보여준다.`, blanks: [] },
       { id: "s6", text: String.raw`예제에서 $a=2,b=3,N=3$, 순서 $(1,1,0)$에 대해 두 계산법 모두 정확히 $3/35$를 주었다는 사실이 이 항등식을 수치로 재확인해 준다. 따라서 명제가 성립한다.`, blanks: [] }
@@ -18433,10 +18433,10 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
 <p>이제 베이즈 최적 분류기 $D^*(x)=\sigma(x-\tfrac12)$(등분산 두 정규분포의 베이즈 최적 분류기는 로지스틱 시그모이드가 됩니다)를 $x=2$에 대입하면 $D^*(2)=\sigma(1.5)\approx0.81757$이고, $\dfrac{D^*(2)}{1-D^*(2)}\approx\dfrac{0.81757}{0.18243}\approx4.4817$로 참 비율과 정확히 같습니다.</p>`,
     sections: [
       { id: "s1", text: String.raw`모집단 위험함수를 라벨 사전확률과 함께 적분 형태로 다시 쓰면 $R(D)=-\tfrac12\int p(x)\log D(x)\,dx-\tfrac12\int q(x)\log(1-D(x))\,dx=\tfrac12\int\big[-p(x)\log D(x)-q(x)\log(1-D(x))\big]dx$이다.`, blanks: [] },
-      { id: "s2", text: String.raw`$D(x)\in(0,1)$는 각 $x$마다 독립적으로 자유롭게 고를 수 있으므로, 적분 전체를 최소화하려면 피적분함수 $g(D)=-p(x)\log D-q(x)\log(1-D)$를 각 고정된 $x$에서 점별로 최소화하면 된다. $g$를 $D$에 대해 미분하면 $g'(D)=-\dfrac{p(x)}{D}+\dfrac{q(x)}{1-D}$이고, 이를 0으로 놓으면 $p(x)(1-D)=q(x)D$, 즉 $D\big(p(x)+q(x)\big)=$ $[[blank:가]]$이다.`,
+      { id: "s2", text: String.raw`$D(x)\in(0,1)$는 각 $x$마다 독립적으로 자유롭게 고를 수 있으므로, 적분 전체를 최소화하려면 피적분함수 $g(D)=-p(x)\log D-q(x)\log(1-D)$를 각 고정된 $x$에서 점별로 최소화하면 된다. $g$를 $D$에 대해 미분하면 $g'(D)=-\dfrac{p(x)}{D}+\dfrac{q(x)}{1-D}$이고, 이를 0으로 놓으면 $p(x)(1-D)=q(x)D$, 즉 $D\big(p(x)+q(x)\big)=$ [[blank:가]]이다.`,
         blanks: [{ id: "가", latex: String.raw`p(x)`, why: String.raw`$p(x)(1-D)=q(x)D$를 전개하면 $p(x)-p(x)D=q(x)D$이고, $D$ 항을 모두 왼쪽으로 옮기면 $p(x)=D\,p(x)+D\,q(x)=D(p(x)+q(x))$가 돼요.` }] },
       { id: "s3", text: String.raw`따라서 최적해는 $D^*(x)=\dfrac{p(x)}{p(x)+q(x)}$이다. 이차미분 $g''(D)=\frac{p(x)}{D^2}+\frac{q(x)}{(1-D)^2}>0$이므로 이 정상점은 실제로 최소점이며, 각 $x$에서의 최소가 전체 적분의 최소를 이룬다.`, blanks: [] },
-      { id: "s4", text: String.raw`$1-D^*(x)=1-\dfrac{p(x)}{p(x)+q(x)}=\dfrac{q(x)}{p(x)+q(x)}$이므로 오즈(odds)를 계산하면 $\dfrac{D^*(x)}{1-D^*(x)}=$ $[[blank:나]]$이다.`,
+      { id: "s4", text: String.raw`$1-D^*(x)=1-\dfrac{p(x)}{p(x)+q(x)}=\dfrac{q(x)}{p(x)+q(x)}$이므로 오즈(odds)를 계산하면 $\dfrac{D^*(x)}{1-D^*(x)}=$ [[blank:나]]이다.`,
         blanks: [{ id: "나", latex: String.raw`\dfrac{p(x)}{q(x)}`, why: String.raw`분자와 분모 모두 $p(x)+q(x)$로 나눈 값이므로 그 공통 인수가 약분되고, 남는 것은 $p(x)/q(x)$뿐이에요.` }] },
       { id: "s5", text: String.raw`즉 두 밀도의 원래 식을 몰라도, $x\sim p$와 $x\sim q$ 표본을 분류하도록 학습된 이진분류기의 출력 $D(x)$만 있으면 그 오즈 $D(x)/(1-D(x))$가 곧 밀도비 $p(x)/q(x)$의 추정값이 된다.`, blanks: [] },
       { id: "s6", text: String.raw`예제에서 $x=2$에 대해 참 비율 $\exp(1.5)\approx4.4817$과 베이즈 최적 분류기의 오즈 $D^*(2)/(1-D^*(2))\approx4.4817$가 정확히 일치했다는 사실이 이 등식을 수치로 확인해 준다. 따라서 명제가 성립한다.`, blanks: [] }
@@ -18454,10 +18454,10 @@ $$Z\approx (\lambda^*)^5e^{-\lambda^*}\sqrt{\frac{2\pi}{H}}=5^5e^{-5}\sqrt{2\pi/
 <p>다른 점 $\theta=0.2$에서도 확인해 봅시다. $\phi=\arcsin(\sqrt{0.2})\approx0.4636$, $I(\theta)=1/(0.2\cdot0.8)=6.25$, $d\theta/d\phi=\sin(2\cdot0.4636)=\sin(0.9273)=0.8$이므로 $I(\phi)=6.25\times0.8^2=6.25\times0.64=4.0$으로 <strong>또다시 정확히 4</strong>가 나옵니다. $\theta$값에 관계없이 $I(\phi)\equiv4$(상수)라는 뜻이며, 이는 $\phi$ 좌표에서 Jeffreys 사전분포가 $\sqrt{I(\phi)}=2$(상수), 즉 균등분포가 됨을 의미합니다.</p>`,
     sections: [
       { id: "s1", text: String.raw`두 방식으로 $\phi$-스케일의 사전분포를 구해 비교한다. 첫째 방식은 $\theta$의 Jeffreys 사전분포 $\pi_\theta(\theta)=\sqrt{I(\theta)}$를 확률밀도 변수변환 공식으로 옮기는 것이다: $\pi_\phi^{(1)}(\phi)=\pi_\theta(\theta(\phi))\Big|\dfrac{d\theta}{d\phi}\Big|=\sqrt{I(\theta(\phi))}\cdot\Big|\dfrac{d\theta}{d\phi}\Big|$.`, blanks: [] },
-      { id: "s2", text: String.raw`둘째 방식은 $\phi$를 모수로 둔 모델 $f(x;\theta(\phi))$로부터 피셔정보를 직접 계산하는 것이다. 점수함수의 연쇄법칙 $\partial_\phi\log f(x;\theta(\phi))=\partial_\theta\log f(x;\theta)\cdot\dfrac{d\theta}{d\phi}$를 제곱해 기댓값을 취하면 $I(\phi)=E[(\partial_\phi\log f)^2]=\Big(\dfrac{d\theta}{d\phi}\Big)^2E[(\partial_\theta\log f)^2]=$ $[[blank:가]]$이다.`,
+      { id: "s2", text: String.raw`둘째 방식은 $\phi$를 모수로 둔 모델 $f(x;\theta(\phi))$로부터 피셔정보를 직접 계산하는 것이다. 점수함수의 연쇄법칙 $\partial_\phi\log f(x;\theta(\phi))=\partial_\theta\log f(x;\theta)\cdot\dfrac{d\theta}{d\phi}$를 제곱해 기댓값을 취하면 $I(\phi)=E[(\partial_\phi\log f)^2]=\Big(\dfrac{d\theta}{d\phi}\Big)^2E[(\partial_\theta\log f)^2]=$ [[blank:가]]이다.`,
         blanks: [{ id: "가", latex: String.raw`I(\theta)\Big(\dfrac{d\theta}{d\phi}\Big)^2`, why: String.raw`연쇄법칙으로 점수함수가 $d\theta/d\phi$배만큼 스케일되고, 이를 제곱해 기댓값을 취하면 $(d\theta/d\phi)^2$이 상수로 앞으로 빠져나와 $I(\theta)$에 곱해져요.` }] },
       { id: "s3", text: String.raw`양변에 제곱근을 취하면 둘째 방식의 Jeffreys 사전분포는 $\pi_\phi^{(2)}(\phi)=\sqrt{I(\phi)}=\sqrt{I(\theta(\phi))}\cdot\Big|\dfrac{d\theta}{d\phi}\Big|$이다.`, blanks: [] },
-      { id: "s4", text: String.raw`s1의 $\pi_\phi^{(1)}(\phi)$와 s3의 $\pi_\phi^{(2)}(\phi)$를 나란히 놓고 비교하면, 두 식은 똑같이 $[[blank:나]]$로 정리되어 완전히 일치한다.`,
+      { id: "s4", text: String.raw`s1의 $\pi_\phi^{(1)}(\phi)$와 s3의 $\pi_\phi^{(2)}(\phi)$를 나란히 놓고 비교하면, 두 식은 똑같이 [[blank:나]]로 정리되어 완전히 일치한다.`,
         blanks: [{ id: "나", latex: String.raw`\sqrt{I(\theta(\phi))}\cdot\Big|\dfrac{d\theta}{d\phi}\Big|`, why: String.raw`s1에서 변수변환 공식으로 옮긴 식과 s3에서 새 모수의 피셔정보로 직접 계산한 식이 글자 그대로 이 같은 표현으로 정리돼요. 그래서 두 방식이 항상 일치합니다.` }] },
       { id: "s5", text: String.raw`따라서 어느 모수화에서 Jeffreys 규칙을 적용하든 같은 사전분포(같은 측도)에 도달하며, 이것이 Jeffreys 사전분포가 "재매개변수화 불변"이라 불리는 이유다.`, blanks: [] },
       { id: "s6", text: String.raw`예제에서 베르누이 모델의 $I(\theta)=1/(\theta(1-\theta))$를 $\phi=\arcsin(\sqrt\theta)$로 변환하면 $\theta=0.5$에서도 $\theta=0.2$에서도 똑같이 $I(\phi)=4$가 나왔다 — $\phi$ 좌표에서는 Jeffreys 사전분포가 상수(균등분포)라는 뜻이며, 이는 두 계산법의 일치를 수치로 재확인해 준다. 따라서 명제가 성립한다.`, blanks: [] }
@@ -19649,11 +19649,138 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
       { id: "s7", text: String.raw`$c>0$인 한 이 분산은 결코 $0$으로 줄지 않는다. 즉 $p$가 $n$과 같은 정도의 크기를 유지하는 한(예: $c=1$이면 지지구간이 $[0,4]$), 참 공분산행렬이 항등행렬(순수한 잡음)이어도 표본공분산행렬의 고유값들은 $1$ 하나로 뭉치지 않고 넓게 퍼진 채로 남는다. 이것이 PCA가 변수 개수 $p$가 표본 수 $n$에 비견될 만큼 클 때 신뢰할 수 없는 이유다. 잡음만으로도 큰 고유값이 나올 수 있으므로, 실제 신호인지 판단하려면 관측된 고유값을 이 마르첸코-파스투르 분포가 예측하는 잡음 구간과 비교해야 한다. 따라서 명제가 성립한다.`, blanks: [] }
     ]
   },
+  "found-set-proposition-logic": {
+    title: String.raw`집합과 명제`,
+    domain: "found",
+    subLabel: String.raw`예비수학 1부 · 수학의 언어 · 명제와 대우의 동치`,
+    explanation: String.raw`어떤 명제를 직접 증명하기 막막할 때 "대우를 증명해보라"는 말을 들어본 적 있을 거예요. 그런데 왜 원래 명제 대신 대우를 증명해도 되는지, 그 이유까지 따로 확인해본 적은 드물어요.<br><br>이 사이트에 있는 모든 증명은 결국 "어떤 조건을 가정하면 다른 조건이 반드시 따라온다"는 걸 보이는 작업이에요. 그리고 그 바탕에는 명제를 집합으로 바꿔 생각하는 습관이 깔려 있어요. 명제 $P(x)$가 참이 되는 $x$들을 모은 집합을 $S_P$, $Q(x)$가 참이 되는 $x$들을 모은 집합을 $S_Q$라고 하면, "$P(x)$이면 $Q(x)$이다"라는 명제는 $S_P\subseteq S_Q$라는 집합 사이의 포함관계로 정확히 번역돼요.<br><br>이렇게 번역해두면 "대우가 원래 명제와 동치다"라는 사실도 집합의 포함관계 문제로 바꿔서, 눈으로 보이게 증명할 수 있어요.<br><br><strong>명제.</strong> 전체집합 $U$ 위에서 정의된 명제 $P(x),\,Q(x)$에 대해 진리집합을 $S_P=\{x\in U: P(x)\}$, $S_Q=\{x\in U: Q(x)\}$라 하면, "$\forall x,\ P(x)\Rightarrow Q(x)$"가 참인 것과 그 대우 "$\forall x,\ \lnot Q(x)\Rightarrow\lnot P(x)$"가 참인 것은 동치이다.`,
+    intuition: String.raw`<p>명제를 그 명제가 참이 되는 원소들의 집합으로 바꿔 생각하면, "이면" 관계는 집합의 포함관계가 되고 "아니다"는 여집합이 돼요. 이 번역 하나로 대우, 귀류법, 모순 같은 증명 전략들이 전부 집합 그림으로 눈에 보이게 됩니다.</p>`,
+    example: String.raw`<p>구체적인 명제로 확인해봅니다. 전체집합을 $U=\{1,2,3,4,5,6\}$으로 두고, $P(x)$를 "$x$는 $4$의 약수이다", $Q(x)$를 "$x$는 짝수이다"로 정해봅니다.</p>
+<p>$P(x)$의 진리집합은 $S_P=\{1,2,4\}$이고, $Q(x)$의 진리집합은 $S_Q=\{2,4,6\}$이에요. $S_P\subseteq S_Q$인지 확인해보면 $1\in S_P$인데 $1\notin S_Q$이므로 포함관계가 성립하지 않아요. 실제로 $x=1$은 $4$의 약수이지만 짝수는 아니니, "$P(x)\Rightarrow Q(x)$"는 참이 아닙니다.</p>
+<p>이번엔 $P(x)$를 "$x$는 $6$의 약수이다"로 바꿔봅니다. $S_P=\{1,2,3,6\}$인데 $3\in S_P$이고 $3\notin S_Q=\{2,4,6\}$이라, 이번에도 포함관계가 깨져요. $x=3$은 $6$의 약수이지만 짝수가 아니라는 반례예요.</p>
+<p>이제 $P(x)$를 "$x$는 $2$의 배수이면서 $4$ 이하이다"로 정하면 $S_P=\{2,4\}$가 되고, 이번엔 $S_P\subseteq S_Q=\{2,4,6\}$이 실제로 성립해요. 대우로 확인해보면 $S_Q^c=\{1,3,5\}$이고 $S_P^c=\{1,3,5,6\}$인데, $S_Q^c\subseteq S_P^c$도 정확히 성립합니다. 원래 포함관계가 성립하는 경우에만 대우 쪽 포함관계도 함께 성립한다는 걸 숫자로 확인한 거예요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="360" height="220" fill="none" class="dg-line" stroke-width="1"/>
+<text x="30" y="38" font-size="12" class="dg-dim">전체집합 U</text>
+<circle cx="230" cy="145" r="85" fill="none" class="dg-stroke-ink" stroke-width="2" stroke-dasharray="6,3"/>
+<text x="230" y="72" font-size="13" text-anchor="middle">S_Q</text>
+<circle cx="185" cy="155" r="42" class="dg-accent"/>
+<circle cx="185" cy="155" r="42" fill="none" class="dg-stroke-accent" stroke-width="2"/>
+<text x="185" y="160" font-size="13" text-anchor="middle">S_P</text>
+<text x="300" y="225" font-size="11" class="dg-dim">S_Q^c (바깥 전체)</text>
+<text x="60" y="225" font-size="11" class="dg-dim">S_P^c ⊇ S_Q^c</text>
+</svg>`,
+    diagramCaption: String.raw`S_P가 S_Q 안에 들어있으면(원래 명제), 바깥쪽 여집합 관계는 반드시 뒤집혀 S_Q^c가 S_P^c 안에 들어간다(대우).`,
+    sections: [
+      { id: "s1", text: String.raw`증명할 것은 두 조건 $S_P\subseteq S_Q$와 $S_Q^c\subseteq S_P^c$가 논리적으로 동치라는 것이다. 이를 보이면 원래 명제 "$P\Rightarrow Q$"가 참인 것과 그 대우 "$\lnot Q\Rightarrow\lnot P$"가 참인 것이 같은 말임이 증명된다. 두 조건이 서로를 함축함을 양방향으로 보이는 방식으로 진행한다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 $S_P\subseteq S_Q$를 가정하고 $S_Q^c\subseteq S_P^c$를 보인다. 임의의 원소 $x\in S_Q^c$를 잡으면 $x\notin S_Q$이다. 만약 $x\in S_P$라면 가정 $S_P\subseteq S_Q$에 의해 $x\in S_Q$가 되어 방금 말한 $x\notin S_Q$와 모순된다. 그러므로 $x\notin S_P$, 즉 $x\in$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`S_P^c`, why: String.raw`x가 S_P의 원소라고 가정하면 모순이 생기므로 x는 S_P의 원소일 수 없어요. S_P의 원소가 아니라는 건 정의상 여집합 S_P^c의 원소라는 뜻이에요.` }] },
+      { id: "s3", text: String.raw`$x\in S_Q^c$가 임의로 주어졌을 때 $x\in S_P^c$임을 보였으므로 $S_Q^c\subseteq S_P^c$가 성립한다. 이것으로 한쪽 방향($S_P\subseteq S_Q\Rightarrow S_Q^c\subseteq S_P^c$)이 끝났다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 반대 방향을 본다. $S_Q^c\subseteq S_P^c$를 가정하고 $S_P\subseteq S_Q$를 보인다. 임의의 원소 $x\in S_P$를 잡는다. 만약 $x\in S_Q^c$라면 가정에 의해 $x\in S_P^c$가 되어 방금 잡은 $x\in S_P$와 모순된다. 그러므로 $x\notin S_Q^c$, 즉 $x\in$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`S_Q`, why: String.raw`x가 S_Q^c에 속하지 않는다는 건 여집합의 정의상 x가 S_Q 안에 있다는 뜻이에요. 이중부정을 풀어내는 자리예요.` }] },
+      { id: "s5", text: String.raw`$x\in S_P$가 임의로 주어졌을 때 $x\in S_Q$임을 보였으므로 $S_P\subseteq S_Q$가 성립한다. 이것으로 나머지 방향도 확인되어, $S_P\subseteq S_Q$와 $S_Q^c\subseteq S_P^c$는 서로를 함축하는 동치 조건임이 밝혀졌다.`, blanks: [] },
+      { id: "s6", text: String.raw`집합의 언어로 증명한 이 동치를 다시 명제의 언어로 옮긴다. "모든 $x$에 대해 $P(x)\Rightarrow Q(x)$"가 참이라는 것은 정의상 $S_P\subseteq S_Q$와 같은 말이고, 그 대우 "모든 $x$에 대해 $\lnot Q(x)\Rightarrow\lnot P(x)$"가 참이라는 것은 $S_Q^c\subseteq S_P^c$와 같은 말이다. 앞서 두 집합 조건이 서로를 함축함을 보였으므로, 원래 명제와 그 대우 사이에는 $P\Rightarrow Q$[[blank:다]]$\lnot Q\Rightarrow\lnot P$ 관계가 성립한다.`,
+        blanks: [{ id: "다", latex: String.raw`\Longleftrightarrow`, why: String.raw`서로가 서로를 함축하는 관계는 필요충분조건, 즉 동치 기호 ⟺로 나타내요. 방향 하나만 보인 게 아니라 양방향을 다 보였기 때문에 화살표 두 개짜리 기호를 쓸 수 있어요.` }] },
+      { id: "s7", text: String.raw`그러므로 명제 하나를 직접 증명하기 어려울 때 그 대우를 대신 증명해도 결과는 안전하게 같다. 이 사이트의 증명들 중에도 "원래 조건 대신 대우나 여집합 조건을 보인다"는 전략이 나오면, 지금 확인한 이 동치가 그 근거다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "수학적 귀납법과 엄밀한 증명 감각", slug: "found-mathematical-induction" },
+      { label: "방정식과 부등식 다시 보기", slug: "found-equation-inequality-review" }
+    ]
+  },
+  "found-equation-inequality-review": {
+    title: String.raw`방정식과 부등식 다시 보기`,
+    domain: "found",
+    subLabel: String.raw`예비수학 1부 · 수학의 언어 · 부등식으로 최적을 증명하기`,
+    explanation: String.raw`방정식은 "정확히 언제 등호가 성립하는가"를 묻고, 부등식은 "어느 범위까지 가능한가"를 물어요. 그런데 최적화 문제 대부분은 사실 부등식 문제예요. "이 값은 항상 이 한계를 넘지 못한다"는 부등식을 보이고, "그 한계에 정확히 도달하는 경우가 있다"는 걸 추가로 보이면, 그 한계가 바로 최댓값(또는 최솟값)이 됩니다.<br><br>이 논리를 가장 깔끔하게 보여주는 도구가 산술-기하평균 부등식(AM-GM)이에요. 음이 아닌 두 수 $x,y$에 대해 $\dfrac{x+y}{2}\ge\sqrt{xy}$가 항상 성립하고, 등호는 $x=y$일 때만 성립해요. 이 부등식 하나로 "둘레가 고정된 직사각형 중 넓이가 가장 큰 것은 정사각형이다"라는, 겉보기엔 기하 문제인 것도 증명할 수 있어요.<br><br><strong>명제.</strong> 둘레의 절반이 $s>0$으로 고정된 직사각형, 즉 $x+y=s$ ($x,y>0$)를 만족하는 직사각형 중에서 넓이 $A=xy$가 최대가 되는 것은 $x=y=s/2$일 때이며, 그때 최대 넓이는 $A=\dfrac{s^2}{4}$이다.`,
+    intuition: String.raw`<p>"항상 이 값 이하다"라는 부등식과 "정확히 이 값에 도달하는 경우가 있다"는 사실을 같이 보이면, 그 값이 곧 최댓값이라는 걸 증명한 셈이 돼요. AM-GM은 이 전략을 쓸 수 있는 가장 손쉬운 부등식 중 하나예요.</p>`,
+    example: String.raw`<p>둘레의 절반이 $s=10$으로 고정된 직사각형을 생각해봅니다. $x+y=10$을 만족하는 몇 가지 경우를 넓이로 비교해봅니다.</p>
+<p>$x=2,y=8$이면 $A=16$이고, $x=3,y=7$이면 $A=21$, $x=4,y=6$이면 $A=24$, $x=4.5,y=5.5$이면 $A=24.75$가 나와요. $x=5,y=5$(정사각형)이면 $A=25$가 됩니다.</p>
+<p>$x$가 $5$에서 멀어질수록 넓이가 점점 줄어들고, $x=y=5$일 때 넓이가 $25=\dfrac{10^2}{4}$로 정확히 최댓값이 나오는 걸 확인할 수 있어요. $x=4.5,y=5.5$처럼 정사각형에 아주 가까워도 넓이는 $24.75$로 딱 $25$에 못 미친다는 점도 눈여겨볼 만해요. 등호는 정말로 $x=y$일 때만 딱 맞아떨어져요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg">
+<line x1="40" y1="220" x2="440" y2="220" class="dg-line" stroke-width="1.3"/>
+<polygon points="440,220 429,215 429,225" class="dg-line"/>
+<line x1="40" y1="220" x2="40" y2="30" class="dg-line" stroke-width="1.3"/>
+<polygon points="40,30 35,42 45,42" class="dg-line"/>
+<path d="M60,210 Q240,45 420,210" fill="none" class="dg-stroke-accent" stroke-width="2.2"/>
+<line x1="240" y1="220" x2="240" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<line x1="40" y1="60" x2="240" y2="60" class="dg-line" stroke-width="1" stroke-dasharray="4,3"/>
+<circle cx="240" cy="60" r="4" fill="none" class="dg-stroke-ink" stroke-width="2"/>
+<text x="248" y="48" font-size="12">최댓값 s²/4</text>
+<text x="232" y="240" font-size="12">x=s/2</text>
+<text x="70" y="45" font-size="12" class="dg-dim">A(x)=x(s−x)</text>
+</svg>`,
+    diagramCaption: String.raw`x+y=s로 고정하고 넓이 A=xy를 x의 함수로 그리면 x=s/2에서 유일한 최댓값 s²/4를 가진다.`,
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 부분으로 나눈다. 먼저 임의의 $x,y>0$에 대해 $xy\le\dfrac{s^2}{4}$가 항상 성립함을 보이고(상한), 그다음 $x=y=s/2$일 때 정확히 이 값이 달성됨을 보인다(달성). 두 부분을 합치면 $s^2/4$가 진짜 최댓값임이 확정된다.`, blanks: [] },
+      { id: "s2", text: String.raw`상한부터 본다. 임의의 실수는 제곱하면 $0$ 이상이므로 $(\sqrt x-\sqrt y)^2\ge0$이다. 좌변을 전개하면 $x-2\sqrt{xy}+y\ge0$이 되고, 이를 정리하면 $x+y\ge$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`2\sqrt{xy}`, why: String.raw`x-2√(xy)+y≥0에서 -2√(xy)를 우변으로 넘기면 x+y≥2√(xy)가 돼요. 이게 바로 산술-기하평균 부등식(AM-GM)의 원형이에요.` }] },
+      { id: "s3", text: String.raw`양변을 $2$로 나누면 $\dfrac{x+y}{2}\ge\sqrt{xy}$를 얻는다(AM-GM). 등호는 $(\sqrt x-\sqrt y)^2=0$일 때, 즉 $\sqrt x=\sqrt y$일 때, 다시 말해 $x=y$일 때만 성립한다. 이 등호 조건은 나중에 최댓값이 실제로 달성되는지 확인할 때 다시 쓰인다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 제약조건 $x+y=s$를 대입한다. $\dfrac{x+y}{2}=\dfrac s2\ge\sqrt{xy}$인데, 양변이 모두 $0$ 이상이므로 양변을 제곱해도 부등호 방향이 바뀌지 않는다. 제곱하면 $\dfrac{s^2}{4}\ge xy$, 즉 $A=xy\le$[[blank:나]] 를 얻는다.`,
+        blanks: [{ id: "나", latex: String.raw`\frac{s^2}{4}`, why: String.raw`(s/2)²=s²/4이므로 부등식 양변을 제곱하면 그대로 s²/4가 나와요. 넓이 A=xy가 이 값을 절대 넘지 못한다는 상한이 확보된 거예요.` }] },
+      { id: "s5", text: String.raw`이것으로 상한 $A\le s^2/4$는 확인됐다. 그런데 이 상한이 진짜 최댓값이려면 실제로 그 값에 도달하는 $x,y$가 존재해야 한다. s3에서 확인한 등호 조건 $x=y$와 제약 $x+y=s$를 연립하면 $x=y=s/2$가 유일한 해로 나온다.`, blanks: [] },
+      { id: "s6", text: String.raw`$x=y=s/2$를 실제로 넓이 공식에 대입해 상한이 정말 달성되는지 확인한다. $A=\dfrac s2\times\dfrac s2=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\frac{s^2}{4}`, why: String.raw`(s/2)×(s/2)=s²/4로, s4에서 구한 상한과 정확히 같은 값이에요. 상한이 실제로 어떤 x,y에서 달성된다는 걸 숫자로 확인한 자리예요.` }] },
+      { id: "s7", text: String.raw`s4에서 모든 $x,y$에 대해 $A\le s^2/4$임을 보였고, s6에서 $x=y=s/2$일 때 정확히 $A=s^2/4$가 달성됨을 보였다. 상한과 달성이 모두 확인됐으므로 $s^2/4$는 진짜 최댓값이고, 그 최댓값은 정사각형($x=y$)에서만 나온다. 이렇게 "상한을 잡고 달성 사례를 찾는" 전략은 뒤에 나올 여러 최적화 증명(라그랑주 승수법, 볼록함수의 전역 최솟값 등)에서 똑같이 반복된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "집합과 명제", slug: "found-set-proposition-logic" },
+      { label: "함수란 무엇인가", slug: "found-function-definition-intuition" },
+      { label: "볼록함수의 1계 조건과 전역 최적성", slug: "convexity-first-order-condition" }
+    ]
+  },
+  "found-function-definition-intuition": {
+    title: String.raw`함수란 무엇인가`,
+    domain: "found",
+    subLabel: String.raw`예비수학 1부 · 수학의 언어 · 역함수가 존재하는 조건`,
+    explanation: String.raw`함수를 "$x$를 넣으면 $y$가 나오는 상자"로만 기억하고 있다면, 나중에 나오는 "가역적이다", "전단사다" 같은 말이 갑자기 낯설게 느껴질 수 있어요. 그런데 이 말들은 사실 아주 단순한 질문 하나에서 시작해요. 이 함수가 만든 결과를 보고, 원래 무엇을 넣었는지 되짚어갈 수 있는가.<br><br>정의역 $A$의 원소를 공역 $B$의 원소로 딱 하나씩 대응시키는 게 함수 $f:A\to B$예요. 이 대응을 거꾸로 되짚어가려면 두 가지가 필요해요. 서로 다른 입력이 같은 출력으로 겹치면 안 되고(단사, injective), 공역의 모든 원소가 어떤 입력의 결과여야 해요(전사, surjective). 이 둘을 모두 만족하는 함수를 전단사(bijective)라고 불러요.<br><br>이 감각은 나중에 정사각행렬이 역행렬을 가지려면 왜 그 행렬이 정의하는 변환이 전단사여야 하는지(정보 손실 없이 되돌릴 수 있어야 하는지)로 그대로 이어져요.<br><br><strong>명제.</strong> 함수 $f:A\to B$에 대해, $f$의 역함수 $f^{-1}:B\to A$(즉 $f^{-1}\circ f=\mathrm{id}_A$이고 $f\circ f^{-1}=\mathrm{id}_B$를 만족하는 함수)가 존재하는 것은 $f$가 전단사(단사이면서 전사)인 것과 동치이다.`,
+    intuition: String.raw`<p>함수를 되돌릴 수 있으려면 결과만 보고 입력을 유일하게 짚어낼 수 있어야 해요. 서로 다른 입력이 같은 출력을 내면(단사가 아니면) 그 출력에서 어느 입력이었는지 구별할 수 없고, 도달하지 못하는 출력이 있으면(전사가 아니면) 그 출력에 대해서는 되짚어갈 입력 자체가 없어요.</p>`,
+    example: String.raw`<p>$A=B=\{1,2,3\}$ 위에서 세 가지 대응을 비교해봅니다.</p>
+<p>$f_1(1)=1,\,f_1(2)=2,\,f_1(3)=2$는 단사가 아니에요. $f_1(2)=f_1(3)=2$로 서로 다른 입력 $2,3$이 같은 출력 $2$를 내니까, 출력 $2$만 보고는 입력이 $2$였는지 $3$이었는지 되짚을 수 없어요. 역함수를 만들 수 없습니다.</p>
+<p>$f_2(1)=1,\,f_2(2)=1,\,f_2(3)=3$도 마찬가지로 단사가 아니에요($f_2(1)=f_2(2)=1$). 게다가 출력 $2$에 도달하는 입력이 아예 없어서 전사도 아니에요.</p>
+<p>$f_3(1)=2,\,f_3(2)=3,\,f_3(3)=1$은 세 입력이 세 출력에 하나씩 겹치지 않게 대응돼요(단사이자 전사, 전단사). 이 경우엔 역함수를 바로 만들 수 있어요. $f_3(1)=2$였으니 $f_3^{-1}(2)=1$, $f_3(2)=3$이었으니 $f_3^{-1}(3)=2$, $f_3(3)=1$이었으니 $f_3^{-1}(1)=3$이 돼요. 출력만 보고 정확히 어떤 입력이었는지 항상 유일하게 되짚어갈 수 있는 거예요.</p>`,
+    diagram: String.raw`<svg viewBox="0 0 400 240" xmlns="http://www.w3.org/2000/svg">
+<text x="90" y="30" font-size="13" text-anchor="middle">A</text>
+<text x="310" y="30" font-size="13" text-anchor="middle">B</text>
+<circle cx="90" cy="70" r="4" class="dg-accent"/>
+<circle cx="90" cy="120" r="4" class="dg-accent"/>
+<circle cx="90" cy="170" r="4" class="dg-accent"/>
+<circle cx="310" cy="70" r="4" class="dg-accent"/>
+<circle cx="310" cy="120" r="4" class="dg-accent"/>
+<circle cx="310" cy="170" r="4" class="dg-accent"/>
+<line x1="94" y1="70" x2="306" y2="70" class="dg-stroke-accent" stroke-width="1.6"/>
+<polygon points="306,70 296,65 296,75" class="dg-stroke-accent"/>
+<line x1="94" y1="120" x2="306" y2="120" class="dg-stroke-accent" stroke-width="1.6"/>
+<polygon points="306,120 296,115 296,125" class="dg-stroke-accent"/>
+<line x1="94" y1="170" x2="306" y2="170" class="dg-stroke-accent" stroke-width="1.6"/>
+<polygon points="306,170 296,165 296,175" class="dg-stroke-accent"/>
+<line x1="306" y1="205" x2="94" y2="205" class="dg-line" stroke-width="1.4" stroke-dasharray="5,3"/>
+<polygon points="94,205 104,200 104,210" class="dg-line"/>
+<text x="200" y="220" font-size="11" class="dg-dim" text-anchor="middle">g=f⁻¹ (되돌리는 화살표)</text>
+</svg>`,
+    diagramCaption: String.raw`f가 전단사면 각 화살표를 거꾸로 되돌리는 대응 g=f⁻¹이 항상 함수로 존재한다.`,
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 방향으로 나눈다. ($\Rightarrow$) $f$가 역함수 $g=f^{-1}$을 가진다고 가정하고 $f$가 단사이면서 전사임을 보인다. ($\Leftarrow$) $f$가 단사이면서 전사라고 가정하고, 실제로 역함수 역할을 하는 $g$를 만들어 그것이 함수의 조건을 만족함을 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`($\Rightarrow$) 먼저 단사임을 보인다. $g$가 $f$의 역함수이므로 모든 $a\in A$에 대해 $g(f(a))=a$이다. 이제 $f(a_1)=f(a_2)$라 하자. 양변에 $g$를 적용하면 $g(f(a_1))=g(f(a_2))$인데, 좌변은 $a_1$, 우변은 $a_2$이므로 $a_1=$[[blank:가]] 이다. 즉 출력이 같으면 입력도 같아야 하므로 $f$는 단사다.`,
+        blanks: [{ id: "가", latex: String.raw`a_2`, why: String.raw`g(f(a))=a라는 역함수의 정의를 g(f(a₁))과 g(f(a₂)) 양쪽에 그대로 적용하면 좌변은 a₁, 우변은 a₂가 나와요. 두 값이 같다고 했으니 a₁=a₂가 성립해요.` }] },
+      { id: "s3", text: String.raw`($\Rightarrow$) 이제 전사임을 보인다. 임의의 $b\in B$를 잡고 $a:=g(b)\in A$라 하자. 역함수의 다른 쪽 조건 $f(g(b))=b$에 의해 $f(a)=f(g(b))=b$이다. 즉 임의의 $b$에 대해 $f(a)=b$인 $a$를 실제로 찾았으므로 $f$는 전사다.`, blanks: [] },
+      { id: "s4", text: String.raw`($\Leftarrow$) 이제 $f$가 단사이면서 전사라고 가정하고 $g:B\to A$를 다음과 같이 정의한다. 각 $b\in B$에 대해, 전사성에 의해 $f(a)=b$인 $a$가 적어도 하나 존재하고, 단사성에 의해 그런 $a$는 많아야 하나뿐이므로, $g(b):=$ 그 유일한 $a$로 잘 정의된다. 이제 $a\in A$를 하나 잡고 $b:=f(a)$라 하면, $g(b)$는 정의상 $f(a')=b$를 만족하는 유일한 $a'$인데 $f(a)=b$이므로 단사성에 의해 $a'=a$, 즉 $g(f(a))=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`a`, why: String.raw`g(b)는 f(a')=b를 만족하는 유일한 a'로 정의했어요. f(a)=b이므로 a 자신이 그 조건을 만족하고, 단사성 덕분에 그런 a'는 a 하나뿐이라 g(f(a))=a가 돼요.` }] },
+      { id: "s5", text: String.raw`남은 조건 $f(g(b))=b$도 확인한다. 임의의 $b\in B$에 대해 $g(b)$는 정의상 $f(g(b))=b$를 만족하는 원소로 뽑았으므로, 이 등식은 $g$의 정의 자체에서 바로 나온다. 즉 $g$는 $g\circ f=\mathrm{id}_A$와 $f\circ g=\mathrm{id}_B$를 모두 만족한다.`, blanks: [] },
+      { id: "s6", text: String.raw`s4~s5에서 확인한 두 조건 $g\circ f=\mathrm{id}_A$, $f\circ g=\mathrm{id}_B$는 정확히 $g$가 $f$의 역함수라는 정의와 같다. s2~s3의 ($\Rightarrow$) 방향과 s4~s5의 ($\Leftarrow$) 방향을 합치면, $f$가 역함수를 갖는다는 것은 $f$가 [[blank:다]] 것과 동치임이 확인된다.`,
+        blanks: [{ id: "다", latex: String.raw`\text{단사이면서 전사(전단사)인}`, why: String.raw`두 방향을 모두 보였으니 "역함수가 존재한다"와 "단사이면서 전사다"는 서로를 함축하는 동치 조건이에요.` }] },
+      { id: "s7", text: String.raw`함수를 "되돌릴 수 있다"는 성질은 정확히 전단사라는 조건과 같은 말임이 확인됐다. 이 감각은 나중에 정사각행렬 $A$가 역행렬을 가지려면 $A$가 정의하는 선형변환이 전단사여야 한다는 사실(가역성)로 그대로 이어진다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
+    related: [
+      { label: "방정식과 부등식 다시 보기", slug: "found-equation-inequality-review" },
+      { label: "행렬 연산과 역행렬의 직관", slug: "found-matrix-operations-intuition" }
+    ]
+  },
   "found-conic-sections": {
     title: String.raw`이차곡선(타원·포물선·쌍곡선)`,
     domain: "found",
     subLabel: String.raw`예비수학 6순위 · 등고선과 제약조건의 그림`,
-    explanation: String.raw`경사하강법으로 손실함수를 최소화할 때 흔히 보는 등고선 그림은 거의 항상 타원이에요. 그런데 이 타원·포물선·쌍곡선을 통틀어 부르는 '이차곡선'은 고교 교육과정에서 진로선택 과목인 '기하'에만 실려 있어서, 기하를 선택하지 않았다면 원과 이차함수 그래프(포물선의 특수한 경우) 정도만 보고 지나갔을 수 있어요.<br><br>핵심은 이거예요. 함수 하나를 등고선으로 그린다는 건 $f(x,y)=c$를 만족하는 점들을 이어 곡선을 그린다는 뜻이고, $f$가 이차형식이면 그 등고선은 타원, 포물선, 쌍곡선 중 하나가 돼요. 손실함수를 파라미터 근처에서 이차식으로 근사하면(테일러 전개의 2차항) 등고선이 타원으로 나오는 이유가 바로 여기 있어요. 라그랑주 승수법에서 등장하는 제약조건 $g(x,y)=0$도 마찬가지로 이런 곡선의 모양을 하고 있어서, 최적화 문제를 눈으로 그려보려면 이 곡선들의 생김새를 알고 있어야 해요.`,
+    explanation: String.raw`경사하강법으로 손실함수를 최소화할 때 흔히 보는 등고선 그림은 거의 항상 타원이에요. 그런데 이 타원·포물선·쌍곡선을 통틀어 부르는 '이차곡선'은 고교 교육과정에서 진로선택 과목인 '기하'에만 실려 있어서, 기하를 선택하지 않았다면 원과 이차함수 그래프(포물선의 특수한 경우) 정도만 보고 지나갔을 수 있어요.<br><br>핵심은 이거예요. 함수 하나를 등고선으로 그린다는 건 $f(x,y)=c$를 만족하는 점들을 이어 곡선을 그린다는 뜻이고, $f$가 이차형식이면 그 등고선은 타원, 포물선, 쌍곡선 중 하나가 돼요. 손실함수를 파라미터 근처에서 이차식으로 근사하면(테일러 전개의 2차항) 등고선이 타원으로 나오는 이유가 바로 여기 있어요. 라그랑주 승수법에서 등장하는 제약조건 $g(x,y)=0$도 마찬가지로 이런 곡선의 모양을 하고 있어서, 최적화 문제를 눈으로 그려보려면 이 곡선들의 생김새를 알고 있어야 해요.<br><br>이차곡선 중 가장 다루기 쉬운 포물선을 예로, "초점까지의 거리 = 준선까지의 거리"라는 정의만으로 익숙한 $y^2=4px$ 형태가 실제로 나오는지 직접 확인해볼게요.<br><br><strong>명제.</strong> 점 $F(p,0)$($p>0$)을 초점으로, 직선 $x=-p$를 준선으로 하는 포물선(초점까지의 거리와 준선까지의 거리가 같은 점들의 자취)의 방정식은 $y^2=4px$이다.`,
     intuition: String.raw`<p>이차곡선이라는 이름은 원뿔을 평면으로 비스듬히 자른 단면에서 나와요. 자르는 각도에 따라 타원, 포물선, 쌍곡선이 나오고, 대수적으로는 전부 $Ax^2+Bxy+Cy^2+Dx+Ey+F=0$ 형태의 이차식 하나로 통일해서 쓸 수 있어요.</p>`,
     example: String.raw`<p>타원의 표준형 $\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$에 $a=4$, $b=1$을 넣어봅니다. $\frac{x^2}{16}+y^2=1$이 되고, 이 곡선 위의 점은 예를 들어 $x=0$일 때 $y=\pm1$, $x=4$일 때 $y=0$, $x=2\sqrt3\approx3.46$일 때 $\frac{12}{16}+y^2=1$이므로 $y=\pm0.5$가 나와요. $x$ 방향으로는 $-4$부터 $4$까지, $y$ 방향으로는 $-1$부터 $1$까지만 움직이는, 가로로 4배 길게 눌린 타원이 그려집니다.</p>
 <p>이제 이걸 손실함수 등고선으로 생각해봅니다. 어떤 손실함수가 파라미터 $(x,y)$ 근처에서 $L(x,y) \approx \frac{x^2}{16}+y^2$ 형태로 근사된다면, $L=1$인 등고선이 바로 위에서 그린 타원이에요. $L=4$인 등고선은 $\frac{x^2}{16}+y^2=4$, 즉 $\frac{x^2}{64}+\frac{y^2}{4}=1$로 반지름이 2배인 같은 비율의 타원이 됩니다. 등고선이 원이 아니라 타원인 이유는 $x$ 방향의 곡률(16으로 나뉨)과 $y$ 방향의 곡률(1로 나뉨)이 다르기 때문이에요.</p>
@@ -19676,7 +19803,18 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
 <text x="335" y="60" font-size="12">경사하강 경로</text>
 </svg>`,
     diagramCaption: String.raw`가늘고 긴 타원형 등고선에서는 경사하강법이 좁은 골짜기를 지그재그로 튕기며 내려간다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`정의를 그대로 방정식으로 옮긴다. 점 $(x,y)$에서 초점 $F(p,0)$까지의 거리는 $\sqrt{(x-p)^2+y^2}$이고, 직선 $x=-p$까지의 (수평)거리는 $x+p$이다. 두 거리가 같다는 조건을 식으로 쓰면 $\sqrt{(x-p)^2+y^2}=x+p$ 이다. 양변이 모두 $0$ 이상인 거리이므로 양변을 제곱해도 동치가 유지된다.`, blanks: [] },
+      { id: "s2", text: String.raw`양변을 제곱하면 $(x-p)^2+y^2=(x+p)^2$이다. 좌변의 $(x-p)^2=x^2-2px+p^2$이고 우변의 $(x+p)^2=$[[blank:가]] 이므로, 식은 $x^2-2px+p^2+y^2=x^2+2px+p^2$가 된다.`,
+        blanks: [{ id: "가", latex: String.raw`x^2+2px+p^2`, why: String.raw`(x+p)²을 전개하면 x²+2px+p²이 돼요. (x-p)²을 전개할 때와 부호만 다를 뿐 같은 방식으로 전개해요.` }] },
+      { id: "s3", text: String.raw`양변에 공통으로 있는 $x^2$과 $p^2$을 소거하면 $-2px+y^2=2px$가 남는다. $-2px$를 우변으로 넘기면 $y^2=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`4px`, why: String.raw`-2px+y²=2px에서 -2px를 우변으로 넘기면 y²=2px+2px=4px가 돼요.` }] },
+      { id: "s4", text: String.raw`이것으로 초점·준선 정의를 만족하는 점은 반드시 $y^2=4px$를 만족한다는 것(필요조건)을 보였다. 제곱하는 과정이 양변 모두 $0$ 이상인 거리 사이에서 일어났으므로 이 변형은 가역적이고, 따라서 역으로 $y^2=4px$를 만족하는 점은 반드시 원래의 거리 조건도 만족한다(충분조건). 그러므로 이 방정식은 포물선을 정확히 나타낸다.`, blanks: [] },
+      { id: "s5", text: String.raw`구체적인 점으로 검산해본다. 꼭짓점 $(0,0)$에서 초점까지 거리는 $\sqrt{(0-p)^2+0^2}=p$이고, 준선까지 거리는 $0-(-p)=p$이다. 두 거리가 정확히 $p$로 같다.`, blanks: [] },
+      { id: "s6", text: String.raw`포물선 위의 다른 점도 확인해본다. $x=p$를 $y^2=4px$에 대입하면 $y^2=4p^2$, 즉 $y=2p$인 점 $(p,2p)$가 포물선 위에 있다. 이 점에서 초점까지 거리는 $\sqrt{(p-p)^2+(2p)^2}=2p$이고, 준선까지 거리는 $p+p=$[[blank:다]] 이다. 두 값이 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`2p`, why: String.raw`점 (p,2p)에서 준선 x=-p까지의 수평거리는 p-(-p)=2p예요. 방금 구한 초점까지의 거리 2p와 정확히 같아요.` }] },
+      { id: "s7", text: String.raw`정리하면 "초점까지의 거리 = 준선까지의 거리"라는 순수하게 기하적인 정의가 대수적으로는 $y^2=4px$라는 이차식으로 정확히 떨어진다. 손실함수를 최소점 근처에서 한 변수만 남기고 자른 단면이 자주 이런 포물선 모양으로 근사되는 것도, 이차식으로 근사한다는 것 자체가 결국 초점-준선 구조를 갖는 곡선을 만든다는 뜻이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "라그랑주 승수법과 KKT 조건", slug: "lagrange-kkt" },
       { label: "경사하강법의 하강 보장", slug: "gradient-descent" },
@@ -19687,22 +19825,34 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     title: String.raw`로그·지수함수 심화`,
     domain: "found",
     subLabel: String.raw`예비수학 7순위 · 밑변환·로그미분·자연상수 e`,
-    explanation: String.raw`딥러닝 수식을 펼쳐보면 소프트맥스, 시그모이드, 교차엔트로피처럼 온통 $e^x$와 $\log x$가 나와요. 그런데 자연상수 $e$와 자연로그 $\ln$을 제대로 다루는 단원은 진로선택 과목인 미적분에 있어서, 이 과목을 선택하지 않았거나 얕게만 배웠다면 밑 변환 공식이나 로그미분법이 낯설 수 있어요.<br><br>지수·로그의 여러 성질 중 AI에서 가장 자주 쓰이는 건 딱 하나예요. 로그가 곱셈을 덧셈으로 바꿔준다는 것, 즉 $\log(ab)=\log a+\log b$라는 성질이요. 이 성질 하나 때문에 확률을 여러 번 곱해야 하는 계산(우도)이 로그를 씌우는 순간 덧셈으로 바뀌어서 계산도 쉬워지고 수치적으로도 안정돼요. 자연상수 $e$가 특별한 이유는 미분해도 자기 자신이 나온다는 성질($\frac{d}{dx}e^x=e^x$) 때문인데, 이 덕분에 경사하강법으로 $e^x$가 들어간 손실함수를 미분할 때 계산이 아주 깔끔해져요.`,
+    explanation: String.raw`딥러닝 수식을 펼쳐보면 소프트맥스, 시그모이드, 교차엔트로피처럼 온통 $e^x$와 $\log x$가 나와요. 그런데 자연상수 $e$와 자연로그 $\ln$을 제대로 다루는 단원은 진로선택 과목인 미적분에 있어서, 이 과목을 선택하지 않았거나 얕게만 배웠다면 밑 변환 공식이나 로그미분법이 낯설 수 있어요.<br><br>지수·로그의 여러 성질 중 AI에서 가장 자주 쓰이는 건 딱 하나예요. 로그가 곱셈을 덧셈으로 바꿔준다는 것, 즉 $\log(ab)=\log a+\log b$라는 성질이요. 이 성질 하나 때문에 확률을 여러 번 곱해야 하는 계산(우도)이 로그를 씌우는 순간 덧셈으로 바뀌어서 계산도 쉬워지고 수치적으로도 안정돼요. 자연상수 $e$가 특별한 이유는 미분해도 자기 자신이 나온다는 성질($\frac{d}{dx}e^x=e^x$) 때문인데, 이 덕분에 경사하강법으로 $e^x$가 들어간 손실함수를 미분할 때 계산이 아주 깔끔해져요.<br><br>"로그가 곱셈을 덧셈으로 바꾼다"는 성질도 그냥 외워두고 지나가기보다, 로그가 지수함수의 역함수라는 정의에서 직접 유도해보면 왜 항상 성립하는지가 분명해져요.<br><br><strong>명제.</strong> $a>0,\,a\neq1$이고 $x,y>0$일 때 $\log_a(xy)=\log_a x+\log_a y$이다.`,
     example: String.raw`<p>동전을 세 번 던져서 앞면, 앞면, 뒷면이 나올 확률을 계산해봅니다. 각 사건이 독립이고 앞면 확률이 $p=0.6$이라면, 이 순서가 나올 확률은 $0.6\times0.6\times0.4=0.144$입니다. 사건이 열 번, 백 번으로 늘어나면 이런 곱셈을 계속 반복해야 하고, 1보다 작은 수들끼리 계속 곱해지다 보니 컴퓨터에서는 금방 0에 아주 가까운 수가 되어버려요(언더플로).</p>
 <p>여기에 로그를 씌우면 상황이 달라집니다. $\log(0.6\times0.6\times0.4)=\log0.6+\log0.6+\log0.4$가 되고, 자연로그로 계산하면 $\ln0.6\approx-0.511$, $\ln0.4\approx-0.916$이므로 합은 $-0.511-0.511-0.916=-1.938$이에요. 실제로 $e^{-1.938}\approx0.144$로 원래 곱셈 결과와 정확히 일치합니다. 확률의 곱을 로그를 취해 합으로 바꾼 것이 바로 로그가능도(log-likelihood)이고, 딥러닝에서 우도를 최대화할 때는 거의 항상 이 로그가능도의 합을 최대화하는 방식으로 계산해요.</p>
 <p>$e$가 미분에서 특별한 이유도 숫자로 확인할 수 있어요. $f(x)=e^x$에서 $x=0$일 때 $f(0)=1$이고, $h=0.001$만큼 옮기면 $f(0.001)=e^{0.001}\approx1.0010005$가 돼요. 순간 변화율은 $\frac{f(0.001)-f(0)}{0.001}\approx\frac{0.0010005}{0.001}\approx1.0005$로, 함숫값 $f(0)=1$과 거의 같아요. 이게 우연이 아니라 모든 $x$에서 $\frac{d}{dx}e^x=e^x$가 성립하기 때문이라는 걸 알아두면, 시그모이드나 소프트맥스를 미분할 때 연쇄법칙을 적용하는 과정이 훨씬 편해져요.</p>`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`로그 $\log_a$를 지수함수 $a^t$의 역함수로 정의한다. 즉 $a^t=x$일 때 $t=\log_a x$이고, 이 정의에 의해 항상 $a^{\log_a x}=x$가 성립한다. $u:=\log_a x$, $v:=\log_a y$라 두면 정의상 $a^u=x$, $a^v=y$이다. 목표는 $\log_a(xy)=u+v$임을 보이는 것이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$xy$를 $a^u,a^v$로 바꿔 쓴다. $xy=a^u\times a^v$인데, 지수법칙 $a^m\times a^n=a^{m+n}$에 의해 이는 $$[[blank:가]]$$ 와 같다.`,
+        blanks: [{ id: "가", latex: String.raw`a^{u+v}`, why: String.raw`같은 밑 a의 거듭제곱을 곱할 때는 지수끼리 더해요. a^u × a^v = a^{u+v}가 지수법칙의 정의예요.` }] },
+      { id: "s3", text: String.raw`이제 $xy=a^{u+v}$의 양변에 $\log_a$를 적용한다. 로그는 지수함수의 역함수이므로 $\log_a(a^{u+v})=u+v$이다(정의 그 자체). 따라서 $\log_a(xy)=\log_a(a^{u+v})=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`u+v`, why: String.raw`log_a는 a^t의 역함수이므로 log_a(a^{무언가})는 그 "무언가"를 그대로 돌려줘요. 여기서는 지수 자리에 u+v가 있으니 결과도 u+v예요.` }] },
+      { id: "s4", text: String.raw`$u=\log_a x$, $v=\log_a y$였으므로 $\log_a(xy)=u+v=\log_a x+\log_a y$이다. 이것으로 두 수를 곱한 경우의 명제가 증명됐다.`, blanks: [] },
+      { id: "s5", text: String.raw`이 결과를 세 수의 곱으로 확장해본다. $\log_a(xyz)=\log_a((xy)z)$인데, 방금 증명한 두 수 규칙을 $(xy)$와 $z$에 적용하면 $\log_a((xy)z)=$[[blank:다]] 이고, 여기에 다시 두 수 규칙을 $x,y$에 적용하면 $\log_a x+\log_a y+\log_a z$가 된다.`,
+        blanks: [{ id: "다", latex: String.raw`\log_a(xy)+\log_a z`, why: String.raw`(xy)와 z, 이렇게 두 개의 수를 곱한 것으로 보고 방금 증명한 두 수 규칙(log_a(곱)=log_a+log_a)을 그대로 적용한 거예요.` }] },
+      { id: "s6", text: String.raw`같은 방식을 반복하면(수학적 귀납법으로 정당화된다) 곱해지는 수가 $n$개로 늘어나도 $\log_a(x_1x_2\cdots x_n)=\log_ax_1+\log_ax_2+\cdots+\log_ax_n$이 항상 성립한다. 곱해지는 항이 두 개든 백 개든, 로그를 씌우면 곱셈이 그만큼의 덧셈으로 통째로 바뀐다는 뜻이다.`, blanks: [] },
+      { id: "s7", text: String.raw`이게 바로 동전을 여러 번 던진 확률처럼 여러 항을 곱해야 하는 계산에서, 로그를 씌우는 순간 그 많은 곱셈이 전부 덧셈으로 바뀌는 이유다. 항이 아무리 많아도(딥러닝이라면 데이터가 수백만 개라도) 로그가능도는 각 항의 로그를 그냥 더하기만 하면 되고, 이 성질 덕분에 1보다 작은 확률들을 계속 곱해서 값이 $0$에 짓눌리는 언더플로 문제도 함께 피할 수 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "교차엔트로피와 엔트로피·KL발산의 관계", slug: "entropy-crossentropy" },
       { label: "로지스틱 시그모이드의 도함수", slug: "logistic-sigmoid-derivative" },
-      { label: "최대우도추정(MLE)과 로그우도", slug: "mle" }
+      { label: "최대우도추정(MLE)과 로그우도", slug: "mle" },
+      { label: "수학적 귀납법과 엄밀한 증명 감각", slug: "found-mathematical-induction" }
     ]
   },
   "found-calc2-limits": {
     title: String.raw`여러 함수의 극한 (옛 미적분Ⅱ 영역)`,
     domain: "found",
     subLabel: String.raw`예비수학 8순위 · 진로선택으로 밀려난 영역`,
-    explanation: String.raw`미적분Ⅱ는 2015 개정부터 진로선택 과목으로 분류돼서 이수 여부가 사람마다 크게 갈리고, 2028학년도 수능부터는 아예 출제 범위에서도 빠져요. 그래서 $\frac{\sin x}{x}\to1$처럼 함수의 극한을 다루는 유명한 결과들이나 로피탈 정리 같은 테크닉을 한 번도 접하지 않았을 수 있어요.<br><br>문제는 최적화 이론 상당수가 "이 근사가 성립한다"는 전제를 깔고 시작한다는 거예요. 어떤 함수를 다항식으로 근사하는 테일러 전개도 결국 극한의 언어로 정의된 것이라서, 극한 계산에 익숙하지 않으면 왜 그 근사가 성립하는지, 오차가 왜 그렇게 줄어드는지를 받아들이는 데 시간이 오래 걸려요. 극한 계산을 몇 번 직접 해보는 것만으로도 이 근사들이 마법이 아니라 정직한 계산 결과라는 감이 잡혀요.`,
+    explanation: String.raw`미적분Ⅱ는 2015 개정부터 진로선택 과목으로 분류돼서 이수 여부가 사람마다 크게 갈리고, 2028학년도 수능부터는 아예 출제 범위에서도 빠져요. 그래서 $\frac{\sin x}{x}\to1$처럼 함수의 극한을 다루는 유명한 결과들이나 로피탈 정리 같은 테크닉을 한 번도 접하지 않았을 수 있어요.<br><br>문제는 최적화 이론 상당수가 "이 근사가 성립한다"는 전제를 깔고 시작한다는 거예요. 어떤 함수를 다항식으로 근사하는 테일러 전개도 결국 극한의 언어로 정의된 것이라서, 극한 계산에 익숙하지 않으면 왜 그 근사가 성립하는지, 오차가 왜 그렇게 줄어드는지를 받아들이는 데 시간이 오래 걸려요. 극한 계산을 몇 번 직접 해보는 것만으로도 이 근사들이 마법이 아니라 정직한 계산 결과라는 감이 잡혀요.<br><br>가장 유명한 극한 $\lim_{x\to0}\frac{\sin x}{x}=1$은 대수만으로는 증명이 안 돼요($\frac00$ 꼴이라 그냥 대입할 수 없거든요). 대신 넓이를 세 겹으로 감싸는 기하적인 트릭으로 증명해요.<br><br><strong>명제.</strong> $\displaystyle\lim_{x\to0}\frac{\sin x}{x}=1$이다.`,
     example: String.raw`<p>가장 유명한 극한 $\lim_{x\to0}\frac{\sin x}{x}$부터 숫자로 확인해봅니다. $x=0.1$이면 $\sin(0.1)\approx0.09983$이고 $\frac{\sin(0.1)}{0.1}\approx0.9983$이에요. $x=0.01$이면 $\sin(0.01)\approx0.0099998$이고 $\frac{\sin(0.01)}{0.01}\approx0.99998$이 됩니다. $x$가 $0$에 가까워질수록 이 비율이 $1$에 점점 더 가까워지는 걸 볼 수 있어요.</p>
 <p>로피탈 정리를 쓰면 이걸 대수적으로도 확인할 수 있어요. $x\to0$일 때 분자 $\sin x\to0$이고 분모 $x\to0$이라서 $\frac00$ 꼴인데, 이런 경우 분자·분모를 각각 미분한 극한 $\lim_{x\to0}\frac{\cos x}{1}=\cos0=1$과 원래 극한이 같다는 게 로피탈 정리예요. 숫자로 얻은 감과 정리가 말해주는 정확한 값이 이렇게 맞아떨어져요.</p>
 <p>이 극한이 테일러 전개와 바로 연결됩니다. $\sin x\approx x-\frac{x^3}{6}$로 근사하면 $\frac{\sin x}{x}\approx1-\frac{x^2}{6}$가 되는데, $x=0.1$을 넣으면 $1-\frac{0.01}{6}\approx0.99833$으로 앞서 계산한 $0.9983$과 거의 일치해요. 최적화 알고리즘에서 손실함수를 2차 테일러 근사로 다룰 때도 똑같은 논리예요. 근사가 실제 함수와 얼마나 가까운지, 그 오차가 $x$가 작아질수록 얼마나 빨리 줄어드는지가 전부 이런 극한 계산 위에 세워져 있어요.</p>`,
@@ -19720,7 +19870,18 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
 <text x="330" y="95" font-size="12">y = sin x / x</text>
 </svg>`,
     diagramCaption: String.raw`x=0에서는 정의되지 않지만(구멍점), 그 근방에서 함숫값은 1로 수렴한다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`$0<x<\pi/2$인 경우부터 본다. 반지름 $1$인 단위원 위에 $A=(1,0)$, $B=(\cos x,\sin x)$를 잡고, 점 $A$에서 그은 수직접선(직선 $X=1$)이 반직선 $OB$의 연장선과 만나는 점을 $C$라 하자. 세 도형 삼각형 $OAB$, 부채꼴 $OAB$, 삼각형 $OAC$는 서로를 포함하는 관계(삼각형 $OAB\subset$ 부채꼴 $OAB\subset$ 삼각형 $OAC$)에 있으므로 넓이도 그 순서대로 커진다.`, blanks: [] },
+      { id: "s2", text: String.raw`부채꼴 $OAB$의 넓이부터 계산한다. 반지름 $r$, 중심각 $\theta$(라디안)인 부채꼴의 넓이는 $\frac12r^2\theta$인데, 여기서는 $r=1,\theta=x$이므로 넓이는 $\frac12\times1^2\times x=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\frac{x}{2}`, why: String.raw`부채꼴 넓이 공식 (1/2)r²θ에 r=1, θ=x를 대입하면 (1/2)×1×x=x/2가 돼요.` }] },
+      { id: "s3", text: String.raw`삼각형 $OAB$의 넓이는 $\frac12|OA||OB|\sin x=\frac12\times1\times1\times\sin x=\frac{\sin x}2$이다. 삼각형 $OAC$는 점 $A$에서 직각을 낀 직각삼각형이고 $\tan x=\dfrac{AC}{OA}=AC$(∵ $OA=1$)이므로 $AC=\tan x$이고, 넓이는 $\frac12\times1\times\tan x=\frac{\tan x}2$이다.`, blanks: [] },
+      { id: "s4", text: String.raw`s1의 포함관계에서 얻은 넓이 부등식 $\dfrac{\sin x}2\le\dfrac x2\le\dfrac{\tan x}2$의 모든 변에 $2$를 곱하면 $\sin x\le x\le\tan x$이다. $0<x<\pi/2$에서 $\sin x>0$이므로 이 부등식 전체를 $\sin x$로 나누면 $1\le\dfrac{x}{\sin x}\le\dfrac{\tan x}{\sin x}=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\frac1{\cos x}`, why: String.raw`tan x = sin x / cos x이므로 tan x를 sin x로 나누면 (sin x/cos x)/sin x = 1/cos x가 돼요.` }] },
+      { id: "s5", text: String.raw`$1\le\dfrac{x}{\sin x}\le\dfrac1{\cos x}$의 세 변이 모두 양수이므로 역수를 취하면 부등호 방향이 뒤집힌다: $\cos x\le\dfrac{\sin x}{x}\le1$.`, blanks: [] },
+      { id: "s6", text: String.raw`$x\to0^+$로 보낸다. 코사인은 연속함수이므로 $\cos x\to\cos0=1$이고, 우변은 그냥 상수 $1$이다. $\dfrac{\sin x}x$가 항상 $\cos x$와 $1$ 사이에 끼어있고 양 끝이 모두 $1$로 모이므로, 조임정리에 의해 $\displaystyle\lim_{x\to0^+}\frac{\sin x}{x}=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`1`, why: String.raw`양 끝(cos x와 1)이 모두 1로 수렴하고 sin x/x가 그 사이에 갇혀 있으니, 조임정리(스퀴즈 정리)에 의해 sin x/x도 똑같이 1로 수렴해요.` }] },
+      { id: "s7", text: String.raw`$x<0$인 쪽도 확인해둔다. $\sin(-x)/(-x)=(-\sin x)/(-x)=\sin x/x$이므로 $f(x)=\sin x/x$는 우함수(짝함수)이고, 왼쪽 극한도 오른쪽 극한과 똑같이 $1$이다. 양쪽 극한이 일치하므로 $\lim_{x\to0}\frac{\sin x}{x}=1$이다. 이 극한이 바로 작은 각도 근사 $\sin x\approx x$의 근거이며, 테일러 전개로 손실함수를 이차식으로 근사할 때 그 오차가 왜 통제 가능한지도 결국 이런 극한 계산 위에 서 있다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "뉴턴법: 2차 테일러 근사의 꼭짓점", slug: "taylor-series-newton" },
       { label: "립시츠 연속성과 그래디언트의 상한", slug: "lipschitz-continuity" }
@@ -19730,11 +19891,22 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     title: String.raw`확률변수와 분포, 기댓값·분산의 직관`,
     domain: "found",
     subLabel: String.raw`예비수학 9순위 · 이산·연속분포`,
-    explanation: String.raw`2026학년도 수능에서 확률과 통계를 선택한 응시생 비율이 처음으로 미적분을 앞질렀어요. 그런데 고교 과정에서 다루는 확률은 대부분 "이 사건이 일어날 확률은 얼마인가"를 계산하는 데서 멈추고, 그 결과값 전체를 하나의 대상(확률변수)으로 놓고 다루는 감각까지는 잘 안 가요.<br><br>AI에서는 손실함수도, 강화학습의 보상도 전부 확률변수라서 이 감각이 없으면 기댓값·분산이 나오는 순간부터 수식이 붕 뜬 느낌이 들어요. 기댓값은 "이 확률변수를 무한히 반복해서 뽑았을 때 장기적으로 평균 나오는 값", 분산은 "그 값이 평균 주위로 얼마나 넓게 퍼져 있는가"로 그림처럼 잡아두면 이후 모든 통계·생성모델 개념이 훨씬 수월해져요.`,
+    explanation: String.raw`2026학년도 수능에서 확률과 통계를 선택한 응시생 비율이 처음으로 미적분을 앞질렀어요. 그런데 고교 과정에서 다루는 확률은 대부분 "이 사건이 일어날 확률은 얼마인가"를 계산하는 데서 멈추고, 그 결과값 전체를 하나의 대상(확률변수)으로 놓고 다루는 감각까지는 잘 안 가요.<br><br>AI에서는 손실함수도, 강화학습의 보상도 전부 확률변수라서 이 감각이 없으면 기댓값·분산이 나오는 순간부터 수식이 붕 뜬 느낌이 들어요. 기댓값은 "이 확률변수를 무한히 반복해서 뽑았을 때 장기적으로 평균 나오는 값", 분산은 "그 값이 평균 주위로 얼마나 넓게 퍼져 있는가"로 그림처럼 잡아두면 이후 모든 통계·생성모델 개념이 훨씬 수월해져요.<br><br>분산을 정의대로만 계산하면 매번 평균을 뺀 값을 제곱해서 더해야 해서 번거로워요. 실제로는 훨씬 간단한 공식으로 바꿔 쓰는데, 왜 그 공식이 성립하는지, 그리고 독립인 두 확률변수를 더하면 분산이 왜 그냥 더해지는지를 직접 유도해볼게요.<br><br><strong>명제.</strong> 확률변수 $X$의 분산은 $\mathrm{Var}(X)=E[X^2]-(E[X])^2$이다. 또한 $X,Y$가 서로 독립이면 $\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)$이다.`,
     example: String.raw`<p>공정한 주사위를 확률변수 $X$로 놓고 기댓값을 직접 계산해봅니다. $X$는 $1,2,3,4,5,6$ 중 하나를 각각 $\frac16$의 확률로 갖는 이산확률변수예요. 기댓값은 $E[X]=\sum_k k\cdot P(X=k)=\frac{1+2+3+4+5+6}{6}=\frac{21}{6}=3.5$가 됩니다. 주사위를 한 번 던져서는 절대 나올 수 없는 값(3.5는 주사위 눈에 없어요)인데, 수백 번 던진 평균은 실제로 3.5에 점점 가까워져요. 이게 "장기적으로 평균 나오는 값"이라는 뜻이에요.</p>
 <p>분산은 각 눈이 평균 $3.5$에서 얼마나 떨어져 있는지를 제곱해서 평균 낸 값이에요. $(1-3.5)^2=6.25$, $(2-3.5)^2=2.25$, $(3-3.5)^2=0.25$, $(4-3.5)^2=0.25$, $(5-3.5)^2=2.25$, $(6-3.5)^2=6.25$를 모두 더하면 $17.5$이고, 여기에 $\frac16$을 곱하면 $\mathrm{Var}(X)=\frac{17.5}{6}\approx2.917$이 나옵니다. 표준편차는 이 값의 제곱근인 $\sqrt{2.917}\approx1.708$이에요.</p>
 <p>이제 비교 대상으로 $3,3,4,4,4,4$가 나오는 편향된 주사위를 생각해봅니다. 기댓값은 $E[Y]=\frac{3+3+4+4+4+4}{6}=\frac{22}{6}\approx3.67$로 원래 주사위와 비슷하지만, 분산은 $\frac{2\times(3-3.67)^2+4\times(4-3.67)^2}{6}\approx\frac{2\times0.449+4\times0.109}{6}\approx\frac{0.898+0.436}{6}\approx0.222$로 훨씬 작아요. 두 주사위의 평균은 비슷해도, 하나는 결과가 넓게 퍼져 있고(표준편차 약 1.7) 다른 하나는 거의 3~4 사이에 몰려 있다는(표준편차 약 0.47) 차이를 분산이라는 숫자 하나로 잡아낸 거예요.</p>`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 부분이다. 먼저 $\mathrm{Var}(X)=E[X^2]-(E[X])^2$을 정의에서 직접 전개해 유도하고, 그다음 독립인 $X,Y$에 대해 $\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)$를 보인다. $\mu:=E[X]$라 두면 분산의 정의는 $\mathrm{Var}(X)=E[(X-\mu)^2]$이다.`, blanks: [] },
+      { id: "s2", text: String.raw`$(X-\mu)^2=X^2-2\mu X+\mu^2$이므로 기댓값의 선형성(합의 기댓값 = 기댓값의 합, 상수는 밖으로 뺄 수 있음)을 이용하면 $E[(X-\mu)^2]=E[X^2]-2\mu E[X]+\mu^2$이다. 그런데 $E[X]=\mu$이므로 이는 $E[X^2]-2\mu^2+\mu^2=$[[blank:가]] 로 정리된다.`,
+        blanks: [{ id: "가", latex: String.raw`E[X^2]-\mu^2`, why: String.raw`-2μ²+μ²을 계산하면 -μ²만 남으므로, E[X²]-2μ²+μ²=E[X²]-μ²가 돼요.` }] },
+      { id: "s3", text: String.raw`따라서 $\mathrm{Var}(X)=E[X^2]-\mu^2=E[X^2]-(E[X])^2$이 성립한다. 이것으로 첫 번째 부분이 증명됐다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 $\mu_X:=E[X]$, $\mu_Y:=E[Y]$라 하자. 기댓값의 선형성에 의해 $E[X+Y]=\mu_X+\mu_Y$이므로 $\mathrm{Var}(X+Y)=E\big[((X-\mu_X)+(Y-\mu_Y))^2\big]$이다. 이 제곱을 전개하면 $E[(X-\mu_X)^2]+E[(Y-\mu_Y)^2]+2E[(X-\mu_X)(Y-\mu_Y)]=\mathrm{Var}(X)+\mathrm{Var}(Y)+$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`2E[(X-\mu_X)(Y-\mu_Y)]`, why: String.raw`((X-μ_X)+(Y-μ_Y))²를 전개하면 (X-μ_X)², (Y-μ_Y)², 그리고 교차항 2(X-μ_X)(Y-μ_Y)가 나와요. 기댓값을 각 항에 나눠 씌운 결과예요.` }] },
+      { id: "s5", text: String.raw`이제 교차항을 본다. $X,Y$가 서로 독립이면 두 확률변수의 곱의 기댓값은 각 기댓값의 곱으로 쪼개진다: $E[(X-\mu_X)(Y-\mu_Y)]=E[X-\mu_X]\times E[Y-\mu_Y]$. 그런데 $E[X-\mu_X]=E[X]-\mu_X=\mu_X-\mu_X=0$이고 $E[Y-\mu_Y]=0$도 마찬가지이므로, 이 곱은 $0\times0=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`독립성 덕분에 곱의 기댓값이 기댓값의 곱으로 쪼개지고, 각 기댓값 E[X-μ_X]와 E[Y-μ_Y]가 모두 0이므로 그 곱도 0이 돼요.` }] },
+      { id: "s6", text: String.raw`s4의 교차항 $2E[(X-\mu_X)(Y-\mu_Y)]$에 s5의 결과 $0$을 대입하면 $\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)+2\times0=\mathrm{Var}(X)+\mathrm{Var}(Y)$가 된다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면 분산의 계산공식과, 독립인 확률변수는 분산이 그냥 더해진다는 성질이 모두 증명됐다. 후자는 왜 독립인 표본을 $n$개 모아 평균을 낼수록 그 평균의 분산이 $1/n$로 줄어드는지(표준편차는 $1/\sqrt n$로 줄어드는지)의 출발점이고, 이것이 중심극한정리와 몬테카를로 추정의 오차가 샘플을 늘릴수록 줄어드는 이유의 핵심이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "베이즈 정리", slug: "bayes-theorem" },
       { label: "표본평균의 표준화 (중심극한정리의 발판)", slug: "clt" },
@@ -19746,17 +19918,29 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     title: String.raw`삼각함수 항등식과 그래프 변형`,
     domain: "found",
     subLabel: String.raw`예비수학 10순위 · 주기·위상 감각`,
-    explanation: String.raw`트랜스포머의 위치 임베딩은 $\sin$과 $\cos$의 조합으로 만들어져요. 이유는 의외로 간단해요. 주기가 서로 다른 파동 여러 개를 겹쳐놓으면 겹친 모양이 위치마다 전부 다르게 나타나거든요. 그래서 위치마다 고유한 지문 같은 패턴을 만들 수 있는 거예요.<br><br>문제는 $\sin(\omega x+\varphi)$ 같은 식을 공식으로만 외우고 지나가면, 정작 이런 응용을 만났을 때 감이 안 잡힌다는 점이에요. 진폭, 주기, 위상이 그래프를 각각 어떻게 늘이고 줄이고 밀어내는지 손으로 그려본 경험이 있으면 공식을 다시 유도할 필요 없이 그래프 모양만 떠올려도 어떤 성질이 나올지 예측할 수 있어요.<br><br>이 감각은 위치 임베딩뿐 아니라 신호처리·시계열 분석에서 주파수 성분을 다룰 때도 그대로 재사용돼요. 그러니 공식 암기보다 그래프가 변형되는 방식 자체를 눈에 익혀두는 쪽이 훨씬 오래갑니다.`,
+    explanation: String.raw`트랜스포머의 위치 임베딩은 $\sin$과 $\cos$의 조합으로 만들어져요. 이유는 의외로 간단해요. 주기가 서로 다른 파동 여러 개를 겹쳐놓으면 겹친 모양이 위치마다 전부 다르게 나타나거든요. 그래서 위치마다 고유한 지문 같은 패턴을 만들 수 있는 거예요.<br><br>문제는 $\sin(\omega x+\varphi)$ 같은 식을 공식으로만 외우고 지나가면, 정작 이런 응용을 만났을 때 감이 안 잡힌다는 점이에요. 진폭, 주기, 위상이 그래프를 각각 어떻게 늘이고 줄이고 밀어내는지 손으로 그려본 경험이 있으면 공식을 다시 유도할 필요 없이 그래프 모양만 떠올려도 어떤 성질이 나올지 예측할 수 있어요.<br><br>이 감각은 위치 임베딩뿐 아니라 신호처리·시계열 분석에서 주파수 성분을 다룰 때도 그대로 재사용돼요. 그러니 공식 암기보다 그래프가 변형되는 방식 자체를 눈에 익혀두는 쪽이 훨씬 오래갑니다.<br><br>삼각함수의 덧셈정리 $\sin(A+B)=\sin A\cos B+\cos A\sin B$는 외워서 쓰는 경우가 많은데, 사실 앞서 배운 회전행렬(행렬 챕터)을 그대로 쓰면 직접 유도할 수 있어요.<br><br><strong>명제.</strong> 임의의 각 $A,B$에 대해 $\sin(A+B)=\sin A\cos B+\cos A\sin B$이다.`,
     intuition: String.raw`<p>파동 두 개를 겹치면 무늬가 생기는 걸 본 적 있나요? 물결 두 개가 만나 만드는 간섭무늬처럼, 주기가 다른 사인 곡선 여러 개를 겹쳐놓으면 각 위치마다 고유한 값의 조합이 생겨요. 이게 바로 위치 임베딩이 사인·코사인을 쓰는 이유의 직관이에요.</p>`,
     example: String.raw`<p>$\sin(x)$와 $\sin(2x+\pi/4)$를 나란히 놓고 비교해봅니다.</p>
 <p>$\sin(x)$는 주기가 $2\pi$이고 위상이 $0$이라 $x=0$에서 $0$부터 시작해 올라가요. 반면 $\sin(2x+\pi/4)$는 $x$ 앞에 $2$가 곱해져 있어서 주기가 $2\pi/2=\pi$로 절반이 돼요. 같은 구간 안에 파동이 두 배 빽빽하게 들어간다는 뜻이죠.</p>
 <p>위상 $\pi/4$는 그래프를 왼쪽으로 $\pi/8$만큼 미는 역할을 해요. $\sin(2x+\pi/4)=\sin\!\left(2\left(x+\dfrac{\pi}{8}\right)\right)$로 다시 쓰면 이게 보여요. $x=-\pi/8$일 때 이미 $\sin(0)=0$에서 시작한다는 뜻이에요.</p>
 <p>이렇게 진폭 하나, 주기 하나, 위상 하나만 따로 떼어 보면 아무리 복잡한 삼각함수 조합도 늘어난 정도와 밀린 정도의 합으로 해석할 수 있어요. 위치 임베딩에서 서로 다른 주파수 $\omega_1,\omega_2,\dots$를 여러 개 쓰는 이유도 이 서로 다른 밀도의 파동들을 겹쳐서 위치마다 겹치지 않는 패턴을 만들기 위해서예요.</p>`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`평면 위의 점을 원점 기준으로 각 $\theta$만큼 회전시키는 회전행렬은 $R(\theta)=\begin{pmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{pmatrix}$이다. 각 $A$만큼 돌리고 이어서 각 $B$만큼 돌리는 것은 처음부터 각 $A+B$만큼 한 번에 돌리는 것과 같은 결과를 낸다(회전을 두 번 겹치면 각이 그대로 더해진다는 기하적으로 자명한 사실). 행렬로 쓰면 $R(A)R(B)=R(A+B)$이다. 이 등식의 양변 행렬의 대응하는 성분을 비교해서 덧셈정리를 얻는다.`, blanks: [] },
+      { id: "s2", text: String.raw`좌변 $R(A)R(B)$의 (2행,1열) 성분을 행렬곱 규칙(행과 열의 내적)으로 계산한다. $R(A)$의 둘째 행은 $(\sin A,\ \cos A)$이고 $R(B)$의 첫째 열은 $(\cos B,\ \sin B)$이므로, 그 내적은 [[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\sin A\cos B+\cos A\sin B`, why: String.raw`행렬곱의 (2,1) 성분은 왼쪽 행렬의 2번째 행과 오른쪽 행렬의 1번째 열을 각각 곱해서 더한 값이에요. (sinA)(cosB)+(cosA)(sinB)가 돼요.` }] },
+      { id: "s3", text: String.raw`같은 방식으로 (1행,1열) 성분도 계산해두면 $\cos A\cos B-\sin A\sin B$가 나오는데, 이건 코사인 덧셈정리에 해당하고 지금 증명에는 직접 쓰이지 않는다(부산물로 함께 얻어진다는 점만 기억해둔다).`, blanks: [] },
+      { id: "s4", text: String.raw`이번엔 우변 $R(A+B)$를 본다. $R(A+B)=\begin{pmatrix}\cos(A+B)&-\sin(A+B)\\\sin(A+B)&\cos(A+B)\end{pmatrix}$의 정의 그 자체에서, (2행,1열) 성분은 바로 [[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sin(A+B)`, why: String.raw`회전행렬 R(θ)의 (2,1) 성분은 정의상 sinθ예요. 여기서는 θ 자리에 A+B가 들어가므로 sin(A+B)가 그대로 (2,1) 성분이에요.` }] },
+      { id: "s5", text: String.raw`s1에서 $R(A)R(B)=R(A+B)$라는 행렬 등식을 확인했으므로, 두 행렬의 모든 성분이 각각 같아야 한다. 특히 (2행,1열) 성분끼리 비교하면 s2에서 구한 $\sin A\cos B+\cos A\sin B$와 s4에서 구한 $\sin(A+B)$가 같아야 하므로, $\sin(A+B)=\sin A\cos B+\cos A\sin B$를 얻는다.`, blanks: [] },
+      { id: "s6", text: String.raw`구체적인 각으로 검산해본다. $A=B=45^\circ$를 대입하면 $\sin90^\circ=\sin45^\circ\cos45^\circ+\cos45^\circ\sin45^\circ=\dfrac{\sqrt2}2\times\dfrac{\sqrt2}2+\dfrac{\sqrt2}2\times\dfrac{\sqrt2}2=\dfrac12+\dfrac12=$[[blank:다]] 인데, 실제로 $\sin90^\circ=1$이므로 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`1`, why: String.raw`1/2+1/2를 계산하면 1이 나와요. 실제 sin90°=1과 정확히 맞아떨어지는지 확인하는 검산 자리예요.` }] },
+      { id: "s7", text: String.raw`이렇게 삼각함수의 덧셈정리는 회전행렬 두 개를 곱한 것이 각을 더한 회전행렬과 같다는 사실을 성분별로 풀어쓴 것에 불과하다. 트랜스포머의 RoPE(회전위치임베딩)가 서로 다른 두 위치의 상대적 거리를 내적 속에 자연스럽게 새겨 넣을 수 있는 이유도 정확히 이 성질, 즉 회전을 합성하면 각이 더해진다는 사실에서 나온다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "사인·코사인 위치 임베딩의 상대위치 선형성", slug: "positional-embedding" },
       { label: "RoPE: 회전행렬로 상대위치를 내적에 새겨넣기", slug: "rope-rotary-embedding" },
-      { label: "Transformer(2017)", slug: "transformer-2017" }
+      { label: "Transformer(2017)", slug: "transformer-2017" },
+      { label: "선형변환의 기하적 그림", slug: "found-linear-transformation-geometry" }
     ]
   },
 
@@ -19764,14 +19948,25 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     title: String.raw`수학적 귀납법과 엄밀한 증명 감각`,
     domain: "found",
     subLabel: String.raw`예비수학 11순위 · 증명 형식에 익숙해지기`,
-    explanation: String.raw`이 사이트에 있는 모든 증명은 명제 → 단계별 전개 → 결론이라는 하나의 형식을 따라요. 학교 수학에서 증명 문제를 많이 풀어보지 않았다면 이 형식 자체가 낯설게 느껴질 수 있어요. "그래서 다음 단계로 넘어가려면 뭘 보여야 하지?"라는 질문을 스스로 던지는 습관이 없으면, 증명을 읽어도 각 줄이 왜 나오는지 이해가 안 되고 그냥 눈으로 훑고 지나가게 되죠.<br><br>수학적 귀납법은 이 습관을 기르기에 제일 좋은 도구예요. 구조가 딱 세 부분으로 나뉘거든요. 기초단계(base case)에서 가장 작은 경우 하나가 성립함을 보이고, 귀납가정에서 "$n=k$일 때 성립한다고 치자"라고 가정한 뒤, 귀납단계에서 그 가정만 이용해서 "$n=k+1$일 때도 성립한다"를 보여요. 이 세 조각만 갖추면 모든 자연수에 대해 성립한다는 결론이 자동으로 따라와요.<br><br>말로만 들으면 추상적이니 아주 익숙한 예로 확인해볼게요.`,
+    explanation: String.raw`이 사이트에 있는 모든 증명은 명제 → 단계별 전개 → 결론이라는 하나의 형식을 따라요. 학교 수학에서 증명 문제를 많이 풀어보지 않았다면 이 형식 자체가 낯설게 느껴질 수 있어요. "그래서 다음 단계로 넘어가려면 뭘 보여야 하지?"라는 질문을 스스로 던지는 습관이 없으면, 증명을 읽어도 각 줄이 왜 나오는지 이해가 안 되고 그냥 눈으로 훑고 지나가게 되죠.<br><br>수학적 귀납법은 이 습관을 기르기에 제일 좋은 도구예요. 구조가 딱 세 부분으로 나뉘거든요. 기초단계(base case)에서 가장 작은 경우 하나가 성립함을 보이고, 귀납가정에서 "$n=k$일 때 성립한다고 치자"라고 가정한 뒤, 귀납단계에서 그 가정만 이용해서 "$n=k+1$일 때도 성립한다"를 보여요. 이 세 조각만 갖추면 모든 자연수에 대해 성립한다는 결론이 자동으로 따라와요.<br><br>말로만 들으면 추상적이니 아주 익숙한 예(1부터 n까지의 합)로 먼저 감을 잡고, 아래 증명 단계에서는 조금 더 손이 많이 가는 제곱합으로 같은 논리를 한 번 더 연습해볼게요.<br><br><strong>명제.</strong> 모든 자연수 $n$에 대해 $1^2+2^2+\cdots+n^2=\dfrac{n(n+1)(2n+1)}{6}$이다.`,
     intuition: String.raw`<p>도미노를 한 줄로 세워놓고 첫 번째만 밀면 전부 넘어지죠. 첫 번째가 넘어진다(기초단계)와 "어떤 도미노가 넘어지면 바로 다음 도미노도 넘어진다"(귀납단계)만 확인하면, 도미노 전체가 넘어진다는 걸 하나하나 확인할 필요 없이 알 수 있어요. 수학적 귀납법이 정확히 이 논리예요.</p>`,
     example: String.raw`<p>$1+2+\cdots+n=\dfrac{n(n+1)}{2}$가 모든 자연수 $n$에서 성립함을 귀납법으로 확인해봅니다.</p>
 <p><strong>기초단계.</strong> $n=1$일 때 좌변은 $1$이고 우변은 $\dfrac{1\cdot2}{2}=1$이니 성립합니다.</p>
 <p><strong>귀납가정.</strong> $n=k$일 때 성립한다고 가정합니다. 즉 $1+2+\cdots+k=\dfrac{k(k+1)}{2}$라고 둡니다.</p>
 <p><strong>귀납단계.</strong> $n=k+1$일 때를 봅니다. $1+2+\cdots+k+(k+1)$은 귀납가정에 의해 $\dfrac{k(k+1)}{2}+(k+1)$로 바꿔 쓸 수 있어요. 통분해서 정리하면 $\dfrac{k(k+1)+2(k+1)}{2}=\dfrac{(k+1)(k+2)}{2}$가 나오는데, 이건 정확히 원래 공식에 $n=k+1$을 대입한 값과 같아요.</p>
 <p>기초단계와 귀납단계가 모두 확인됐으니, $n=1$에서 성립 → $n=2$에서 성립 → $n=3$에서 성립 하는 식으로 도미노가 넘어지듯 모든 자연수에서 성립한다는 결론이 나와요. 이 사이트의 증명들도 형식은 다르지만 이전 단계에서 확인된 것만 써서 다음 단계를 보인다는 같은 논리를 매 줄마다 반복하고 있는 거예요.</p>`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`기초단계부터 확인한다. $n=1$일 때 좌변은 $1^2=1$이고 우변은 $\dfrac{1\times2\times3}{6}=1$이므로 두 값이 일치한다. 기초단계가 성립한다.`, blanks: [] },
+      { id: "s2", text: String.raw`귀납가정. $n=k$일 때 명제가 성립한다고 가정한다. 즉 $1^2+2^2+\cdots+k^2=\dfrac{k(k+1)(2k+1)}{6}$라고 둔다.`, blanks: [] },
+      { id: "s3", text: String.raw`귀납단계. $n=k+1$일 때를 본다. $1^2+\cdots+k^2+(k+1)^2$은 귀납가정에 의해 $\dfrac{k(k+1)(2k+1)}{6}+(k+1)^2$로 바꿔 쓸 수 있다. $(k+1)$을 공통으로 묶어 통분하면 $(k+1)\left[\dfrac{k(2k+1)}{6}+(k+1)\right]=(k+1)\times\dfrac{k(2k+1)+6(k+1)}{6}$인데, 분자 $k(2k+1)+6(k+1)$을 전개하면 $2k^2+k+6k+6=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`2k^2+7k+6`, why: String.raw`2k²+k+6k+6에서 일차항 k와 6k를 더하면 7k가 되어 2k²+7k+6으로 정리돼요.` }] },
+      { id: "s4", text: String.raw`이제 $2k^2+7k+6$을 인수분해한다. 곱이 $2\times6=12$이고 합이 $7$인 두 수는 $3,4$이므로 $2k^2+7k+6=2k^2+3k+4k+6=k(2k+3)+2(2k+3)=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`(k+2)(2k+3)`, why: String.raw`k(2k+3)+2(2k+3)에서 (2k+3)을 공통으로 묶으면 (k+2)(2k+3)이 돼요.` }] },
+      { id: "s5", text: String.raw`s3, s4를 종합하면 $1^2+\cdots+(k+1)^2=(k+1)\times\dfrac{(k+2)(2k+3)}{6}=\dfrac{(k+1)(k+2)(2k+3)}{6}$이다. 그런데 원래 공식에 $n=k+1$을 그대로 대입하면 $\dfrac{(k+1)((k+1)+1)(2(k+1)+1)}{6}=\dfrac{(k+1)(k+2)(2k+3)}{6}$인데, 이는 방금 얻은 식과 [[blank:다]].`,
+        blanks: [{ id: "다", latex: String.raw`\text{정확히 같다}`, why: String.raw`양쪽 다 (k+1)(k+2)(2k+3)/6로 똑같이 정리되므로, n=k+1일 때도 공식이 성립함을 확인한 거예요.` }] },
+      { id: "s6", text: String.raw`즉 $n=k$일 때 성립한다는 가정만으로 $n=k+1$일 때도 성립함을 보였다(귀납단계 완료). s1의 기초단계와 합쳐, $n=1$에서 성립 → $n=2$에서 성립 → $n=3$에서 성립 하는 식으로 도미노가 넘어지듯 모든 자연수 $n$에서 명제가 성립한다.`, blanks: [] },
+      { id: "s7", text: String.raw`이 증명에서 실제로 확인한 건 딱 두 가지, 맨 처음 도미노가 넘어진다는 것과 어떤 도미노든 넘어지면 바로 다음 도미노도 넘어진다는 것뿐이다. 무한히 많은 자연수 하나하나를 따로 확인한 게 아니다. 오토리그레시브 언어모델이 토큰을 한 번에 하나씩만 예측하도록 설계해도 전체 문장을 만들어낼 수 있는 이유, RNN이 한 스텝의 규칙만 반복해서 전체 과거를 압축할 수 있는 이유도 같은 논리(작은 스텝 하나만 검증하면 전체가 따라온다)에서 나온다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "오토리그레시브 생성의 확률 연쇄법칙 (귀납법 예시)", slug: "autoregressive-chain-rule" },
       { label: "RNN 은닉상태는 전체 과거를 압축한다 (귀납법)", slug: "rnn-hidden-state" }
@@ -19782,7 +19977,7 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
     title: String.raw`순열·조합 심화와 그래프 이론 기초 감각`,
     domain: "found",
     subLabel: String.raw`예비수학 12순위 · 경우의 수·노드와 엣지`,
-    explanation: String.raw`트리·앙상블 구조, 그래프 신경망, 어텐션의 계산 복잡도 같은 걸 다루다 보면 경우의 수를 정확히 세는 능력이 생각보다 자주 필요해요. 몇 개를 골라서 순서까지 따질 건지, 순서 없이 묶기만 할 건지에 따라 계산법이 완전히 달라지거든요. 여기에 점과 선으로 관계를 표현하는 그래프의 기본 어휘까지 익혀두면 이산수학 관련 개념들이 훨씬 덜 낯설어져요.<br><br>순열 $_nP_r$은 $n$개 중 $r$개를 순서까지 신경 써서 뽑는 경우의 수고, 조합 $_nC_r$은 순서를 무시하고 뽑는 경우의 수예요. 같은 대상을 뽑아도 순서를 따지느냐 아니냐에 따라 답이 몇 배씩 차이 나는데, 이 차이가 실제로 어텐션의 토큰 쌍 개수를 세거나 트리의 분기 경우의 수를 세는 데 그대로 쓰여요.<br><br>그래프 쪽 어휘도 간단해요. 노드(정점)는 대상, 엣지(간선)는 두 노드 사이의 관계, 경로는 엣지를 따라 노드에서 노드로 이어지는 길이에요. 그래프 신경망은 결국 이 노드-엣지 구조 위에서 정보를 주고받는 계산이라, 어휘만 익혀둬도 나중에 그래프 신경망 설명을 읽을 때 훨씬 수월해요.`,
+    explanation: String.raw`트리·앙상블 구조, 그래프 신경망, 어텐션의 계산 복잡도 같은 걸 다루다 보면 경우의 수를 정확히 세는 능력이 생각보다 자주 필요해요. 몇 개를 골라서 순서까지 따질 건지, 순서 없이 묶기만 할 건지에 따라 계산법이 완전히 달라지거든요. 여기에 점과 선으로 관계를 표현하는 그래프의 기본 어휘까지 익혀두면 이산수학 관련 개념들이 훨씬 덜 낯설어져요.<br><br>순열 $_nP_r$은 $n$개 중 $r$개를 순서까지 신경 써서 뽑는 경우의 수고, 조합 $_nC_r$은 순서를 무시하고 뽑는 경우의 수예요. 같은 대상을 뽑아도 순서를 따지느냐 아니냐에 따라 답이 몇 배씩 차이 나는데, 이 차이가 실제로 어텐션의 토큰 쌍 개수를 세거나 트리의 분기 경우의 수를 세는 데 그대로 쓰여요.<br><br>그래프 쪽 어휘도 간단해요. 노드(정점)는 대상, 엣지(간선)는 두 노드 사이의 관계, 경로는 엣지를 따라 노드에서 노드로 이어지는 길이에요. 그래프 신경망은 결국 이 노드-엣지 구조 위에서 정보를 주고받는 계산이라, 어휘만 익혀둬도 나중에 그래프 신경망 설명을 읽을 때 훨씬 수월해요.<br><br>노드의 "차수(degree, 그 노드에 붙은 엣지 개수)"를 전부 더하면 항상 짝수가 나온다는, 아주 단순하지만 그래프신경망의 차수 정규화에서 실제로 쓰이는 사실 하나를 직접 증명해볼게요.<br><br><strong>명제.</strong> 그래프 $G$의 각 노드 $v$의 차수를 $\deg(v)$라 하면, 모든 노드에 대한 차수의 합은 엣지 개수 $|E|$의 두 배이다: $\sum_v\deg(v)=2|E|$.`,
     intuition: String.raw`<p>순열·조합은 줄을 세우느냐, 그냥 묶느냐의 차이라고 생각하면 편해요. 그래프는 지하철 노선도를 떠올리면 됩니다. 역(노드)과 역 사이를 잇는 선(엣지), 그리고 그 선을 따라가는 경로. 딱 이 세 단어만으로 아무리 복잡한 노선도도 설명할 수 있어요.</p>`,
     example: String.raw`<p>순열과 조합부터 구체적인 숫자로 확인합니다. 5명 중 3명을 뽑아 1등, 2등, 3등 순위를 매기는 경우의 수는 순서가 중요하니 순열이에요.</p>
 $$_5P_3=5\times4\times3=60$$
@@ -19790,7 +19985,18 @@ $$_5P_3=5\times4\times3=60$$
 $$_5C_3=\frac{5\times4\times3}{3\times2\times1}=10$$
 <p>같은 "5명 중 3명"인데 순서를 따지느냐만 다를 뿐 답이 6배 차이 나요. 이 차이를 놓치면 나중에 어텐션에서 토큰 쌍의 개수를 셀 때(순서가 있는 쌍인지, 순서 없는 쌍인지) 실수하기 쉬워요.</p>
 <p>이제 그래프 예시입니다. 노드 4개 $\{A,B,C,D\}$가 있고 엣지가 $A$–$B$, $B$–$C$, $C$–$D$, $A$–$C$로 4개 있다고 해봅니다. $A$에서 $D$로 가는 경로를 찾으면 $A\to C\to D$(엣지 2개)와 $A\to B\to C\to D$(엣지 3개) 두 가지가 있어요. 이렇게 노드·엣지·경로라는 세 단어만으로 그래프의 구조를 정확히 설명할 수 있습니다.</p>`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`전략은 같은 것을 두 가지 방식으로 세어(이중 계산, double counting) 비교하는 것이다. 노드와 그 노드에 붙은 엣지로 이루어진 순서쌍 $(v,e)$의 집합, 즉 "$v$가 $e$의 끝점이다"를 만족하는 쌍 전체의 개수를 두 가지 방법으로 세본다.`, blanks: [] },
+      { id: "s2", text: String.raw`먼저 노드를 기준으로 센다. 각 노드 $v$에 대해 $v$를 끝점으로 갖는 엣지의 개수는 정의상 $\deg(v)$이므로, 노드 하나하나에 대해 그 개수를 모두 더하면 전체 쌍의 개수는 $\sum_v\deg(v)$ 이다.`, blanks: [] },
+      { id: "s3", text: String.raw`이번엔 엣지를 기준으로 센다. 그래프의 엣지 하나는 정확히 두 개의 끝점을 갖는다(엣지 $e=\{u,w\}$는 $u,w$ 두 노드와만 짝을 이룬다). 그러므로 엣지 하나가 전체 쌍의 개수에 기여하는 몫은 $2$이고, 엣지가 총 $|E|$개이므로 전체 쌍의 개수는 [[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`2|E|`, why: String.raw`엣지 하나마다 (끝점1, 그 엣지), (끝점2, 그 엣지) 이렇게 쌍이 정확히 2개씩 나와요. 엣지가 |E|개이므로 전체는 2×|E|예요.` }] },
+      { id: "s4", text: String.raw`s2와 s3은 같은 집합(노드-엣지 순서쌍 전체)의 크기를 서로 다른 방법으로 센 것이므로 두 값은 같아야 한다: $\sum_v\deg(v)=$[[blank:나]].`,
+        blanks: [{ id: "나", latex: String.raw`2|E|`, why: String.raw`같은 대상을 두 가지 방법으로 셌으니 결과가 같아야 해요. s2의 결과(차수의 합)와 s3의 결과(2|E|)를 등호로 연결한 거예요.` }] },
+      { id: "s5", text: String.raw`이 등식의 우변 $2|E|$는 항상 짝수이므로, 좌변인 모든 노드의 차수의 합도 항상 짝수다. 홀수 몇 개를 더해서 짝수가 나오려면 더해진 홀수의 개수 자체가 짝수여야 하므로, 차수가 홀수인 노드의 개수는 항상 짝수개다(홀짝성 따름정리).`, blanks: [] },
+      { id: "s6", text: String.raw`위쪽 예시의 그래프($\{A,B,C,D\}$, 엣지 $A\text{–}B,\,B\text{–}C,\,C\text{–}D,\,A\text{–}C$, 총 $4$개)로 검산해본다. 차수는 $\deg(A)=2$(B,C와 연결), $\deg(B)=2$(A,C), $\deg(C)=3$(A,B,D), $\deg(D)=1$(C)이다. 합은 $2+2+3+1=$[[blank:다]] 인데, $2|E|=2\times4=8$과 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`8`, why: String.raw`2+2+3+1을 더하면 8이 나와요. 명제가 예측하는 2|E|=2×4=8과 정확히 맞아떨어져요.` }] },
+      { id: "s7", text: String.raw`이 사실은 사소해 보이지만 실제로 쓸모가 있다. 그래프신경망의 메시지패싱에서 이웃 노드들의 정보를 모아 평균 낼 때 차수로 나누는 정규화($1/\deg(v)$)를 하는데, 그래프 전체에 걸쳐 이 정규화가 균형을 이루는지 확인할 때 "차수의 합은 항상 $2|E|$"라는 이 항등식이 기준점 역할을 한다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "그래프신경망 메시지패싱의 순열 등변성", slug: "gnn-message-passing" },
       { label: "랜덤그래프모형 G(n,p): 기댓값 계산과 문턱함수", slug: "erdos-renyi-random-graph" },
@@ -19802,7 +20008,7 @@ $$_5C_3=\frac{5\times4\times3}{3\times2\times1}=10$$
     title: String.raw`다변수 함수에 대한 최소한의 사전 감`,
     domain: "found",
     subLabel: String.raw`예비수학 13순위 · 현 교육과정 밖 영역`,
-    explanation: String.raw`변수 하나짜리 함수 $f(x)$의 그래프는 평면 위의 곡선이에요. 그런데 AI 모델의 손실함수는 파라미터가 수백만, 수십억 개인 함수라서 변수도 그만큼 많아요. 이런 함수를 다변수 함수라고 부르는데, 사실 현재 고교 교육과정에는 다변수 함수가 아예 들어있지 않아요. 그러니 이걸 몰라도 전혀 이상한 일이 아니고, 부끄러워할 이유도 없어요. 다만 미적분 최적화를 시작하기 전에 그림 하나 정도는 미리 가지고 있으면 훨씬 덜 당황하게 돼요.<br><br>변수가 하나면 그래디언트(기울기)도 숫자 하나예요. 그런데 변수가 여러 개면 그래디언트는 변수 하나마다 하나씩 나와서, 결국 화살표 다발(벡터)의 형태가 돼요. 각 성분은 그 변수를 조금 늘리면 함수값이 얼마나 빨리 커지는가를 나타내고, 전체 화살표를 합친 방향이 함수값이 가장 빨리 커지는 방향이에요.`,
+    explanation: String.raw`변수 하나짜리 함수 $f(x)$의 그래프는 평면 위의 곡선이에요. 그런데 AI 모델의 손실함수는 파라미터가 수백만, 수십억 개인 함수라서 변수도 그만큼 많아요. 이런 함수를 다변수 함수라고 부르는데, 사실 현재 고교 교육과정에는 다변수 함수가 아예 들어있지 않아요. 그러니 이걸 몰라도 전혀 이상한 일이 아니고, 부끄러워할 이유도 없어요. 다만 미적분 최적화를 시작하기 전에 그림 하나 정도는 미리 가지고 있으면 훨씬 덜 당황하게 돼요.<br><br>변수가 하나면 그래디언트(기울기)도 숫자 하나예요. 그런데 변수가 여러 개면 그래디언트는 변수 하나마다 하나씩 나와서, 결국 화살표 다발(벡터)의 형태가 돼요. 각 성분은 그 변수를 조금 늘리면 함수값이 얼마나 빨리 커지는가를 나타내고, 전체 화살표를 합친 방향이 함수값이 가장 빨리 커지는 방향이에요.<br><br>"그래디언트 방향이 가장 가파른 방향이다"라는 말도 그냥 받아들이기보다, 앞서 벡터 챕터에서 증명한 코시-슈바르츠 부등식을 그대로 재사용해서 직접 확인할 수 있어요.<br><br><strong>명제.</strong> 미분가능한 함수 $f$와 점 $p$에서 $\nabla f(p)\neq0$이라 하자. 단위벡터(길이가 $1$인 벡터) $u$ 방향으로의 방향미분 $D_uf(p)=\nabla f(p)\cdot u$는 $u=\dfrac{\nabla f(p)}{\|\nabla f(p)\|}$일 때 최댓값을 가지며, 그 최댓값은 $\|\nabla f(p)\|$이다.`,
     intuition: String.raw`<p>등고선 지도를 생각하면 쉬워요. 산 정상 쪽으로 갈수록 등고선 간격이 좁아지는데, 그래디언트는 그 지점에서 가장 가파르게 올라가는 방향을 가리키는 화살표예요. 변수가 둘이면 화살표도 성분 두 개짜리, 변수가 백만 개면 화살표도 성분 백만 개짜리로 커질 뿐, 각 방향으로 얼마나 가파른가를 모아놓은 거라는 본질은 똑같아요.</p>`,
     example: String.raw`<p>가장 간단한 2변수 함수 $f(x,y)=x^2+y^2$로 확인해봅니다. 이 함수는 원점에서 멀어질수록 커지는 그릇 모양이에요.</p>
 <p>함수값이 같은 점들을 이은 선을 등고선이라고 하는데, $f(x,y)=4$인 등고선을 구하면 $x^2+y^2=4$가 되어 반지름 $2$인 원이 나와요. $f(x,y)=9$라면 반지름 $3$인 원이고요. 등고선이 원 모양으로 겹겹이 퍼진다는 게 이 함수의 특징이에요.</p>
@@ -19834,18 +20040,30 @@ $$_5C_3=\frac{5\times4\times3}{3\times2\times1}=10$$
 <text x="285" y="140" font-size="11" class="dg-dim">∇f (중심에서 바깥으로)</text>
 </svg>`,
     diagramCaption: String.raw`f(x,y)=x²+y²의 등고선은 동심원이고, 그래디언트는 중심에서 바깥으로 뻗는 방향을 가리킨다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 부분이다. 먼저 임의의 단위벡터 $u$에 대해 $D_uf(p)$가 $\|\nabla f(p)\|$를 넘지 못한다는 상한을 보이고, 그다음 $u=\nabla f(p)/\|\nabla f(p)\|$에서 정확히 그 상한이 달성됨을 보인다. 두 부분을 합치면 그 $u$가 최댓값을 주는 방향임이 확정된다.`, blanks: [] },
+      { id: "s2", text: String.raw`상한부터 본다. 이미 증명한 코시-슈바르츠 부등식 $|a\cdot b|\le\|a\|\|b\|$를 $a=\nabla f(p)$, $b=u$에 적용하면 $|\nabla f(p)\cdot u|\le\|\nabla f(p)\|\|u\|$인데, $u$가 단위벡터라 $\|u\|=1$이므로 우변은 [[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`\|\nabla f(p)\|`, why: String.raw`‖u‖=1이므로 ‖∇f(p)‖‖u‖=‖∇f(p)‖×1=‖∇f(p)‖로 그대로 남아요.` }] },
+      { id: "s3", text: String.raw`즉 $|D_uf(p)|=|\nabla f(p)\cdot u|\le\|\nabla f(p)\|$이므로, 절댓값을 벗겨도 $D_uf(p)\le\|\nabla f(p)\|$이다. 이것으로 어떤 단위벡터 $u$를 골라도 방향미분이 $\|\nabla f(p)\|$를 넘어설 수 없다는 상한이 확보됐다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 이 상한이 실제로 달성되는지 확인한다. $\nabla f(p)\neq0$이므로 $u^\ast:=\dfrac{\nabla f(p)}{\|\nabla f(p)\|}$를 정의할 수 있고, $\|u^\ast\|=\dfrac{\|\nabla f(p)\|}{\|\nabla f(p)\|}=1$이라 실제로 단위벡터다. 이 $u^\ast$에서 방향미분을 계산하면 $D_{u^\ast}f(p)=\nabla f(p)\cdot\dfrac{\nabla f(p)}{\|\nabla f(p)\|}=\dfrac{\nabla f(p)\cdot\nabla f(p)}{\|\nabla f(p)\|}=\dfrac{\|\nabla f(p)\|^2}{\|\nabla f(p)\|}=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\|\nabla f(p)\|`, why: String.raw`‖∇f(p)‖²를 ‖∇f(p)‖로 나누면 ‖∇f(p)‖가 하나 남아요. 상한과 정확히 같은 값이 실제로 달성된다는 걸 확인한 자리예요.` }] },
+      { id: "s5", text: String.raw`s3에서 모든 단위벡터 $u$에 대해 $D_uf(p)\le\|\nabla f(p)\|$임을 보였고, s4에서 $u=u^\ast$일 때 정확히 $D_{u^\ast}f(p)=\|\nabla f(p)\|$가 달성됨을 보였다. 상한과 달성이 모두 확인됐으므로 $u^\ast=\nabla f(p)/\|\nabla f(p)\|$가 방향미분을 최대화하는 방향이고, 그 최댓값은 $\|\nabla f(p)\|$이다.`, blanks: [] },
+      { id: "s6", text: String.raw`$f(x,y)=x^2+y^2$, $p=(1,1)$로 검산해본다. $\nabla f(p)=(2,2)$이고 $\|\nabla f(p)\|=\sqrt{2^2+2^2}=2\sqrt2$이므로 $u^\ast=(2,2)/(2\sqrt2)=(1/\sqrt2,\,1/\sqrt2)$이다. 이 방향의 방향미분은 $D_{u^\ast}f(p)=(2,2)\cdot(1/\sqrt2,1/\sqrt2)=2/\sqrt2+2/\sqrt2=4/\sqrt2=$[[blank:다]] 인데, 이는 $\|\nabla f(p)\|=2\sqrt2$와 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`2\sqrt2`, why: String.raw`4/√2를 유리화하면 4√2/2=2√2가 돼요. 앞서 계산한 ‖∇f(p)‖=2√2와 정확히 같아요.` }] },
+      { id: "s7", text: String.raw`정리하면 그래디언트 방향이 함수값을 가장 빨리 늘리는 방향이라는 사실은 코시-슈바르츠 부등식 하나로 완전히 설명된다. 경사하강법이 손실을 줄이려고 $-\nabla f$ 방향(가장 가파르게 내려가는 방향)으로 파라미터를 갱신하는 것도 바로 이 명제를 뒤집은 것뿐이다. 변수가 두 개든 수십억 개든 이 논리는 그대로 적용된다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "경사하강법의 하강 보장", slug: "gradient-descent" },
       { label: "헤시안과 2차 최적성 조건", slug: "hessian-second-order-optimality" },
-      { label: "행렬미적분의 연쇄법칙: 그래디언트의 전치 야코비안 전파", slug: "matrix-calculus-chain-rule" }
+      { label: "행렬미적분의 연쇄법칙: 그래디언트의 전치 야코비안 전파", slug: "matrix-calculus-chain-rule" },
+      { label: "벡터의 기하적 의미", slug: "found-vector-geometric-meaning" }
     ]
   },
   "found-vector-geometric-meaning": {
     title: String.raw`벡터의 기하적 의미`,
     domain: "found",
     subLabel: String.raw`예비수학 1순위 · 방향·크기·내적·정사영`,
-    explanation: String.raw`벡터를 단순히 숫자 몇 개를 괄호로 묶은 표기법으로만 배웠다면, 대학에서 나오는 '내적', '정사영' 같은 말이 낯설게 느껴질 수 있어요. 2015 개정 교육과정 이후 벡터는 '기하'라는 선택 과목에만 들어 있는데, 이 과목의 수능 선택률이 3%를 밑돌아서 이과에 진학한 학생 중에도 벡터를 학교에서 제대로 안 배운 경우가 많아요.<br><br>벡터를 가장 쉽게 잡는 방법은 딱 두 가지만 기억하는 거예요. 방향과 크기. 화살표 하나가 벡터고, 화살표의 길이가 크기, 화살표가 가리키는 쪽이 방향이에요.<br><br>여기서 내적 $u\cdot v = \|u\|\|v\|\cos\theta$가 왜 중요한지가 나와요. 내적은 두 벡터의 크기와, 두 방향이 얼마나 같은 쪽을 보는지(각도의 코사인)를 곱해서 하나의 숫자로 압축해요. 두 벡터가 같은 방향이면 $\cos\theta=1$이라 내적이 가장 커지고, 정반대 방향이면 $\cos\theta=-1$이라 가장 작아지고, 서로 수직이면 $\cos\theta=0$이라 내적도 $0$이 돼요.<br><br>정사영(projection)은 한 벡터를 다른 벡터의 방향으로 눌러서 그림자를 만드는 거예요. $v$를 $u$ 방향으로 정사영한 길이는 $\|v\|\cos\theta$인데, 이건 $u\cdot v$와 $\|u\|$만으로 $\dfrac{u\cdot v}{\|u\|}$처럼 바로 계산할 수 있어요.<br><br>이 감각이 그대로 추천시스템의 코사인 유사도(두 상품·사용자 벡터가 얼마나 같은 방향인가)와 어텐션의 쿼리-키 유사도(지금 보는 단어 벡터가 다른 단어 벡터와 얼마나 같은 방향을 보는가)로 이어져요.`,
+    explanation: String.raw`벡터를 단순히 숫자 몇 개를 괄호로 묶은 표기법으로만 배웠다면, 대학에서 나오는 '내적', '정사영' 같은 말이 낯설게 느껴질 수 있어요. 2015 개정 교육과정 이후 벡터는 '기하'라는 선택 과목에만 들어 있는데, 이 과목의 수능 선택률이 3%를 밑돌아서 이과에 진학한 학생 중에도 벡터를 학교에서 제대로 안 배운 경우가 많아요.<br><br>벡터를 가장 쉽게 잡는 방법은 딱 두 가지만 기억하는 거예요. 방향과 크기. 화살표 하나가 벡터고, 화살표의 길이가 크기, 화살표가 가리키는 쪽이 방향이에요.<br><br>여기서 내적 $u\cdot v = \|u\|\|v\|\cos\theta$가 왜 중요한지가 나와요. 내적은 두 벡터의 크기와, 두 방향이 얼마나 같은 쪽을 보는지(각도의 코사인)를 곱해서 하나의 숫자로 압축해요. 두 벡터가 같은 방향이면 $\cos\theta=1$이라 내적이 가장 커지고, 정반대 방향이면 $\cos\theta=-1$이라 가장 작아지고, 서로 수직이면 $\cos\theta=0$이라 내적도 $0$이 돼요.<br><br>정사영(projection)은 한 벡터를 다른 벡터의 방향으로 눌러서 그림자를 만드는 거예요. $v$를 $u$ 방향으로 정사영한 길이는 $\|v\|\cos\theta$인데, 이건 $u\cdot v$와 $\|u\|$만으로 $\dfrac{u\cdot v}{\|u\|}$처럼 바로 계산할 수 있어요.<br><br>이 감각이 그대로 추천시스템의 코사인 유사도(두 상품·사용자 벡터가 얼마나 같은 방향인가)와 어텐션의 쿼리-키 유사도(지금 보는 단어 벡터가 다른 단어 벡터와 얼마나 같은 방향을 보는가)로 이어져요.<br><br>그런데 $\cos\theta$가 왜 항상 $-1$과 $1$ 사이에만 있는지는 그냥 정의만 봐서는 알 수 없어요. 그 이유를 보장해주는 게 코시-슈바르츠 부등식이에요.<br><br><strong>명제.</strong> 벡터 $u,v\in\mathbb{R}^n$에 대해 $|u\cdot v|\le\|u\|\|v\|$이 항상 성립하며, 등호는 $u,v$가 서로 평행할 때만 성립한다.`,
     intuition: String.raw`<p>벡터는 방향과 크기만 있으면 충분하고, 내적은 "두 벡터가 얼마나 같은 쪽을 보는가"를 숫자 하나로 압축한 값이에요. 정사영은 한 벡터에서 다른 벡터 방향 성분만 뽑아내는 거고요. 이 세 가지만 잡으면 코사인 유사도도 어텐션도 그렇게 어렵지 않아요.</p>`,
     example: String.raw`<p>구체적인 숫자로 확인해볼게요. $u=(3,4)$로 두면 $\|u\|=\sqrt{3^2+4^2}=5$예요.</p>
 <p>먼저 완전히 같은 방향을 향하는 $v_1=(6,8)=2u$를 내적해볼게요. $u\cdot v_1=3\times6+4\times8=50$이고 $\|v_1\|=10$이라서 $\cos\theta=50/(5\times10)=1$이 나와요. 같은 방향이니 각도가 $0$이고 코사인이 최댓값 $1$이 나온 거예요.</p>
@@ -19869,7 +20087,18 @@ $$\text{proj}_u v_3 = 4\times\left(\frac35,\frac45\right) = (2.4,\ 3.2)$$
 <text x="60" y="30" font-size="12" class="dg-dim">사잇각 θ와 정사영</text>
 </svg>`,
     diagramCaption: String.raw`두 벡터 u, v 사이 각 θ와, v를 u 방향으로 내린 정사영(굵은 선)의 관계.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`이 명제(코시-슈바르츠 부등식) $|u\cdot v|\le\|u\|\|v\|$는 방금 위에서 쓴 "$\cos\theta$가 항상 $-1$과 $1$ 사이"라는 사실의 진짜 근거다. $u=0$이면 양변이 모두 $0$이라 자명하므로, 이제 $u\neq0$인 경우만 본다. 임의의 실수 $t$에 대해 벡터 $tu+v$의 노름의 제곱은 항상 $0$ 이상이라는 사실에서 출발한다: $\|tu+v\|^2\ge0$.`, blanks: [] },
+      { id: "s2", text: String.raw`내적의 분배법칙을 이용해 $\|tu+v\|^2=(tu+v)\cdot(tu+v)$를 전개한다. $t^2(u\cdot u)+2t(u\cdot v)+(v\cdot v)$가 되는데, $u\cdot u=\|u\|^2$, $v\cdot v=\|v\|^2$이므로 이는 $t$에 대한 이차식 $\|u\|^2t^2+$[[blank:가]]$+\|v\|^2$ 이다.`,
+        blanks: [{ id: "가", latex: String.raw`2(u\cdot v)t`, why: String.raw`전개한 가운데 항 2t(u·v)를 t의 이차식 형태로 정리하면 2(u·v)t가 돼요. t²의 계수가 ‖u‖², 상수항이 ‖v‖²인 이차식의 일차항 자리예요.` }] },
+      { id: "s3", text: String.raw`이 이차식은 $u\neq0$이므로 $t^2$의 계수 $\|u\|^2>0$인 진짜 이차함수이고, s1에서 모든 $t$에 대해 이 값이 $0$ 이상임을 확인했다. 아래로 볼록한 이차함수가 모든 곳에서 $0$ 이상이려면 판별식이 $0$ 이하여야 한다. $at^2+bt+c$ 꼴에서 $a=\|u\|^2$, $b=2(u\cdot v)$, $c=\|v\|^2$이므로 판별식 조건은 $b^2-4ac\le0$이다.`, blanks: [] },
+      { id: "s4", text: String.raw`판별식을 직접 대입하면 $\big(2(u\cdot v)\big)^2-4\|u\|^2\|v\|^2\le0$이다. 좌변의 $\big(2(u\cdot v)\big)^2=4(u\cdot v)^2$이므로 부등식은 $4(u\cdot v)^2-4\|u\|^2\|v\|^2\le0$, 양변을 $4$로 나누면 $(u\cdot v)^2\le$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\|u\|^2\|v\|^2`, why: String.raw`판별식 부등식 4(u·v)²≤4‖u‖²‖v‖²의 양변을 4로 나누면 (u·v)²≤‖u‖²‖v‖²가 돼요. 제곱근을 씌우기 직전 단계예요.` }] },
+      { id: "s5", text: String.raw`$(u\cdot v)^2\le\|u\|^2\|v\|^2$의 양변은 모두 $0$ 이상이므로, 양변에 제곱근을 씌워도 부등호 방향이 유지된다. $\sqrt{(u\cdot v)^2}=|u\cdot v|$이고 $\sqrt{\|u\|^2\|v\|^2}=\|u\|\|v\|$이므로(노름은 항상 $0$ 이상), $|u\cdot v|\le$[[blank:다]] 를 얻는다.`,
+        blanks: [{ id: "다", latex: String.raw`\|u\|\|v\|`, why: String.raw`제곱근을 양변에 씌우면 왼쪽은 |u·v|, 오른쪽은 ‖u‖‖v‖가 돼요. 이게 바로 증명하려던 코시-슈바르츠 부등식이에요.` }] },
+      { id: "s6", text: String.raw`등호가 언제 성립하는지도 확인해둔다. 판별식이 정확히 $0$이면 이차식 $\|tu+v\|^2$은 어떤 $t_0$에서 $0$이 되는 지점을 갖고, $\|t_0u+v\|^2=0$은 $t_0u+v=0$, 즉 $v=-t_0u$를 뜻한다. 즉 등호는 $u,v$가 서로 평행(한 벡터가 다른 벡터의 스칼라배)일 때만 성립한다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면 $|u\cdot v|\le\|u\|\|v\|$가 항상 성립하고, $u\neq0,v\neq0$일 때 이를 $\|u\|\|v\|$로 나누면 $\left|\dfrac{u\cdot v}{\|u\|\|v\|}\right|\le1$, 즉 $\cos\theta:=\dfrac{u\cdot v}{\|u\|\|v\|}$가 항상 $[-1,1]$ 안에 있다는 사실이 증명된다. 코사인 유사도가 항상 $-1$과 $1$ 사이의 값만 내는 이유, 어텐션 점수를 코사인으로 정규화해도 값이 폭발하지 않는 이유가 바로 이 부등식이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "코사인 유사도의 유계성과 각도 해석", slug: "cosine-similarity" },
       { label: "어텐션의 스케일링 (√d로 나누는 이유)", slug: "attention-scaling" },
@@ -19881,7 +20110,7 @@ $$\text{proj}_u v_3 = 4\times\left(\frac35,\frac45\right) = (2.4,\ 3.2)$$
     title: String.raw`행렬 연산과 역행렬의 직관`,
     domain: "found",
     subLabel: String.raw`예비수학 2순위 · 행렬곱·항등행렬·역행렬`,
-    explanation: String.raw`행렬을 처음 배우면 대부분 숫자를 표 모양으로 늘어놓고 곱하는 계산 규칙부터 외우게 돼요. 그런데 그 계산이 실제로 무엇을 하는 건지는 잘 안 다뤄요. 2015 개정 교육과정에서는 행렬이 고등학교에서 아예 빠졌다가 2022 개정부터 공통수학1로 돌아와 다시 전원 필수가 됐는데, 그 사이 세대는 행렬을 학교에서 배운 적이 없고 최근 세대도 계산 절차 위주라 '왜' 부분은 얕은 경우가 많아요.<br><br>행렬을 가장 유용하게 보는 방법은 숫자표가 아니라 변환(transformation)으로 보는 거예요. 행렬 $A$를 벡터 $x$에 곱하는 $Ax$는 $x$라는 점을 다른 위치로 옮기는 함수 하나를 적용한 것과 같아요. 그래서 두 행렬을 곱한 $AB$는 "$B$라는 변환을 먼저 하고 그 다음 $A$라는 변환을 적용하는" 함수 합성과 정확히 같은 뜻이에요.<br><br>항등행렬 $I$는 아무것도 안 바꾸는 변환이고, 역행렬 $A^{-1}$이 존재한다는 건 $A$라는 변환을 적용한 다음 $A^{-1}$을 적용하면 정확히 원래 자리로 돌아온다는 뜻이에요. 즉 $A$가 정보를 하나도 잃지 않고 되돌릴 수 있는 변환이라는 거예요. 반대로 역행렬이 없는 행렬은 서로 다른 두 점을 같은 곳으로 눌러버려서 결과만 보고는 원래 자리를 복원할 방법이 없어요.<br><br>이 감각이 없으면 신경망의 순전파 $Wx+b$는 그냥 숫자를 곱하고 더하는 기계적 계산으로만 보여요. 변환의 관점으로 보면 $Wx+b$는 입력 벡터 $x$를 가중치 $W$가 정의하는 새 공간으로 옮기고 편향 $b$만큼 평행이동하는, 아주 자연스러운 절차예요.`,
+    explanation: String.raw`행렬을 처음 배우면 대부분 숫자를 표 모양으로 늘어놓고 곱하는 계산 규칙부터 외우게 돼요. 그런데 그 계산이 실제로 무엇을 하는 건지는 잘 안 다뤄요. 2015 개정 교육과정에서는 행렬이 고등학교에서 아예 빠졌다가 2022 개정부터 공통수학1로 돌아와 다시 전원 필수가 됐는데, 그 사이 세대는 행렬을 학교에서 배운 적이 없고 최근 세대도 계산 절차 위주라 '왜' 부분은 얕은 경우가 많아요.<br><br>행렬을 가장 유용하게 보는 방법은 숫자표가 아니라 변환(transformation)으로 보는 거예요. 행렬 $A$를 벡터 $x$에 곱하는 $Ax$는 $x$라는 점을 다른 위치로 옮기는 함수 하나를 적용한 것과 같아요. 그래서 두 행렬을 곱한 $AB$는 "$B$라는 변환을 먼저 하고 그 다음 $A$라는 변환을 적용하는" 함수 합성과 정확히 같은 뜻이에요.<br><br>항등행렬 $I$는 아무것도 안 바꾸는 변환이고, 역행렬 $A^{-1}$이 존재한다는 건 $A$라는 변환을 적용한 다음 $A^{-1}$을 적용하면 정확히 원래 자리로 돌아온다는 뜻이에요. 즉 $A$가 정보를 하나도 잃지 않고 되돌릴 수 있는 변환이라는 거예요. 반대로 역행렬이 없는 행렬은 서로 다른 두 점을 같은 곳으로 눌러버려서 결과만 보고는 원래 자리를 복원할 방법이 없어요.<br><br>이 감각이 없으면 신경망의 순전파 $Wx+b$는 그냥 숫자를 곱하고 더하는 기계적 계산으로만 보여요. 변환의 관점으로 보면 $Wx+b$는 입력 벡터 $x$를 가중치 $W$가 정의하는 새 공간으로 옮기고 편향 $b$만큼 평행이동하는, 아주 자연스러운 절차예요.<br><br>여기서 자주 헷갈리는 것 하나가, 변환을 두 번 연달아 적용했을 때(행렬을 곱했을 때) 그걸 되돌리는 순서예요. 양말을 신고 신발을 신었다면 벗을 때는 신발을 먼저 벗고 양말을 나중에 벗어야 하죠. 행렬의 역행렬도 똑같이 순서가 뒤집혀요.<br><br><strong>명제.</strong> $n\times n$ 정사각행렬 $A,B$가 모두 가역이면(역행렬이 존재하면) 그 역행렬은 유일하고, 곱 $AB$도 가역이며 $(AB)^{-1}=B^{-1}A^{-1}$이다.`,
     intuition: String.raw`<p>행렬을 곱하는 건 공간을 변형하는 함수를 적용하는 것과 같고, 역행렬이 있다는 건 그 변형을 정보 손실 없이 되돌릴 수 있다는 뜻이에요. 신경망의 $Wx+b$도 결국 이 변환을 층마다 반복해서 쌓는 것뿐이에요.</p>`,
     example: String.raw`<p>$A=\begin{pmatrix}2&1\\1&1\end{pmatrix}$라는 변환과 벡터 $x=(3,1)$을 놓고 $Ax$를 직접 계산해볼게요.</p>
 $$Ax = \begin{pmatrix}2&1\\1&1\end{pmatrix}\begin{pmatrix}3\\1\end{pmatrix} = \begin{pmatrix}2\times3+1\times1\\1\times3+1\times1\end{pmatrix} = \begin{pmatrix}7\\4\end{pmatrix}$$
@@ -19904,7 +20133,18 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <text x="330" y="222" font-size="13" text-anchor="middle" class="dg-dim">A⁻¹</text>
 </svg>`,
     diagramCaption: String.raw`행렬 A는 정사각형을 평행사변형으로 보내고, 역행렬 A⁻¹은 그 변환을 되돌려 원래 자리로 돌아온다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 부분으로 나눈다. 먼저 역행렬이 존재하면 유일함을 보이고, 그다음 $AB$가 가역이며 $(AB)^{-1}=B^{-1}A^{-1}$임을 직접 확인한다.`, blanks: [] },
+      { id: "s2", text: String.raw`유일성부터 본다. $A$의 역행렬이 두 개, $C$와 $D$가 있다고 가정하자. 즉 $AC=CA=I$이고 $AD=DA=I$이다. 그러면 $C=CI=C(AD)=(CA)D=$[[blank:가]]$=D$ 이므로 $C=D$, 즉 역행렬은 하나뿐이다.`,
+        blanks: [{ id: "가", latex: String.raw`ID`, why: String.raw`결합법칙으로 (CA)D를 CA부터 계산하면 CA=I이므로 이 자리는 I·D가 돼요. 그리고 I·D=D이므로 결국 C=D라는 결론에 도달해요.` }] },
+      { id: "s3", text: String.raw`이제 $A,B$가 가역이라 하고 $B^{-1}A^{-1}$이 실제로 $AB$의 역행렬 역할을 하는지 확인한다. 먼저 오른쪽에서 곱해본다. $(AB)(B^{-1}A^{-1})=A(BB^{-1})A^{-1}$인데(결합법칙), $BB^{-1}=I$이므로 이는 $AIA^{-1}=AA^{-1}=$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`I`, why: String.raw`A와 A⁻¹은 서로 역행렬 관계이므로 AA⁻¹=I가 항등행렬로 정리돼요. 오른쪽 곱이 항등행렬이 나온다는 걸 확인한 자리예요.` }] },
+      { id: "s4", text: String.raw`이번엔 왼쪽에서 곱해본다. $(B^{-1}A^{-1})(AB)=B^{-1}(A^{-1}A)B=B^{-1}IB=B^{-1}B=I$이다. 오른쪽 곱과 왼쪽 곱이 모두 $I$로 나왔다.`, blanks: [] },
+      { id: "s5", text: String.raw`$(AB)(B^{-1}A^{-1})=I$이고 $(B^{-1}A^{-1})(AB)=I$이므로, $B^{-1}A^{-1}$은 $AB$의 양쪽 역할(오른쪽 곱·왼쪽 곱)을 모두 만족하는 행렬이다. 이는 정확히 역행렬의 정의이므로 $AB$는 가역이고 $(AB)^{-1}=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`B^{-1}A^{-1}`, why: String.raw`역행렬의 정의(양쪽에서 곱해 I가 나오는 행렬)를 s3, s4에서 모두 확인했으니, B⁻¹A⁻¹이 곧 (AB)⁻¹이라고 결론 내릴 수 있어요.` }] },
+      { id: "s6", text: String.raw`s2에서 확인한 유일성 덕분에 $(AB)^{-1}$이라는 표기가 애매하지 않다. 만약 역행렬이 여러 개일 수 있었다면 "$AB$의 역행렬"이라는 말 자체가 어느 것을 가리키는지 불분명했을 것이다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면 $A,B$가 각각 가역이어도 $AB$의 역행렬은 $A^{-1}B^{-1}$이 아니라 순서가 뒤집힌 $B^{-1}A^{-1}$이다. $B$라는 변환을 먼저 적용하고 $A$라는 변환을 나중에 적용했으니(양말 다음 신발), 되돌릴 때는 나중에 적용된 $A$부터 먼저 되돌리고(신발 벗기) 그다음 $B$를 되돌려야(양말 벗기) 한다는 뜻이다. 신경망을 역전파로 거슬러 올라갈 때 층을 마지막 층부터 거꾸로 도는 것도 같은 이유다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "행렬식과 가역성의 동치 (det(A)≠0 ⟺ 자명해)", slug: "determinant-invertibility" },
       { label: "비선형성 없는 순전파의 붕괴", slug: "forward-pass" },
@@ -19916,7 +20156,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     title: String.raw`공간좌표계와 3차원 벡터·평면`,
     domain: "found",
     subLabel: String.raw`예비수학 3순위 · 좌표공간·평면의 방정식`,
-    explanation: String.raw`2차원 평면에 익숙하다가 3차원 공간으로 넘어가면 갑자기 확 어려워진 것처럼 느껴지지만, 사실 늘어난 건 축 하나($z$)뿐이에요. 2015 개정 '기하'는 공간벡터를 아예 뺐다가 2022 개정에서 복원했는데, 여전히 선택 과목이라 벡터와 같은 이유로 아예 배우지 않았을 수 있어요.<br><br>2차원에서는 직선 하나를 $ax+by=c$로 표현했다면, 3차원에서는 평면 하나가 $ax+by+cz=d$로 표현돼요. 여기서 계수 $(a,b,c)$를 모아 만든 벡터 $n=(a,b,c)$는 그 평면에 수직으로 꽂힌 화살표인 법선벡터(normal vector)가 돼요. 법선벡터를 알면 평면이 어느 쪽을 향하고 있는지, 점 하나가 평면을 기준으로 어느 쪽에 있는지까지 바로 알 수 있어요.<br><br>3차원에서 '벡터가 평면 위에 있다', '두 평면이 만난다' 같은 그림을 손으로 한 번이라도 그려본 사람은, 딥러닝에서 실제로 다루는 수백~수천 차원의 특징공간을 다룰 때도 똑같은 그림을 그대로 확장해서 쓸 수 있어요. 눈으로 볼 수는 없어도 '고차원에도 초평면(hyperplane)이 있고, 그 초평면에도 법선벡터가 있다'는 감각은 3차원에서 손으로 그려본 경험에서 나와요.`,
+    explanation: String.raw`2차원 평면에 익숙하다가 3차원 공간으로 넘어가면 갑자기 확 어려워진 것처럼 느껴지지만, 사실 늘어난 건 축 하나($z$)뿐이에요. 2015 개정 '기하'는 공간벡터를 아예 뺐다가 2022 개정에서 복원했는데, 여전히 선택 과목이라 벡터와 같은 이유로 아예 배우지 않았을 수 있어요.<br><br>2차원에서는 직선 하나를 $ax+by=c$로 표현했다면, 3차원에서는 평면 하나가 $ax+by+cz=d$로 표현돼요. 여기서 계수 $(a,b,c)$를 모아 만든 벡터 $n=(a,b,c)$는 그 평면에 수직으로 꽂힌 화살표인 법선벡터(normal vector)가 돼요. 법선벡터를 알면 평면이 어느 쪽을 향하고 있는지, 점 하나가 평면을 기준으로 어느 쪽에 있는지까지 바로 알 수 있어요.<br><br>3차원에서 '벡터가 평면 위에 있다', '두 평면이 만난다' 같은 그림을 손으로 한 번이라도 그려본 사람은, 딥러닝에서 실제로 다루는 수백~수천 차원의 특징공간을 다룰 때도 똑같은 그림을 그대로 확장해서 쓸 수 있어요. 눈으로 볼 수는 없어도 '고차원에도 초평면(hyperplane)이 있고, 그 초평면에도 법선벡터가 있다'는 감각은 3차원에서 손으로 그려본 경험에서 나와요.<br><br>법선벡터가 실제로 얼마나 쓸모 있는지는, 평면 밖의 어느 점이 평면에서 정확히 얼마나 떨어져 있는지를 계산할 때 확실히 드러나요.<br><br><strong>명제.</strong> 평면 $ax+by+cz=d$ 밖의 점 $P=(p,q,r)$에서 이 평면까지의 (수직)거리는 $\dfrac{|ap+bq+cr-d|}{\sqrt{a^2+b^2+c^2}}$이다.`,
     intuition: String.raw`<p>평면의 방정식 $ax+by+cz=d$에서 계수 $(a,b,c)$를 벡터로 묶으면 그게 바로 그 평면에 수직인 법선벡터예요. 3차원에서 이 감각을 한 번 잡아두면, 차원이 아무리 늘어나도 '초평면과 그 법선벡터'라는 그림은 똑같이 적용돼요.</p>`,
     example: String.raw`<p>평면 하나를 직접 그려볼게요. $2x + 3y - z = 6$이라는 평면이 있다고 해요. 이 식의 계수를 그대로 모으면 법선벡터 $n=(2,3,-1)$이 나와요.</p>
 <p>이 평면이 실제로 어디를 지나는지 몇 개의 점으로 확인해볼게요. $x=3,y=0,z=0$을 넣으면 $2\times3+3\times0-0=6$이라 맞고, $x=0,y=2,z=0$을 넣으면 $2\times0+3\times2-0=6$이라 역시 맞아요.</p>
@@ -19940,7 +20180,18 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <text x="232" y="90" font-size="12">법선벡터 n</text>
 </svg>`,
     diagramCaption: String.raw`평면 ax+by+cz=d 위에 놓인 벡터들은 항상 법선벡터 n과 수직이다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`평면 위의 아무 점이나 하나 골라 $Q=(x_0,y_0,z_0)$라 하자(즉 $ax_0+by_0+cz_0=d$). 평면은 법선벡터 $n=(a,b,c)$ 방향으로만 "두께"가 있고 그 방향에 수직인 모든 방향으로는 평평하므로, $P$에서 평면까지의 거리는 벡터 $\overrightarrow{QP}=P-Q$를 $n$ 방향으로 정사영한 길이의 절댓값과 같다: 거리 $=\dfrac{|(P-Q)\cdot n|}{\|n\|}$.`, blanks: [] },
+      { id: "s2", text: String.raw`분자의 내적을 성분별로 전개한다. $(P-Q)\cdot n=(p-x_0)a+(q-y_0)b+(r-z_0)c=(ap+bq+cr)-(ax_0+by_0+cz_0)$인데, $Q$가 평면 위의 점이므로 $ax_0+by_0+cz_0=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`d`, why: String.raw`Q를 평면 위의 점으로 골랐으므로 평면의 방정식 ax+by+cz=d를 그대로 만족해요. 그래서 ax₀+by₀+cz₀ 자리에 d를 대입할 수 있어요.` }] },
+      { id: "s3", text: String.raw`따라서 $(P-Q)\cdot n=(ap+bq+cr)-d$이다. 이 값은 처음에 평면 위에서 $Q$를 어떻게 골랐는지와 전혀 상관없이 $P$의 좌표와 평면의 계수 $a,b,c,d$만으로 정해진다. 즉 거리 공식이 $Q$의 선택에 의존하지 않고 잘 정의된다는 뜻이다.`, blanks: [] },
+      { id: "s4", text: String.raw`법선벡터의 노름은 정의상 $\|n\|=\sqrt{a^2+b^2+c^2}$이다. s1의 거리 공식에 s3의 결과와 이 노름을 대입하면, $P$에서 평면까지의 거리는 $\dfrac{|ap+bq+cr-d|}{$[[blank:나]]$}$ 이다.`,
+        blanks: [{ id: "나", latex: String.raw`\sqrt{a^2+b^2+c^2}`, why: String.raw`법선벡터 n=(a,b,c)의 노름 공식을 그대로 분모에 대입한 자리예요.` }] },
+      { id: "s5", text: String.raw`이 공식이 극단적인 경우에도 말이 되는지 확인해본다. 만약 $P$가 이미 평면 위의 점이라면 $ap+bq+cr=d$이므로 분자가 $|d-d|=$[[blank:다]] 가 되어, 거리도 정확히 $0$이 나온다. 평면 위의 점에서 그 평면까지의 거리가 $0$이라는 당연한 사실과 정확히 일치한다.`,
+        blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`P가 평면 위에 있으면 ap+bq+cr과 d가 같은 값이므로 그 차는 0이 돼요. 공식이 극단적인 경우에도 모순 없이 맞아떨어지는지 확인하는 자리예요.` }] },
+      { id: "s6", text: String.raw`반대로 $P$가 평면에서 멀어질수록 $|ap+bq+cr-d|$의 값도 커지므로 거리도 함께 커진다. 분모 $\|n\|$은 $P$와 무관한 상수라서, 분자만 놓고 보면 "평면의 방정식에 점의 좌표를 대입한 값이 $d$에서 얼마나 벗어났는가"가 곧 거리에 비례한다는 그림이 된다.`, blanks: [] },
+      { id: "s7", text: String.raw`이 공식은 좌표 개수가 늘어나도 그대로 확장된다. $n$차원 초평면 $a_1x_1+\cdots+a_nx_n=d$와 점 $P=(p_1,\dots,p_n)$ 사이의 거리도 $\dfrac{|a_1p_1+\cdots+a_np_n-d|}{\sqrt{a_1^2+\cdots+a_n^2}}$로 정확히 같은 형태다. 서포트벡터머신에서 데이터점과 결정경계 사이의 마진을 계산할 때 쓰는 공식이 바로 이것이다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "기저가 주는 좌표 표현의 유일성", slug: "linear-independence-basis" },
       { label: "Gram-Schmidt 직교화의 귀납적 정당화", slug: "gram-schmidt" },
@@ -19952,7 +20203,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     title: String.raw`선형변환의 기하적 그림`,
     domain: "found",
     subLabel: String.raw`예비수학 4순위 · 회전·스케일링·사영`,
-    explanation: String.raw`행렬 곱셈을 계산할 줄 아는 것과, 그 행렬이 공간을 어떻게 늘리고 돌리고 찌그러뜨리는지 눈으로 그려보는 건 전혀 다른 능력이에요. 계산은 기계적으로 따라할 수 있지만, 그림으로 보는 감각은 따로 훈련해야 붙어요.<br><br>가장 쉬운 두 가지 변환부터 볼게요. 스케일링행렬은 각 축 방향으로 벡터를 늘리거나 줄이기만 해요. 회전행렬은 벡터의 길이는 그대로 두고 방향만 특정 각도로 돌려요. 신경망이 학습하는 임의의 행렬은 대체로 이 두 가지, 늘이기와 돌리기가 섞인 변환이에요.<br><br>여기서 고유벡터(eigenvector)와 고유값(eigenvalue)이 나와요. 어떤 행렬이 공간을 아무리 복잡하게 늘리고 돌리고 찌그러뜨려도, 딱 그 방향만은 변환을 거쳐도 방향이 바뀌지 않고 길이만 고유값 배로 늘어나거나 줄어드는 특별한 방향들이 있어요. 그게 고유벡터고, 그 늘어나는 배율이 고유값이에요.<br><br>이 그림을 먼저 눈에 익혀두면 PCA(데이터가 가장 많이 퍼진 방향을 고유벡터로 찾는 것)나 스펙트럴 정리(대칭행렬을 회전과 스케일링만으로 분해하는 것) 같은 증명이 수식이 아니라 그림으로 먼저 읽혀요.`,
+    explanation: String.raw`행렬 곱셈을 계산할 줄 아는 것과, 그 행렬이 공간을 어떻게 늘리고 돌리고 찌그러뜨리는지 눈으로 그려보는 건 전혀 다른 능력이에요. 계산은 기계적으로 따라할 수 있지만, 그림으로 보는 감각은 따로 훈련해야 붙어요.<br><br>가장 쉬운 두 가지 변환부터 볼게요. 스케일링행렬은 각 축 방향으로 벡터를 늘리거나 줄이기만 해요. 회전행렬은 벡터의 길이는 그대로 두고 방향만 특정 각도로 돌려요. 신경망이 학습하는 임의의 행렬은 대체로 이 두 가지, 늘이기와 돌리기가 섞인 변환이에요.<br><br>여기서 고유벡터(eigenvector)와 고유값(eigenvalue)이 나와요. 어떤 행렬이 공간을 아무리 복잡하게 늘리고 돌리고 찌그러뜨려도, 딱 그 방향만은 변환을 거쳐도 방향이 바뀌지 않고 길이만 고유값 배로 늘어나거나 줄어드는 특별한 방향들이 있어요. 그게 고유벡터고, 그 늘어나는 배율이 고유값이에요.<br><br>이 그림을 먼저 눈에 익혀두면 PCA(데이터가 가장 많이 퍼진 방향을 고유벡터로 찾는 것)나 스펙트럴 정리(대칭행렬을 회전과 스케일링만으로 분해하는 것) 같은 증명이 수식이 아니라 그림으로 먼저 읽혀요.<br><br>늘이고 돌리는 변환을 거치면 도형의 넓이도 당연히 달라지겠죠. 그 배율이 정확히 얼마인지를 말해주는 숫자가 행렬식이에요.<br><br><strong>명제.</strong> $A=\begin{pmatrix}a&b\\c&d\end{pmatrix}$가 정의하는 선형변환 $T(x)=Ax$ 아래에서, 단위정사각형(꼭짓점 $(0,0),(1,0),(0,1),(1,1)$)의 상은 벡터 $v_1=(a,c)$와 $v_2=(b,d)$가 만드는 평행사변형이며, 그 넓이는 $|ad-bc|=|\det A|$이다.`,
     intuition: String.raw`<p>행렬은 공간을 늘리고 돌리고 찌그러뜨리는 변환이고, 고유벡터는 그 변환을 거쳐도 방향이 그대로인 특별한 방향, 고유값은 그 방향으로 얼마나 늘어나는지를 나타내는 배율이에요.</p>`,
     example: String.raw`<p>먼저 회전행렬부터 볼게요. $90^\circ$ 회전행렬은 $R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$예요. 여기에 $x=(1,0)$을 곱하면 $Rx=(0,1)$이 나와요. 길이는 그대로 $1$인데 방향만 $90^\circ$ 돌아간 거예요.</p>
 <p>이번엔 스케일링행렬 $S=\begin{pmatrix}2&0\\0&0.5\end{pmatrix}$을 볼게요. $x=(1,1)$에 곱하면 $Sx=(2,\ 0.5)$가 나와요. 방향은 안 바뀌고 각 축 방향의 길이만 따로 늘고 줄었어요.</p>
@@ -19973,7 +20224,18 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <text x="222" y="212" font-size="11" class="dg-dim">v₂ (λ₂, 작은 고유값)</text>
 </svg>`,
     diagramCaption: String.raw`행렬 A는 단위원을 타원으로 보내며, 두 고유벡터 방향으로는 방향이 안 바뀌고 길이만 각각 λ₁, λ₂배로 늘어난다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`단위정사각형은 원점에서 $v_1=(a,c)$와 $v_2=(b,d)$ 두 변으로 뻗어나가는 평행사변형으로 옮겨진다. 두 벡터 사이의 각을 $\theta$라 하면, 평행사변형의 넓이는 밑변 $\times$ 높이 $=\|v_1\|\times(\|v_2\|\sin\theta)=\|v_1\|\|v_2\|\sin\theta$이다. 이 값이 $|ad-bc|$와 같음을 성분 계산으로 보인다.`, blanks: [] },
+      { id: "s2", text: String.raw`넓이의 제곱을 본다. $\sin^2\theta=1-\cos^2\theta$이고 $\cos\theta=\dfrac{v_1\cdot v_2}{\|v_1\|\|v_2\|}$이므로, 넓이의 제곱은 $\|v_1\|^2\|v_2\|^2\sin^2\theta=\|v_1\|^2\|v_2\|^2-\|v_1\|^2\|v_2\|^2\cos^2\theta=\|v_1\|^2\|v_2\|^2-$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`(v_1\cdot v_2)^2`, why: String.raw`‖v₁‖²‖v₂‖²cos²θ에서 cosθ=(v₁·v₂)/(‖v₁‖‖v₂‖)를 대입하면 ‖v₁‖², ‖v₂‖²이 약분되어 (v₁·v₂)²만 남아요.` }] },
+      { id: "s3", text: String.raw`이제 성분으로 바꿔 계산한다. $\|v_1\|^2=a^2+c^2$, $\|v_2\|^2=b^2+d^2$, $v_1\cdot v_2=ab+cd$이므로, 넓이의 제곱은 $(a^2+c^2)(b^2+d^2)-(ab+cd)^2$이다.`, blanks: [] },
+      { id: "s4", text: String.raw`두 항을 각각 전개한다. $(a^2+c^2)(b^2+d^2)=a^2b^2+a^2d^2+b^2c^2+c^2d^2$이고 $(ab+cd)^2=a^2b^2+2abcd+c^2d^2$이다. 앞의 것에서 뒤의 것을 빼면 $a^2b^2,\,c^2d^2$가 서로 상쇄되어 $a^2d^2+b^2c^2-2abcd=$[[blank:나]] 만 남는다.`,
+        blanks: [{ id: "나", latex: String.raw`(ad-bc)^2`, why: String.raw`a²d²-2abcd+b²c²는 (ad-bc)²를 전개한 것과 정확히 같은 모양이에요. 완전제곱식으로 묶으면 (ad-bc)²가 돼요.` }] },
+      { id: "s5", text: String.raw`따라서 넓이의 제곱 $=(ad-bc)^2$이다. 넓이는 항상 $0$ 이상이므로 양변에 제곱근을 씌우면 넓이 $=\sqrt{(ad-bc)^2}=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`|ad-bc|`, why: String.raw`실수 x에 대해 √(x²)=|x|이므로, (ad-bc)²의 제곱근은 |ad-bc|가 돼요.` }] },
+      { id: "s6", text: String.raw`$ad-bc$는 정확히 $A=\begin{pmatrix}a&b\\c&d\end{pmatrix}$의 행렬식 $\det A$의 정의이므로, 넓이 $=|\det A|$이다. $\det A=0$이면 넓이가 $0$이 되는데, 이는 $v_1,v_2$가 한 직선 위에 겹쳐서 평행사변형이 찌그러져 선이 돼버린다는 뜻과 정확히 일치한다.`, blanks: [] },
+      { id: "s7", text: String.raw`정리하면 선형변환 $T(x)=Ax$는 넓이를 정확히 $|\det A|$배로 바꾼다. 이 사실은 PCA에서 분산을 극대화하는 방향(고유벡터)을 찾을 때 데이터가 퍼진 정도가 곧 변환 후 넓이·부피와 연결되는 이유이자, 확률밀도함수를 변수변환할 때 야코비안의 절댓값을 곱해줘야 하는 이유(고차원에서 이 정리를 그대로 일반화한 것)이기도 하다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "대칭행렬의 직교대각화 (스펙트럴 정리)", slug: "eigen-diagonalization" },
       { label: "PCA의 최적 방향", slug: "pca" },
@@ -19985,7 +20247,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
     title: String.raw`수열의 극한과 급수(∑) 표기`,
     domain: "found",
     subLabel: String.raw`예비수학 5순위 · 수렴 개념`,
-    explanation: String.raw`AI 논문이나 강의자료를 펼치면 거의 매 페이지에 $\sum$ 기호가 나와요. 손실함수는 데이터 전체에 대한 오차의 합이고, 기댓값은 확률과 값을 곱한 항들의 합이고, 어텐션의 정규화(소프트맥스)도 결국 항들을 더한 값으로 나누는 형태예요.<br><br>그런데 $\sum$ 기호 자체보다 더 중요한 건 '더할수록 어떤 값에 가까워진다(수렴한다)'는 감각이에요. 이 감각이 없으면 무한히 더하는 식을 보자마자 "이거 무한대로 발산하는 거 아닌가" 하고 겁부터 먹게 돼요.<br><br>가장 익숙한 예시가 등비급수예요. 공비 $r$의 절댓값이 $1$보다 작으면, 항을 아무리 무한히 더해도 그 합은 특정 값 하나로 딱 멈춰요. 그 값이 바로 $\sum_{k=0}^\infty r^k = \dfrac{1}{1-r}$이에요.<br><br>이런 수렴 감각을 손으로 한 번 확인해두면, 딥러닝의 손실함수가 학습할수록 특정 값으로 수렴한다거나 몬테카를로 추정이 샘플을 많이 뽑을수록 참값에 가까워진다는 이야기를 봐도 "더할수록, 뽑을수록 좁혀진다"는 그림이 바로 떠올라요.`,
+    explanation: String.raw`AI 논문이나 강의자료를 펼치면 거의 매 페이지에 $\sum$ 기호가 나와요. 손실함수는 데이터 전체에 대한 오차의 합이고, 기댓값은 확률과 값을 곱한 항들의 합이고, 어텐션의 정규화(소프트맥스)도 결국 항들을 더한 값으로 나누는 형태예요.<br><br>그런데 $\sum$ 기호 자체보다 더 중요한 건 '더할수록 어떤 값에 가까워진다(수렴한다)'는 감각이에요. 이 감각이 없으면 무한히 더하는 식을 보자마자 "이거 무한대로 발산하는 거 아닌가" 하고 겁부터 먹게 돼요.<br><br>가장 익숙한 예시가 등비급수예요. 공비 $r$의 절댓값이 $1$보다 작으면, 항을 아무리 무한히 더해도 그 합은 특정 값 하나로 딱 멈춰요. 그 값이 바로 $\sum_{k=0}^\infty r^k = \dfrac{1}{1-r}$이에요.<br><br>이런 수렴 감각을 손으로 한 번 확인해두면, 딥러닝의 손실함수가 학습할수록 특정 값으로 수렴한다거나 몬테카를로 추정이 샘플을 많이 뽑을수록 참값에 가까워진다는 이야기를 봐도 "더할수록, 뽑을수록 좁혀진다"는 그림이 바로 떠올라요.<br><br>등비급수가 왜 정확히 $\dfrac{1}{1-r}$로 수렴하는지, 그리고 왜 $|r|<1$이라는 조건이 꼭 필요한지는 직접 유도해보면 훨씬 분명해져요.<br><br><strong>명제.</strong> $|r|<1$이면 등비급수 $\sum_{k=0}^\infty ar^k$는 수렴하고, 그 값은 $\dfrac{a}{1-r}$이다.`,
     intuition: String.raw`<p>$\sum$은 그냥 '더한다'는 뜻이고, 그 합이 무한히 더해도 한 곳으로 멈추면 수렴, 계속 커지면 발산이에요. 등비급수라면 공비가 $1$보다 작은가 큰가 하나가 그 갈림길을 결정해요.</p>`,
     example: String.raw`<p>공비 $r=0.5$인 등비급수 $\sum_{k=0}^\infty (0.5)^k$를 부분합으로 직접 확인해볼게요.</p>
 <p>항을 하나씩 더해볼게요. $k=0$까지 더하면 $1$, $k=1$까지 더하면 $1+0.5=1.5$, $k=2$까지 더하면 $1.5+0.25=1.75$, $k=3$까지 더하면 $1.75+0.125=1.875$, $k=4$까지 더하면 $1.875+0.0625=1.9375$예요.</p>
@@ -20009,7 +20271,18 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
 <text x="20" y="30" font-size="12">Sₙ</text>
 </svg>`,
     diagramCaption: String.raw`부분합 Sₙ이 계단식으로 늘어나는 폭이 점점 줄면서 극한값 L에 가까워진다.`,
-    sections: [],
+    sections: [
+      { id: "s1", text: String.raw`증명은 두 단계로 나눈다. 먼저 부분합 $S_n=\sum_{k=0}^{n-1}ar^k=a(1+r+r^2+\cdots+r^{n-1})$의 닫힌 형태(공식)를 구하고, 그다음 $|r|<1$일 때 $n\to\infty$이면 $r^n\to0$임을 엄밀히 보여 그 공식의 극한을 계산한다.`, blanks: [] },
+      { id: "s2", text: String.raw`$S_n$에 $r$을 곱한 $rS_n=a(r+r^2+\cdots+r^n)$을 만들고 $S_n-rS_n$을 계산한다. 중간 항들이 전부 짝을 이뤄 사라지고(텔레스코핑) 처음 항 $a$와 마지막 항 $-ar^n$만 남아 $S_n-rS_n=$[[blank:가]] 이다.`,
+        blanks: [{ id: "가", latex: String.raw`a(1-r^n)`, why: String.raw`S_n의 항들과 rS_n의 항들을 나란히 놓고 빼면 ar,ar²,…,ar^{n-1}이 전부 상쇄되고, S_n의 첫 항 a와 rS_n의 마지막 항 −ar^n만 남아요. 그래서 a−ar^n=a(1−r^n)이 돼요.` }] },
+      { id: "s3", text: String.raw`좌변 $S_n-rS_n=S_n(1-r)$이므로 $r\neq1$일 때 양변을 $(1-r)$로 나누면 $S_n=\dfrac{a(1-r^n)}{1-r}$이라는 닫힌 형태를 얻는다.`, blanks: [] },
+      { id: "s4", text: String.raw`이제 $n\to\infty$일 때 $r^n$의 극한을 본다. $0<|r|<1$이므로 $\dfrac1{|r|}>1$이고, 이를 $\dfrac1{|r|}=1+h$ ($h>0$)로 쓸 수 있다. 베르누이 부등식 $(1+h)^n\ge1+nh$에 의해 $|r|^n=\dfrac1{(1+h)^n}\le\dfrac1{1+nh}$인데, $n\to\infty$이면 $nh\to\infty$이므로 $\dfrac1{1+nh}\to$[[blank:나]] 이다.`,
+        blanks: [{ id: "나", latex: String.raw`0`, why: String.raw`h>0으로 고정되어 있고 n이 한없이 커지면 분모 1+nh도 한없이 커져요. 분모가 무한히 커지는 분수는 0으로 수렴해요.` }] },
+      { id: "s5", text: String.raw`$0\le|r|^n\le\dfrac1{1+nh}$이고 양 끝이 모두 $0$으로 수렴하므로(조임정리, squeeze theorem) $|r|^n\to0$이다. 이는 $r^n\to0$을 뜻한다($r=0$인 경우는 애초에 $r^n=0$으로 자명하다).`, blanks: [] },
+      { id: "s6", text: String.raw`s3의 공식 $S_n=\dfrac{a(1-r^n)}{1-r}$에 $r^n\to0$을 대입하면, $n\to\infty$일 때 $S_n\to\dfrac{a(1-0)}{1-r}=$[[blank:다]] 이다.`,
+        blanks: [{ id: "다", latex: String.raw`\frac{a}{1-r}`, why: String.raw`r^n이 0으로 수렴하므로 분자 a(1-r^n)은 a(1-0)=a로 수렴해요. 분모 1-r은 r이 상수라 그대로 남아서 극한은 a/(1-r)이 돼요.` }] },
+      { id: "s7", text: String.raw`정리하면 $|r|<1$일 때 부분합 $S_n$은 $\dfrac{a}{1-r}$로 수렴한다. 반대로 $|r|\ge1$이면 s4의 조임정리가 성립하지 않아($nh$가 아예 정의되지 않거나 $r^n$이 $0$으로 가지 않아) $S_n$이 특정 값으로 좁혀지지 않고 발산한다. 등비분포(기하분포)의 확률 총합이 $1$이 되는 이유, 할인된 보상의 합(강화학습의 리턴)이 할인율이 $1$보다 작을 때만 유한한 값으로 수렴하는 이유가 전부 이 등비급수 공식에서 나온다. 따라서 명제가 성립한다.`, blanks: [] }
+    ],
     related: [
       { label: "교차엔트로피와 엔트로피·KL발산의 관계", slug: "entropy-crossentropy" },
       { label: "최대우도추정(MLE)과 로그우도", slug: "mle" },

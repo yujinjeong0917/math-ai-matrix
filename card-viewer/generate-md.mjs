@@ -105,9 +105,12 @@ const outDir = path.join(__dirname, "concepts");
 fs.mkdirSync(outDir, { recursive: true });
 
 let count = 0;
+const manifest = [];
 for (const [slug, concept] of Object.entries(CONCEPTS)) {
   const md = toSlugMd(slug, concept);
   fs.writeFileSync(path.join(outDir, slug + ".md"), md, "utf-8");
+  manifest.push({ slug, title: concept.title, domain: concept.domain });
   count++;
 }
-console.log(`생성 완료: ${count}개 .md 파일 → ${outDir}`);
+fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2), "utf-8");
+console.log(`생성 완료: ${count}개 .md 파일 + manifest.json → ${outDir}`);

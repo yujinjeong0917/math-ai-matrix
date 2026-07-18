@@ -27,7 +27,7 @@ $\pi(\theta)=p(D\mid\theta)p(\theta)$를 정규화 전 사후밀도라 하고, $
 _뾰족한 실제 사후분포(실선)를 최빈값 $\theta^*$에서 2차 테일러 전개한 대칭 가우시안(점선)으로 근사한다. 꼬리의 비대칭은 근사에서 사라진다._
 
 ## 문제
-$\log\pi(\theta)$를 $\theta^*$ 주변에서 2차까지 테일러 전개하면 $\log\pi(\theta)\approx \log\pi(\theta^*) + \nabla\log\pi(\theta^*)^T(\theta-\theta^*) - \tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$인데, 정상점 조건에 의해 1차항은 $==빈칸==$이다.
+$\log\pi(\theta)$를 $\theta^*$ 주변에서 2차까지 테일러 전개하면 $\log\pi(\theta)\approx \log\pi(\theta^*) + \nabla\log\pi(\theta^*)^T(\theta-\theta^*) - \tfrac12(\theta-\theta^*)^TH(\theta-\theta^*)$인데, 정상점 조건에 의해 1차항은 ==빈칸==이다.
 
 ## 해설
 $\theta^*$가 최댓값을 주는 정상점이므로 그레이디언트가 0이라서 1차항이 사라져요. 그래서 2차항(곡률)만 근사에 남습니다.

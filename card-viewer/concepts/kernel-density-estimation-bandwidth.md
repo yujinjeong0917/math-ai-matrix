@@ -40,7 +40,7 @@ $X_1,\dots,X_n\stackrel{iid}{\sim}p$이고 대칭 커널 $K$($\int K=1,\ \int uK
 _같은 데이터(x축 눈금)에 대역폭만 달리 적용한 세 KDE 곡선. 대역폭이 작으면 분산이 커 들쭉날쭉해지고, 크면 편향이 커 봉우리가 뭉개진다._
 
 ## 문제
-$p(x-hu)$를 $h$에 대해 2차까지 테일러 전개하면 $p(x-hu)\approx p(x)-hu\,p'(x)+\frac{h^2u^2}{2}p''(x)$이다. 이를 대입해 항별로 적분하면, $\int K(u)du=1,\ \int uK(u)du=0,\ \int u^2K(u)du=\sigma_K^2$이므로 $E[\hat p_h(x)]\approx p(x)+$ $==빈칸==$이다.
+$p(x-hu)$를 $h$에 대해 2차까지 테일러 전개하면 $p(x-hu)\approx p(x)-hu\,p'(x)+\frac{h^2u^2}{2}p''(x)$이다. 이를 대입해 항별로 적분하면, $\int K(u)du=1,\ \int uK(u)du=0,\ \int u^2K(u)du=\sigma_K^2$이므로 $E[\hat p_h(x)]\approx p(x)+$ ==빈칸==이다.
 
 ## 해설
 1차항은 대칭커널 조건 $\int uK(u)du=0$ 때문에 사라지고, 2차항의 계수 $\int u^2K(u)du=\sigma_K^2$만 남아요. 이것이 바로 편향이에요.

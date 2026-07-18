@@ -165,6 +165,10 @@
 
   <div class="stat-row">
     <div class="stat-card">
+      <div class="num">18챕터 · 6부</div>
+      <div class="desc">예비수학은 <a href="../docs/book-plan/index.html">본편과 분리된 별도 단행본</a>으로 기획됐어요. 이 페이지는 그 18챕터를 그대로 담고 있습니다.</div>
+    </div>
+    <div class="stat-card">
       <div class="num">2.9%</div>
       <div class="desc">2026학년도 수능에서 벡터가 포함된 '기하'를 선택한 응시생 비율. 이과 진학생 대다수도 학교에서 벡터를 정식으로 배우지 않아요.</div>
     </div>
@@ -172,216 +176,308 @@
       <div class="num">2022 개정</div>
       <div class="desc">행렬이 2009 개정 때 빠졌다가 공통수학1로 부활한 시점(2025년 고1~). 그 이전에 고교를 마친 세대는 행렬을 학교에서 배운 적이 없어요.</div>
     </div>
-    <div class="stat-card">
-      <div class="num">41.8% → 25%</div>
-      <div class="desc">서울대 이공계 신입생 수학 배치시험에서 '기초' 단계로 분류된 비율(2023학년도 및 2026학년도, 산정 기준은 다를 수 있음). 방향은 일관되게 격차 확대예요.</div>
-    </div>
   </div>
 
-  <h2><span class="idx">01</span>왜 이런 격차가 생겼나</h2>
+  <h2><span class="idx">0부</span>프롤로그</h2>
   <p class="section-lede">
-    2009 개정부터 이어진 흐름이지만 특히 2015·2022 개정을 거치며 고교 수학은
-    "공통으로 다 배우는 것"과 "선택하면 배우는 것"으로 계속 갈라졌어요. 문제는 대학
-    강의는 여전히 "이과라면 이 정도는 봤겠지"를 전제로 짜여 있다는 점이에요. 이 사이에
-    실제로 벌어진 공백을 우선순위 순으로 정리했습니다. 각 항목의 배지는 "완전히 못
-    봤을 수 있음"과 "봤어도 얕게만 다뤘을 수 있음"을 구분해요.
+    본격적으로 들어가기 전에, 왜 이 책이 필요한지부터 짚고 갑니다.
+  </p>
+  <div class="topic">
+    <span class="rank">0장</span>
+    <p class="t-name">이 책을 왜 읽어야 하는가</p>
+    <p class="t-tag">교육과정 개편 배경</p>
+    <p>
+      2009 개정부터 이어진 흐름이지만 특히 2015·2022 개정을 거치며 고교 수학은
+      "공통으로 다 배우는 것"과 "선택하면 배우는 것"으로 계속 갈라졌어요. 문제는
+      대학 강의는 여전히 "이과라면 이 정도는 봤겠지"를 전제로 짜여 있다는 점이에요.
+      아래 18챕터는 그 사이에 실제로 벌어진 공백을, 급한 순서대로 채워나갑니다.
+      각 항목의 배지는 "완전히 못 봤을 수 있음"과 "봤어도 얕게만 다뤘을 수 있음"을
+      구분해요.
+    </p>
+  </div>
+
+  <h2><span class="idx">1부</span>수학의 언어</h2>
+  <p class="section-lede">
+    벡터·행렬로 들어가기 전에, 증명을 읽고 쓰는 데 필요한 가장 기초적인 문법부터
+    맞춰둡니다. 아래 세 챕터는 이 사이트의 다른 증명들과 똑같은 형식(명제 → 단계별
+    전개 → 결론)을 갖춘 실제 증명을 담고 있어요.
   </p>
 
   <div class="topic">
-    <span class="rank">1순위</span>
+    <span class="rank">1장</span>
+    <p class="t-name">집합과 명제</p>
+    <p class="t-tag">명제와 대우의 동치</p>
+    <p>
+      "대우를 증명해도 된다"는 말을 듣기만 하고 왜 그런지는 확인 안 해본 경우가
+      많아요. 명제를 진리집합으로 바꿔 생각하면 이 동치 관계가 집합의 포함관계
+      문제로 눈에 보이게 증명됩니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-set-proposition-logic">자세히 보기 →</a>
+  </div>
+
+  <div class="topic">
+    <span class="rank">2장</span>
+    <p class="t-name">방정식과 부등식 다시 보기</p>
+    <p class="t-tag">부등식으로 최적을 증명하기</p>
+    <p>
+      "상한을 잡고, 그 상한이 달성되는 경우를 찾는다"는 전략이 최적화 증명 대부분의
+      뼈대예요. AM-GM 부등식 하나로 "둘레가 고정된 직사각형 중 정사각형의 넓이가
+      가장 크다"는 걸 직접 증명하며 이 전략을 손에 익힙니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-equation-inequality-review">자세히 보기 →</a>
+  </div>
+
+  <div class="topic">
+    <span class="rank">3장</span>
+    <p class="t-name">함수란 무엇인가</p>
+    <p class="t-tag">역함수가 존재하는 조건</p>
+    <p>
+      함수를 "되돌릴 수 있다"는 것이 정확히 전단사(단사+전사)라는 조건과 같은 말임을
+      증명합니다. 이 감각은 곧바로 다음 부의 "역행렬이 존재하려면 그 변환이 전단사여야
+      한다"는 이야기로 이어져요.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-function-definition-intuition">자세히 보기 →</a>
+  </div>
+
+  <h2><span class="idx">2부</span>벡터와 행렬 (가장 큰 공백)</h2>
+  <p class="section-lede">
+    2015 개정 이후 벡터·행렬은 선택 과목에만 있거나 한동안 교육과정에서 아예
+    빠져 있었어요. 그래서 이 부가 격차가 가장 크게 벌어진 구간입니다.
+  </p>
+
+  <div class="topic">
+    <span class="rank">4장 · 1순위</span>
     <p class="t-name">벡터의 기하적 의미</p>
     <p class="t-tag">방향·크기 · 내적 · 정사영</p>
     <span class="t-gap full">완전 공백 가능</span>
     <p>
       벡터는 고교 교육과정에서 '기하' 과목에만 있고, 이 과목의 수능 선택률은 3%를
       밑돕니다. 그런데 대학에서는 "벡터 두 개의 내적이 왜 코사인 유사도인지" 정도는
-      알고 있다고 전제해요. 핵심만 짚으면, 벡터의 내적 $u\cdot v = \|u\|\|v\|\cos\theta$은
-      "두 방향이 얼마나 같은 쪽을 보고 있는가"를 숫자 하나로 압축한 거예요. 이 하나의
-      직관이 추천시스템의 코사인 유사도, 어텐션의 쿼리·키 유사도까지 전부로 이어집니다.
+      알고 있다고 전제해요. 아래 증명 페이지에서는 코시-슈바르츠 부등식을 직접
+      유도해서, $\cos\theta$가 왜 항상 $-1$과 $1$ 사이인지까지 확인합니다.
     </p>
     <a class="detail-link" href="../concepts/index.html?c=found-vector-geometric-meaning">자세히 보기 →</a>
   </div>
 
   <div class="topic">
-    <span class="rank">2순위</span>
+    <span class="rank">5장 · 3순위</span>
+    <p class="t-name">공간좌표계와 3차원 벡터·평면</p>
+    <p class="t-tag">좌표공간 · 평면의 방정식</p>
+    <span class="t-gap full">완전 공백 가능</span>
+    <p>
+      2015 개정 '기하'는 공간벡터를 아예 뺐다가 2022 개정에서 복원했는데, 여전히
+      선택과목이라 위 벡터 항목과 같은 이유로 비어 있을 수 있어요. 법선벡터를 이용해
+      점과 평면 사이의 거리 공식을 직접 유도하며, 이 공식이 고차원 초평면으로 그대로
+      확장된다는 것까지 확인합니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-3d-coordinate-space">자세히 보기 →</a>
+  </div>
+
+  <div class="topic">
+    <span class="rank">6장 · 2순위</span>
     <p class="t-name">행렬 연산과 역행렬의 직관</p>
     <p class="t-tag">행렬곱 · 항등행렬 · 역행렬이 존재한다는 것의 의미</p>
     <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
     <p>
       2022 개정부터 공통수학1로 돌아와 다시 전원 필수가 됐지만, 그 전 세대는 아예
       배운 적이 없고 최근 세대도 계산 위주라 "왜" 부분은 얕아요. 행렬을 숫자 표가
-      아니라 <strong>변환</strong>으로 보는 게 핵심이에요. 행렬 $A$를 벡터 $x$에
-      곱하는 건 $x$를 다른 공간으로 옮기는 함수 하나를 적용하는 것과 같아요. 역행렬이
-      존재한다는 건 그 변환이 정보를 잃지 않고 되돌릴 수 있다는 뜻이고요. 이 감각이
-      없으면 신경망의 순전파 $Wx+b$가 그냥 기계적 계산으로만 보여요.
+      아니라 <strong>변환</strong>으로 보는 게 핵심이에요. 역행렬의 유일성과,
+      $(AB)^{-1}=B^{-1}A^{-1}$처럼 곱의 순서가 뒤집히는 이유를 직접 증명합니다.
     </p>
     <a class="detail-link" href="../concepts/index.html?c=found-matrix-operations-intuition">자세히 보기 →</a>
   </div>
 
   <div class="topic">
-    <span class="rank">3순위</span>
-    <p class="t-name">공간좌표계와 3차원 벡터·평면</p>
-    <p class="t-tag">좌표공간 · 평면의 방정식</p>
-    <span class="t-gap full">완전 공백 가능</span>
-    <p>
-      2015 개정 '기하'는 공간벡터를 아예 뺐다가 2022 개정에서 복원했는데, 여전히
-      선택과목이라 위 벡터 항목과 같은 이유로 비어 있을 수 있어요. 딥러닝의 특징
-      공간은 보통 3차원이 아니라 수백~수천 차원이지만, 3차원에서 "벡터가 평면 위에
-      있다", "두 평면이 만난다" 같은 그림을 한 번이라도 손으로 그려본 사람은 고차원
-      공간을 다룰 때도 그 그림을 그대로 확장해서 씁니다.
-    </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-3d-coordinate-space">자세히 보기 →</a>
-  </div>
-
-  <div class="topic">
-    <span class="rank">4순위</span>
+    <span class="rank">7장 · 4순위</span>
     <p class="t-name">선형변환의 기하적 그림</p>
     <p class="t-tag">회전 · 스케일링 · 사영을 눈으로 보기</p>
     <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
     <p>
       행렬을 계산할 줄 아는 것과, 행렬이 공간을 어떻게 늘리고 돌리고 눌러 찌그러뜨리는지
-      "보는" 건 다른 능력이에요. 고유값·고유벡터가 왜 중요한지("이 방향으로는 늘리기만
-      하고 방향은 안 바꾼다")를 그림으로 먼저 이해하면, PCA나 스펙트럴 정리 같은
-      기초 매트릭스의 증명들이 계산이 아니라 그림으로 먼저 읽혀요.
+      "보는" 건 다른 능력이에요. 단위정사각형이 변환 후 넓이가 정확히 $|\det A|$배로
+      바뀐다는 사실을 코시-슈바르츠 부등식을 재사용해 증명합니다.
     </p>
     <a class="detail-link" href="../concepts/index.html?c=found-linear-transformation-geometry">자세히 보기 →</a>
   </div>
 
-  <div class="topic">
-    <span class="rank">5순위</span>
-    <p class="t-name">수열의 극한과 급수(∑) 표기</p>
-    <p class="t-tag">수렴 개념 · 합의 기호에 익숙해지기</p>
-    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
-    <p>
-      손실함수, 기댓값, 어텐션의 정규화까지 AI 수식 대부분이 $\sum$ 기호로 시작해요.
-      "이게 결국 유한하거나 무한한 항을 더한 것"이라는 감각과, "더할수록 특정 값에
-      가까워진다(수렴)"는 감각이 붙어 있어야 긴 수식을 겁내지 않고 읽습니다.
-    </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-sequence-limit-sigma">자세히 보기 →</a>
-  </div>
+  <h2><span class="idx">3부</span>함수 심화</h2>
+  <p class="section-lede">
+    지수·로그·삼각함수·이차곡선처럼 익숙하지만 "왜"까지는 깊이 안 다뤄봤을 함수들을
+    다시 짚습니다.
+  </p>
 
   <div class="topic">
-    <span class="rank">6순위</span>
-    <p class="t-name">이차곡선(타원·포물선·쌍곡선)</p>
-    <p class="t-tag">등고선과 제약조건의 그림</p>
-    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
-    <p>
-      손실함수의 등고선, 라그랑주 승수법의 제약 조건이 전부 이 곡선들의 모양으로
-      그려져요. "왜 손실함수를 그릴 때 타원 모양 등고선이 나오는가"를 한 번 짚어두면
-      경사하강법이 왜 지그재그로 움직이는지도 그림으로 바로 이해돼요.
-    </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-conic-sections">자세히 보기 →</a>
-  </div>
-
-  <div class="topic">
-    <span class="rank">7순위</span>
+    <span class="rank">8장 · 7순위</span>
     <p class="t-name">로그·지수함수 심화</p>
     <p class="t-tag">밑 변환 · 로그미분 · 자연상수 $e$</p>
     <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
     <p>
       소프트맥스, 시그모이드, 교차엔트로피, 그리고 학습률 스케줄까지 온통 $e^x$와
-      $\log x$예요. 특히 $\log$가 곱셈을 덧셈으로 바꿔준다는 성질 하나만 확실히
-      잡아두면, 왜 확률의 곱을 로그를 씌워 합으로 바꿔서 계산하는지(로그가능도)가
-      자연스럽게 이해됩니다.
+      $\log x$예요. $\log$가 지수함수의 역함수라는 정의에서 출발해 $\log_a(xy)=\log_a
+      x+\log_a y$를 직접 유도하고, 이게 왜 로그가능도의 근거인지 확인합니다.
     </p>
     <a class="detail-link" href="../concepts/index.html?c=found-log-exp-advanced">자세히 보기 →</a>
   </div>
 
   <div class="topic">
-    <span class="rank">8순위</span>
-    <p class="t-name">여러 함수의 극한 (옛 미적분Ⅱ 영역)</p>
-    <p class="t-tag">진로선택으로 밀려나 있는 영역</p>
-    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
-    <p>
-      미적분Ⅱ는 진로선택 과목이라 이수 여부가 갈리고, 2028학년도부터는 수능
-      출제 범위에서도 완전히 빠져요. 복잡한 함수의 극한을 다루는 감각이 부족하면
-      최적화 이론에서 "이 근사가 왜 성립하는지"를 받아들이는 데 시간이 더 걸려요.
-    </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-calc2-limits">자세히 보기 →</a>
-  </div>
-
-  <div class="topic">
-    <span class="rank">9순위</span>
-    <p class="t-name">확률변수와 분포, 기댓값·분산의 직관</p>
-    <p class="t-tag">이산·연속분포를 그림으로 구분하기</p>
-    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
-    <p>
-      2026학년도 수능에서 확률과 통계 선택 비율이 미적분을 처음으로 앞질렀을 만큼
-      다들 이 과목은 접했지만, 고교 수준은 "확률 계산"에 머물고 "확률변수를 하나의
-      대상으로 다루는" 감각까지는 잘 안 가요. 기댓값을 "장기적으로 평균 나오는 값",
-      분산을 "그 값 주변으로 얼마나 퍼져 있는가"로 그림처럼 갖고 있으면 이후
-      모든 통계·생성모델 개념이 훨씬 편해집니다.
-    </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-random-variable-intuition">자세히 보기 →</a>
-  </div>
-
-  <div class="topic">
-    <span class="rank">10순위</span>
+    <span class="rank">9장 · 10순위</span>
     <p class="t-name">삼각함수 항등식과 그래프 변형</p>
     <p class="t-tag">주기·위상 감각</p>
     <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
     <p>
       Transformer의 위치 임베딩이 $\sin$·$\cos$의 조합으로 만들어지는 이유가
       "주기가 다른 파동을 겹치면 위치마다 고유한 패턴이 생긴다"는 삼각함수의 성질
-      때문이에요. 공식을 외우기보다 그래프가 어떻게 늘어나고 밀리는지 감으로 아는
-      쪽이 더 오래갑니다.
+      때문이에요. 앞서 배운 회전행렬을 그대로 재사용해 덧셈정리
+      $\sin(A+B)=\sin A\cos B+\cos A\sin B$를 직접 증명합니다.
     </p>
     <a class="detail-link" href="../concepts/index.html?c=found-trig-identity-graph">자세히 보기 →</a>
   </div>
 
   <div class="topic">
-    <span class="rank">11순위</span>
-    <p class="t-name">수학적 귀납법과 엄밀한 증명 감각</p>
-    <p class="t-tag">"항상 성립한다"를 증명하는 방식에 익숙해지기</p>
+    <span class="rank">10장 · 6순위</span>
+    <p class="t-name">이차곡선(타원·포물선·쌍곡선)</p>
+    <p class="t-tag">등고선과 제약조건의 그림</p>
     <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
     <p>
-      이 사이트의 모든 증명은 "명제 → 단계별 전개 → 결론"의 형식을 따라요. 학교
-      수학에서 증명 문제를 많이 안 풀어봤다면 이 형식 자체가 낯설 수 있어요. 수학적
-      귀납법 한두 문제만 손으로 풀어봐도 "다음 단계로 넘어가려면 무엇을 보여야
-      하는가"를 스스로 묻는 습관이 붙어요.
+      손실함수의 등고선, 라그랑주 승수법의 제약 조건이 전부 이 곡선들의 모양으로
+      그려져요. "초점까지의 거리 = 준선까지의 거리"라는 순수하게 기하적인 정의에서
+      출발해 포물선의 표준방정식 $y^2=4px$를 직접 유도합니다.
     </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-mathematical-induction">자세히 보기 →</a>
+    <a class="detail-link" href="../concepts/index.html?c=found-conic-sections">자세히 보기 →</a>
+  </div>
+
+  <h2><span class="idx">4부</span>극한과 수열</h2>
+  <p class="section-lede">
+    "더할수록, 가까워질수록"이라는 극한의 감각을 손으로 확인합니다.
+  </p>
+
+  <div class="topic">
+    <span class="rank">11장 · 5순위</span>
+    <p class="t-name">수열의 극한과 급수(∑) 표기</p>
+    <p class="t-tag">수렴 개념 · 합의 기호에 익숙해지기</p>
+    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
+    <p>
+      손실함수, 기댓값, 어텐션의 정규화까지 AI 수식 대부분이 $\sum$ 기호로 시작해요.
+      등비급수의 부분합 공식을 텔레스코핑으로 유도하고, 베르누이 부등식으로
+      $r^n\to0$을 엄밀히 증명해 $\sum ar^k=\frac{a}{1-r}$까지 완주합니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-sequence-limit-sigma">자세히 보기 →</a>
   </div>
 
   <div class="topic">
-    <span class="rank">12순위</span>
-    <p class="t-name">순열·조합 심화와 그래프 이론 기초 감각</p>
-    <p class="t-tag">경우의 수를 세는 법 · 노드와 엣지</p>
+    <span class="rank">12장 · 8순위</span>
+    <p class="t-name">여러 함수의 극한 (옛 미적분Ⅱ 영역)</p>
+    <p class="t-tag">진로선택으로 밀려나 있는 영역</p>
     <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
     <p>
-      트리·앙상블 구조, 그래프 신경망, 어텐션의 계산 복잡도를 다룰 때 "경우의 수를
-      정확히 세는" 능력이 은근히 자주 필요해요. 점과 선으로 관계를 그리는 그래프의
-      기본 어휘(노드·엣지·경로)에 익숙해두면 이산수학 행 전체가 덜 낯설어요.
+      미적분Ⅱ는 진로선택 과목이라 이수 여부가 갈리고, 2028학년도부터는 수능
+      출제 범위에서도 완전히 빠져요. 가장 유명한 극한 $\lim_{x\to0}\frac{\sin x}
+      {x}=1$을 삼각형-부채꼴-삼각형 넓이 비교로 직접 증명합니다.
     </p>
-    <a class="detail-link" href="../concepts/index.html?c=found-permutation-graph-basics">자세히 보기 →</a>
+    <a class="detail-link" href="../concepts/index.html?c=found-calc2-limits">자세히 보기 →</a>
   </div>
 
   <div class="topic">
-    <span class="rank">13순위</span>
+    <span class="rank">13장 · 13순위</span>
     <p class="t-name">다변수 함수에 대한 최소한의 사전 감</p>
     <p class="t-tag">현 교육과정에는 아예 없는 영역</p>
     <span class="t-gap full">완전 공백 (교육과정 밖)</span>
     <p>
       변수 하나짜리 함수의 그래프는 곡선이지만, AI 모델의 손실함수는 변수가 수백만
       개인 함수예요. 고교 교육과정 자체에 다변수 함수가 없어서 이건 "몰라도 정상"인
-      영역이에요. 다만 "변수가 여러 개면 그래디언트는 변수 하나마다 하나씩,
-      화살표 다발로 나온다"는 그림 하나만 미리 가지고 있으면 미적분 행의 제약
-      최적화·경사기반 옵티마이저를 처음 볼 때 덜 당황하게 돼요.
+      영역이에요. 그래디언트 방향이 가장 가파른 방향이라는 사실을 1장에서 배운
+      코시-슈바르츠 부등식으로 직접 증명합니다.
     </p>
     <a class="detail-link" href="../concepts/index.html?c=found-multivariable-preview">자세히 보기 →</a>
   </div>
 
+  <h2><span class="idx">5부</span>확률과 논리</h2>
+  <p class="section-lede">
+    확률변수를 하나의 대상으로 다루는 감각과, 경우의 수·그래프·증명 형식을 마무리로
+    정리합니다.
+  </p>
+
+  <div class="topic">
+    <span class="rank">14장 · 9순위</span>
+    <p class="t-name">확률변수와 분포, 기댓값·분산의 직관</p>
+    <p class="t-tag">이산·연속분포를 그림으로 구분하기</p>
+    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
+    <p>
+      2026학년도 수능에서 확률과 통계 선택 비율이 미적분을 처음으로 앞질렀을 만큼
+      다들 이 과목은 접했지만, "확률변수를 하나의 대상으로 다루는" 감각까지는 잘
+      안 가요. $\mathrm{Var}(X)=E[X^2]-(E[X])^2$과, 독립인 두 변수는 분산이 그냥
+      더해진다는 사실을 정의부터 직접 유도합니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-random-variable-intuition">자세히 보기 →</a>
+  </div>
+
+  <div class="topic">
+    <span class="rank">15장 · 12순위</span>
+    <p class="t-name">순열·조합 심화와 그래프 이론 기초 감각</p>
+    <p class="t-tag">경우의 수를 세는 법 · 노드와 엣지</p>
+    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
+    <p>
+      트리·앙상블 구조, 그래프 신경망, 어텐션의 계산 복잡도를 다룰 때 "경우의 수를
+      정확히 세는" 능력이 은근히 자주 필요해요. 그래프의 차수 합이 항상 엣지 개수의
+      두 배라는 사실(악수 보조정리)을 이중 계산으로 증명합니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-permutation-graph-basics">자세히 보기 →</a>
+  </div>
+
+  <div class="topic">
+    <span class="rank">16장 · 11순위</span>
+    <p class="t-name">수학적 귀납법과 엄밀한 증명 감각</p>
+    <p class="t-tag">"항상 성립한다"를 증명하는 방식에 익숙해지기</p>
+    <span class="t-gap partial">얕게만 다뤘을 수 있음</span>
+    <p>
+      이 사이트의 모든 증명은 "명제 → 단계별 전개 → 결론"의 형식을 따라요. 학교
+      수학에서 증명 문제를 많이 안 풀어봤다면 이 형식 자체가 낯설 수 있어요. 제곱합
+      공식 $\sum k^2=\frac{n(n+1)(2n+1)}{6}$을 기초단계·귀납가정·귀납단계로
+      끝까지 증명하며 이 형식에 익숙해집니다.
+    </p>
+    <a class="detail-link" href="../concepts/index.html?c=found-mathematical-induction">자세히 보기 →</a>
+  </div>
+
+  <h2><span class="idx">6부</span>다음 책으로</h2>
+  <p class="section-lede">
+    여기까지 왔다면 본편 <a href="../index.html">수학 × AI 매트릭스</a>를 시작할
+    준비가 된 거예요.
+  </p>
+
+  <div class="topic">
+    <span class="rank">17장</span>
+    <p class="t-name">이 지식이 어디에 쓰이는가</p>
+    <p class="t-tag">본편 &lt;수학 × AI 매트릭스&gt; 미리보기</p>
+    <p>
+      지금까지 채운 벡터·행렬·극한·확률의 감각이 실제로 PCA, 경사하강법, 베이즈
+      정리, 어텐션 같은 AI 개념 어디에 쓰이는지 미리 살펴봅니다. <a
+      href="../guide/index.html">매트릭스 읽는 법</a> 챕터에서 행과 열이 무엇을
+      뜻하는지부터 시작하면 좋아요.
+    </p>
+  </div>
+
+  <div class="topic">
+    <span class="rank">18장</span>
+    <p class="t-name">자가진단 체크리스트</p>
+    <p class="t-tag">나는 본편을 바로 시작해도 될까?</p>
+    <p>
+      1~4장(수학의 언어)과 4~7장(벡터·행렬)을 스스로 설명할 수 있다면 본편의
+      선형대수 행 대부분을 바로 시작해도 괜찮아요. 나머지 장은 본편을 읽다가 막히는
+      지점이 생기면 그때 이 페이지로 돌아와 해당 장만 다시 보는 식으로 써도 충분합니다.
+    </p>
+  </div>
+
   <div class="crosslink-note">
-    <strong>다 채우고 시작할 필요는 없어요.</strong> 위 13개를 전부 완벽히 알아야
-    <a href="../index.html">기초 매트릭스</a>를 볼 수 있는 게 아니에요. 1~4순위(벡터·행렬
-    관련)만 훑어도 선형대수 행 대부분이 열립니다. 나머지는 매트릭스를 보다가 막히는
-    지점이 생기면 그때 이 페이지로 돌아와 해당 항목만 다시 보는 식으로 써도 충분해요.
+    <strong>다 채우고 시작할 필요는 없어요.</strong> 18장을 전부 완벽히 알아야
+    <a href="../index.html">기초 매트릭스</a>를 볼 수 있는 게 아니에요. 2부(벡터·행렬,
+    4~7장)만 훑어도 선형대수 행 대부분이 열립니다. 나머지는 매트릭스를 보다가 막히는
+    지점이 생기면 그때 이 페이지로 돌아와 해당 장만 다시 보는 식으로 써도 충분해요.
   </div>
   </div>
 
   <footer>
     <span>2019년 이후 고교 교육과정 개편(2015·2022 개정, 고교학점제) 자료를 근거로 정리</span>
-    <span>2026.07.17</span>
+    <span>2026.07.18</span>
   </footer>
 </div>
 
