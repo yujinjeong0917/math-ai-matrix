@@ -133,17 +133,18 @@
   }
 
   /* STEP 리스트: ":::steps" 안의 각 줄이 번호 배지가 붙은 단계가 된다 */
+  /* flex 대신 절대위치 배지 + padding-left를 쓰는 이유: 문서 참고 */
   .steps { margin: 4pt 0 14pt; padding: 0; list-style: none; counter-reset: step; }
   .steps .step-item {
-    counter-increment: step; display: flex; gap: 8pt; align-items: baseline;
+    counter-increment: step; position: relative; padding-left: 20pt;
     margin: 0 0 7pt; font-size: calc(10.5pt * var(--font-scale, 1)); line-height: 1.55; color: var(--card-ink);
   }
   .steps .step-item:last-child { margin-bottom: 0; }
   .steps .step-item::before {
-    content: counter(step); flex: none; width: 15pt; height: 15pt; border-radius: 50%;
+    content: counter(step); position: absolute; left: 0; top: 0.15em;
+    width: 15pt; height: 15pt; border-radius: 50%;
     background: var(--accent, #8a8a8a); color: #fff; font-size: 8pt; font-weight: 800;
     display: flex; align-items: center; justify-content: center; line-height: 1;
-    transform: translateY(1pt);
   }
 
   /* 표: 표준 마크다운 테이블 */

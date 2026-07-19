@@ -182,6 +182,53 @@
   .intuition-box p:last-child { margin-bottom: 0; }
   .intuition-box strong { color: var(--ink); }
 
+  /* ===== 재사용 컴포넌트: 정의/참고/주의 박스, STEP 리스트, 하이라이트, 표 =====
+     card-viewer의 :::def / :::note / :::warn / :::steps 마크다운 컴포넌트와
+     1:1 대응. generate-md.mjs가 이 HTML을 그 마크다운 문법으로 변환한다. */
+  .hl { background: color-mix(in srgb, var(--highlight) 25%, transparent); padding: 0 3px; border-radius: 3px; }
+
+  .note-box, .warn-box, .def-box {
+    border-radius: 10px; padding: 16px 20px; margin: 0 0 24px; max-width: 66ch;
+    font-size: 14.5px; line-height: 1.8; color: var(--ink-dim);
+  }
+  .note-box { background: var(--surface); border-left: 3px solid var(--highlight); }
+  .def-box { background: var(--surface); border: 1px solid var(--line-soft); }
+  .warn-box {
+    background: repeating-linear-gradient(135deg, var(--surface) 0 8px, var(--highlight-bg) 8px 16px);
+    border: 1px solid var(--highlight);
+  }
+  .note-box .box-label, .warn-box .box-label, .def-box .def-term {
+    display: block; font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--highlight); margin: 0 0 8px;
+  }
+  .note-box p, .warn-box p, .def-box p { margin: 0 0 10px; }
+  .note-box p:last-child, .warn-box p:last-child, .def-box p:last-child { margin-bottom: 0; }
+  .note-box strong, .warn-box strong, .def-box strong { color: var(--ink); }
+
+  /* flex를 쓰지 않는 이유: li 안에 <strong>이나 KaTeX span처럼 자식 엘리먼트가
+     여러 개 있으면 flex는 그 각각을 별도 flex item(=세로로 쪼개진 칼럼)으로
+     취급해버려 텍스트가 글자별/수식별로 쪼개져 보이는 심각한 레이아웃 버그가
+     난다. 배지를 절대위치로 띄우고 텍스트는 항상 일반 블록 흐름으로 두면
+     li 안에 자식이 몇 개든(감싸는 span이 있든 없든) 항상 안전하다. */
+  .steps { list-style: none; margin: 0 0 24px; padding: 0; counter-reset: step; max-width: 66ch; }
+  .steps .step-item {
+    counter-increment: step; position: relative; padding-left: 34px;
+    margin: 0 0 10px; font-size: 14.5px; line-height: 1.7; color: var(--ink-dim);
+  }
+  .steps .step-item:last-child { margin-bottom: 0; }
+  .steps .step-item::before {
+    content: counter(step); position: absolute; left: 0; top: 0.15em;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--highlight); color: #fff; font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+  }
+  .steps .step-item strong { color: var(--ink); }
+
+  .content-table { border-collapse: collapse; margin: 0 0 24px; max-width: 66ch; font-size: 14px; }
+  .content-table th, .content-table td { border: 1px solid var(--line-soft); padding: 8px 14px; text-align: center; }
+  .content-table th { background: var(--surface); color: var(--ink); font-weight: 700; }
+  .content-table td { color: var(--ink-dim); }
+
   .diagram-box {
     background: var(--surface); border: 1px solid var(--line-soft); border-radius: 14px;
     padding: 24px; margin-bottom: 28px; max-width: 760px;

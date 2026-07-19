@@ -21,13 +21,49 @@ const DOMAIN_LABEL = {
   calc2: "미적분 심화", info2: "정보이론 심화", found: "예비수학", axis: "매트릭스 읽는 법",
 };
 
-function stripHtml(s) {
+// <p>/<strong>/<br>만 다루는 얕은 변환 (박스류 내부 텍스트에도 재사용)
+function stripInline(s) {
   return (s || "")
     .replace(/<br\s*\/?>/g, "\n")
-    .replace(/<\/p>\s*<p>/g, "\n\n")
-    .replace(/<\/?p>/g, "")
+    .replace(/<\/p>\s*<p[^>]*>/g, "\n\n")
+    .replace(/<\/?p[^>]*>/g, "")
     .replace(/<strong>/g, "**").replace(/<\/strong>/g, "**")
+    .replace(/<span class="hl">/g, "::").replace(/<\/span>/g, "::")
     .trim();
+}
+
+// concepts/index.html에서 쓰는 재사용 컴포넌트(HTML)를 card-viewer의
+// ::: 마크다운 문법으로 변환한다. 순서 중요: 블록 컴포넌트를 먼저 뽑아내고,
+// 남은 텍스트에 얕은 인라인 변환을 적용한다.
+function stripHtml(s) {
+  let text = s || "";
+
+  text = text.replace(/<div class="note-box">(?:<p class="box-label">[^<]*<\/p>)?([\s\S]*?)<\/div>/g,
+    (_, inner) => `\n\n:::note\n${stripInline(inner).trim()}\n:::\n\n`);
+
+  text = text.replace(/<div class="warn-box">(?:<p class="box-label">[^<]*<\/p>)?([\s\S]*?)<\/div>/g,
+    (_, inner) => `\n\n:::warn\n${stripInline(inner).trim()}\n:::\n\n`);
+
+  text = text.replace(/<div class="def-box"><span class="def-term">정의(?:\s*·\s*([^<]*))?<\/span>([\s\S]*?)<\/div>/g,
+    (_, title, inner) => `\n\n:::def${title ? " " + title.trim() : ""}\n${stripInline(inner).trim()}\n:::\n\n`);
+
+  text = text.replace(/<ol class="steps">([\s\S]*?)<\/ol>/g, (_, inner) => {
+    const items = [...inner.matchAll(/<li class="step-item">([\s\S]*?)<\/li>/g)]
+      .map(m => stripInline(m[1]).trim());
+    return `\n\n:::steps\n${items.join("\n")}\n:::\n\n`;
+  });
+
+  text = text.replace(/<table class="content-table">([\s\S]*?)<\/table>/g, (_, inner) => {
+    const head = [...inner.matchAll(/<th>([\s\S]*?)<\/th>/g)].map(m => stripInline(m[1]).trim());
+    const rows = [...inner.matchAll(/<tr>([\s\S]*?)<\/tr>/g)]
+      .slice(1) // 첫 <tr>은 헤더
+      .map(r => [...r[1].matchAll(/<td>([\s\S]*?)<\/td>/g)].map(m => stripInline(m[1]).trim()));
+    const sep = head.map(() => "---");
+    const line = arr => `| ${arr.join(" | ")} |`;
+    return `\n\n${line(head)}\n${line(sep)}\n${rows.map(line).join("\n")}\n\n`;
+  });
+
+  return stripInline(text).replace(/\n{3,}/g, "\n\n").trim();
 }
 
 // 도입부(왜 궁금한가)와 명제(형식적 진술)를 분리한다.
