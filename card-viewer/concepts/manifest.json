@@ -180,8 +180,13 @@
     "domain": "calc"
   },
   {
-    "slug": "ppo-clipping",
+    "slug": "trpo-kkt-conditions",
     "title": "TRPO 신뢰영역 제약의 KKT 정상성 조건",
+    "domain": "calc"
+  },
+  {
+    "slug": "ppo-clipping",
+    "title": "PPO 클리핑: 유리한 방향으로만 비대칭적으로 유인을 없애기",
     "domain": "calc"
   },
   {

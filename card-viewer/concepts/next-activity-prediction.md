@@ -17,11 +17,12 @@ related: Remaining Time Prediction · 이상 케이스 조기 경고
 
 
 ## 문제
-(이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)
+$q(a\mid x)$ 에 대해 편미분하여 $0$으로 놓으면 $-\dfrac{p(a\mid x)}{q(a\mid x)}+\lambda=0$ 이 되고, 이를 $q(a\mid x)$ 에 대해 풀면 $q(a\mid x)=$ ==빈칸== 입니다.
 
 ## 해설
-고객센터 상담이 진행 중일 때 다음에 어떤 조치가 취해질지 미리 알 수 있다면 필요한 인력이나 시스템을 미리 준비해둘 수 있습니다. Next Activity Prediction은 아직 끝나지 않은 케이스가 지금까지 밟아온 흐름을 보고 바로 다음에 어떤 활동이 일어날지 예측하는 기법입니다.
+$-p(a\mid x)/q(a\mid x)+\lambda=0$ 을 $q(a\mid x)$ 에 대해 정리하면 $q(a\mid x)=p(a\mid x)/\lambda$ 가 나오기 때문이에요.
 
+**정답: $\dfrac{p(a\mid x)}{\lambda}$**
 
 ## 예시
 

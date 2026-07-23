@@ -44,13 +44,12 @@ $IG_i(x) = (x_i - x_i') \int_0^1 \frac{\partial F(x' + \alpha(x-x'))}{\partial x
 _기준점에서 입력까지 경로를 따라 그래디언트를 적분해 기여도를 구한다._
 
 ## 문제
-(이 개념은 증명/빈칸 문항이 없는 개요 카드입니다.)
+$g(\alpha) = F(\gamma(\alpha))$ 라 두면 연쇄법칙에 의해 $g'(\alpha) = \sum_i \dfrac{\partial F(\gamma(\alpha))}{\partial x_i}\cdot\dfrac{d\gamma_i(\alpha)}{d\alpha}$ 이다. s1의 경로 정의를 성분별로 전개하면 $\gamma_i(\alpha) = x_i' - \alpha x_i' + \alpha x_i$이고, 이를 $\alpha$로 미분하면 $\dfrac{d\gamma_i}{d\alpha} = $==빈칸== 이다.
 
 ## 해설
-Saliency map은 입력이 지금 있는 딱 한 지점에서의 기울기만 본다. 활성화가 포화된 구간에서는 그 지점의 기울기가 0이어도 그 특징이 없어졌을 때와 있을 때의 결과가 완전히 다를 수 있다. Integrated Gradients는 한 점만 보지 말고 아예 기준이 되는 텅 빈 입력에서 실제 입력까지 걸어가면서 그 길 위 모든 지점에서 기울기를 재고 다 더하자고 제안한다.
+γ_i(α)=x_i'-αx_i'+αx_i를 α로 미분하면 상수항 x_i'는 사라지고 α의 계수인 -x_i'와 x_i만 남아 x_i-x_i'가 돼요.
 
-비유하면 산의 높이를 한 지점의 경사만으로 판단하지 않고 출발점부터 도착점까지 걸어가며 매 걸음의 오르내림을 전부 더해 총 고도 변화를 재는 것과 같다. 중간에 평평한 구간이 있어도 전체 경로를 보면 결국 얼마나 올라갔는지가 정확히 나온다.
-
+**정답: $x_i-x_i'$**
 
 ## 예시
 $F(x) = x^2$라는 함수와 기준점 $x'=0$, 실제 입력 $x=2$를 생각하자. 경로 위 점은 $z(\alpha) = 2\alpha$이고 그 지점의 그래디언트는 $\partial F/\partial x = 2z(\alpha) = 4\alpha$이다. 따라서 $IG(x) = (2-0)\int_0^1 4\alpha\, d\alpha = 2 \times 2 = 4$이다. 실제로 $F(x) - F(x') = 4 - 0 = 4$이므로 완전성 성질이 정확히 성립한다.
