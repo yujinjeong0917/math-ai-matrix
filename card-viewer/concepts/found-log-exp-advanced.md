@@ -19,7 +19,7 @@ $a>0,\,a\neq1$이고 $x,y>0$일 때 $\log_a(xy)=\log_a x+\log_a y$이다.
 
 
 ## 문제
-$xy$를 $a^u,a^v$로 바꿔 쓴다. $xy=a^u\times a^v$인데, 지수법칙 $a^m\times a^n=a^{m+n}$에 의해 이는 $$==빈칸==$$ 와 같다.
+$xy$를 $a^u,a^v$로 바꿔 쓴다. $xy=a^u\times a^v$인데, 지수법칙 $a^m\times a^n=a^{m+n}$에 의해 이는 ==빈칸== 와 같다.
 
 ## 해설
 같은 밑 a의 거듭제곱을 곱할 때는 지수끼리 더해요. a^u × a^v = a^{u+v}가 지수법칙의 정의예요.

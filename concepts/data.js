@@ -16869,12 +16869,12 @@ $k=10$: $f(x_{10})=0.0608 \le 1.000$</p>
 <p>$\eta_t=1/t^{2}$처럼 너무 빨리 줄이면 $\sum\eta_t^2<\infty$는 만족하지만 $\sum\eta_t=\sum1/t^2\approx1.6449<\infty$로 첫 번째 조건을 어깁니다. 총 이동거리 자체가 유한해 시작점에서 너무 멀리 있는 최적점에는 도달조차 못 할 수 있습니다.</p>`,
     sections: [
       { id: "s1", text: String.raw`SGD 갱신 $x_{t+1}=x_t-\eta_t g_t$에서 $g_t$는 참 그래디언트에 평균 $0$인 잡음이 섞인 추정값이다: $g_t=\nabla f(x_t)+\xi_t$, $\mathbb{E}[\xi_t\mid x_t]=0$, $\mathbb{E}\|\xi_t\|^2\le\sigma^2$.`, blanks: [] },
-      { id: "s2", text: String.raw`$L$-매끄러움에서 나오는 하강 보조정리를 $y=x_{t+1}$에 적용하고 $x_t$가 주어졌을 때의 조건부기댓값을 취하면(불편성 때문에 1차항은 $-\eta_t\|\nabla f(x_t)\|^2$로 정리되고, $\mathbb{E}\|g_t\|^2=\|\nabla f(x_t)\|^2+\mathbb{E}\|\xi_t\|^2$를 쓰면) $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\|\nabla f(x_t)\|^2+\frac{L\eta_t^2}{2}\Big($$[[blank:가]]$$\Big)$$ 를 얻는다.`,
+      { id: "s2", text: String.raw`$L$-매끄러움에서 나오는 하강 보조정리를 $y=x_{t+1}$에 적용하고 $x_t$가 주어졌을 때의 조건부기댓값을 취하면(불편성 때문에 1차항은 $-\eta_t\|\nabla f(x_t)\|^2$로 정리되고, $\mathbb{E}\|g_t\|^2$의 상한을 $(\star)$라 하면) $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\|\nabla f(x_t)\|^2+\frac{L\eta_t^2}{2}\big(\star\big)$$ 를 얻는데, 여기서 $(\star)=$[[blank:가]] 이다.`,
         blanks: [{ id: "가", latex: String.raw`\sigma^2+\|\nabla f(x_t)\|^2`, why: String.raw`$\mathbb{E}\|g_t\|^2=\|\mathbb{E}[g_t]\|^2+\mathrm{Var}(g_t)=\|\nabla f(x_t)\|^2+\mathbb{E}\|\xi_t\|^2\le\|\nabla f(x_t)\|^2+\sigma^2$가 돼요.` }] },
-      { id: "s3", text: String.raw`같은 항을 $\|\nabla f(x_t)\|^2$에 대해 다시 묶으면 $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\Big(1-\frac{L\eta_t}{2}\Big)\|\nabla f(x_t)\|^2+$$[[blank:나]] 가 된다.`,
+      { id: "s3", text: String.raw`같은 항을 $\|\nabla f(x_t)\|^2$에 대해 다시 묶으면(나머지 잡음 항을 $(\star\star)$라 하면) $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\Big(1-\frac{L\eta_t}{2}\Big)\|\nabla f(x_t)\|^2+(\star\star)$$ 가 되는데, 여기서 $(\star\star)=$[[blank:나]] 이다.`,
         blanks: [{ id: "나", latex: String.raw`\tfrac{L\eta_t^2\sigma^2}{2}`, why: String.raw`s2의 우변에서 $\|\nabla f(x_t)\|^2$가 있는 두 항을 묶고 $\sigma^2$가 붙은 항만 따로 빼면 이 잡음 항이 남아요.` }] },
       { id: "s4", text: String.raw`양변의 전체기댓값을 취하고 $t=1$부터 $T$까지 더하면 좌변은 텔레스코핑되어 $f(x_1)-\mathbb{E}[f(x_{T+1})]$ 형태가 되고, $f$가 아래로 유계($f\ge f^*$)라는 사실을 쓰면 $$\sum_{t=1}^T \eta_t\Big(1-\frac{L\eta_t}{2}\Big)\mathbb{E}\|\nabla f(x_t)\|^2\ \le\ f(x_1)-f^*+\frac{L\sigma^2}{2}\sum_{t=1}^T\eta_t^2$$ 가 성립한다.`, blanks: [] },
-      { id: "s5", text: String.raw`만약 $\sum_{t=1}^\infty\eta_t^2<\infty$ 이면 위 부등식의 우변은 $T\to\infty$ 에서도 유한한 값으로 남는다. 그런데 $\eta_t\to0$이라 결국 $1-\frac{L\eta_t}{2}$가 양수인 구간에서, 좌변이 유계라는 것은 $$$$[[blank:다]]$$$$ 가 유한하다는 뜻이다.`,
+      { id: "s5", text: String.raw`만약 $\sum_{t=1}^\infty\eta_t^2<\infty$ 이면 위 부등식의 우변은 $T\to\infty$ 에서도 유한한 값으로 남는다. 그런데 $\eta_t\to0$이라 결국 $1-\frac{L\eta_t}{2}$가 양수인 구간에서, 좌변이 유계라는 것은 [[blank:다]] 가 유한하다는 뜻이다.`,
         blanks: [{ id: "다", latex: String.raw`\sum_{t=1}^\infty \eta_t\Big(1-\frac{L\eta_t}{2}\Big)\mathbb{E}\|\nabla f(x_t)\|^2`, why: String.raw`s4의 부등식에서 $T\to\infty$로 보내면 우변이 유한하므로 좌변의 무한합도 유한해야 해요.` }] },
       { id: "s6", text: String.raw`무한합 $\sum_t \eta_t\cdot(\text{양수})\cdot\mathbb{E}\|\nabla f(x_t)\|^2$ 이 유한하려면, $\sum_t\eta_t=\infty$(첫 번째 조건)일 때는 항들이 계속 더해지는데도 합이 유한하려면 $\mathbb{E}\|\nabla f(x_t)\|^2$가 결국 $0$에 가까워질 수밖에 없다(그렇지 않고 어떤 $\epsilon>0$ 아래로 안 떨어지면 발산하는 $\sum\eta_t$와 곱해져 무한대가 된다). 즉 $\liminf_t\mathbb{E}\|\nabla f(x_t)\|^2=0$.`, blanks: [] },
       { id: "s7", text: String.raw`반대로 $\sum_t\eta_t<\infty$ 라면 스텝들의 총 크기가 유한해 $x_t$가 이동할 수 있는 총 거리 자체가 제한되므로, 시작점이 최적점과 멀리 떨어져 있으면 아예 도달하지 못하고 수렴이 실패할 수 있다. 또한 $\sum_t\eta_t^2=\infty$(예: 상수 학습률)이면 s4의 잡음누적 항 $\frac{L\sigma^2}{2}\sum\eta_t^2$ 자체가 발산해 반복값이 최적점 근방에서 영원히 요동친다. 따라서 두 조건이 모두 필요하며, 학습률이 $\sum\eta_t=\infty$, $\sum\eta_t^2<\infty$ 를 만족해야 SGD가 수렴한다.`, blanks: [] }
@@ -19831,7 +19831,7 @@ $$A_1=3\times\frac12\begin{pmatrix}1&1\\1&1\end{pmatrix}=\begin{pmatrix}1.5&1.5\
 <p>$e$가 미분에서 특별한 이유도 숫자로 확인할 수 있어요. $f(x)=e^x$에서 $x=0$일 때 $f(0)=1$이고, $h=0.001$만큼 옮기면 $f(0.001)=e^{0.001}\approx1.0010005$가 돼요. 순간 변화율은 $\frac{f(0.001)-f(0)}{0.001}\approx\frac{0.0010005}{0.001}\approx1.0005$로, 함숫값 $f(0)=1$과 거의 같아요. 이게 우연이 아니라 모든 $x$에서 $\frac{d}{dx}e^x=e^x$가 성립하기 때문이라는 걸 알아두면, 시그모이드나 소프트맥스를 미분할 때 연쇄법칙을 적용하는 과정이 훨씬 편해져요.</p>`,
     sections: [
       { id: "s1", text: String.raw`로그 $\log_a$를 지수함수 $a^t$의 역함수로 정의한다. 즉 $a^t=x$일 때 $t=\log_a x$이고, 이 정의에 의해 항상 $a^{\log_a x}=x$가 성립한다. $u:=\log_a x$, $v:=\log_a y$라 두면 정의상 $a^u=x$, $a^v=y$이다. 목표는 $\log_a(xy)=u+v$임을 보이는 것이다.`, blanks: [] },
-      { id: "s2", text: String.raw`$xy$를 $a^u,a^v$로 바꿔 쓴다. $xy=a^u\times a^v$인데, 지수법칙 $a^m\times a^n=a^{m+n}$에 의해 이는 $$[[blank:가]]$$ 와 같다.`,
+      { id: "s2", text: String.raw`$xy$를 $a^u,a^v$로 바꿔 쓴다. $xy=a^u\times a^v$인데, 지수법칙 $a^m\times a^n=a^{m+n}$에 의해 이는 [[blank:가]] 와 같다.`,
         blanks: [{ id: "가", latex: String.raw`a^{u+v}`, why: String.raw`같은 밑 a의 거듭제곱을 곱할 때는 지수끼리 더해요. a^u × a^v = a^{u+v}가 지수법칙의 정의예요.` }] },
       { id: "s3", text: String.raw`이제 $xy=a^{u+v}$의 양변에 $\log_a$를 적용한다. 로그는 지수함수의 역함수이므로 $\log_a(a^{u+v})=u+v$이다(정의 그 자체). 따라서 $\log_a(xy)=\log_a(a^{u+v})=$[[blank:나]] 이다.`,
         blanks: [{ id: "나", latex: String.raw`u+v`, why: String.raw`log_a는 a^t의 역함수이므로 log_a(a^{무언가})는 그 "무언가"를 그대로 돌려줘요. 여기서는 지수 자리에 u+v가 있으니 결과도 u+v예요.` }] },
@@ -20187,7 +20187,7 @@ $$A^{-1}(Ax) = \begin{pmatrix}1&-1\\-1&2\end{pmatrix}\begin{pmatrix}7\\4\end{pma
       { id: "s2", text: String.raw`분자의 내적을 성분별로 전개한다. $(P-Q)\cdot n=(p-x_0)a+(q-y_0)b+(r-z_0)c=(ap+bq+cr)-(ax_0+by_0+cz_0)$인데, $Q$가 평면 위의 점이므로 $ax_0+by_0+cz_0=$[[blank:가]] 이다.`,
         blanks: [{ id: "가", latex: String.raw`d`, why: String.raw`Q를 평면 위의 점으로 골랐으므로 평면의 방정식 ax+by+cz=d를 그대로 만족해요. 그래서 ax₀+by₀+cz₀ 자리에 d를 대입할 수 있어요.` }] },
       { id: "s3", text: String.raw`따라서 $(P-Q)\cdot n=(ap+bq+cr)-d$이다. 이 값은 처음에 평면 위에서 $Q$를 어떻게 골랐는지와 전혀 상관없이 $P$의 좌표와 평면의 계수 $a,b,c,d$만으로 정해진다. 즉 거리 공식이 $Q$의 선택에 의존하지 않고 잘 정의된다는 뜻이다.`, blanks: [] },
-      { id: "s4", text: String.raw`법선벡터의 노름은 정의상 $\|n\|=\sqrt{a^2+b^2+c^2}$이다. s1의 거리 공식에 s3의 결과와 이 노름을 대입하면, $P$에서 평면까지의 거리는 $\dfrac{|ap+bq+cr-d|}{$[[blank:나]]$}$ 이다.`,
+      { id: "s4", text: String.raw`법선벡터의 노름은 정의상 $\|n\|=\sqrt{a^2+b^2+c^2}$이다. s1의 거리 공식(분모가 $\|n\|$)에 이 노름 공식을 그대로 풀어 넣으면, 분모는 $[[blank:나]]$가 된다. 따라서 s3의 결과와 함께 정리하면 $P$에서 평면까지의 거리는 $\dfrac{|ap+bq+cr-d|}{\sqrt{a^2+b^2+c^2}}$ 이다.`,
         blanks: [{ id: "나", latex: String.raw`\sqrt{a^2+b^2+c^2}`, why: String.raw`법선벡터 n=(a,b,c)의 노름 공식을 그대로 분모에 대입한 자리예요.` }] },
       { id: "s5", text: String.raw`이 공식이 극단적인 경우에도 말이 되는지 확인해본다. 만약 $P$가 이미 평면 위의 점이라면 $ap+bq+cr=d$이므로 분자가 $|d-d|=$[[blank:다]] 가 되어, 거리도 정확히 $0$이 나온다. 평면 위의 점에서 그 평면까지의 거리가 $0$이라는 당연한 사실과 정확히 일치한다.`,
         blanks: [{ id: "다", latex: String.raw`0`, why: String.raw`P가 평면 위에 있으면 ap+bq+cr과 d가 같은 값이므로 그 차는 0이 돼요. 공식이 극단적인 경우에도 모순 없이 맞아떨어지는지 확인하는 자리예요.` }] },

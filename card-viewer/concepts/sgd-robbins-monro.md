@@ -17,7 +17,7 @@ related: 경사하강법의 O(1/k) 수렴률
 
 
 ## 문제
-$L$-매끄러움에서 나오는 하강 보조정리를 $y=x_{t+1}$에 적용하고 $x_t$가 주어졌을 때의 조건부기댓값을 취하면(불편성 때문에 1차항은 $-\eta_t\|\nabla f(x_t)\|^2$로 정리되고, $\mathbb{E}\|g_t\|^2=\|\nabla f(x_t)\|^2+\mathbb{E}\|\xi_t\|^2$를 쓰면) $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\|\nabla f(x_t)\|^2+\frac{L\eta_t^2}{2}\Big($$==빈칸==$$\Big)$$ 를 얻는다.
+$L$-매끄러움에서 나오는 하강 보조정리를 $y=x_{t+1}$에 적용하고 $x_t$가 주어졌을 때의 조건부기댓값을 취하면(불편성 때문에 1차항은 $-\eta_t\|\nabla f(x_t)\|^2$로 정리되고, $\mathbb{E}\|g_t\|^2$의 상한을 $(\star)$라 하면) $$\mathbb{E}[f(x_{t+1})\mid x_t]\ \le\ f(x_t)-\eta_t\|\nabla f(x_t)\|^2+\frac{L\eta_t^2}{2}\big(\star\big)$$ 를 얻는데, 여기서 $(\star)=$==빈칸== 이다.
 
 ## 해설
 $\mathbb{E}\|g_t\|^2=\|\mathbb{E}[g_t]\|^2+\mathrm{Var}(g_t)=\|\nabla f(x_t)\|^2+\mathbb{E}\|\xi_t\|^2\le\|\nabla f(x_t)\|^2+\sigma^2$가 돼요.
